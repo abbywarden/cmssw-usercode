@@ -22,3 +22,5 @@ mfvEventFilterJetsOnly = mfvEventFilter.clone(mode = 'jets only')
 mfvEventFilterLeptonsOnly = mfvEventFilter.clone(mode = 'leptons only')
 mfvEventFilterHTORBjetsORDisplacedDijet = mfvEventFilter.clone(mode = 'HT OR bjets OR displaced dijet', min_ht = cms.double(-1))
 mfvEventFilterBjetsORDisplacedDijetVetoHT = mfvEventFilter.clone(mode = 'bjets OR displaced dijet veto HT', min_ht = cms.double(-1))
+#mfvEventFilterDisplacedLeptons = mfvEventFilter.clone(mode = 'displaced leptons', min_njets = cms.int32(2), min_ht = cms.double(-1), min_nleptons = cms.int32(2))
+

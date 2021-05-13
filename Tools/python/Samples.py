@@ -14,6 +14,8 @@ def _tau(sample):
     is_um = '0um_' in s
     x = int(s[s.index('tau')+3:s.index('um_' if is_um else 'mm_')])
     if not is_um:
+        if '0p1mm_' in s:
+            x *= 100
         x *= 1000
     return x
 
@@ -46,6 +48,8 @@ def _decay(sample):
         'mfv_xxddbar': r'X \rightarrow d\bar{d}',
         'mfv_stopdbardbar': r'\tilde{t} \rightarrow \bar{d}\bar{d}',
         'mfv_stopbbarbbar': r'\tilde{t} \rightarrow \bar{b}\bar{b}',
+        'mfv_stoplb': r'\tilde{t} \rightarrow lb',
+        'mfv_stopld': r'\tilde{t} \rightarrow ld',
         }[_model(s)]
     year = int(s.rsplit('_')[-1])
     assert 2015 <= year <= 2018
@@ -55,7 +59,7 @@ def _decay(sample):
 def _latex(sample):
     tau = _tau(sample)
     if tau < 1000:
-        tau = '%3i\mum' % tau
+        tau = '%3i\m um' % tau
     else:
         assert tau % 1000 == 0
         tau = '%4i\mm' % (tau/1000)
@@ -72,7 +76,7 @@ def _set_signal_stuff(sample):
     sample.is_private = sample.dataset.startswith('/mfv_')
     if sample.is_private:
         sample.dbs_inst = 'phys03'
-        sample.condor = True
+        sample.condor = False
         sample.xrootd_url = xrootd_sites['T3_US_FNALLPC']
 
 ########################################################################
@@ -303,9 +307,73 @@ mfv_stopdbardbar_samples_2018 = [
     MCSample('mfv_stopdbardbar_tau030000um_M3000_2018', '/StopStopbarTo2Dbar2D_M-3000_CTau-30mm_TuneCP2_13TeV_2018-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15-v1/AODSIM', 100000),
     ]
 
+
+mfv_stoplb_samples_2018 = [
+    MCSample('mfv_stoplb_tau001000um_M1000_2018', '/DisplacedSUSY_stopToBottom_M_1000_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau010000um_M1000_2018', '/DisplacedSUSY_stopToBottom_M_1000_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau100000um_M1000_2018', '/DisplacedSUSY_stopToBottom_M_1000_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau001000um_M1200_2018', '/DisplacedSUSY_stopToBottom_M_1200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau010000um_M1200_2018', '/DisplacedSUSY_stopToBottom_M_1200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau100000um_M1200_2018', '/DisplacedSUSY_stopToBottom_M_1200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau001000um_M1400_2018', '/DisplacedSUSY_stopToBottom_M_1400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau010000um_M1400_2018', '/DisplacedSUSY_stopToBottom_M_1400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau100000um_M1400_2018', '/DisplacedSUSY_stopToBottom_M_1400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau001000um_M1600_2018', '/DisplacedSUSY_stopToBottom_M_1600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau010000um_M1600_2018', '/DisplacedSUSY_stopToBottom_M_1600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau100000um_M1600_2018', '/DisplacedSUSY_stopToBottom_M_1600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau001000um_M1800_2018', '/DisplacedSUSY_stopToBottom_M_1800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau010000um_M1800_2018', '/DisplacedSUSY_stopToBottom_M_1800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau100000um_M1800_2018', '/DisplacedSUSY_stopToBottom_M_1800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau001000um_M0200_2018', '/DisplacedSUSY_stopToBottom_M_200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau010000um_M0200_2018', '/DisplacedSUSY_stopToBottom_M_200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau100000um_M0200_2018', '/DisplacedSUSY_stopToBottom_M_200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau001000um_M0400_2018', '/DisplacedSUSY_stopToBottom_M_400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau010000um_M0400_2018', '/DisplacedSUSY_stopToBottom_M_400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau100000um_M0400_2018', '/DisplacedSUSY_stopToBottom_M_400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau001000um_M0600_2018', '/DisplacedSUSY_stopToBottom_M_600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau010000um_M0600_2018', '/DisplacedSUSY_stopToBottom_M_600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau100000um_M0600_2018', '/DisplacedSUSY_stopToBottom_M_600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau001000um_M0800_2018', '/DisplacedSUSY_stopToBottom_M_800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau010000um_M0800_2018', '/DisplacedSUSY_stopToBottom_M_800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau100000um_M0800_2018', '/DisplacedSUSY_stopToBottom_M_800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+
+]
+
+mfv_stopld_samples_2018 = [
+    MCSample('mfv_stopld_tau001000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau010000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau100000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau001000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau010000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau100000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau001000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau010000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau100000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau001000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau010000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau100000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau001000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau010000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau100000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau001000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau010000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau100000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau001000um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau010000um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau100000um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau001000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau010000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau100000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau001000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau010000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau100000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),    
+]
+
 all_signal_samples_2018 = mfv_signal_samples_2018 + mfv_stopdbardbar_samples_2018
 
-for s in all_signal_samples_2018:
+extra_signal_samples_2018 = mfv_stoplb_samples_2018 + mfv_stopld_samples_2018
+    
+for s in (all_signal_samples_2018 + extra_signal_samples_2018):
     _set_signal_stuff(s)
 
 ########
@@ -366,6 +434,8 @@ __all__ = [
     'bjet_samples_2018',
     'mfv_signal_samples_2018',
     'mfv_stopdbardbar_samples_2018',
+    'mfv_stoplb_samples_2018',
+    'mfv_stopld_samples_2018',
     'data_samples_2017',
     'auxiliary_data_samples_2017',
     'data_samples_2018',
@@ -385,12 +455,15 @@ for x in __all__:
 
 span_signal_samples_2017 = [eval('mfv_%s_tau%06ium_M%04i_2017' % (a,b,c)) for a in ('neu','stopdbardbar') for b in (300,1000,10000) for c in (400,800,1600,3000)]
 span_signal_samples_2018 = [eval('mfv_%s_tau%06ium_M%04i_2018' % (a,b,c)) for a in ('neu','stopdbardbar') for b in (300,1000,10000) for c in (400,800,1600,3000)]
+semileptonic_samples_2018 = [eval('mfv_stop%s_tau%06ium_M%04i_2018' % (a,b,c)) for a in ('lb', 'ld') for b in (1000, 10000, 100000) for c in (200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800)]
 
 _alls = [
     'all_signal_samples_2017',
     'all_signal_samples_2018',
+    'extra_signal_samples_2018',
     'span_signal_samples_2017',
     'span_signal_samples_2018',
+    'semileptonic_samples_2018',
     ]
 __all__ += _alls
 for x in _alls:
@@ -410,6 +483,7 @@ for sample in data_samples_2017 + auxiliary_data_samples_2017:
     sample.add_dataset('miniaod', sample.dataset.replace('17Nov2017-v1/AOD', '31Mar2018-v1/MINIAOD'))
 for sample in data_samples_2018 + auxiliary_data_samples_2018:
     sample.add_dataset('miniaod', sample.dataset.replace('AOD', 'MINIAOD'))
+
 
 _adbp('miniaod', '/QCD_HT300to500_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_new_pmx_94X_mc2017_realistic_v14-v1/MINIAODSIM',   59569132)
 _adbp('miniaod', '/QCD_HT500to700_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v2/MINIAODSIM',           56207744)
@@ -581,6 +655,66 @@ _adbp('miniaod', '/StopStopbarTo2Dbar2D_M-1200_CTau-30mm_TuneCP2_13TeV_2018-pyth
 _adbp('miniaod', '/StopStopbarTo2Dbar2D_M-1600_CTau-30mm_TuneCP2_13TeV_2018-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/StopStopbarTo2Dbar2D_M-3000_CTau-30mm_TuneCP2_13TeV_2018-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 
+
+#Stop to LB
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1000_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1000_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1000_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+
+#Stop to LD
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1000_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+_adbp('miniaod', '/DisplacedSUSY_stopToLD_M_800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
+
+
 ########
 # ntuples
 ########
@@ -644,25 +778,26 @@ condorable = {
         "miniaod": [qcdht1500_2017, qcdht2000_2017, dyjetstollM10_2017, qcdmupt15_2017, qcdht0300_2018, qcdht0700_2018, ttbarht0800_2018,
                     JetHT2017B, JetHT2017D, JetHT2017F, JetHT2018A, JetHT2018B, JetHT2018D,
                     mfv_neu_tau000100um_M0600_2017, mfv_neu_tau000300um_M0400_2017, mfv_neu_tau000300um_M0800_2017, mfv_neu_tau000300um_M3000_2017, mfv_neu_tau010000um_M0400_2017, mfv_neu_tau010000um_M0800_2017, mfv_neu_tau010000um_M1600_2017, mfv_neu_tau030000um_M0800_2017, mfv_neu_tau030000um_M3000_2017, mfv_stopdbardbar_tau000100um_M0600_2017, mfv_stopdbardbar_tau000100um_M1600_2017, mfv_stopdbardbar_tau000300um_M1200_2017, mfv_stopdbardbar_tau001000um_M0400_2017, mfv_stopdbardbar_tau001000um_M1200_2017, mfv_stopdbardbar_tau001000um_M3000_2017, mfv_stopdbardbar_tau010000um_M0800_2017, mfv_stopdbardbar_tau010000um_M3000_2017, mfv_stopdbardbar_tau030000um_M1200_2017, mfv_stopdbardbar_tau030000um_M1600_2017,
-                    mfv_neu_tau001000um_M0800_2018, mfv_stopdbardbar_tau000100um_M1600_2018, mfv_stopdbardbar_tau000300um_M0400_2018, mfv_stopdbardbar_tau000300um_M1600_2018, mfv_stopdbardbar_tau010000um_M1200_2018, mfv_stopdbardbar_tau010000um_M3000_2018, mfv_stopdbardbar_tau030000um_M1600_2018, SingleMuon2017F],
+                    mfv_neu_tau001000um_M0800_2018, mfv_stopdbardbar_tau000100um_M1600_2018, mfv_stopdbardbar_tau000300um_M0400_2018, mfv_stopdbardbar_tau000300um_M1600_2018, mfv_stopdbardbar_tau010000um_M1200_2018, mfv_stopdbardbar_tau010000um_M3000_2018, mfv_stopdbardbar_tau030000um_M1600_2018, SingleMuon2017F,
+                    mfv_stoplb_tau001000um_M1000_2018, mfv_stoplb_tau010000um_M1000_2018, mfv_stoplb_tau100000um_M1000_2018, mfv_stoplb_tau001000um_M1200_2018, mfv_stoplb_tau010000um_M1200_2018, mfv_stoplb_tau100000um_M1200_2018, mfv_stoplb_tau001000um_M1400_2018, mfv_stoplb_tau010000um_M1400_2018, mfv_stoplb_tau100000um_M1400_2018, mfv_stoplb_tau001000um_M1600_2018, mfv_stoplb_tau100000um_M1600_2018, mfv_stoplb_tau001000um_M1800_2018, mfv_stoplb_tau010000um_M0200_2018, mfv_stoplb_tau001000um_M0400_2018, mfv_stoplb_tau010000um_M0400_2018, mfv_stoplb_tau001000um_M0600_2018, mfv_stoplb_tau100000um_M0600_2018, mfv_stoplb_tau010000um_M0800_2018, mfv_stopld_tau010000um_M1000_2018, mfv_stopld_tau001000um_M1000_2018, mfv_stopld_tau001000um_M1200_2018, mfv_stopld_tau100000um_M1400_2018, mfv_stopld_tau010000um_M1400_2018, mfv_stopld_tau100000um_M1800_2018, mfv_stopld_tau010000um_M1800_2018, mfv_stopld_tau100000um_M0200_2018, mfv_stopld_tau100000um_M0400_2018, mfv_stopld_tau010000um_M0400_2018, mfv_stopld_tau010000um_M0600_2018, mfv_stopld_tau001000um_M0600_2018, mfv_stopld_tau001000um_M0800_2018, mfv_stopld_tau010000um_M0800_2018],
         },
     "T2_DE_DESY": {
         "miniaod": [JetHT2017C, JetHT2017E, JetHT2018C, SingleMuon2017D],
         },
     "T2_US_MIT": {
-        "miniaod": [qcdht0500_2018, ttHbb_2017],
+        "miniaod": [qcdht0500_2018, ttHbb_2017, mfv_stopld_tau010000um_M1600_2018, mfv_stopld_tau100000um_M0600_2018],
         },
     "T2_US_Florida": {
-        "miniaod": [ttbar_2018, ttZext_2017, qcdht0700_2017, qcdht0500_2017],
+        "miniaod": [ttbar_2018, ttZext_2017, qcdht0700_2017, qcdht0500_2017, mfv_stoplb_tau100000um_M0400_2018, mfv_stopld_tau100000um_M1600_2018, mfv_stopld_tau001000um_M1800_2018, mfv_stopld_tau001000um_M0200_2018, mfv_stopld_tau100000um_M0800_2018],
         },
     "T2_US_Nebraska": {
-        "miniaod": [SingleMuon2017C, ttbar_2017, qcdht0300_2017, mfv_neu_tau030000um_M1600_2017],
+        "miniaod": [SingleMuon2017C, ttbar_2017, qcdht0300_2017, mfv_neu_tau030000um_M1600_2017, mfv_stoplb_tau010000um_M1600_2018, mfv_stoplb_tau010000um_M1800_2018, mfv_stoplb_tau100000um_M1800_2018, mfv_stoplb_tau001000um_M0200_2018, mfv_stoplb_tau100000um_M0200_2018, mfv_stoplb_tau010000um_M0600_2018, mfv_stopld_tau100000um_M1200_2018, mfv_stopld_tau001000um_M1400_2018, mfv_stopld_tau001000um_M1600_2018, mfv_stopld_tau010000um_M0200_2018, mfv_stopld_tau001000um_M0400_2018],
         },
     "T2_US_Purdue": {
-        "miniaod": [mfv_stopdbardbar_tau000100um_M1200_2017],
+        "miniaod": [mfv_stopdbardbar_tau000100um_M1200_2017, mfv_stopld_tau010000um_M1200_2018],
         },
     "T2_US_Wisconsin" : {
-        "miniaod": [ttZ_2017, mfv_stopdbardbar_tau000300um_M0600_2017],
+        "miniaod": [ttZ_2017, mfv_stopdbardbar_tau000300um_M0600_2017, mfv_stoplb_tau001000um_M0800_2018, mfv_stoplb_tau100000um_M0800_2018, mfv_stopld_tau100000um_M1000_2018],
         },
     }
 
@@ -679,7 +814,7 @@ for site, d in condorable.iteritems():
             s.datasets[ds].xrootd_url = xrootd_sites[site]
 
 # can only run signal ntuples via condor where we can split by nevents, so require they're all reachable
-for s in mfv_signal_samples_2017 + mfv_signal_samples_2018 + mfv_stopdbardbar_samples_2017 + mfv_stopdbardbar_samples_2018:
+for s in mfv_signal_samples_2017 + mfv_signal_samples_2018 + mfv_stopdbardbar_samples_2017 + mfv_stopdbardbar_samples_2018 + mfv_stoplb_samples_2018 + mfv_stopld_samples_2018:
     if s not in _seen:
         raise ValueError('%s not in condorable dict' % s.name)
 
@@ -734,6 +869,7 @@ if __name__ == '__main__':
                     nevents = DBS.numevents_in_dataset(dataset)
                     print "    MCSample('%s_tau%06ium_M%04i_%s', '%s', %i)," % (model, tau, mass, year, dataset, nevents)
 
+                
     if 0:
         for s in all_signal_samples_2017 + all_signal_samples_2018:
             l = DBS.datasets('/%s/*/MINIAODSIM' % s.primary_dataset)
@@ -742,6 +878,7 @@ if __name__ == '__main__':
                 print "_adbp('miniaod', '%s', %i)" % (l[0], nevents)
             else:
                 print colors.boldred('no miniaod for %s' % s.name)
+
 
     if 0:
         for s in qcd_samples_2017 + ttbar_samples_2017 + qcd_samples_2018 + ttbar_samples_2018:

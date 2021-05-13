@@ -17,12 +17,12 @@ class CRABSubmitter:
     batch_name_allowed = string.ascii_letters + string.digits + '_'
     get_proxy = True
     aaa_locations = [
-        #'T1_US_FNAL',
+        'T1_US_FNAL',
         'T2_US_Caltech',
-        #'T2_US_Florida',
+        'T2_US_Florida',
         'T2_US_MIT',
         'T2_US_Nebraska',
-        #'T2_US_Purdue',
+        'T2_US_Purdue',
         'T2_US_UCSD',
         'T2_US_Vanderbilt',
         'T2_US_Wisconsin',

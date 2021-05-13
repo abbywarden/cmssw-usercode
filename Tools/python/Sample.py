@@ -256,6 +256,7 @@ class Sample(object):
 
     @property
     def primary_dataset(self):
+      #  print "primary dataset :", self.dataset.split('/')[1]
         return self.dataset.split('/')[1]
 
     def __getitem__(self, key):

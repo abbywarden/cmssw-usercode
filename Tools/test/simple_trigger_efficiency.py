@@ -1,8 +1,19 @@
 import sys
 from JMTucker.Tools.BasicAnalyzer_cfg import cms, process, file_event_from_argv
 
-file_event_from_argv(process)
-process.TFileService.fileName = 'simple_trigger_efficiency.root'
+#file_event_from_argv(process)
+#stopBL_M_100_CTau_1000mm 
+
+from stopBL_samples import *
+
+inputFiles = stopBL_M400_CTau_0p1mm 
+
+
+process.source = cms.Source(
+    "PoolSource",
+    fileNames = cms.untracked.vstring(*inputFiles),
+)
+process.TFileService.fileName = 'stopBL_M400_CTau_0p1mm.root'
 
 process.RandomNumberGeneratorService = cms.Service('RandomNumberGeneratorService')
 process.RandomNumberGeneratorService.SimpleTriggerEfficiency = cms.PSet(initialSeed = cms.untracked.uint32(1219))

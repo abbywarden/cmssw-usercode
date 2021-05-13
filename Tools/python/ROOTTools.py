@@ -1576,19 +1576,21 @@ def plot_dir(x='', make=False, temp=False):
     hostname = os.environ['HOSTNAME']
     username = os.environ['USER']
     d = None
-    if 'fnal.gov' in hostname and username == 'tucker':
-        if temp:
-            d = '/publicweb/t/tucker/asdf/tempplots'
-        else:
-            d = '/publicweb/t/tucker/asdf/plots'
-    elif 'fnal.gov' in hostname and username == 'jchu':
-        d = '/publicweb/j/jchu/plots'
-    elif 'fnal.gov' in hostname and username == 'dquach':
-        d = '/publicweb/d/dquach/plots'
-    elif 'fnal.gov' in hostname and username == 'shogan':
-	d = '/publicweb/s/shogan/images'
-    elif 'fnal.gov' in hostname and username == 'joeyr':
-        d = '/publicweb/j/joeyr/plots'
+    # if 'fnal.gov' in hostname and username == 'tucker':
+    #     if temp:
+    #         d = '/publicweb/t/tucker/asdf/tempplots'
+    #     else:
+    #         d = '/publicweb/t/tucker/asdf/plots'
+    # elif 'fnal.gov' in hostname and username == 'jchu':
+    #     d = '/publicweb/j/jchu/plots'
+    # elif 'fnal.gov' in hostname and username == 'dquach':
+    #     d = '/publicweb/d/dquach/plots'
+    # elif 'fnal.gov' in hostname and username == 'shogan':
+    #     d = '/publicweb/s/shogan/images'
+    # elif 'fnal.gov' in hostname and username == 'joeyr':
+    #     d = '/publicweb/j/joeyr/plots'
+    if 'wisc.edu' in hostname and username == 'acwarden':
+        d = '/afs/hep.wisc.edu/home/acwarden/work/llp/mfv_1025p1/src/JMTucker/MFVNeutralino/test/TriggerStudies/TrigFilt/'
     if d:
         x = os.path.join(d,x)
     else:
