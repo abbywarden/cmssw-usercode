@@ -7,7 +7,7 @@ swap_axes = True
 
 which = '2017p8' if '2017p8' in sys.argv else 'run2'
 intlumi = 140 if which == 'run2' else 101
-path = plot_dir('pretty_limits_%s_pm1sigma_switchaxes' % which, make=True)
+path = plot_dir('pretty_limits_%s_pm1sigma_switchaxes_diff_color' % which, make=True)
 
 ts = tdr_style()
 ROOT.gStyle.SetPalette(ROOT.kBird)
@@ -105,6 +105,7 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
     zax.SetTitleSize(0.05)
     zax.SetTitleOffset(1.20)
     h.Draw('colz')
+    h.GetXaxis().SetNoExponent()
     print kind, h.GetMinimum(), h.GetMaximum()
     h.SetMinimum(0.01)
     h.SetMaximum(100)
@@ -116,8 +117,7 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
 
     for theory in theories :
         if theory == 'gluglu' :
-            #theory_color = ROOT.kOrange-3
-            theory_color = ROOT.kRed-9
+            theory_color = ROOT.kViolet-4
         elif theory == 'higgsino_N2N1' :
             theory_color = ROOT.kRed
         else :
@@ -146,6 +146,13 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
             g_expup = do_swap_axes(g_expup)
             g_expdn = do_swap_axes(g_expdn)
 
+        g_obs.SetName("g_obs_%s" % theory)
+        g_obsup.SetName("g_obsup_%s" % theory)
+        g_obsdn.SetName("g_obsdn_%s" % theory)
+        g_exp.SetName("g_exp_%s" % theory)
+        g_expup.SetName("g_expup_%s" % theory)
+        g_expdn.SetName("g_expdn_%s" % theory)
+
         if draw_pm1sigma_excl:
             for g in g_obs, g_exp:
                 g.SetLineWidth(3)
@@ -167,7 +174,8 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
         g_dispjet_excl = ROOT.TGraph(len(ys), disp_jet_excl, ys)
         if swap_axes :
             g_dispjet_excl = do_swap_axes(g_dispjet_excl)
-        g_dispjet_excl.SetLineColor(ROOT.kTeal+2)
+        g_dispjet_excl.SetName("g_dispjet_excl")
+        g_dispjet_excl.SetLineColor(ROOT.kTeal)
         g_dispjet_excl.SetLineWidth(3)
         g_dispjet_excl.SetLineStyle(4)
 
@@ -213,19 +221,19 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
     t.SetTextColor(1)
     t.SetTextSize(0.03)
     if kind == 'mfv_neu':
-        glu_color = ROOT.kRed-9
+        glu_color = ROOT.kViolet-4
         neu_color = ROOT.kRed
         model = '#kern[-0.%i]{#color[%i]{#tilde{#chi}^{0}} / #color[%i]{#tilde{g}} #rightarrow tbs}' % (60 if draw_pm1sigma_excl else 22, neu_color, glu_color)
         t.DrawLatexNDC(0.26, 0.895, model)
-        t.SetTextSize(0.075)
-        t.DrawLatexNDC(0.238,0.70,'#color[%i]{#tilde{g}}' % glu_color)
-        t.DrawLatexNDC(0.238,0.32,'#color[%i]{#tilde{#chi}^{0}}' % neu_color)
+        t.SetTextSize(0.07)
+        t.DrawLatexNDC(0.405,0.772,'#color[%i]{#tilde{g}}' % glu_color)
+        t.DrawLatexNDC(0.395,0.4,'#color[%i]{#tilde{#chi}^{0}}' % neu_color)
     else:
         stop_color = ROOT.kRed
         model = '#kern[-0.%i]{#tilde{t} #rightarrow #bar{d}#kern[0.1]{#bar{d}}}' % (52 if draw_pm1sigma_excl else 22)
         t.DrawLatexNDC(0.22, 0.895, model)
-        t.SetTextSize(0.075)
-        t.DrawLatexNDC(0.245,0.47,'#color[%i]{#tilde{t}}' % stop_color)
+        t.SetTextSize(0.07)
+        t.DrawLatexNDC(0.405,0.54,'#color[%i]{#tilde{t}}' % stop_color)
 
     if draw_pm1sigma_excl:
         # these lines make the bands for the lines in the legend, sigh

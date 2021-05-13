@@ -4,6 +4,8 @@ from signal_efficiency import SignalEfficiencyCombiner
 set_style()
 ps = plot_saver(plot_dir('pretty_templates_2017p8_diff_xsecs'), size=(700,700), log=True, pdf=True, pdf_log=True)
 
+hide_overlap_with_x_axis = True
+
 ps.c.SetBottomMargin(0.11)
 ps.c.SetLeftMargin(0.13)
 ps.c.SetRightMargin(0.06)
@@ -160,8 +162,8 @@ hbkg.Add(hbkg2018)
 hbkg.SetFillColor(ROOT.kGray)
 hbkg.SetFillStyle(3002)
 
-xoffset = -0.01
-yoffset = -0.05
+xoffset = 0.0
+yoffset = 0.008
 leg1 = ROOT.TLegend(0.400+xoffset, 0.805+yoffset, 0.909+xoffset, 0.862+yoffset)
 leg1.AddEntry(hbkg, 'Background template', 'F')
 leg2 = ROOT.TLegend(0.400+xoffset, 0.748+yoffset, 0.909+xoffset, 0.815+yoffset)
@@ -180,6 +182,15 @@ ymax = 20
 xmax = 4
 hbkg.GetXaxis().SetRangeUser(0,xmax)
 hbkg.GetYaxis().SetRangeUser(ymin,ymax)
+
+if hide_overlap_with_x_axis :
+    magic = 0.0131 # fun magic number for covering over bold lines on x-axis
+    horiz_line = ROOT.TLine()
+    horiz_line.SetLineColor(ROOT.kWhite)
+    horiz_line.SetLineWidth(5)
+    horiz_line.SetLineStyle(1)
+    horiz_line.DrawLine(0.8+magic, ymin, 4, ymin)
+    horiz_line.DrawLine(0.78, ymin*.96, 0.82, ymin*.96)
 
 for zzz, (name, title, color, style, xsec) in enumerate(which):
     h = fmt(name, title, color, style, xsec)
@@ -208,7 +219,7 @@ def write(font, size, x, y, text):
     w.DrawLatex(x, y, text)
     return w
 
-write(61, 0.050, 0.415+xoffset, 0.825, 'CMS')
+write(61, 0.050, 0.280, 0.825, 'CMS')
 write(42, 0.050, 0.595, 0.913, '101 fb^{-1} (13 TeV)')
 
 dvvlines = [
@@ -217,13 +228,29 @@ dvvlines = [
         ]
 
 for ll in dvvlines:
-        ll.SetLineColor(ROOT.kRed)
+        ll.SetLineColor(ROOT.kMagenta)
         ll.SetLineWidth(2)
-        ll.SetLineStyle(2)
+        ll.SetLineStyle(3)
         ll.Draw()
+
+if hide_overlap_with_x_axis :
+    horiz_line.SetLineStyle(1)
+    horiz_line.DrawLine(2.5+magic, ymin, 2.7-magic, ymin)
+    horiz_line.DrawLine(2.48, ymin*.96, 2.52, ymin*.96)
+    horiz_line.DrawLine(2.8+magic, ymin, 4.000025, ymin)
+    horiz_line.DrawLine(2.68, ymin*.96, 2.72, ymin*.96)
+    horiz_line.DrawLine(2.78, ymin*.96, 2.82, ymin*.96)
+
+    # for the weird single-pixel-wide lines that stubbornly remain
+    horiz_line.DrawLine(3.98, ymin*.955, 4.02, ymin*.955)
+
+    hbkg.Draw('axis same')
 
 ps.save('templates')
 
 write(52, 0.047, 0.52+xoffset, 0.825, 'Preliminary')
 
 ps.save('templates_prelim')
+
+if hide_overlap_with_x_axis :
+    print "NOTE! hide_overlap_with_x_axis = True, so some cosmetic magic has been applied (only relevant for EXO-19-013, and should be removed/adjusted in future analyses)"
