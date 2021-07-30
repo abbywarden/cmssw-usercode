@@ -6,9 +6,13 @@ import JMTucker.MFVNeutralino.AnalysisConstants as ac
 from JMTucker.Tools.ROOTTools import *
 from JMTucker.Tools import Samples
 
-year = '2017p8'
-version = 'V23m'
-root_file_dir = '/uscms_data/d2/tucker/crab_dirs/Histos%s' % version
+#year = '2017p8'
+#version = 'V23m'
+#root_file_dir = '/uscms_data/d2/tucker/crab_dirs/Histos%s' % version
+
+year = '2018'
+version = 'V1'
+root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/Histos%s' % version
 
 set_style()
 ps = plot_saver(plot_dir('data_mc_comp_%s_%s' % (year, version)))
@@ -24,7 +28,8 @@ lumi_nice = ac.int_lumi_nice_2017
 if year == '2018':
     qcd_samples = Samples.qcd_samples_2018
     ttbar_samples = []
-    signal_sample = Samples.mfv_neu_tau001000um_M0800_2017
+    #signal_sample = Samples.mfv_neu_tau001000um_M0800_2017
+    signal_sample = Samples.mfv_stoplb_tau001000um_M0800_2018
     data_samples = [] # Samples.data_samples_2017
     background_samples = qcd_samples
     lumi = ac.int_lumi_2018 * ac.scale_factor_2018

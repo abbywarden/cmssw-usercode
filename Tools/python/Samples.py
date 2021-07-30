@@ -7,7 +7,11 @@ from JMTucker.Tools.CMSSWTools import json_path
 
 def _model(sample):
     s = sample if type(sample) == str else sample.name
-    return s.split('_tau')[0]
+   # print s
+    if s.startswith('hnl_'):
+        return s.split('_V')[0]
+    else:
+        return s.split('_tau')[0]
 
 def _tau(sample):
     s = sample if type(sample) == str else sample.name
@@ -19,13 +23,30 @@ def _tau(sample):
         x *= 1000
     return x
 
+
+def _coupling(sample):
+    s = sample.name
+    x = int(s[s.index('V')+1:s.index('_M')])
+    return x
+
+
 def _mass(sample):
     s = sample if type(sample) == str else sample.name
+    decimals = ['p2','p4','p5','p6','p8']
+    is_float = any(p in s for p in decimals)
+
     x = s.index('_M')
     y = s.find('_',x+1)
     if y == -1:
         y = len(s)
-    return int(s[x+2:y])
+        
+    if not is_float:
+        return int(s[x+2:y])
+    
+    if is_float:
+        m = s[x+2:y].replace('p','.')
+        return float(m)
+
 
 def _decay(sample):
     s = sample if type(sample) == str else sample.name
@@ -52,6 +73,10 @@ def _decay(sample):
         'mfv_stopld': r'\tilde{t} \rightarrow ld',
         'ggHToSSTobbbb' : r'ggH \rightarrow SS \rightarrow b\bar{b}b\bar{b}',
         'ggHToSSTodddd' : r'ggH \rightarrow SS \rightarrow d\bar{d}d\bar{d}',
+        'hnl_trilept_e': r'N \rightarrow ee \nu',
+        'hnl_trilept_mu': r'N \rightarrow mumu \nu',
+        'hnl_semilept_e': r'N \rightarrow ejj',
+        'hnl_semilept_mu': r'N \rightarrow mujj'
         }[_model(s)]
     year = int(s.rsplit('_')[-1])
     assert 2015 <= year <= 2018
@@ -59,19 +84,31 @@ def _decay(sample):
     return decay
 
 def _latex(sample):
-    tau = _tau(sample)
-    if tau < 1000:
-        tau = '%3i\m um' % tau
+    s = sample.name
+    
+    if s.startswith('hnl'):
+        coupling = _coupling(sample)
+        return r'$%s$,   $c\coupling = %s$, $M = %4s\GeV$' % (_decay(sample), coupling, _mass(sample))
+
     else:
-        assert tau % 1000 == 0
-        tau = '%4i\mm' % (tau/1000)
-    return r'$%s$,   $c\tau = %s$, $M = %4s\GeV$' % (_decay(sample), tau, _mass(sample))
+        tau = _tau(sample)
+        if tau < 1000:
+            tau = '%3i\m um' % tau
+        else:
+            assert tau % 1000 == 0
+            tau = '%4i\mm' % (tau/1000)
+        return r'$%s$,   $c\tau = %s$, $M = %4s\GeV$' % (_decay(sample), tau, _mass(sample))
+    
 
 def _set_signal_stuff(sample):
     sample.is_signal = True
+    s = sample.name
     sample.model = _model(sample)
     sample.decay = _decay(sample)
-    sample.tau = _tau(sample)
+    if s.startswith('hnl'):
+        sample.coupling = _coupling(sample)
+    else:
+        sample.tau = _tau(sample)
     sample.mass = _mass(sample)
     sample.latex = _latex(sample)
     sample.xsec = 1e-3
@@ -344,11 +381,11 @@ mfv_stoplb_samples_2018 = [
     MCSample('mfv_stoplb_tau001000um_M1000_2018', '/DisplacedSUSY_stopToBottom_M_1000_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau010000um_M1000_2018', '/DisplacedSUSY_stopToBottom_M_1000_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau100000um_M1000_2018', '/DisplacedSUSY_stopToBottom_M_1000_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stoplb_tau001000um_M1200_2018', '/DisplacedSUSY_stopToBottom_M_1200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau001000um_M1200_2018', '/DisplacedSUSY_stopToBottom_M_1200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 98000),
     MCSample('mfv_stoplb_tau010000um_M1200_2018', '/DisplacedSUSY_stopToBottom_M_1200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau100000um_M1200_2018', '/DisplacedSUSY_stopToBottom_M_1200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stoplb_tau001000um_M1400_2018', '/DisplacedSUSY_stopToBottom_M_1400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stoplb_tau010000um_M1400_2018', '/DisplacedSUSY_stopToBottom_M_1400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stoplb_tau001000um_M1400_2018', '/DisplacedSUSY_stopToBottom_M_1400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 96000),
+    MCSample('mfv_stoplb_tau010000um_M1400_2018', '/DisplacedSUSY_stopToBottom_M_1400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 96000),
     MCSample('mfv_stoplb_tau100000um_M1400_2018', '/DisplacedSUSY_stopToBottom_M_1400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau001000um_M1600_2018', '/DisplacedSUSY_stopToBottom_M_1600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau010000um_M1600_2018', '/DisplacedSUSY_stopToBottom_M_1600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
@@ -373,19 +410,19 @@ mfv_stoplb_samples_2018 = [
 
 mfv_stopld_samples_2018 = [
     MCSample('mfv_stopld_tau001000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau010000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau010000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 97000),
     MCSample('mfv_stopld_tau100000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau001000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau010000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau100000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau010000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 98000),
+    MCSample('mfv_stopld_tau100000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 98000),
     MCSample('mfv_stopld_tau001000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau010000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau100000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau001000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau001000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 98000),
     MCSample('mfv_stopld_tau010000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau100000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau001000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau010000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau100000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 86000),
+    MCSample('mfv_stopld_tau001000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 94000),
+    MCSample('mfv_stopld_tau010000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 96000),
     MCSample('mfv_stopld_tau100000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau001000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau010000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
@@ -396,16 +433,125 @@ mfv_stopld_samples_2018 = [
     MCSample('mfv_stopld_tau001000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau010000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau100000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau001000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau010000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
+    MCSample('mfv_stopld_tau001000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 95000),
+    MCSample('mfv_stopld_tau010000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 97000),
     MCSample('mfv_stopld_tau100000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),    
+]
+
+hnl_trilept_e_samples_2018 = [
+    MCSample('hnl_trilept_e_V000316_M0011_2018', '/HeavyNeutrino_trilepton_M-11p0_V-0p000316227766_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_e_V001414_M0012_2018', '/HeavyNeutrino_trilepton_M-12p0_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_e_V001414_M0012p2_2018', '/HeavyNeutrino_trilepton_M-12p2_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_e_V001414_M0012p4_2018', '/HeavyNeutrino_trilepton_M-12p4_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+   # MCSample('hnl_trilept_e_V001414_M0012p6_2018', '/HeavyNeutrino_trilepton_M-12p6_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+   # MCSample('hnl_trilept_e_V001414_M0012p8_2018', '/HeavyNeutrino_trilepton_M-12p8_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 245000),
+  #  MCSample('hnl_trilept_e_V001414_M0013_2018', '/HeavyNeutrino_trilepton_M-13p0_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_e_V001414_M0013p2_2018', '/HeavyNeutrino_trilepton_M-13p2_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_e_V001414_M0013p4_2018', '/HeavyNeutrino_trilepton_M-13p4_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_e_V001414_M0013p6_2018', '/HeavyNeutrino_trilepton_M-13p6_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_e_V001414_M0013p8_2018', '/HeavyNeutrino_trilepton_M-13p8_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_e_V001414_M0014_2018', '/HeavyNeutrino_trilepton_M-14p0_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_e_V001414_M0014p2_2018', '/HeavyNeutrino_trilepton_M-14p2_V-0p00141421356237_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+   # MCSample('hnl_trilept_e_V000370_M0006_2018', '/HeavyNeutrino_trilepton_M-6p0_V-0p000370135110466_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_e_V000316_M0007_2018', '/HeavyNeutrino_trilepton_M-7p0_V-0p000316227766_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_e_V000316_M0009_2018', '/HeavyNeutrino_trilepton_M-9p0_V-0p000316227766_e_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+
+
+]
+
+#need to create new 'format' for hnl samples based off of coupling rather than lifetime
+#coupling: V, number starts after decimal point, cutting off a few decimals to be a bit more condensed [check for possible name overwriting just in case as we go]
+# e.g. V-0p000316227766 -> V000316
+hnl_trilept_mu_samples_2018 = [
+   # MCSample('hnl_trilept_mu_V000316_M0011_2018', '/HeavyNeutrino_trilepton_M-11p0_V-0p000316227766_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+   # MCSample('hnl_trilept_mu_V000836_M0012_2018', '/HeavyNeutrino_trilepton_M-12p0_V-0p000836660026_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V000836_M0012p2_2018', '/HeavyNeutrino_trilepton_M-12p2_V-0p000836660026_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V000836_M0012p4_2018', '/HeavyNeutrino_trilepton_M-12p4_V-0p000836660026_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V000836_M0012p6_2018', '/HeavyNeutrino_trilepton_M-12p6_V-0p000836660026_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V000836_M0012p8_2018', '/HeavyNeutrino_trilepton_M-12p8_V-0p000836660026_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V001414_M0013_2018', '/HeavyNeutrino_trilepton_M-13p0_V-0p00141421356237_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 240000),
+    MCSample('hnl_trilept_mu_V001414_M0013p2_2018', '/HeavyNeutrino_trilepton_M-13p2_V-0p00141421356237_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V001414_M0013p4_2018', '/HeavyNeutrino_trilepton_M-13p4_V-0p00141421356237_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+   # MCSample('hnl_trilept_mu_V001414_M0013p6_2018', '/HeavyNeutrino_trilepton_M-13p6_V-0p00141421356237_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V001414_M0013p8_2018', '/HeavyNeutrino_trilepton_M-13p8_V-0p00141421356237_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V001414_M0014_2018', '/HeavyNeutrino_trilepton_M-14p0_V-0p00141421356237_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V001414_M0014p2_2018', '/HeavyNeutrino_trilepton_M-14p2_V-0p00141421356237_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 245000),
+    MCSample('hnl_trilept_mu_V001414_M0014p4_2018', '/HeavyNeutrino_trilepton_M-14p4_V-0p00141421356237_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+   # MCSample('hnl_trilept_mu_V001414_M0014p6_2018', '/HeavyNeutrino_trilepton_M-14p6_V-0p00141421356237_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V001414_M0014p8_2018', '/HeavyNeutrino_trilepton_M-14p8_V-0p00141421356237_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V001414_M0015_2018', '/HeavyNeutrino_trilepton_M-15p0_V-0p00141421356237_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V000370_M0006_2018', '/HeavyNeutrino_trilepton_M-6p0_V-0p000370135110466_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V000316_M0007_2018', '/HeavyNeutrino_trilepton_M-7p0_V-0p000316227766_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 250000),
+    MCSample('hnl_trilept_mu_V000316_M0009_2018', '/HeavyNeutrino_trilepton_M-9p0_V-0p000316227766_mu_TuneCP5_madgraph_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 240000),
+
+]
+
+
+hnl_semilept_e_samples_2018 = [
+    MCSample('hnl_semilept_e_V000147_M0010_2018', '/HeavyNeutrino_lljj_M-10_V-0p000147309198627_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V000793_M0010_2018', '/HeavyNeutrino_lljj_M-10_V-0p000793725393319_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V000662_M0011p5_2018', '/HeavyNeutrino_lljj_M-11p5_V-0p0006620442374_e_massiveAndCKM_LO_TuneCP5-madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 600000),
+    MCSample('hnl_semilept_e_V000478_M0013p5_2018', '/HeavyNeutrino_lljj_M-13p5_V-0p0004783793223_e_massiveAndCKM_LO_TuneCP5-madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 600000),
+    MCSample('hnl_semilept_e_V000021_M0015_2018', '/HeavyNeutrino_lljj_M-15_V-2p13775583264e-05_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+  #  MCSample('hnl_semilept_e_V000047_M0015_2018', '/HeavyNeutrino_lljj_M-15_V-4p77493455453e-05_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000)
+    MCSample('hnl_semilept_e_V094973_M0001_2018', '/HeavyNeutrino_lljj_M-1_V-0p0949736805647_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 295000),
+    MCSample('hnl_semilept_e_V212367_M0001_2018', '/HeavyNeutrino_lljj_M-1_V-0p212367605816_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V000019_M0020_2018', '/HeavyNeutrino_lljj_M-20_V-1p93390796058e-05_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    #  MCSample('hnl_semilept_e_V000008_M0020_2018', '/HeavyNeutrino_lljj_M-20_V-8p64869932418e-06_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V009736_M0002_2018', '/HeavyNeutrino_lljj_M-2_V-0p00973652915571_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V011090_M0002_2018', '/HeavyNeutrino_lljj_M-2_V-0p0110905365064_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    #  MCSample('hnl_semilept_e_V002177_M0002_2018', '/HeavyNeutrino_lljj_M-2_V-0p0217715410571_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+   # MCSample('hnl_semilept_e_V003138_M0003_2018', '/HeavyNeutrino_lljj_M-3_V-0p0031384709653_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V009929_M0003_2018', '/HeavyNeutrino_lljj_M-3_V-0p00992975326985_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V001300_M0004_2018', '/HeavyNeutrino_lljj_M-4_V-0p0013_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V002511_M0004_2018', '/HeavyNeutrino_lljj_M-4_V-0p00251197133742_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V007218_M0004_2018', '/HeavyNeutrino_lljj_M-4_V-0p00721803297305_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+   # MCSample('hnl_semilept_e_V000650_M0005_2018', '/HeavyNeutrino_lljj_M-5_V-0p00065038450166_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V001260_M0005_2018', '/HeavyNeutrino_lljj_M-5_V-0p00126095202129_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V004636_M0005_2018', '/HeavyNeutrino_lljj_M-5_V-0p00463680924775_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V000370_M0006_2018', '/HeavyNeutrino_lljj_M-6_V-0p000370135110466_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V000716_M0006_2018', '/HeavyNeutrino_lljj_M-6_V-0p000716240183179_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V002118_M0006_2018', '/HeavyNeutrino_lljj_M-6_V-0p00211896201004_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_e_V000633_M0007_2018', '/HeavyNeutrino_lljj_M-7_V-0p0006332344953_e_massiveAndCKM_LO_TuneCP5-madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 600000),
+    #  MCSample('hnl_semilept_e_V000294_M0008_2018', '/HeavyNeutrino_lljj_M-8_V-0p000294108823397_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 295000),
+    #  MCSample('hnl_semilept_e_V002572_M0008_2018', '/HeavyNeutrino_lljj_M-8_V-0p00257293606605_e_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+]
+
+hnl_semilept_mu_samples_2018 = [
+    MCSample('hnl_semilept_mu_V000147_M0010_2018', '/HeavyNeutrino_lljj_M-10_V-0p000147309198627_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V000793_M0010_2018', '/HeavyNeutrino_lljj_M-10_V-0p000793725393319_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    #  MCSample('hnl_semilept_mu_V000021_M0015_2018', '/HeavyNeutrino_lljj_M-15_V-2p13775583264e-05_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V000047_M0015_2018', '/HeavyNeutrino_lljj_M-15_V-4p77493455453e-05_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 295000),
+    #  MCSample('hnl_semilept_mu_V094973_M0001_2018', '/HeavyNeutrino_lljj_M-1_V-0p0949736805647_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V212367_M0001_2018', '/HeavyNeutrino_lljj_M-1_V-0p212367605816_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V000019_M0020_2018', '/HeavyNeutrino_lljj_M-20_V-1p93390796058e-05_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    # MCSample('hnl_semilept_mu_V000008_M0020_2018', '/HeavyNeutrino_lljj_M-20_V-8p64869932418e-06_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V009736_M0002_2018', '/HeavyNeutrino_lljj_M-2_V-0p00973652915571_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V011090_M0002_2018', '/HeavyNeutrino_lljj_M-2_V-0p0110905365064_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V021771_M0002_2018', '/HeavyNeutrino_lljj_M-2_V-0p0217715410571_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V003138_M0003_2018', '/HeavyNeutrino_lljj_M-3_V-0p0031384709653_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V009929_M0003_2018', '/HeavyNeutrino_lljj_M-3_V-0p00992975326985_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V001300_M0004_2018', '/HeavyNeutrino_lljj_M-4_V-0p0013_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V002511_M0004_2018', '/HeavyNeutrino_lljj_M-4_V-0p00251197133742_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V007218_M0004_2018', '/HeavyNeutrino_lljj_M-4_V-0p00721803297305_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    #  MCSample('hnl_semilept_mu_V000650_M0005_2018', '/HeavyNeutrino_lljj_M-5_V-0p00065038450166_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V001260_M0005_2018', '/HeavyNeutrino_lljj_M-5_V-0p00126095202129_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 275000),
+    MCSample('hnl_semilept_mu_V004636_M0005_2018', '/HeavyNeutrino_lljj_M-5_V-0p00463680924775_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V000370_M0006_2018', '/HeavyNeutrino_lljj_M-6_V-0p000370135110466_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V000716_M0006_2018', '/HeavyNeutrino_lljj_M-6_V-0p000716240183179_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V002118_M0006_2018', '/HeavyNeutrino_lljj_M-6_V-0p00211896201004_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    MCSample('hnl_semilept_mu_V000633_M0007_2018', '/HeavyNeutrino_lljj_M-7_V-0p0006332344953_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    #  MCSample('hnl_semilept_mu_V000294_M0008_2018', '/HeavyNeutrino_lljj_M-8_V-0p000294108823397_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
+    # MCSample('hnl_semilept_mu_V002572_M0008_2018', '/HeavyNeutrino_lljj_M-8_V-0p00257293606605_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
 ]
 
 all_signal_samples_2018 = mfv_signal_samples_2018 + mfv_stopdbardbar_samples_2018
 
 extra_signal_samples_2018 = mfv_stoplb_samples_2018 + mfv_stopld_samples_2018
+
+hnl_signal_samples_2018 = hnl_trilept_e_samples_2018 + hnl_trilept_mu_samples_2018 + hnl_semilept_e_samples_2018 + hnl_semilept_mu_samples_2018
     
-for s in (all_signal_samples_2018 + extra_signal_samples_2018):
+for s in (all_signal_samples_2018 + extra_signal_samples_2018 + hnl_signal_samples_2018):
     _set_signal_stuff(s)
 
 ########
@@ -470,6 +616,8 @@ __all__ = [
     'mfv_stopdbardbar_samples_2018',
     'mfv_stoplb_samples_2018',
     'mfv_stopld_samples_2018',
+    #'hnl_trilept_e_samples_2018',
+    #'hnl_trilept_mu_samples_2018',
     'data_samples_2017',
     'auxiliary_data_samples_2017',
     'data_samples_2018',
@@ -490,7 +638,7 @@ for x in __all__:
 span_signal_samples_2017 = [eval('mfv_%s_tau%06ium_M%04i_2017' % (a,b,c)) for a in ('neu','stopdbardbar') for b in (300,1000,10000) for c in (400,800,1600,3000)]
 span_signal_samples_2018 = [eval('mfv_%s_tau%06ium_M%04i_2018' % (a,b,c)) for a in ('neu','stopdbardbar') for b in (300,1000,10000) for c in (400,800,1600,3000)]
 semileptonic_samples_2018 = [eval('mfv_stop%s_tau%06ium_M%04i_2018' % (a,b,c)) for a in ('lb', 'ld') for b in (1000, 10000, 100000) for c in (200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800)]
-
+#hnl_trilept_samples_2018 = [eval('hnl_trilept_%s_tau%06ium_M%04i_2018' % (a,b,c)) for a in ('e', 'mu') for b in ( ) for c in ( )]
 _alls = [
     'all_signal_samples_2017',
     'all_signal_samples_2018',
@@ -498,6 +646,7 @@ _alls = [
     'span_signal_samples_2017',
     'span_signal_samples_2018',
     'semileptonic_samples_2018',
+    'hnl_trilept_samples_2018'
     ]
 __all__ += _alls
 for x in _alls:

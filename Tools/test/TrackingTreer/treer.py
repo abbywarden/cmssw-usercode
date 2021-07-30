@@ -33,6 +33,10 @@ process.p = cms.Path(process.tt)
 from JMTucker.MFVNeutralino.EventFilter import setup_event_filter
 if use_btag_triggers :
     setup_event_filter(process, input_is_miniaod=True, mode='bjets OR displaced dijet veto HT novtx', event_filter_jes_mult=0)
+elif use_lepton_triggers :
+    setup_event_filter(process, input_is_miniaod=True, mode='leptons', event_filter_jes_mult=0)
+elif use_displ_lepton_triggers :
+    setup_event_filter(process, input_is_miniaod=True, mode='displaced leptons', event_filter_jes_mult=0)
 else :
     setup_event_filter(process, input_is_miniaod=True, mode='jets only novtx', event_filter_jes_mult=0)
 

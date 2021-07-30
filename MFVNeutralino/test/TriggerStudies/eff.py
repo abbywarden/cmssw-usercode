@@ -8,10 +8,15 @@ settings = CMSSWSettings()
 settings.is_mc = True
 settings.cross = '' # 2017to2018' # 2017to2017p8'
 
+#unsure if this version name update needed -- yet
+#version = '2017p8v4_semilept'
 version = '2017p8v4'
 
+#TODO: double check these thresholds
 mu_thresh_hlt = 27
 mu_thresh_offline = 30
+#ele_thresh_hlt = 27
+#ele_thresh_offline = 35
 weight_l1ecal = ''
 
 tfileservice(process, 'eff.root')
@@ -30,6 +35,11 @@ process.load('JMTucker.MFVNeutralino.TriggerFloats_cff')
 
 process.selectedPatJets.src = 'updatedJetsMiniAOD'
 process.selectedPatJets.cut = jtupleParams.jetCut
+
+#are these needed? Would need to edit TriggerFloats; instead of slimmedMETs do something else?
+#process.mfvTriggerFloats.met_src = cms.InputTag('slimmedMETs', '', 'BasicAnalyzer') # BasicAnalyzer
+#process.mfvTriggerFloats.isMC = settings.is_mc
+#process.mfvTriggerFloats.year = settings.year
 
 from HLTrigger.HLTfilters.hltHighLevel_cfi import hltHighLevel
 process.mutrig = hltHighLevel.clone()
@@ -52,12 +62,15 @@ if weight_l1ecal and settings.is_mc and settings.year == 2017 and settings.cross
     w.weight_misc = True
     w.misc_srcs = cms.VInputTag(cms.InputTag('prefiringweight', which))
 
+
 process.den = cms.EDAnalyzer('MFVTriggerEfficiency',
                              use_jetpt_weights = cms.int32(0),
                              require_hlt = cms.int32(-1),
                              require_l1 = cms.int32(-1),
                              require_muon = cms.bool(True),
-                             require_4jets = cms.bool(True),
+                             require_leptfilters = cms.bool(True)
+                             require_2jets = cms.bool(True)
+                             require_4jets = cms.bool(False), #change to false; should instead require 2 jets? require electron?
                              require_6jets = cms.bool(False),
                              require_4thjetpt = cms.double(0.),
                              require_6thjetpt = cms.double(0.),
@@ -73,13 +86,14 @@ process.denjet6pt75 = process.den.clone(require_6thjetpt = 75)
 process.denht1000jet6pt75 = process.den.clone(require_ht = 1000, require_6thjetpt = 75)
 process.p = cms.Path(process.weightSeq * process.mutrig * process.updatedJetsSeqMiniAOD * process.selectedPatJets * process.mfvTriggerFloats * process.den * process.denht1000 * process.denjet6pt75 * process.denht1000jet6pt75)
 
-process.dennomu = process.den.clone(require_muon = False)
-process.dennomuht1000 = process.den.clone(require_muon = False, require_ht = 1000)
-process.dennomujet6pt75 = process.den.clone(require_muon = False, require_6thjetpt = 75)
-process.dennomuht1000jet6pt75 = process.den.clone(require_muon = False, require_ht = 1000, require_6thjetpt = 75)
-process.pnomu = cms.Path(process.weightSeq * process.updatedJetsSeqMiniAOD * process.selectedPatJets * process.mfvTriggerFloats * process.dennomu * process.dennomuht1000 * process.dennomujet6pt75 * process.dennomuht1000jet6pt75)
+#process.dennomu = process.den.clone(require_muon = False)
+#process.dennomuht1000 = process.den.clone(require_muon = False, require_ht = 1000)
+#process.dennomujet6pt75 = process.den.clone(require_muon = False, require_6thjetpt = 75)
+#process.dennomuht1000jet6pt75 = process.den.clone(require_muon = False, require_ht = 1000, require_6thjetpt = 75)
+#process.pnomu = cms.Path(process.weightSeq * process.updatedJetsSeqMiniAOD * process.selectedPatJets * process.mfvTriggerFloats * process.dennomu * process.dennomuht1000 * process.dennomujet6pt75 * process.dennomuht1000jet6pt75)
 
-for x in '', 'ht1000', 'jet6pt75', 'ht1000jet6pt75', 'nomu', 'nomuht1000', 'nomujet6pt75', 'nomuht1000jet6pt75':
+#for x in '', 'ht1000', 'jet6pt75', 'ht1000jet6pt75', 'nomu', 'nomuht1000', 'nomujet6pt75', 'nomuht1000jet6pt75':
+for x in ['']:
     num = getattr(process, 'den%s' % x).clone(require_hlt = 0)
     if 'separate' in weight_l1ecal:
         num.weight_src = 'jmtWeightMiniAODL1Ecal'

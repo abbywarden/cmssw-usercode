@@ -23,8 +23,10 @@ private:
   const int use_jetpt_weights;
   const int require_bits[2]; // HLT then L1
   const bool require_muon;
+  const bool require_2jets;
   const bool require_4jets;
   const bool require_6jets;
+  const bool require_2ndjetpt;
   const double require_4thjetpt;
   const double require_6thjetpt;
   const double require_ht;
@@ -72,8 +74,10 @@ MFVTriggerEfficiency::MFVTriggerEfficiency(const edm::ParameterSet& cfg)
   : use_jetpt_weights(cfg.getParameter<int>("use_jetpt_weights")),
     require_bits{cfg.getParameter<int>("require_hlt"), cfg.getParameter<int>("require_l1")},
     require_muon(cfg.getParameter<bool>("require_muon")),
+    require_2jets(cfg.getParameter<bool>("require_2jets")),
     require_4jets(cfg.getParameter<bool>("require_4jets")),
     require_6jets(cfg.getParameter<bool>("require_6jets")),
+    require_2ndjetpt(cfg.getParameter<double>("require_2ndjetpt")),
     require_4thjetpt(cfg.getParameter<double>("require_4thjetpt")),
     require_6thjetpt(cfg.getParameter<double>("require_6thjetpt")),
     require_ht(cfg.getParameter<double>("require_ht")),
