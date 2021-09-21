@@ -205,6 +205,7 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
             'ttbarht0800_2017': 8,
             'ttbarht1200_2017': 8,
             'ttbarht2500_2017': 8,
+           # 'qcdht0700_2018': 11,
             'qcdht1000_2018': 11,
             'qcdht1500_2018': 11,
             'qcdht2000_2018': 11,
@@ -246,6 +247,7 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
                 'ttbarht0800_2018': ( 3,   45000),
                 'ttbarht1200_2018': ( 3,   32500),
                 'ttbarht2500_2018': ( 3,   27500),
+             
                 }
              }
         assert dataset == 'miniaod'
@@ -305,14 +307,14 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
 ####
 
 def pick_samples(dataset, both_years=False,
-                 qcd=True, ttbar=True, all_signal=True, data=True, leptonic=False, bjet=False,
+                 qcd=True, ttbar=True, all_signal=True, data=True, leptonic=False, bjet=False, diboson=False, wjet=False,
                  span_signal=False, semileptonic=False):
 
     if span_signal:
         print 'cannot use both span and all_signal, turning off the latter'
         all_signal = False
 
-    argnames = 'qcd', 'ttbar', 'all_signal', 'span_signal', 'data', 'leptonic', 'bjet', 'semileptonic'
+    argnames = 'qcd', 'ttbar', 'all_signal', 'span_signal', 'data', 'leptonic', 'bjet', 'semileptonic', 'diboson', 'wjet'
     args = dict([(a,eval(a)) for a in argnames])
     if not set(args.values()).issubset([True, False, 'only']):
         raise ValueError('arg must be one of True, False, "only"')
@@ -334,6 +336,7 @@ def pick_samples(dataset, both_years=False,
         if args[a]:
             for yr in years:
                 samples += getattr(Samples, '%s_samples_%i' % (a, yr))
+                
     return [s for s in samples if s.has_dataset(dataset)]
 
 ####

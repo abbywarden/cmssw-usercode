@@ -192,7 +192,7 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup&) {
       // Veto events which pass HT trigger and offline HT > 1200 GeV, to keep orthogonal with apply_presel == 1
       if(satisfiesTrigger(mevent, mfv::b_HLT_PFHT1050)) return false;
 
-      bool success = false;
+     bool success = false;
       for(size_t trig : mfv::HTOrBjetOrDisplacedDijetTriggers){
 
         // skip HT trigger

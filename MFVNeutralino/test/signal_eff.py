@@ -6,14 +6,16 @@ from JMTucker.Tools import Samples
 from JMTucker.MFVNeutralino.PerSignal import PerSignal
 
 set_style()
-version = 'V27m'
+version = 'V27Lepm'
 ps = plot_saver(plot_dir('sigeff_%s' % version), size=(600,600), pdf=True, log=False)
 
-multijet = Samples.mfv_signal_samples_2017
-dijet = Samples.mfv_stopdbardbar_samples_2017
+#multijet = Samples.mfv_signal_samples_2017
+#dijet = Samples.mfv_stopdbardbar_samples_2017
+stoplb = Samples.mfv_stoplb_samples_2018
+stopld = Samples.mfv_stopld_samples_2018
 
-for sample in multijet + dijet:
-    fn = os.path.join('/uscms_data/d2/tucker/crab_dirs/MiniTree%s' % version, sample.name + '.root')
+for sample in stoplb + stopld:
+    fn = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/MiniTree%s' % version, sample.name + '.root')
     if not os.path.exists(fn):
         print 'no', sample.name
         continue
@@ -28,7 +30,12 @@ for sample in multijet + dijet:
     print '%26s: efficiency = %.3f (%.3f, %.3f)' % (sample.name, sample.y, sample.yl, sample.yh)
 
 per = PerSignal('efficiency', y_range=(0.,1.05))
-per.add(multijet, title='#tilde{N} #rightarrow tbs')
-per.add(dijet, title='#tilde{t} #rightarrow #bar{d}#bar{d}', color=ROOT.kBlue)
+
+#per.add(multijet, title='#tilde{N} #rightarrow tbs')
+#per.add(dijet, title='#tilde{t} #rightarrow #bar{d}#bar{d}', color=ROOT.kBlue)
+
+per.add(stoplb, title='#tilde{t} #rightarrow lb')
+per.add(stopld, title='#tilde{t} #rightarrow ld', color=ROOT.kBlue)
+
 per.draw(canvas=ps.c)
 ps.save('sigeff')

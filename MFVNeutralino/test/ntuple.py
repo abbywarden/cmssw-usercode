@@ -13,12 +13,16 @@ settings.keep_all = False
 settings.keep_gen = False
 if use_btag_triggers :
     settings.event_filter = 'bjets OR displaced dijet veto HT' # for new trigger studies
+elif use_Lepton_triggers :
+    settings.event_filter = 'leptons only'
+# #elif use_Lept_and_Disp_triggers :
+# #    settings.event_filter = 'leptons and displaced leptons only'
 else :
     settings.event_filter = 'jets only'
 
 process = ntuple_process(settings)
 dataset = 'miniaod' if settings.is_miniaod else 'main'
-sample_files(process, 'mfv_neu_tau001000um_M1200_2017', dataset, 1)
+sample_files(process, 'qcdht0700_2018', dataset, 1)
 max_events(process, 1000)
 cmssw_from_argv(process)
 
@@ -29,7 +33,9 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     if use_btag_triggers :
         samples = pick_samples(dataset, qcd=True, ttbar=False, all_signal=not settings.run_n_tk_seeds, data=False, bjet=True) # no data currently; no sliced ttbar since inclusive is used
     else :
-        samples = pick_samples(dataset, qcd=False, ttbar=False, data=False, all_signal=not settings.run_n_tk_seeds)
+        samples = pick_samples(dataset, qcd=False, ttbar=False, wjet=False, diboson=False, all_signal=True, data=False)
+    # else :
+    #     samples = pick_samples(dataset, qcd=False, ttbar=False, data=False, all_signal=not settings.run_n_tk_seeds)
 
     set_splitting(samples, dataset, 'ntuple', data_json=json_path('ana_2017p8.json'), limit_ttbar=True)
 

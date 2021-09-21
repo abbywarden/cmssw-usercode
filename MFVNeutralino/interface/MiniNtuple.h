@@ -77,6 +77,24 @@ namespace mfv {
     int nbtags_medium() const { return nbtags(jmt::BTagging::discriminator_min(jmt::BTagging::medium)); }
     int nbtags_loose() const { return nbtags(jmt::BTagging::discriminator_min(jmt::BTagging::loose)); }
 
+    unsigned char nlep;
+    unsigned char lep_id[50];
+    float lep_pt[50];
+    float lep_eta[50];
+    float lep_phi[50];
+   
+    unsigned char nelectrons;
+    float ele_pt[50];
+    float ele_eta[50];
+    float ele_phi[50];
+   
+    unsigned char nmuons;
+    float mu_pt[50];
+    float mu_eta[50];
+    float mu_phi[50];
+   
+   
+
     float gen_x[2];
     float gen_y[2];
     float gen_z[2];

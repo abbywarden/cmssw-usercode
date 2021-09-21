@@ -516,6 +516,7 @@ def compare_hists(ps, samples, **kwargs):
 
         name_clean = name.replace('/','_').replace('#','n')
 
+    
         hists = [dir.Get(name) for _,dir,_ in samples]
 
         is3d = all_same([issubclass(type(hist), ROOT.TH3) for hist in hists], "for name %s, some samples' histograms are TH3, and some are not" % name)

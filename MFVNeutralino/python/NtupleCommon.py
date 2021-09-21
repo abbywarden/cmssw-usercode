@@ -1,10 +1,14 @@
 from JMTucker.Tools.CMSSWTools import *
 from JMTucker.Tools.Year import year
 
-ntuple_version_ = 'V27'
+#ntuple version for ht trigger
+#ntuple_version_ = 'V28'
+#ntuple version for lepton trigger
+ntuple_version_ = 'V28Lep'
 use_btag_triggers = False
-if use_btag_triggers : 
-    ntuple_version_ += "B" # for "Btag triggers"; also includes DisplacedDijet triggers
+use_Lepton_triggers = True
+#if use_btag_triggers : 
+#    ntuple_version_ += "B" # for "Btag triggers"; also includes DisplacedDijet triggers
 ntuple_version_use = ntuple_version_ + 'm'
 dataset = 'ntuple' + ntuple_version_use.lower()
 
@@ -44,6 +48,8 @@ def prepare_vis(process, mode, settings, output_commands):
             'keep *_mfvVertexRefits_*_*',
             'keep *_mfvVertexRefitsDrop2_*_*',
             'keep *_mfvVertexRefitsDrop0_*_*',
+            'keep *_mfvVertexTracks*_*_*',
+            'keep *_mfvSelectedVerticesExtraLoose_*_*',
             ]
 
         if settings.is_mc:
@@ -247,7 +253,7 @@ def miniaod_ntuple_process(settings):
     process.load('JMTucker.MFVNeutralino.TriggerFilter_cfi')
     process.load('JMTucker.MFVNeutralino.TriggerFloats_cff')
     process.load('JMTucker.MFVNeutralino.EventProducer_cfi')
-
+    
     process.goodOfflinePrimaryVertices.input_is_miniaod = True
     process.selectedPatJets.src = 'updatedJetsMiniAOD'
     process.selectedPatMuons.src = 'slimmedMuons'
@@ -306,6 +312,8 @@ def signals_no_event_filter_modifier(sample):
     if sample.is_signal:
         if use_btag_triggers :
             magic = "event_filter = 'bjets OR displaced dijet veto HT'"
+        elif use_Lepton_triggers :
+            magic = "event_filter = 'leptons only'"
         else :
             magic = "event_filter = 'jets only'"
         to_replace = [(magic, 'event_filter = False', 'tuple template does not contain the magic string "%s"' % magic)]

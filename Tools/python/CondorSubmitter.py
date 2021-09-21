@@ -91,7 +91,7 @@ if [[ $xrdcp_problem -ne 0 ]]; then
     exit 60307
 fi
 ''' # 60307 will show up as unix code 147
-
+    #including request_memory A.Warden
     jdl_template = '''
 universe = vanilla
 Executable = __SH_FN__
@@ -99,6 +99,7 @@ arguments = $(Process)
 Output = stdout.$(Process)
 Error = stderr.$(Process)
 Log = log.$(Process)
+request_memory = 2 GB
 stream_output = false
 stream_error = false
 notification = never
@@ -154,6 +155,7 @@ def get(i): return _l[i]
         links_dir = os.path.abspath(crab_dirs_root('cs_links'))
     schedds = []
 
+
     if links_dir:
         if not os.path.isdir(links_dir):
             os.mkdir(links_dir)
@@ -164,6 +166,8 @@ def get(i): return _l[i]
                 schedd_d = os.path.join(links_dir, schedd)
                 if not os.path.isdir(schedd_d):
                     os.mkdir(schedd_d)
+                          
+       
 
     def __init__(self,
                  batch_name,
@@ -247,7 +251,9 @@ def get(i): return _l[i]
             crab_renew_proxy_if_needed()
             self.get_proxy = False
 
-        username = os.environ['USER']
+        #Have different username between UW-Madison and CERN; 
+        #username = os.environ['USER']
+        username = 'awarden'
         self.timestamp = datetime.now()
         #os.system('mkdir -p /tmp/%s' % username)
 
@@ -319,13 +325,13 @@ def get(i): return _l[i]
                 stageout_user = username # JMTBAD use getUsernameFromSiteDB?
                 if stageout_path:
                     stageout_path = '/' + stageout_path
-                stageout_path = 'root://cmseos.fnal.gov//store/user/' + stageout_user + stageout_path
+                stageout_path = 'root://cmseos.fnal.gov//store/user/' + stageout_user +  stageout_path
                 if not publish_name:
                     publish_name = batch_name.replace('/', '_')
                 stageout_path += '/$(<cs_primaryds)/' + publish_name + '/$(<cs_timestamp)/$(printf "%04i" $(($job/1000)) )'
 
-            #print 'CondorSubmitter init: stageout files are', stageout_files
-            #print 'CondorSubmitter init: stageout path is', stageout_path
+            print 'CondorSubmitter init: stageout files are', stageout_files
+            print 'CondorSubmitter init: stageout path is', stageout_path
 
             output_snippet += self.stageout_template \
                 .replace('__STAGEOUT_BNS__',  stageout_files) \

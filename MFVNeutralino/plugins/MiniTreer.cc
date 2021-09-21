@@ -135,6 +135,16 @@ void MFVMiniTreer::analyze(const edm::Event& event, const edm::EventSetup&) {
     }
   }
 
+  // //new addition: leptons; not working 
+  // for (int i=0; i < mevent->nlep(); ++i) {
+  //   //require pt? 
+  //   //do something to guarantee no taus? necessary? 
+  //   nt.lep_pt[i] = mevent->lep_pt[i];
+  //   nt.lep_eta[i] = mevent->lep_eta[i];
+  //   nt.lep_phi[i] = mevent->lep_phi[i];
+    
+  // }
+
   for (int i = 0; i < 2; ++i) {
     const double z = mevent->gen_lsp_decay[i*3+2];
     nt.gen_x[i] = mevent->gen_lsp_decay[i*3+0] - mevent->bsx_at_z(z);

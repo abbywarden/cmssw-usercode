@@ -2,8 +2,15 @@ from JMTucker.Tools.BasicAnalyzer_cfg import *
 
 is_mc = True # for blinding
 
-from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_btag_triggers
-sample_files(process, 'qcdht2000_2017' if is_mc else 'JetHT2017B', dataset, 1)
+#from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_btag_triggers
+from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_Lepton_triggers
+
+#dataset = dataset + '_noef'
+#version = version + '_NoEF'
+
+#sample_files(process, 'qcdht2000_2017' if is_mc else 'JetHT2017B', dataset, 1)
+sample_files(process, 'mfv_stoplb_tau001000um_M1000_2018', dataset, 1)
+
 tfileservice(process, 'histos.root')
 cmssw_from_argv(process)
 
@@ -30,8 +37,11 @@ nm1s = [
     ('Bs2derr',    'max_rescale_bs2derr = 1e9'),
     ]
 
+#slight modification; instead of exactly 3 or 4 tracks, switching to min 3, 4 tracks
+
 ntks = [5,3,4,7,8,9]
 nvs = [0,1,2]
+
 
 for ntk in ntks:
     if ntk == 5:
@@ -43,10 +53,11 @@ for ntk in ntks:
     elif ntk == 9:
         EX1 = 'Ntk4or5'
     else:
-        EX1 = 'Ntk%i' % ntk
+        EX1 = 'MinNtk%i' % ntk
 
     if EX1:
         EX2 = "vertex_src = 'mfvSelectedVerticesTight%s', " % EX1
+       
     if ntk == 7:
         EX3 = 'min_ntracks01 = 7, max_ntracks01 = 7, '
     if ntk == 8:
@@ -78,6 +89,7 @@ process.EX1pFullSel    = cms.Path(common * process.EX1mfvAnalysisCutsFullSel    
 process.EX1pSigReg     = cms.Path(common * process.EX1mfvAnalysisCutsSigReg     * process.EX1mfvEventHistosSigReg     * process.EX1mfvVertexHistosSigReg)
 '''.replace('EX1', EX1)
 
+  
     for name, cut in nm1s:
         evt_cut = ''
         if type(cut) == tuple:
@@ -121,9 +133,14 @@ process.EX1pSigReg     = cms.Path(common * process.EX1mfvAnalysisCutsSigReg     
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
 
-    if use_btag_triggers :
-        samples = pick_samples(dataset, qcd=True, ttbar=False, span_signal=True, data=False, bjet=True) # no data currently; no sliced ttbar since inclusive is used
+   # if use_btag_triggers :
+    #    samples = pick_samples(dataset, qcd=True, ttbar=False, span_signal=True, data=False, bjet=True) # no data currently; no sliced ttbar since inclusive is used
+     #   pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
+
+    if use_Lepton_triggers :
+        samples = pick_samples(dataset, qcd=False, ttbar=False, all_signal=True, data=False, wjet=False, diboson=False)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
+                
     else :
         samples = pick_samples(dataset)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())

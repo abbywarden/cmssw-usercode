@@ -110,6 +110,8 @@ mfvSelectedVerticesTight = mfvSelectedVertices.clone(
     )
 
 mfvSelectedVerticesTightMinNtk3 = mfvSelectedVerticesTight.clone(min_ntracks = 3)
+mfvSelectedVerticesTightMinNtk4 = mfvSelectedVerticesTight.clone(min_ntracks = 4)
+
 mfvSelectedVerticesTightNtk3    = mfvSelectedVerticesTight.clone(min_ntracks = 3, max_ntracks = 3)
 mfvSelectedVerticesTightNtk4    = mfvSelectedVerticesTight.clone(min_ntracks = 4, max_ntracks = 4)
 mfvSelectedVerticesTightNtk3or4 = mfvSelectedVerticesTight.clone(min_ntracks = 3, max_ntracks = 4)

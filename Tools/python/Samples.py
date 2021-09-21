@@ -309,6 +309,20 @@ bjet_samples_2018 = [
     MCSample('ttbar_2018',     '/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15_ext1-v2/AODSIM',  145295353, nice='t#bar{t}', color=4, syst_frac=0.15, xsec=832.),
     ]
 
+diboson_samples_2018 = [
+    MCSample('zz_2018', '/ZZ_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 1979000, nice= 'ZZ', color=32, syst_frac=0.20 , xsec=12.17),
+    MCSample('ww_2018', '/WW_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 7850000, nice = 'WW', color=32, syst_frac=0.20 , xsec=75.95),
+    MCSample('wz_2018', '/WZ_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM', 3885000, nice = 'WZ', color=32, syst_frac=0.20 , xsec=27.59),
+    ]
+
+wjet_samples_2018 = [
+    MCSample('wjetstolnu_ht0400_2018', '/WJetsToLNu_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 5932701, nice='W+Jets, 400 < H_{T} < 600 GeV', color = 803, syst_frac=0.20, xsec=57.48),
+    MCSample('wjetstolnu_ht0600_2018', '/WJetsToLNu_HT-600To800_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 19771294, nice='W+Jets, 600 < H_{T} < 800 GeV', color = 8003, syst_frac=0.20 , xsec=12.87),
+    MCSample('wjetstolnu_ht0800_2018', '/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 8402687, nice='W+Jets, 800 < H_{T} < 1200 GeV', color=803, syst_frac=0.20 , xsec=5.366),
+    MCSample('wjetstolnu_ht1200_2018', '/WJetsToLNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 7633949, nice='W+Jets, 1200 < H_{T} < 2500 GeV', color=803, syst_frac=0.20 , xsec=1.074),
+    MCSample('wjetstolnu_ht2500_2018', '/WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 3273980, nice='W+Jets, H_{T} . 2500 GeV', color=803, syst_frac=0.20 , xsec=0.008001),
+    ]
+
 
 mfv_signal_samples_2018 = [
     MCSample('mfv_neu_tau000100um_M0400_2018', '/GluinoGluinoToNeutralinoNeutralinoTo2T2B2S_M-400_CTau-100um_TuneCP2_13TeV_2018-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15-v1/AODSIM', 100000),
@@ -545,13 +559,18 @@ hnl_semilept_mu_samples_2018 = [
     # MCSample('hnl_semilept_mu_V002572_M0008_2018', '/HeavyNeutrino_lljj_M-8_V-0p00257293606605_mu_massiveAndCKM_LO_TuneCP5_madgraph-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 300000),
 ]
 
-all_signal_samples_2018 = mfv_signal_samples_2018 + mfv_stopdbardbar_samples_2018
+#all_signal_samples_2018 = mfv_signal_samples_2018 + mfv_stopdbardbar_samples_2018
 
-extra_signal_samples_2018 = mfv_stoplb_samples_2018 + mfv_stopld_samples_2018
 
-hnl_signal_samples_2018 = hnl_trilept_e_samples_2018 + hnl_trilept_mu_samples_2018 + hnl_semilept_e_samples_2018 + hnl_semilept_mu_samples_2018
+
+all_signal_samples_2018 = mfv_stoplb_samples_2018 + mfv_stopld_samples_2018
+#all_signal_samples_2018 = mfv_stopld_samples_2018
+
+#extra_signal_samples_2018 = mfv_stoplb_samples_2018 + mfv_stopld_samples_2018
+
+#hnl_signal_samples_2018 = hnl_trilept_e_samples_2018 + hnl_trilept_mu_samples_2018 + hnl_semilept_e_samples_2018 + hnl_semilept_mu_samples_2018
     
-for s in (all_signal_samples_2018 + extra_signal_samples_2018 + hnl_signal_samples_2018):
+for s in (all_signal_samples_2018):
     _set_signal_stuff(s)
 
 ########
@@ -610,6 +629,8 @@ __all__ = [
     'HToSSTobbbb_samples_2017',
     'HToSSTodddd_samples_2017',
     'qcd_samples_2018',
+    'wjet_samples_2018',
+    'diboson_samples_2018',
     'ttbar_samples_2018',
     'bjet_samples_2018',
     'mfv_signal_samples_2018',
@@ -642,11 +663,11 @@ semileptonic_samples_2018 = [eval('mfv_stop%s_tau%06ium_M%04i_2018' % (a,b,c)) f
 _alls = [
     'all_signal_samples_2017',
     'all_signal_samples_2018',
-    'extra_signal_samples_2018',
+    #'extra_signal_samples_2018',
     'span_signal_samples_2017',
     'span_signal_samples_2018',
     'semileptonic_samples_2018',
-    'hnl_trilept_samples_2018'
+   # 'hnl_trilept_samples_2018'
     ]
 __all__ += _alls
 for x in _alls:
@@ -716,6 +737,16 @@ ttbarht0600_2018.add_dataset('miniaod', '/TTJets_HT-600to800_TuneCP5_13TeV-madgr
 ttbarht0800_2018.add_dataset('miniaod', '/TTJets_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 10372802)
 ttbarht1200_2018.add_dataset('miniaod', '/TTJets_HT-1200to2500_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 2779427)
 ttbarht2500_2018.add_dataset('miniaod', '/TTJets_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM',  1451104)
+
+_adbp('miniaod', '/ZZ_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 1979000)
+_adbp('miniaod', '/WW_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 7850000)
+_adbp('miniaod', '/WZ_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM', 3885000)
+_adbp('miniaod', '/WJetsToLNu_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 5932701)
+_adbp('miniaod', '/WJetsToLNu_HT-600To800_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 19771294)
+_adbp('miniaod', '/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 8402687)
+_adbp('miniaod', '/WJetsToLNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 7633949)
+_adbp('miniaod', '/WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 3273980)
+
 
 _adbp('miniaod', '/GluinoGluinoToNeutralinoNeutralinoTo2T2B2S_M-400_CTau-100um_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', 96000)
 _adbp('miniaod', '/GluinoGluinoToNeutralinoNeutralinoTo2T2B2S_M-600_CTau-100um_TuneCP2_13TeV-pythia8/RunIIFall17MiniAODv2-PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/MINIAODSIM', 100000)
@@ -944,6 +975,20 @@ singletop_tchan_antitop_2017.add_dataset('ntuplev28bm_ntkseeds', '/ST_t-channel_
 for x in qcdht0700_2017, qcdht1000_2017, qcdht1500_2017, qcdht2000_2017, qcdht0300_2017, qcdht0500_2017, ttbar_2017, ttHbb_2017, ttZ_2017, ttZext_2017:
     x.add_dataset("ntuplev28bm_ntkseeds")
 
+
+#new ntuple addition
+
+for x in mfv_stoplb_tau001000um_M1000_2018, mfv_stoplb_tau010000um_M1000_2018, mfv_stoplb_tau100000um_M1000_2018, mfv_stoplb_tau001000um_M1200_2018, mfv_stoplb_tau010000um_M1200_2018, mfv_stoplb_tau100000um_M1200_2018, mfv_stoplb_tau001000um_M1400_2018, mfv_stoplb_tau010000um_M1400_2018, mfv_stoplb_tau100000um_M1400_2018, mfv_stoplb_tau001000um_M1600_2018, mfv_stoplb_tau010000um_M1600_2018, mfv_stoplb_tau100000um_M1600_2018, mfv_stoplb_tau001000um_M1800_2018, mfv_stoplb_tau010000um_M1800_2018, mfv_stoplb_tau100000um_M1800_2018, mfv_stoplb_tau001000um_M0200_2018, mfv_stoplb_tau010000um_M0200_2018, mfv_stoplb_tau100000um_M0200_2018, mfv_stoplb_tau001000um_M0400_2018, mfv_stoplb_tau010000um_M0400_2018, mfv_stoplb_tau100000um_M0400_2018, mfv_stoplb_tau001000um_M0600_2018, mfv_stoplb_tau010000um_M0600_2018, mfv_stoplb_tau100000um_M0600_2018, mfv_stoplb_tau001000um_M0800_2018, mfv_stoplb_tau010000um_M0800_2018, mfv_stoplb_tau100000um_M0800_2018, mfv_stopld_tau001000um_M1000_2018, mfv_stopld_tau010000um_M1000_2018, mfv_stopld_tau100000um_M1000_2018, mfv_stopld_tau001000um_M1200_2018, mfv_stopld_tau010000um_M1200_2018, mfv_stopld_tau100000um_M1200_2018, mfv_stopld_tau001000um_M1400_2018, mfv_stopld_tau010000um_M1400_2018, mfv_stopld_tau100000um_M1400_2018, mfv_stopld_tau001000um_M1600_2018, mfv_stopld_tau010000um_M1600_2018, mfv_stopld_tau100000um_M1600_2018, mfv_stopld_tau001000um_M1800_2018, mfv_stopld_tau010000um_M1800_2018, mfv_stopld_tau100000um_M1800_2018, mfv_stopld_tau001000um_M0200_2018, mfv_stopld_tau010000um_M0200_2018, mfv_stopld_tau100000um_M0200_2018, mfv_stopld_tau001000um_M0400_2018, mfv_stopld_tau010000um_M0400_2018, mfv_stopld_tau100000um_M0400_2018, mfv_stopld_tau001000um_M0600_2018, mfv_stopld_tau010000um_M0600_2018, mfv_stopld_tau100000um_M0600_2018, mfv_stopld_tau001000um_M0800_2018, mfv_stopld_tau010000um_M0800_2018, mfv_stopld_tau100000um_M0800_2018:
+    x.add_dataset("ntuplev27lepm_noef")
+
+
+for x in mfv_stoplb_tau001000um_M1000_2018, mfv_stoplb_tau010000um_M1000_2018, mfv_stoplb_tau100000um_M1000_2018, mfv_stoplb_tau001000um_M1200_2018, mfv_stoplb_tau010000um_M1200_2018, mfv_stoplb_tau100000um_M1200_2018, mfv_stoplb_tau001000um_M1400_2018, mfv_stoplb_tau010000um_M1400_2018, mfv_stoplb_tau100000um_M1400_2018, mfv_stoplb_tau001000um_M1600_2018, mfv_stoplb_tau010000um_M1600_2018, mfv_stoplb_tau100000um_M1600_2018, mfv_stoplb_tau001000um_M1800_2018, mfv_stoplb_tau010000um_M1800_2018, mfv_stoplb_tau100000um_M1800_2018, mfv_stoplb_tau001000um_M0200_2018, mfv_stoplb_tau010000um_M0200_2018, mfv_stoplb_tau100000um_M0200_2018, mfv_stoplb_tau001000um_M0400_2018, mfv_stoplb_tau010000um_M0400_2018, mfv_stoplb_tau100000um_M0400_2018, mfv_stoplb_tau001000um_M0600_2018, mfv_stoplb_tau010000um_M0600_2018, mfv_stoplb_tau100000um_M0600_2018, mfv_stoplb_tau001000um_M0800_2018, mfv_stoplb_tau010000um_M0800_2018, mfv_stoplb_tau100000um_M0800_2018, mfv_stopld_tau001000um_M1000_2018, mfv_stopld_tau010000um_M1000_2018, mfv_stopld_tau100000um_M1000_2018, mfv_stopld_tau001000um_M1200_2018, mfv_stopld_tau010000um_M1200_2018, mfv_stopld_tau100000um_M1200_2018, mfv_stopld_tau001000um_M1400_2018, mfv_stopld_tau010000um_M1400_2018, mfv_stopld_tau100000um_M1400_2018, mfv_stopld_tau001000um_M1600_2018, mfv_stopld_tau010000um_M1600_2018, mfv_stopld_tau100000um_M1600_2018, mfv_stopld_tau001000um_M1800_2018, mfv_stopld_tau010000um_M1800_2018, mfv_stopld_tau100000um_M1800_2018, mfv_stopld_tau001000um_M0200_2018, mfv_stopld_tau010000um_M0200_2018, mfv_stopld_tau100000um_M0200_2018, mfv_stopld_tau001000um_M0400_2018, mfv_stopld_tau010000um_M0400_2018, mfv_stopld_tau100000um_M0400_2018, mfv_stopld_tau001000um_M0600_2018, mfv_stopld_tau010000um_M0600_2018, mfv_stopld_tau100000um_M0600_2018, mfv_stopld_tau001000um_M0800_2018, mfv_stopld_tau010000um_M0800_2018, mfv_stopld_tau100000um_M0800_2018:
+    x.add_dataset("ntuplev27lepm")
+
+
+for x in qcdht0700_2018, qcdht1000_2018, qcdht1500_2018, qcdht2000_2018, ttbarht0600_2018, ttbarht0800_2018, ttbarht1200_2018, ttbarht2500_2018, zz_2018, ww_2018, wz_2018, wjetstolnu_ht0400_2018, wjetstolnu_ht0600_2018, wjetstolnu_ht0800_2018, wjetstolnu_ht1200_2018, wjetstolnu_ht2500_2018, mfv_stoplb_tau001000um_M1000_2018, mfv_stoplb_tau010000um_M1000_2018, mfv_stoplb_tau100000um_M1000_2018, mfv_stoplb_tau001000um_M1200_2018, mfv_stoplb_tau010000um_M1200_2018, mfv_stoplb_tau100000um_M1200_2018, mfv_stoplb_tau001000um_M1400_2018, mfv_stoplb_tau010000um_M1400_2018, mfv_stoplb_tau100000um_M1400_2018, mfv_stoplb_tau001000um_M1600_2018, mfv_stoplb_tau010000um_M1600_2018, mfv_stoplb_tau100000um_M1600_2018, mfv_stoplb_tau001000um_M1800_2018, mfv_stoplb_tau010000um_M1800_2018, mfv_stoplb_tau100000um_M1800_2018, mfv_stoplb_tau001000um_M0200_2018, mfv_stoplb_tau010000um_M0200_2018, mfv_stoplb_tau100000um_M0200_2018, mfv_stoplb_tau001000um_M0400_2018, mfv_stoplb_tau010000um_M0400_2018, mfv_stoplb_tau100000um_M0400_2018, mfv_stoplb_tau001000um_M0600_2018, mfv_stoplb_tau010000um_M0600_2018, mfv_stoplb_tau100000um_M0600_2018, mfv_stoplb_tau001000um_M0800_2018, mfv_stoplb_tau010000um_M0800_2018, mfv_stoplb_tau100000um_M0800_2018, mfv_stopld_tau001000um_M1000_2018, mfv_stopld_tau010000um_M1000_2018, mfv_stopld_tau100000um_M1000_2018, mfv_stopld_tau001000um_M1200_2018, mfv_stopld_tau010000um_M1200_2018, mfv_stopld_tau100000um_M1200_2018, mfv_stopld_tau001000um_M1400_2018, mfv_stopld_tau010000um_M1400_2018, mfv_stopld_tau100000um_M1400_2018, mfv_stopld_tau001000um_M1600_2018, mfv_stopld_tau010000um_M1600_2018, mfv_stopld_tau100000um_M1600_2018, mfv_stopld_tau001000um_M1800_2018, mfv_stopld_tau010000um_M1800_2018, mfv_stopld_tau100000um_M1800_2018, mfv_stopld_tau001000um_M0200_2018, mfv_stopld_tau010000um_M0200_2018, mfv_stopld_tau100000um_M0200_2018, mfv_stopld_tau001000um_M0400_2018, mfv_stopld_tau010000um_M0400_2018, mfv_stopld_tau100000um_M0400_2018, mfv_stopld_tau001000um_M0600_2018, mfv_stopld_tau010000um_M0600_2018, mfv_stopld_tau100000um_M0600_2018, mfv_stopld_tau001000um_M0800_2018, mfv_stopld_tau010000um_M0800_2018, mfv_stopld_tau100000um_M0800_2018:
+    x.add_dataset("ntuplev28lepm")
+
 ########
 # automatic condor declarations for ntuples
 ########
@@ -966,26 +1011,27 @@ condorable = {
                                          mfv_neu_tau000100um_M0400_2018, mfv_neu_tau000100um_M0600_2018, mfv_neu_tau000100um_M0800_2018, mfv_neu_tau000100um_M1200_2018, mfv_neu_tau000100um_M1600_2018, mfv_neu_tau000100um_M3000_2018, mfv_neu_tau000300um_M0400_2018, mfv_neu_tau000300um_M0600_2018, mfv_neu_tau000300um_M0800_2018, mfv_neu_tau000300um_M1200_2018, mfv_neu_tau000300um_M1600_2018, mfv_neu_tau000300um_M3000_2018, mfv_neu_tau001000um_M0400_2018, mfv_neu_tau001000um_M0600_2018, mfv_neu_tau001000um_M1200_2018, mfv_neu_tau001000um_M1600_2018, mfv_neu_tau001000um_M3000_2018, mfv_neu_tau010000um_M0400_2018, mfv_neu_tau010000um_M0600_2018, mfv_neu_tau010000um_M0800_2018, mfv_neu_tau010000um_M1200_2018, mfv_neu_tau010000um_M1600_2018, mfv_neu_tau010000um_M3000_2018, mfv_neu_tau030000um_M0400_2018, mfv_neu_tau030000um_M0600_2018, mfv_neu_tau030000um_M0800_2018, mfv_neu_tau030000um_M1200_2018, mfv_neu_tau030000um_M1600_2018, mfv_neu_tau030000um_M3000_2018, mfv_stopdbardbar_tau000100um_M0400_2018, mfv_stopdbardbar_tau000100um_M0600_2018, mfv_stopdbardbar_tau000100um_M0800_2018, mfv_stopdbardbar_tau000100um_M1200_2018, mfv_stopdbardbar_tau000100um_M3000_2018, mfv_stopdbardbar_tau000300um_M0600_2018, mfv_stopdbardbar_tau000300um_M0800_2018, mfv_stopdbardbar_tau000300um_M1200_2018, mfv_stopdbardbar_tau000300um_M3000_2018, mfv_stopdbardbar_tau001000um_M0400_2018, mfv_stopdbardbar_tau001000um_M0600_2018, mfv_stopdbardbar_tau001000um_M0800_2018, mfv_stopdbardbar_tau001000um_M1200_2018, mfv_stopdbardbar_tau001000um_M1600_2018, mfv_stopdbardbar_tau001000um_M3000_2018, mfv_stopdbardbar_tau010000um_M0400_2018, mfv_stopdbardbar_tau010000um_M0600_2018, mfv_stopdbardbar_tau010000um_M0800_2018, mfv_stopdbardbar_tau010000um_M1600_2018, mfv_stopdbardbar_tau030000um_M0400_2018, mfv_stopdbardbar_tau030000um_M0600_2018, mfv_stopdbardbar_tau030000um_M0800_2018, mfv_stopdbardbar_tau030000um_M1200_2018, mfv_stopdbardbar_tau030000um_M3000_2018],
         },
     "T1_US_FNAL_Disk": {
-        "miniaod": [qcdht1500_2017, qcdht2000_2017, dyjetstollM10_2017, qcdmupt15_2017, qcdht0300_2018, qcdht0700_2018, ttbarht0800_2018,
+        "miniaod": [qcdht1500_2017, qcdht2000_2017, dyjetstollM10_2017, qcdmupt15_2017, qcdht0300_2018, ttbarht0800_2018,
                     JetHT2017B, JetHT2017D, JetHT2017F, JetHT2018A, JetHT2018B, JetHT2018D,
+                    zz_2018, wjetstolnu_ht0600_2018,
                     mfv_neu_tau000100um_M0600_2017, mfv_neu_tau000300um_M0400_2017, mfv_neu_tau000300um_M0800_2017, mfv_neu_tau000300um_M3000_2017, mfv_neu_tau010000um_M0400_2017, mfv_neu_tau010000um_M0800_2017, mfv_neu_tau010000um_M1600_2017, mfv_neu_tau030000um_M0800_2017, mfv_neu_tau030000um_M3000_2017, mfv_stopdbardbar_tau000100um_M0600_2017, mfv_stopdbardbar_tau000100um_M1600_2017, mfv_stopdbardbar_tau000300um_M1200_2017, mfv_stopdbardbar_tau001000um_M0400_2017, mfv_stopdbardbar_tau001000um_M1200_2017, mfv_stopdbardbar_tau001000um_M3000_2017, mfv_stopdbardbar_tau010000um_M0800_2017, mfv_stopdbardbar_tau010000um_M3000_2017, mfv_stopdbardbar_tau030000um_M1200_2017, mfv_stopdbardbar_tau030000um_M1600_2017,
 
-                    mfv_neu_tau001000um_M0800_2018, mfv_stopdbardbar_tau000100um_M1600_2018, mfv_stopdbardbar_tau000300um_M0400_2018, mfv_stopdbardbar_tau000300um_M1600_2018, mfv_stopdbardbar_tau010000um_M1200_2018, mfv_stopdbardbar_tau010000um_M3000_2018, mfv_stopdbardbar_tau030000um_M1600_2018, SingleMuon2017F, mfv_stoplb_tau001000um_M1000_2018, mfv_stoplb_tau010000um_M1000_2018, mfv_stoplb_tau100000um_M1000_2018, mfv_stoplb_tau001000um_M1200_2018, mfv_stoplb_tau010000um_M1200_2018, mfv_stoplb_tau100000um_M1200_2018, mfv_stoplb_tau001000um_M1400_2018, mfv_stoplb_tau010000um_M1400_2018, mfv_stoplb_tau100000um_M1400_2018, mfv_stoplb_tau001000um_M1600_2018, mfv_stoplb_tau100000um_M1600_2018, mfv_stoplb_tau001000um_M1800_2018, mfv_stoplb_tau010000um_M0200_2018, mfv_stoplb_tau001000um_M0400_2018, mfv_stoplb_tau010000um_M0400_2018, mfv_stoplb_tau001000um_M0600_2018, mfv_stoplb_tau100000um_M0600_2018, mfv_stoplb_tau010000um_M0800_2018, mfv_stopld_tau010000um_M1000_2018, mfv_stopld_tau001000um_M1000_2018, mfv_stopld_tau001000um_M1200_2018, mfv_stopld_tau100000um_M1400_2018, mfv_stopld_tau010000um_M1400_2018, mfv_stopld_tau100000um_M1800_2018, mfv_stopld_tau010000um_M1800_2018, mfv_stopld_tau100000um_M0200_2018, mfv_stopld_tau100000um_M0400_2018, mfv_stopld_tau010000um_M0400_2018, mfv_stopld_tau010000um_M0600_2018, mfv_stopld_tau001000um_M0600_2018, mfv_stopld_tau001000um_M0800_2018, mfv_stopld_tau010000um_M0800_2018, ggHToSSTobbbb_tau10mm_M15_2017, ggHToSSTodddd_tau1mm_M15_2017, ggHToSSTodddd_tau1000mm_M40_2017],
+                    mfv_neu_tau001000um_M0800_2018, mfv_stopdbardbar_tau000100um_M1600_2018, mfv_stopdbardbar_tau000300um_M0400_2018, mfv_stopdbardbar_tau000300um_M1600_2018, mfv_stopdbardbar_tau010000um_M1200_2018, mfv_stopdbardbar_tau010000um_M3000_2018, mfv_stopdbardbar_tau030000um_M1600_2018, SingleMuon2017F, mfv_stoplb_tau001000um_M1000_2018, mfv_stoplb_tau010000um_M1000_2018, mfv_stoplb_tau100000um_M1000_2018, mfv_stoplb_tau001000um_M1200_2018, mfv_stoplb_tau010000um_M1200_2018, mfv_stoplb_tau100000um_M1200_2018, mfv_stoplb_tau001000um_M1400_2018, mfv_stoplb_tau010000um_M1400_2018, mfv_stoplb_tau100000um_M1400_2018, mfv_stoplb_tau001000um_M1600_2018, mfv_stoplb_tau100000um_M1600_2018, mfv_stoplb_tau001000um_M1800_2018, mfv_stoplb_tau010000um_M0200_2018, mfv_stoplb_tau001000um_M0400_2018, mfv_stoplb_tau010000um_M0400_2018, mfv_stoplb_tau100000um_M0600_2018, mfv_stoplb_tau010000um_M0800_2018, mfv_stopld_tau010000um_M1000_2018, mfv_stopld_tau001000um_M1000_2018, mfv_stopld_tau001000um_M1200_2018, mfv_stopld_tau100000um_M1400_2018, mfv_stopld_tau010000um_M1400_2018, mfv_stopld_tau100000um_M1800_2018, mfv_stopld_tau010000um_M1800_2018, mfv_stopld_tau100000um_M0200_2018, mfv_stopld_tau100000um_M0400_2018, mfv_stopld_tau010000um_M0400_2018, mfv_stopld_tau010000um_M0600_2018, mfv_stopld_tau001000um_M0600_2018, mfv_stopld_tau001000um_M0800_2018, mfv_stopld_tau010000um_M0800_2018, ggHToSSTobbbb_tau10mm_M15_2017, ggHToSSTodddd_tau1mm_M15_2017, ggHToSSTodddd_tau1000mm_M40_2017],
         },
     "T2_DE_DESY": {
         "miniaod": [JetHT2017C, JetHT2017E, JetHT2018C, SingleMuon2017D],
         },
     "T2_US_MIT": {
-        "miniaod": [qcdht0500_2018, ttHbb_2017, mfv_stopld_tau010000um_M1600_2018, mfv_stopld_tau100000um_M0600_2018, ggHToSSTobbbb_tau1000mm_M40_2017, ggHToSSTobbbb_tau100mm_M40_2017, ggHToSSTodddd_tau1000mm_M15_2017, ggHToSSTodddd_tau1mm_M55_2017],
+        "miniaod": [ww_2018, wjetstolnu_ht0400_2018, qcdht0500_2018, ttHbb_2017, mfv_stopld_tau010000um_M1600_2018, mfv_stopld_tau100000um_M0600_2018, ggHToSSTobbbb_tau1000mm_M40_2017, ggHToSSTobbbb_tau100mm_M40_2017, ggHToSSTodddd_tau1000mm_M15_2017, ggHToSSTodddd_tau1mm_M55_2017],
         },
     "T2_US_Florida": {
-        "miniaod": [ttbar_2018, ttZext_2017, qcdht0700_2017, qcdht0500_2017, mfv_stoplb_tau100000um_M0400_2018, mfv_stopld_tau100000um_M1600_2018, mfv_stopld_tau001000um_M1800_2018, mfv_stopld_tau001000um_M0200_2018, mfv_stopld_tau100000um_M0800_2018],
+        "miniaod": [wjetstolnu_ht0800_2018, ttbar_2018, ttZext_2017, qcdht0700_2017, qcdht0500_2017, mfv_stoplb_tau100000um_M0400_2018, mfv_stopld_tau100000um_M1600_2018, mfv_stopld_tau001000um_M1800_2018, mfv_stopld_tau001000um_M0200_2018, mfv_stopld_tau100000um_M0800_2018],
         },
     "T2_US_Nebraska": {
-        "miniaod": [SingleMuon2017C, ttbar_2017, qcdht0300_2017, mfv_neu_tau030000um_M1600_2017, mfv_stoplb_tau010000um_M1600_2018, mfv_stoplb_tau010000um_M1800_2018, mfv_stoplb_tau100000um_M1800_2018, mfv_stoplb_tau001000um_M0200_2018, mfv_stoplb_tau100000um_M0200_2018, mfv_stoplb_tau010000um_M0600_2018, mfv_stopld_tau100000um_M1200_2018, mfv_stopld_tau001000um_M1400_2018, mfv_stopld_tau001000um_M1600_2018, mfv_stopld_tau010000um_M0200_2018, mfv_stopld_tau001000um_M0400_2018, ggHToSSTodddd_tau10mm_M40_2017, ggHToSSTodddd_tau1000mm_M55_2017, ggHToSSTodddd_tau100mm_M55_2017],
+        "miniaod": [SingleMuon2017C, wjetstolnu_ht2500_2018, ttbar_2017, qcdht0300_2017, mfv_neu_tau030000um_M1600_2017, mfv_stoplb_tau010000um_M1600_2018, mfv_stoplb_tau010000um_M1800_2018, mfv_stoplb_tau100000um_M1800_2018, mfv_stoplb_tau001000um_M0200_2018, mfv_stoplb_tau100000um_M0200_2018, mfv_stoplb_tau010000um_M0600_2018, mfv_stopld_tau100000um_M1200_2018, mfv_stopld_tau001000um_M1400_2018, mfv_stopld_tau001000um_M1600_2018, mfv_stopld_tau010000um_M0200_2018, mfv_stopld_tau001000um_M0400_2018, ggHToSSTodddd_tau10mm_M40_2017, ggHToSSTodddd_tau1000mm_M55_2017, ggHToSSTodddd_tau100mm_M55_2017],
         },
     "T2_US_Purdue": {
-        "miniaod": [mfv_stopdbardbar_tau000100um_M1200_2017, mfv_stopld_tau010000um_M1200_2018, ggHToSSTobbbb_tau1000mm_M15_2017, ggHToSSTobbbb_tau100mm_M15_2017, ggHToSSTobbbb_tau1mm_M15_2017, ggHToSSTobbbb_tau10mm_M40_2017, ggHToSSTobbbb_tau1mm_M40_2017, ggHToSSTobbbb_tau1000mm_M55_2017, ggHToSSTobbbb_tau100mm_M55_2017, ggHToSSTobbbb_tau1mm_M55_2017, ggHToSSTodddd_tau100mm_M15_2017, ggHToSSTodddd_tau10mm_M15_2017, ggHToSSTodddd_tau100mm_M40_2017, ggHToSSTodddd_tau1mm_M40_2017, ggHToSSTodddd_tau10mm_M55_2017],
+        "miniaod": [wz_2018, qcdht0700_2018, wjetstolnu_ht1200_2018, mfv_stopdbardbar_tau000100um_M1200_2017,  mfv_stoplb_tau001000um_M0600_2018, mfv_stopld_tau010000um_M1200_2018, ggHToSSTobbbb_tau1000mm_M15_2017, ggHToSSTobbbb_tau100mm_M15_2017, ggHToSSTobbbb_tau1mm_M15_2017, ggHToSSTobbbb_tau10mm_M40_2017, ggHToSSTobbbb_tau1mm_M40_2017, ggHToSSTobbbb_tau1000mm_M55_2017, ggHToSSTobbbb_tau100mm_M55_2017, ggHToSSTobbbb_tau1mm_M55_2017, ggHToSSTodddd_tau100mm_M15_2017, ggHToSSTodddd_tau10mm_M15_2017, ggHToSSTodddd_tau100mm_M40_2017, ggHToSSTodddd_tau1mm_M40_2017, ggHToSSTodddd_tau10mm_M55_2017],
         },
     "T2_US_Wisconsin" : {
         "miniaod": [ttZ_2017, mfv_stopdbardbar_tau000300um_M0600_2017, ggHToSSTobbbb_tau10mm_M55_2017, mfv_stoplb_tau001000um_M0800_2018, mfv_stoplb_tau100000um_M0800_2018, mfv_stopld_tau100000um_M1000_2018],
@@ -1005,7 +1051,7 @@ for site, d in condorable.iteritems():
             s.datasets[ds].xrootd_url = xrootd_sites[site]
 
 # can only run signal ntuples via condor where we can split by nevents, so require they're all reachable
-for s in mfv_signal_samples_2017 + mfv_signal_samples_2018 + mfv_stopdbardbar_samples_2017 + mfv_stopdbardbar_samples_2018 + mfv_stoplb_samples_2018 + mfv_stopld_samples_2018:
+for s in mfv_signal_samples_2017 + mfv_signal_samples_2018 + mfv_stopdbardbar_samples_2017 + mfv_stopdbardbar_samples_2018+ mfv_stoplb_samples_2018 + mfv_stopld_samples_2018:
     if s not in _seen:
         raise ValueError('%s not in condorable dict' % s.name)
 
