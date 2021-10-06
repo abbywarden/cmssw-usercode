@@ -27,6 +27,8 @@
 #include "JMTucker/Tools/interface/TriggerHelper.h"
 #include "JMTucker/Tools/interface/Utilities.h"
 
+
+
 class MFVEventProducer : public edm::EDProducer {
 public:
   explicit MFVEventProducer(const edm::ParameterSet&);
@@ -49,27 +51,27 @@ private:
   const edm::EDGetTokenT<double> rho_token;
   const bool use_met;
   const edm::EDGetTokenT<pat::METCollection> met_token;
+  
   const edm::EDGetTokenT<pat::MuonCollection> muons_token;
   const edm::EDGetTokenT<pat::ElectronCollection> electrons_token;
+  
   const bool use_vertex_seed_tracks;
   const edm::EDGetTokenT<reco::TrackCollection> vertex_seed_tracks_token;
-  std::vector<StringCutObjectSelector<pat::Muon>> muon_selectors;
-  std::vector<StringCutObjectSelector<pat::Electron>> electron_EB_selectors;
-  std::vector<StringCutObjectSelector<pat::Electron>> electron_EE_selectors;
+
   EffectiveAreas electron_effective_areas;
   std::vector<edm::EDGetTokenT<double>> misc_tokens;
   const bool lightweight;
   LHAPDF::PDF* lhapdf;
 };
 
-namespace {
-  template <typename T>
-  std::vector<StringCutObjectSelector<T>> cuts2selectors(const std::vector<std::string>& cuts) {
-    std::vector<StringCutObjectSelector<T>> ret;
-    for (auto cut : cuts) ret.push_back(StringCutObjectSelector<T>(cut));
-    return ret;
-  }
-}
+// namespace {
+//   template <typename T>
+//   std::vector<StringCutObjectSelector<T>> cuts2selectors(const std::vector<std::string>& cuts) {
+//     std::vector<StringCutObjectSelector<T>> ret;
+//     for (auto cut : cuts) ret.push_back(StringCutObjectSelector<T>(cut));
+//     return ret;
+//   }
+// }
 
 MFVEventProducer::MFVEventProducer(const edm::ParameterSet& cfg)
   : input_is_miniaod(cfg.getParameter<bool>("input_is_miniaod")),
@@ -88,13 +90,13 @@ MFVEventProducer::MFVEventProducer(const edm::ParameterSet& cfg)
     rho_token(consumes<double>(cfg.getParameter<edm::InputTag>("rho_src"))),
     use_met(cfg.getParameter<edm::InputTag>("met_src").label() != ""),
     met_token(consumes<pat::METCollection>(cfg.getParameter<edm::InputTag>("met_src"))),
+    
     muons_token(consumes<pat::MuonCollection>(cfg.getParameter<edm::InputTag>("muons_src"))),
     electrons_token(consumes<pat::ElectronCollection>(cfg.getParameter<edm::InputTag>("electrons_src"))),
+    
     use_vertex_seed_tracks(cfg.getParameter<edm::InputTag>("vertex_seed_tracks_src").label() != ""),
     vertex_seed_tracks_token(consumes<reco::TrackCollection>(cfg.getParameter<edm::InputTag>("vertex_seed_tracks_src"))),
-    muon_selectors(cuts2selectors<pat::Muon>(cfg.getParameter<std::vector<std::string>>("muon_cuts"))),
-    electron_EB_selectors(cuts2selectors<pat::Electron>(cfg.getParameter<std::vector<std::string>>("electron_EB_cuts"))),
-    electron_EE_selectors(cuts2selectors<pat::Electron>(cfg.getParameter<std::vector<std::string>>("electron_EE_cuts"))),
+    
     electron_effective_areas(cfg.getParameter<edm::FileInPath>("electron_effective_areas").fullPath()),
     lightweight(cfg.getParameter<bool>("lightweight"))
 {
@@ -102,10 +104,6 @@ MFVEventProducer::MFVEventProducer(const edm::ParameterSet& cfg)
     misc_tokens.push_back(consumes<double>(src));
 
   produces<MFVEvent>();
-  assert(muon_selectors.size() == MFVEvent::n_lep_mu_idrequired);
-  assert(MFVEvent::n_lep_mu_idrequired == MFVEvent::n_lep_mu_idbits);
-  assert(electron_EB_selectors.size() == electron_EE_selectors.size());
-  assert(electron_EB_selectors.size() == MFVEvent::n_lep_el_idrequired);
 
   // setup LHAPDF for scale uncertainties
   lhapdf = mfv::setupLHAPDF();
@@ -434,49 +432,45 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
     }
   }
 
-  //////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
   edm::Handle<pat::MuonCollection> muons;
   event.getByToken(muons_token, muons);
-
+     
   for (const pat::Muon& muon : *muons) {
-    MFVEvent::lep_id_t id = 0;
-    for (int i = 0, ie = muon_selectors.size(); i < ie; ++i)
-      if (muon_selectors[i](muon))
-        id |= 1 << i;
+    
+    if (muon.passed(reco::Muon::CutBasedIdMedium)) {
 
-    const float iso = (muon.pfIsolationR04().sumChargedHadronPt + std::max(0., muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt - 0.5*muon.pfIsolationR04().sumPUPt))/muon.pt();
+      // std::cout << "found muon that passed med. cut based id" << std::endl;
+      // std::cout << " -----------------------------------------" << std::endl;
 
-    mevent->lep_push_back(MFVEvent::encode_mu_id(id), muon, *muon.bestTrack(), iso, triggerfloats->hltmuons, beamspot->position(muon.bestTrack()->vz()), primary_vertex_position);
+      // possibly add pt requirement + eta requirement ? 
+      mevent->muon_push_back(muon,
+			     *muon.bestTrack(), 
+			     beamspot->position(muon.bestTrack()->vz()),
+			     primary_vertex_position);
+    }
   }
+  
 
   edm::Handle<pat::ElectronCollection> electrons;
   event.getByToken(electrons_token, electrons);
-  
+
   for (const pat::Electron& electron : *electrons) {
-    if (!electron.isEB() && !electron.isEE()) continue;
-    auto electron_selectors = electron.isEB() ? electron_EB_selectors : electron_EE_selectors;
 
-    MFVEvent::lep_id_t id = 0;
-    for (int i = 0, ie = electron_selectors.size(); i < ie; ++i) {
-      if (i == MFVEvent::lep_el_hovere) continue; // skip for below code
-      if (electron_selectors[i](electron))
-        id |= 1 << i;
+    bool passloose = electron.electronID("cutBasedElectronID-Fall17-94X-V2-loose");
+    if (passloose) {
+
+      // std::cout << "found electron that passed loose cut based id" << std::endl;
+      // std::cout << " -----------------------------------------" << std::endl;
+
+      mevent->electron_push_back(electron,
+				 *electron.gsfTrack(),
+				 beamspot->position(electron.gsfTrack()->vz()),
+				 primary_vertex_position);
     }
-
-    if (electron.hadronicOverEm() < 0.05 + (electron.isEB() ? 1.12 + 0.0368 * *rho : 0.5 + 0.201 * *rho) / electron.superCluster()->energy())
-      id |= 1 << MFVEvent::lep_el_hovere;
-    if (electron.passConversionVeto())
-      id |= 1 << MFVEvent::lep_el_conversionveto;
-    if (electron.closestCtfTrackRef().isNonnull())
-      id |= 1 << MFVEvent::lep_el_ctftrack;
-
-    const auto pfIso = electron.pfIsolationVariables();
-    const float eA = electron_effective_areas.getEffectiveArea(fabs(electron.superCluster()->eta()));
-    const float iso = pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - *rho*eA) / electron.pt();
-
-    mevent->lep_push_back(MFVEvent::encode_el_id(id), electron, *electron.gsfTrack(), iso, triggerfloats->hltelectrons, beamspot->position(electron.gsfTrack()->vz()), primary_vertex_position);
   }
+  
 
   //////////////////////////////////////////////////////////////////////
 
@@ -565,22 +559,32 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
     mevent->displaced_jet_hlt_energy.clear();
     mevent->metx = 0;
     mevent->mety = 0;
-    mevent->lep_id_.clear();
-    mevent->lep_qpt.clear();
-    mevent->lep_eta.clear();
-    mevent->lep_phi.clear();
-    mevent->lep_dxy.clear();
-    mevent->lep_dxybs.clear();
-    mevent->lep_dz.clear();
-    mevent->lep_pt_err.clear();
-    mevent->lep_eta_err.clear();
-    mevent->lep_phi_err.clear();
-    mevent->lep_dxy_err.clear();
-    mevent->lep_dz_err.clear();
-    mevent->lep_iso.clear();
-    mevent->lep_hlt_pt.clear();
-    mevent->lep_hlt_eta.clear();
-    mevent->lep_hlt_phi.clear();
+
+    mevent->muon_pt.clear();
+    mevent->muon_eta.clear();
+    mevent->muon_phi.clear();
+    mevent->muon_pt_err.clear();
+    mevent->muon_eta_err.clear();
+    mevent->muon_phi_err.clear();
+    mevent->muon_dxy.clear();
+    mevent->muon_dz.clear();
+    mevent->muon_dxybs.clear();
+    mevent->muon_dxyerr.clear();
+    mevent->muon_dzerr.clear();
+
+    mevent->electron_pt.clear();
+    mevent->electron_eta.clear();
+    mevent->electron_phi.clear();
+    mevent->electron_pt_err.clear();
+    mevent->electron_eta_err.clear();
+    mevent->electron_phi_err.clear();
+    mevent->electron_dxy.clear();
+    mevent->electron_dz.clear();
+    mevent->electron_dxybs.clear();
+    mevent->electron_dxyerr.clear();
+    mevent->electron_dzerr.clear();
+    
+    
     mevent->vertex_seed_track_chi2dof.clear();
     mevent->vertex_seed_track_qpt.clear();
     mevent->vertex_seed_track_eta.clear();

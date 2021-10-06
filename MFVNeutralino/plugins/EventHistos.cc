@@ -105,17 +105,24 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_bjet_energy;
   TH1F* h_bjet_pairdphi;
 
-  TH1F* h_nmuons[2];
-  TH1F* h_nelectrons[2];
-  TH1F* h_nleptons[2];
+  
+  TH1F* h_nmuons;
+  TH1F* h_nelectrons;
+  TH1F* h_nleptons;
 
-  TH1F* h_leptons_pt[2][2];
-  TH1F* h_leptons_eta[2][2];
-  TH1F* h_leptons_phi[2][2];
-  TH1F* h_leptons_dxy[2][2];
-  TH1F* h_leptons_dxybs[2][2];
-  TH1F* h_leptons_dz[2][2];
-  TH1F* h_leptons_iso[2][2];
+  TH1F* h_muon_pt;
+  TH1F* h_muon_eta;
+  TH1F* h_muon_phi;
+  TH1F* h_muon_dxy;
+  TH1F* h_muon_dxybs;
+  TH1F* h_muon_dz;
+
+  TH1F* h_electron_pt;
+  TH1F* h_electron_eta;
+  TH1F* h_electron_phi;
+  TH1F* h_electron_dxy;
+  TH1F* h_electron_dxybs;
+  TH1F* h_electron_dz;
 
   TH1F* h_n_vertex_seed_tracks;
   TH1F* h_vertex_seed_track_chi2dof;
@@ -254,7 +261,7 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   h_metphi = fs->make<TH1F>("h_metphi", ";MET #phi (rad);events/.063", 100, -3.1416, 3.1416);
 
   const char* lmt_ex[3] = {"loose", "medium", "tight"};
-  const char* lep_kind[2] = {"muon", "electron"};
+  // const char* lep_kind[2] = {"muon", "electron"};
   for (int i = 0; i < 3; ++i) {
     h_nbtags[i] = fs->make<TH1F>(TString::Format("h_nbtags_%i", i), TString::Format(";# of %s b tags;events", lmt_ex[i]), 10, 0, 10);
     h_nbtags_v_bquark_code[i] = fs->make<TH2F>(TString::Format("h_nbtags_v_bquark_code_%i", i), TString::Format(";bquark code;# of %s b tags", lmt_ex[i]), 3, 0, 3, 3, 0, 3);
@@ -267,21 +274,26 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   h_bjet_energy = fs->make<TH1F>("h_bjet_energy", ";bjets E (GeV);bjets/10 GeV", 150, 0, 1500);
   h_bjet_pairdphi = fs->make<TH1F>("h_bjet_pairdphi", ";bjet pair #Delta#phi (rad);bjet pairs/.063", 100, -3.1416, 3.1416);
 
-  const char* lep_ex[2] = {"any", "selected"};
-  for (int i = 0; i < 2; ++i) {
-    h_nmuons[i] = fs->make<TH1F>(TString::Format("h_nmuons_%s", lep_ex[i]), TString::Format(";# of %s muons;events", lep_ex[i]), 5, 0, 5);
-    h_nelectrons[i] = fs->make<TH1F>(TString::Format("h_nelectrons_%s", lep_ex[i]), TString::Format(";# of %s electrons;events", lep_ex[i]), 5, 0, 5);
-    h_nleptons[i] = fs->make<TH1F>(TString::Format("h_nleptons_%s", lep_ex[i]), TString::Format(";# of %s leptons;events", lep_ex[i]), 5, 0, 5);
-    for (int j = 0; j < 2; ++j) {
-      h_leptons_pt   [j][i] = fs->make<TH1F>(TString::Format("h_%s_%s_pt",    lep_kind[j], lep_ex[i]), TString::Format(";%s %s p_{T} (GeV);%ss/5 GeV",     lep_ex[i], lep_kind[j], lep_kind[j]), 40, 0, 200);
-      h_leptons_eta  [j][i] = fs->make<TH1F>(TString::Format("h_%s_%s_eta",   lep_kind[j], lep_ex[i]), TString::Format(";%s %ss #eta (rad);%ss/.104",      lep_ex[i], lep_kind[j], lep_kind[j]), 50, -2.6, 2.6);
-      h_leptons_phi  [j][i] = fs->make<TH1F>(TString::Format("h_%s_%s_phi",   lep_kind[j], lep_ex[i]), TString::Format(";%s %ss #phi (rad);%ss/.126",      lep_ex[i], lep_kind[j], lep_kind[j]), 50, -3.1416, 3.1416);
-      h_leptons_dxy  [j][i] = fs->make<TH1F>(TString::Format("h_%s_%s_dxy",   lep_kind[j], lep_ex[i]), TString::Format(";%s %ss dxy(PV) (cm);%ss/50 #mum", lep_ex[i], lep_kind[j], lep_kind[j]), 200, -0.5, 0.5);
-      h_leptons_dxybs[j][i] = fs->make<TH1F>(TString::Format("h_%s_%s_dxybs", lep_kind[j], lep_ex[i]), TString::Format(";%s %ss dxy(BS) (cm);%ss/50 #mum", lep_ex[i], lep_kind[j], lep_kind[j]), 200, -0.5, 0.5);
-      h_leptons_dz   [j][i] = fs->make<TH1F>(TString::Format("h_%s_%s_dz",   lep_kind[j], lep_ex[i]), TString::Format(";%s %ss dz (cm);%ss/50 #mum",       lep_ex[i], lep_kind[j], lep_kind[j]), 200, -0.5, 0.5);
-      h_leptons_iso  [j][i] = fs->make<TH1F>(TString::Format("h_%s_%s_iso",   lep_kind[j], lep_ex[i]), TString::Format(";%s %ss #iso (rad);%ss/.04",       lep_ex[i], lep_kind[j], lep_kind[j]), 50, 0, 2);
-    }
-  }
+  //lepton histos
+  h_nmuons = fs->make<TH1F>("h_nmuons", ";# of muons;events", 8, 0, 8);
+  h_nelectrons = fs->make<TH1F>("h_nelectrons", ";# of electrons;events", 8, 0, 8);
+  h_nleptons = fs->make<TH1F>("h_nleptons", ";# of leptons;events", 10, 0, 10);
+
+  h_muon_pt  = fs->make<TH1F>("h_muon_pt",";muon p_{T} (GeV);muon/5 GeV", 40, 0, 200);
+  h_muon_eta = fs->make<TH1F>("h_muon_eta", ";muon #eta (rad);muon/.104", 50, -2.6, 2.6);
+  h_muon_phi = fs->make<TH1F>("h_muon_phi",";muon #phi (rad);muon/.126", 50, -3.1416, 3.1416);
+  h_muon_dxy = fs->make<TH1F>("h_muon_dxy", ";muon dxy(PV) (cm);muon/50 #mum", 200, -0.5, 0.5);
+  h_muon_dxybs = fs->make<TH1F>("h_muon_dxybs", ";muon dxy(BS) (cm);muon/50 #mum", 200, -0.5, 0.5);
+  h_muon_dz  = fs->make<TH1F>("h_muon_dz",";muon dz (cm);muon/50 #mum", 200, -0.5, 0.5);
+ 
+  h_electron_pt  = fs->make<TH1F>("h_electron_pt", ";electron p_{T} (GeV);electron/5 GeV", 40, 0, 200);
+  h_electron_eta = fs->make<TH1F>("h_electron_eta", ";electron #eta (rad);electron/.104", 50, -2.6, 2.6);
+  h_electron_phi = fs->make<TH1F>("h_electron_phi", ";electron #phi (rad);electron/.126", 50, -3.1416, 3.1416);
+  h_electron_dxy = fs->make<TH1F>("h_electron_dxy", ";electron dxy(PV) (cm);electron/50 #mum", 200, -0.5, 0.5);
+  h_electron_dxybs = fs->make<TH1F>("h_electron_dxybs", ";electron dxy(BS) (cm);electron/50 #mum", 200, -0.5, 0.5);
+  h_electron_dz  = fs->make<TH1F>("h_electron_dz",  ";electron dz (cm);electron/50 #mum", 200, -0.5, 0.5);
+   
+  
 }
 
 void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
@@ -405,26 +417,31 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     }
   }
 
-  for (int i = 0; i < 2; ++i) {
-    h_nmuons[i]->Fill(mevent->nmu(i), w);
-    h_nelectrons[i]->Fill(mevent->nel(i), w);
-    h_nleptons[i]->Fill(mevent->nlep(i), w);
-  }
 
-  for (size_t ilep = 0; ilep < mevent->nlep(); ++ilep) {
-    const size_t j = mevent->is_electron(ilep);
-    for (size_t i = 0; i < 2; ++i)
-      if (i == 0 || mevent->pass_lep_sel(ilep)) {
-        h_leptons_pt[j][i]->Fill(mevent->lep_pt(ilep), w);
-        h_leptons_eta[j][i]->Fill(mevent->lep_eta[ilep], w);
-        h_leptons_phi[j][i]->Fill(mevent->lep_phi[ilep], w);
-        h_leptons_dxy[j][i]->Fill(mevent->lep_dxy[ilep], w);
-        h_leptons_dxybs[j][i]->Fill(mevent->lep_dxybs[ilep], w);
-        h_leptons_dz[j][i]->Fill(mevent->lep_dz[ilep], w);
-        h_leptons_iso[j][i]->Fill(mevent->lep_iso[ilep], w);
-      }
-  }
+  //leptons
+  h_nmuons->Fill(mevent->nmuons(), w);
+  h_nelectrons->Fill(mevent->nelectrons(), w);
+  h_nleptons->Fill(mevent->nlep(), w);
 
+  for (int imu = 0; imu < mevent->nmuons(); ++imu) {
+    h_muon_pt->Fill(mevent->muon_pt[imu], w);
+    h_muon_eta->Fill(mevent->muon_eta[imu], w);
+    h_muon_phi->Fill(mevent->muon_phi[imu], w);
+    h_muon_dxy->Fill(mevent->muon_dxy[imu], w);
+    h_muon_dxybs->Fill(mevent->muon_dxybs[imu], w);
+    h_muon_dz->Fill(mevent->muon_dz[imu], w);
+  }
+  for (int iel = 0; iel < mevent->nelectrons(); ++iel) {
+    h_electron_pt->Fill(mevent->electron_pt[iel], w);
+    h_electron_eta->Fill(mevent->electron_eta[iel], w);
+    h_electron_phi->Fill(mevent->electron_phi[iel], w);
+    h_electron_dxy->Fill(mevent->electron_dxy[iel], w);
+    h_electron_dxybs->Fill(mevent->electron_dxybs[iel], w);
+    h_electron_dz->Fill(mevent->electron_dz[iel], w);
+  }
+  // 
+    
+    
   h_met->Fill(mevent->met(), w);
   h_metphi->Fill(mevent->metphi(), w);
 

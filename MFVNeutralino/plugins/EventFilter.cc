@@ -26,10 +26,8 @@ private:
   const double min_pt_for_ht;
   const double min_ht;
   const edm::EDGetTokenT<pat::MuonCollection> muons_token;
-  const StringCutObjectSelector<pat::Muon> muon_selector;
   const double min_muon_pt;
   const edm::EDGetTokenT<pat::ElectronCollection> electrons_token;
-  const StringCutObjectSelector<pat::Electron> electron_selector;
   const double min_electron_pt;
   const int min_nleptons;
   const bool debug;
@@ -43,10 +41,8 @@ MFVEventFilter::MFVEventFilter(const edm::ParameterSet& cfg)
     min_pt_for_ht(cfg.getParameter<double>("min_pt_for_ht")),
     min_ht(cfg.getParameter<double>("min_ht")),
     muons_token(consumes<pat::MuonCollection>(cfg.getParameter<edm::InputTag>("muons_src"))),
-    muon_selector(cfg.getParameter<std::string>("muon_cut")),
     min_muon_pt(cfg.getParameter<double>("min_muon_pt")),
     electrons_token(consumes<pat::ElectronCollection>(cfg.getParameter<edm::InputTag>("electrons_src"))),
-    electron_selector(cfg.getParameter<std::string>("electron_cut")),
     min_electron_pt(cfg.getParameter<double>("min_electron_pt")),
     min_nleptons(cfg.getParameter<int>("min_nleptons")),
     debug(cfg.getUntrackedParameter<bool>("debug", false))
@@ -85,13 +81,14 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
   int nmuons = 0, nelectrons = 0;
 
   for (const pat::Muon& muon : *muons)
-    if (muon_selector(muon) && muon.pt() > min_muon_pt)
+    if (muon.passed(reco::Muon::CutBasedIdMedium) && muon.pt() > min_muon_pt)
       ++nmuons;
 
-  for (const pat::Electron& electron : *electrons)
-    if (electron_selector(electron) && electron.pt() > min_electron_pt)
+  for (const pat::Electron& electron : *electrons) {
+    bool passloose = electron.electronID("cutBasedElectronID-Fall17-94X-V2-loose");
+    if (passloose && electron.pt() > min_electron_pt)
       ++nelectrons;
-
+  }
   const bool leptons_pass = nmuons + nelectrons >= min_nleptons;
 
   if (debug) printf("MFVEventFilter: nmuons: %i nelectrons: %i pass? %i\n", nmuons, nelectrons, leptons_pass);

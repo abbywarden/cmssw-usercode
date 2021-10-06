@@ -15,6 +15,7 @@ public:
 private:
   virtual bool filter(edm::Event&, const edm::EventSetup&);
   bool satisfiesTrigger(edm::Handle<MFVEvent>, size_t) const;
+  bool satisfiesLepTrigger(edm::Handle<MFVEvent>, size_t) const;
 
   bool jet_hlt_match(edm::Handle<MFVEvent> mevent, int i, float min_jet_pt=20.) const {
     // an offline jet with a successful HLT match will have a nonzero jet_hlt_pt;
@@ -52,8 +53,7 @@ private:
   const double min_ht;
   const double max_ht;
   const int min_nleptons;
-  const int min_nselleptons;
-
+  
   const bool apply_vertex_cuts;
   const int min_nvertex;
   const int max_nvertex;
@@ -106,7 +106,6 @@ MFVAnalysisCuts::MFVAnalysisCuts(const edm::ParameterSet& cfg)
     min_ht(cfg.getParameter<double>("min_ht")),
     max_ht(cfg.getParameter<double>("max_ht")),
     min_nleptons(cfg.getParameter<int>("min_nleptons")),
-    min_nselleptons(cfg.getParameter<int>("min_nselleptons")),
     apply_vertex_cuts(cfg.getParameter<bool>("apply_vertex_cuts")),
     min_nvertex(cfg.getParameter<int>("min_nvertex")),
     max_nvertex(cfg.getParameter<int>("max_nvertex")),
@@ -157,22 +156,26 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup&) {
   if (use_mevent) {
     event.getByToken(mevent_token, mevent);
 
+    // std::cout << "lepton(s)/muon(s)/electron(s): " <<  mevent->nlep() << " " << mevent->nmuons() << " " << mevent->nelectrons()<< std::endl;
+    // std::cout << "----------------------------------------------------------" << std::endl;
+
     if (apply_presel == 1 && (!mevent->pass_hlt(mfv::b_HLT_PFHT1050) || mevent->jet_ht(40) < 1200 || mevent->njets(20) < 4))
       return false;
-
+    
+    //test new updated presel for semileptonic studies (unsure if need to worry about matching to lepton that triggered???)
     if (apply_presel == 2) {
-      if (!mevent->pass_hlt(mfv::b_HLT_Ele35_WPTight_Gsf) && !mevent->pass_hlt(mfv::b_HLT_IsoMu27))
-        return false;
-
-      // JMTBAD match to lepton that triggered
-      // JMTBAD real turnon value
-      if (mevent->pass_hlt(mfv::b_HLT_Ele35_WPTight_Gsf) && mevent->first_lep_pass(MFVEvent::lep_el).Pt() < 35)
-        return false;
-
-      if (mevent->pass_hlt(mfv::b_HLT_IsoMu27) && mevent->first_lep_pass(MFVEvent::lep_mu).Pt() < 27)
-        return false;
+      bool success = false;
+      for(size_t trig: mfv::LeptonOrDisplacedLeptonTriggers){
+	if(satisfiesLepTrigger(mevent, trig)){
+	  success = true;
+	  break;
+	  
+	}
+	
+      }
+      if(!success) return false;
     }
-
+	    
     // HT or Bjet or DisplacedDijet trigger && offline presel
     if (apply_presel == 3) {
 
@@ -218,8 +221,16 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup&) {
     if (apply_trigger == 1 && !mevent->pass_hlt(mfv::b_HLT_PFHT1050))
       return false;
 
-    if (apply_trigger == 2 && !mevent->pass_hlt(mfv::b_HLT_Ele35_WPTight_Gsf) && !mevent->pass_hlt(mfv::b_HLT_IsoMu27))
-      return false;
+    if (apply_trigger == 2) {
+      bool at_least_one_trigger_passed = false;
+      for(size_t trig : mfv::LeptonOrDisplacedLeptonTriggers){
+	if(mevent->pass_hlt(trig)){
+	  at_least_one_trigger_passed = true;
+	  break;
+	}
+      }
+      if(!at_least_one_trigger_passed) return false;
+    }
 
     if (apply_trigger == 3){
       bool at_least_one_trigger_passed = false;
@@ -256,10 +267,7 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup&) {
     if (mevent->pv_ntracks > max_pv_ntracks)
       return false;
 
-    if (mevent->nlep(false) < min_nleptons)
-      return false;
-
-    if (mevent->nlep(true) < min_nselleptons)
+    if (mevent->nlepton() < min_nleptons)
       return false;
 
     if (mevent->njets(20) < min_njets || mevent->njets(20) > max_njets)
@@ -389,6 +397,23 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup&) {
   }
 
   return true;
+}
+
+bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t trig) const {
+  if(!mevent->pass_hlt(trig)) return false;
+
+  bool passed_lep_pt = false;
+  for (int mu = 0; mu < mevent->nmuons(); ++mu) {
+    if (mevent->muon_pt[mu] > 24 ) {
+      passed_lep_pt = true;
+    }
+  }
+  for (int el = 0; el < mevent->nelectrons(); ++el) {
+    if (mevent->electron_pt[el] > 32) {
+      passed_lep_pt = true;
+    }
+  }
+  return passed_lep_pt;
 }
 
 bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig) const {

@@ -123,6 +123,8 @@ mfvSelectedVerticesSeq = cms.Sequence(
     mfvSelectedVerticesTight *
     mfvSelectedVerticesTightNtk3 *
     mfvSelectedVerticesTightNtk4 *
+    mfvSelectedVerticesTightMinNtk3 *
+    mfvSelectedVerticesTightMinNtk4 *
     mfvSelectedVerticesTightNtk3or4 *
     mfvSelectedVerticesTightNtk3or5 *
     mfvSelectedVerticesTightNtk4or5

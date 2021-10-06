@@ -33,18 +33,15 @@ private:
   const edm::EDGetTokenT<double> weight_token;
   const edm::EDGetTokenT<mfv::TriggerFloats> triggerfloats_token;
   const edm::EDGetTokenT<pat::MuonCollection> muons_token;
-  const StringCutObjectSelector<pat::Muon> muon_selector;
   const edm::EDGetTokenT<reco::GenJetCollection> genjets_token;
   const bool use_genjets;
 
   TH1D* h_w;
 
-  TH1D* h_nnoselmuons;
   TH1D* h_nmuons;
-  TH1D* h_muon_pt[2];
-  TH1D* h_muon_eta[2];
-  TH1D* h_muon_phi[2];
-  TH1D* h_muon_iso[2];
+  TH1D* h_muon_pt;
+  TH1D* h_muon_eta;
+  TH1D* h_muon_phi;
 
   TH1D* h_nnoseljets;
   TH1D* h_njets;
@@ -84,7 +81,6 @@ MFVTriggerEfficiency::MFVTriggerEfficiency(const edm::ParameterSet& cfg)
     weight_token(consumes<double>(cfg.getParameter<edm::InputTag>("weight_src"))),
     triggerfloats_token(consumes<mfv::TriggerFloats>(edm::InputTag("mfvTriggerFloats"))),
     muons_token(consumes<pat::MuonCollection>(cfg.getParameter<edm::InputTag>("muons_src"))),
-    muon_selector(cfg.getParameter<std::string>("muon_cut")),
     genjets_token(consumes<reco::GenJetCollection>(cfg.getParameter<edm::InputTag>("genjets_src"))),
     use_genjets(cfg.getParameter<edm::InputTag>("genjets_src").label() != "")
 {
@@ -102,16 +98,13 @@ MFVTriggerEfficiency::MFVTriggerEfficiency(const edm::ParameterSet& cfg)
   h_w = fs->make<TH1D>("h_w", ";event weight;events", 20, 0, 10);
 
   if (require_muon) {
-    h_nnoselmuons = fs->make<TH1D>("h_nnoselmuons", ";# all muons;events", 5, 0, 5);
-    h_nmuons = fs->make<TH1D>("h_nmuons", ";# selected muons;events", 3, 0, 3);
-    const char* ex[2] = {"all", "selected"};
-    for (int i = 0; i < 2; ++i) {
-      h_muon_pt [i] = fs->make<TH1D>(TString::Format("h_muon_pt_%i" , i), TString::Format(";%s muon p_{T} (GeV);events/5 GeV", ex[i]), 200, 0, 1000);
-      h_muon_eta[i] = fs->make<TH1D>(TString::Format("h_muon_eta_%i", i), TString::Format(";%s muon #eta;events/0.12", ex[i]), 50, -3, 3);
-      h_muon_phi[i] = fs->make<TH1D>(TString::Format("h_muon_phi_%i", i), TString::Format(";%s muon #phi;events/0.125", ex[i]), 50, -M_PI, M_PI);
-      h_muon_iso[i] = fs->make<TH1D>(TString::Format("h_muon_iso_%i", i), TString::Format(";%s muon isolation;events/0.04", ex[i]), 50, 0, 2);
-    }
+    h_nmuons = fs->make<TH1D>("h_nmuons", ";# of muons;events", 5, 0, 5);
+    h_muon_pt = fs->make<TH1D>("h_muon_pt",";muon p_{T} (GeV);events/5 GeV", 200, 0, 1000);
+    h_muon_eta = fs->make<TH1D>("h_muon_eta",";muon #eta;events/0.12", 50, -3, 3);
+    h_muon_phi = fs->make<TH1D>("h_muon_phi",";muon #phi;events/0.125", 50, -M_PI, M_PI);
+
   }
+    
 
   h_nnoseljets = fs->make<TH1D>("h_nnoseljets", ";# all jets;events", 30, 0, 30);
   h_njets = fs->make<TH1D>("h_njets", ";# selected jets;events", 30, 0, 30);
@@ -166,15 +159,15 @@ MFVTriggerEfficiency::MFVTriggerEfficiency(const edm::ParameterSet& cfg)
   }
 }
 
-namespace {
-//  bool orem(const std::vector<int>& decisions, std::vector<int> which) {
-//    for (int w : which) {
-//      const int decision = decisions[w];
-//      if (decision == -1) throw cms::Exception("TriggerNotFound") << mfv::hlt_paths[w] << " wasn't found";
-//      else if (decision == 1) return true;
-//    }
-//    return false;
-//  }
+  namespace {
+ // bool orem(const std::vector<int>& decisions, std::vector<int> which) {
+ //   for (int w : which) {
+ //     const int decision = decisions[w];
+ //     if (decision == -1) throw cms::Exception("TriggerNotFound") << mfv::hlt_paths[w] << " wasn't found";
+ //     else if (decision == 1) return true;
+ //   }
+ //   return false;
+ // }
 
   double jetpt12_weight_mfvM300(double jetpt1, double jetpt2) {
     if      (jetpt1 >=   0 && jetpt1 < 250 && jetpt2 >=   0 && jetpt2 < 150) return 2.969734e+01;
@@ -284,25 +277,20 @@ void MFVTriggerEfficiency::analyze(const edm::Event& event, const edm::EventSetu
     edm::Handle<pat::MuonCollection> muons;
     event.getByToken(muons_token, muons);
 
-    int nmuons[2] = {0};
+    
+    int nmuons = 0;
     for (const pat::Muon& muon : *muons) {
-      for (int i = 0; i < 2; ++i) {
-        if (i == 0 || muon_selector(muon)) {
-          ++nmuons[i];
-          h_muon_pt[i]->Fill(muon.pt(), w);
-          h_muon_eta[i]->Fill(muon.eta(), w);
-          h_muon_phi[i]->Fill(muon.phi(), w);
-          h_muon_iso[i]->Fill((muon.chargedHadronIso() + muon.neutralHadronIso() + muon.photonIso() - 0.5*muon.puChargedHadronIso())/muon.pt(), w);
-        }
+      if (muon.passed(reco::Muon::CutBasedIdMedium)) {
+	++nmuons;
+	h_muon_pt->Fill(muon.pt(), w);
+	h_muon_eta->Fill(muon.eta(), w);
+	h_muon_phi->Fill(muon.phi(), w);
       }
     }
-
-    h_nnoselmuons->Fill(nmuons[0], w);
-    h_nmuons->Fill(nmuons[1], w);
-
-    if (nmuons[1] < 1)
-      return;
+    h_nmuons->Fill(nmuons, w);
   }
+
+  
 
   if ((require_4jets && triggerfloats->njets(20) < 4) ||
       (require_6jets && triggerfloats->njets(20) < 6) ||
