@@ -210,6 +210,7 @@ struct MFVEvent {
   float pv_z(size_t i) const { return i == 0 ? pvz : pvsz[i-1]; }
   float pv_score_(size_t i) const { return i == 0 ? pv_score : pvsscores[i-1]; } // JMTBAD oops, didn't bin in Producer
 
+    
   std::vector<uchar> jet_id; // see encode_jet_id for definition
   std::vector<float> jet_bdisc_old; // JMTBAD CSV for backward compatibility, to be removed
   std::vector<float> jet_bdisc;
@@ -320,9 +321,16 @@ struct MFVEvent {
   std::vector<float> muon_pt;
   std::vector<float> muon_eta;
   std::vector<float> muon_phi;
+  //std::vector<float> muon_validfrac;
   std::vector<float> muon_pt_err;
   std::vector<float> muon_eta_err;
   std::vector<float> muon_phi_err;
+  std::vector<float> muon_x;
+  std::vector<float> muon_y;
+  std::vector<float> muon_z;
+  std::vector<float> muon_lxy;
+  std::vector<float> muon_l;
+  std::vector<float> muon_iso;
   std::vector<float> muon_dxy;
   std::vector<float> muon_dz;
   std::vector<float> muon_dxybs;
@@ -336,23 +344,76 @@ struct MFVEvent {
   std::vector<float> electron_pt_err;
   std::vector<float> electron_eta_err;
   std::vector<float> electron_phi_err;
+  std::vector<float> electron_x;
+  std::vector<float> electron_y;
+  std::vector<float> electron_z;
+  std::vector<float> electron_lxy;
+  std::vector<float> electron_l;
   std::vector<float> electron_dxy;
   std::vector<float> electron_dz;
   std::vector<float> electron_dxybs;
   std::vector<float> electron_dxyerr;
   std::vector<float> electron_dzerr;
   std::vector<float> electron_chi2dof;
+
+
+  std::vector<float> electron_isEB;
+  std::vector<float> electron_isEE;
+  std::vector<float> electron_sigmaIetaIeta5x5;
+  std::vector<float> electron_dEtaAtVtx;
+  std::vector<float> electron_dPhiAtVtx;
+  std::vector<float> electron_HE;
+  std::vector<float> electron_ooEmooP;
+  std::vector<float> electron_expectedMissingInnerHits;
+  std::vector<float> electron_passveto;
+  std::vector<float> electron_iso;
+
+  //isolation variables
+  std::vector<float> electron_had_iso;
+  std::vector<float> electron_neutral_iso;
+  std::vector<float> electron_photon_iso;
+  std::vector<float> electron_corr;
+  std::vector<float> muon_had_iso;
+  std::vector<float> muon_neutral_iso;
+  std::vector<float> muon_photon_iso;
+  std::vector<float> muon_PU_corr;
+
+  std::vector<std::vector<int>> electron_ID;
+  std::vector<std::vector<int>> muon_ID;
+
+  //placeholder vector to count number of loose,medium,tight electrons/muons in an event 
+  // std::vector<int> nelectron;
+  // std::vector<int> nmuon;
+  
   
   void muon_push_back(const reco::Muon& muon,
 		      const reco::Track& trk,
+		      const float iso,
 		      const math::XYZPoint& beamspot,
 		      const math::XYZPoint& primary_vertex);
 
   void electron_push_back(const reco::GsfElectron& electron,
 			  const reco::Track& trk,
+			  const float iso,
 			  const math::XYZPoint& beamspot,
 			  const math::XYZPoint& primary_vertex);
-  
+
+  void muon_pfiso_push_back(const float muhad_iso,
+			    const float muneut_iso,
+			    const float muphoton_iso,
+			    const float PU_corr);
+
+  void electron_pfiso_push_back(const float elhad_iso,
+				const float elneut_iso,
+				const float elphoton_iso,
+				const float elcorr);
+
+  void ele_ID_push_back(const reco::GsfElectron& electron,
+			const bool h_Escaled,
+			const float ooEmooP,
+			const int expectedMissingInnerHits,
+			const float iso,
+			const bool passveto);
   
   std::vector<mfv::HitPattern::value_t> muon_hp_;
   mfv::HitPattern muon_hp(int i) const { return mfv::HitPattern(muon_hp_[i]); }
@@ -378,7 +439,11 @@ struct MFVEvent {
   int nmuons() const { return int(muon_pt.size()); }
   int nelectrons() const { return int(electron_pt.size()); }
   int nlep() const { return nmuons() + nelectrons(); }
-  
+
+  int nmuons(float min_muon_pt) const { return std::count_if(muon_pt.begin(), muon_pt.end(),
+                                                           [min_muon_pt](float c) { return c > min_muon_pt; }); }
+  int nelectrons(float min_electron_pt) const { return std::count_if(electron_pt.begin(), electron_pt.end(),
+                                                           [min_electron_pt](float d) { return d > min_electron_pt; }); }
   
   size_t n_vertex_seed_tracks() const { return vertex_seed_track_chi2dof.size(); }
   std::vector<float> vertex_seed_track_chi2dof;

@@ -7,6 +7,7 @@
 #include "DataFormats/TrackReco/interface/TrackBase.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "JMTucker/MFVNeutralinoFormats/interface/JetVertexAssociation.h"
+//#include "JMTucker/MFVNeutralinoFormats/interface/LepVertexAssociation.h"
 
 struct MFVVertexAux {
   typedef unsigned char uchar;
@@ -46,17 +47,19 @@ struct MFVVertexAux {
 
   MFVVertexAux() {
     which = ndof_ = jetpairdrmin_ = jetpairdrmax_ = jetpairdravg_ = jetpairdrrms_ = costhtkmomvtxdispmin_ = costhtkmomvtxdispmax_ = costhtkmomvtxdispavg_ = costhtkmomvtxdisprms_ = costhjetmomvtxdispmin_ = costhjetmomvtxdispmax_ = costhjetmomvtxdispavg_ = costhjetmomvtxdisprms_ = 0;
-    x = y = z = cxx = cxy = cxz = cyy = cyz = czz = chi2 = rescale_x = rescale_y = rescale_z = rescale_cxx = rescale_cxy = rescale_cxz = rescale_cyy = rescale_cyz = rescale_czz = rescale_bs2ddist = rescale_bs2derr = rescale_chi2 = gen2ddist = gen2derr = gen3ddist = gen3derr = bs2ddist = bs2derr = pv2ddist = pv2derr = pv3ddist = pv3derr = 0;
+    nmuons = nelectrons = n_rsttks = n_ttks = 0;
+    x = y = z = cxx = cxy = cxz = cyy = cyz = czz = chi2  = rescale_x = rescale_y = rescale_z = rescale_cxx = rescale_cxy = rescale_cxz = rescale_cyy = rescale_cyz = rescale_czz = rescale_bs2ddist = rescale_bs2derr = rescale_chi2 = gen2ddist = gen2derr = gen3ddist = gen3derr = bs2ddist = bs2derr = pv2ddist = pv2derr = pv3ddist = pv3derr = 0;
     for (int i = 0; i < mfv::NJetsByUse; ++i)
       njets[i] = 0;
     for (int i = 0; i < mfv::NMomenta; ++i) {
       costhmombs_[i] = costhmompv2d_[i] = costhmompv3d_[i] = 0;
       pt[i] = eta[i] = phi[i] = mass[i] = missdistpv[i] = missdistpverr[i] = 0;
     }
+
   }
 
   uchar which;
-  std::vector<uchar> which_lep; // electrons have 7th bit set
+  // std::vector<uchar> which_lep; // electrons have 7th bit set
 
   float x;
   float y;
@@ -69,6 +72,12 @@ struct MFVVertexAux {
   float cyz;
   float czz;
 
+  size_t nmuons;
+  size_t nelectrons;
+
+  size_t n_rsttks;
+  size_t n_ttks;
+  
   float chi2;
   uchar ndof_; // may not be = 2*ntracks - 3 if weights used in vtx fit
   float ndof() const { return float(ndof_); }
@@ -101,12 +110,16 @@ struct MFVVertexAux {
   std::vector<float> nm1_bs2ddist;
   std::vector<float> nm1_bs2derr;
 
+  // std::vector<int> nmuons;
+
+  
   uchar njets[mfv::NJetsByUse];
 
   float pt  [mfv::NMomenta];
   float eta [mfv::NMomenta];
   float phi [mfv::NMomenta];
   float mass[mfv::NMomenta];
+  
 
   TLorentzVector p4(int w=0) const {
     TLorentzVector v;
@@ -228,6 +241,8 @@ struct MFVVertexAux {
   float missdistpverr[mfv::NMomenta];
   float missdistpvsig(int w) const { return sig(missdistpv[w], missdistpverr[w]); }
 
+
+  
   std::vector<uchar> track_w_;
   std::vector<bool> track_q_;
   std::vector<unsigned> track_hp_;
@@ -243,6 +258,8 @@ struct MFVVertexAux {
   std::vector<double> track_pz;
   std::vector<double> track_chi2;
   std::vector<double> track_ndof;
+  std::vector<double> track_dxytest;
+  std::vector<double> track_dxyerrtest;
   std::vector<reco::TrackBase::CovarianceMatrix> track_cov;
   // next are expensive to compute so store them anyway
   std::vector<float> track_pt_err;

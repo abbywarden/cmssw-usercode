@@ -275,7 +275,11 @@ bool MFVVertexSelector::use_vertex(const bool is_mc, const MFVVertexAux& vtx, co
   }
 
   if (exclude_beampipe && !jmt::Geometry::inside_beampipe(is_mc, vtx.x, vtx.y))
-    return false;
+  return false;
+  // if (exclude_beampipe) {
+  //   if (!jmt::Geometry::inside_beampipe(is_mc, vtx.x, vtx.y))
+  //     return false;
+  // }
 
   if (use_cluster_cuts) {
     assert(mevent);

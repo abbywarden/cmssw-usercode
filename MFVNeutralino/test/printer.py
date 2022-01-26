@@ -2,9 +2,11 @@ import sys, os
 from JMTucker.Tools.BasicAnalyzer_cfg import *
 from JMTucker.Tools.Year import year
 
-simple = False
+simple = True
 
-sample_files(process, 'wjetstolnu_2017', 'ntuplev18m', 1)
+#sample_files(process, 'wjetstolnu_2017', 'ntuplev18m', 1)
+sample_files(process, 'mfv_stoplb_tau001000um_M1000_2018', 'ntuplev29lepm', 1)
+
 no_event_sort(process)
 file_event_from_argv(process)
 
@@ -49,7 +51,8 @@ if __name__ == '__main__' and 'splitlog' in sys.argv:
     log_fn = sys.argv[sys.argv.index('splitlog')+1]
     buf = []
     rle = None
-    dest = '/uscmst1b_scratch/lpc1/3DayLifetime/tucker/splitit_v15'
+    #dest = '/uscmst1b_scratch/lpc1/3DayLifetime/tucker/splitit_v15'
+    dest = '/afs/hep.wisc.edu/home/acwarden/work/llp/mfv_1025p1/src/JMTucker/MFVNeutralino/test/splitlog_printer'
 
     def makefn():
         if rle is None:

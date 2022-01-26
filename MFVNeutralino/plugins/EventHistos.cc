@@ -21,6 +21,7 @@ class MFVEventHistos : public edm::EDAnalyzer {
   const edm::EDGetTokenT<MFVEvent> mevent_token;
   const edm::EDGetTokenT<double> weight_token;
 
+  
   TH1F* h_w;
 
   TH2F* h_gen_decay;
@@ -60,6 +61,7 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_pvcyz;
   TH1F* h_pvczz;
   TH1F* h_pvrho;
+  TH1F* h_pvrho_track20;
   TH1F* h_pvrhowide;
   TH1F* h_pvphi;
   TH1F* h_pvntracks;
@@ -91,6 +93,15 @@ class MFVEventHistos : public edm::EDAnalyzer {
 
   TH1F* h_jet_pairdphi;
   TH1F* h_jet_pairdr;
+  TH1F* h_jetel_pairdphi;
+  TH1F* h_jetel_pairdr;
+  TH1F* h_jetmu_pairdphi;
+  TH1F* h_jetmu_pairdr;
+  TH1F* h_highjetel_pairdphi;
+  TH1F* h_highjetel_pairdr;
+  TH1F* h_highjetmu_pairdphi;
+  TH1F* h_highjetmu_pairdr;
+
 
   TH1F* h_met;
   TH1F* h_metphi;
@@ -110,19 +121,105 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_nelectrons;
   TH1F* h_nleptons;
 
-  TH1F* h_muon_pt;
-  TH1F* h_muon_eta;
-  TH1F* h_muon_phi;
-  TH1F* h_muon_dxy;
-  TH1F* h_muon_dxybs;
-  TH1F* h_muon_dz;
+  TH1F* h_ndispl50_electrons;
+  TH1F* h_ndispl50_muons;
+  TH1F* h_ndispl50_leptons;
+  TH1F* h_ndispl100_electrons;
+  TH1F* h_ndispl100_muons;
+  TH1F* h_ndispl100_leptons;
 
-  TH1F* h_electron_pt;
-  TH1F* h_electron_eta;
-  TH1F* h_electron_phi;
-  TH1F* h_electron_dxy;
-  TH1F* h_electron_dxybs;
-  TH1F* h_electron_dz;
+  TH1F* h_nseldispl50_electrons;
+  TH1F* h_nseldispl50_muons;
+  TH1F* h_nseldispl50_leptons;
+  TH1F* h_nseldispl100_electrons;
+  TH1F* h_nseldispl100_muons;
+  TH1F* h_nseldispl100_leptons;
+
+  TH1F* h_nmuons_[3];
+  TH1F* h_nelectrons_[4];
+  //this is a bit uneven due to considering different el/mu working points (not much focus on tight mu or loose el) 
+  // 0: loose el,mu //  1: med el,mu // 2: tight el,mu // 3: tight el, med. mu // 4: tight el, loose mu // 5: med el, loose mu 
+  TH1F* h_nselleptons_[6];
+  TH1F* h_nfullsellep_[6];
+
+  TH1F* h_nfullselel_[4];
+  TH1F* h_nfullselmu_[3];
+   
+  TH1F* h_muon_pt_[3];
+  TH1F* h_muon_eta_[3];
+  TH1F* h_muon_iso_[3];
+  TH1F* h_muon_phi_[3];
+  TH1F* h_muon_absdxybs_[3];
+  TH1F* h_muon_dxybs_[3];
+  TH1F* h_muon_nsigmadxy_[3];
+  TH1F* h_muon_absdz_[3];
+  TH1F* h_muon_dz_[3];
+  TH1F* h_muon_x_[3];
+  TH1F* h_muon_y_[3];
+  TH1F* h_muon_z_[3];
+  TH1F* h_muon_l_[3];
+  TH1F* h_muon_lxy_[3];
+  TH1F* h_muon_npxhits_[3];
+  TH1F* h_muon_nsthits_[3];
+  TH1F* h_muon_nhits_[3];
+  TH1F* h_muon_npxlayers_[3];
+  TH1F* h_muon_nstlayers_[3];
+  TH1F* h_muon_nlayers_[3];
+  
+  TH1F* h_electron_pt_[4];
+  TH1F* h_electron_eta_[4];
+  TH1F* h_electron_phi_[4];
+  TH1F* h_electron_iso_[4];
+  TH1F* h_electron_absdxybs_[4];
+  TH1F* h_electron_dxybs_[4];
+  TH1F* h_electron_nsigmadxy_[4];
+  TH1F* h_electron_absdz_[4];
+  TH1F* h_electron_absdz_EB_[4];
+  TH1F* h_electron_absdz_EE_[4];
+  TH1F* h_electron_dz_[4];
+  TH1F* h_electron_dz_EB_[4];
+  TH1F* h_electron_dz_EE_[4];
+  TH1F* h_electron_x_[4];
+  TH1F* h_electron_y_[4];
+  TH1F* h_electron_z_[4];
+  TH1F* h_electron_l_[4];
+  TH1F* h_electron_lxy_[4];
+  TH1F* h_electron_npxhits_[4];
+  TH1F* h_electron_nsthits_[4];
+  TH1F* h_electron_nhits_[4];
+  TH1F* h_electron_npxlayers_[4];
+  TH1F* h_electron_nstlayers_[4];
+  TH1F* h_electron_nlayers_[4];
+ 
+  // TH1F* h_muon_pt;
+  // TH1F* h_muon_eta;
+  // TH1F* h_muon_phi;
+  // TH1F* h_muon_dxy;
+  // TH1F* h_muon_dxybs;
+  // TH1F* h_muon_absdxybs;
+  // TH1F* h_muon_absdz;
+  // TH1F* h_muon_dz;
+  // TH1F* h_muon_npxhits;
+  // TH1F* h_muon_nsthits;
+  // TH1F* h_muon_nhits;
+  // TH1F* h_muon_npxlayers;
+  // TH1F* h_muon_nstlayers;
+  // TH1F* h_muon_nlayers;
+
+  // TH1F* h_electron_pt;
+  // TH1F* h_electron_eta;
+  // TH1F* h_electron_phi;
+  // TH1F* h_electron_dxy;
+  // TH1F* h_electron_dxybs;
+  // TH1F* h_electron_absdxybs;
+  // TH1F* h_electron_absdz;
+  // TH1F* h_electron_dz;
+  // TH1F* h_electron_npxhits;
+  // TH1F* h_electron_nsthits;
+  // TH1F* h_electron_nhits;
+  // TH1F* h_electron_npxlayers;
+  // TH1F* h_electron_nstlayers;
+  // TH1F* h_electron_nlayers;
 
   TH1F* h_n_vertex_seed_tracks;
   TH1F* h_vertex_seed_track_chi2dof;
@@ -144,6 +241,8 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_vertex_seed_track_npxlayers;
   TH1F* h_vertex_seed_track_nstlayers;
   TH1F* h_vertex_seed_track_nlayers;
+
+
 };
 
 MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
@@ -202,6 +301,7 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   h_pvcxz = fs->make<TH1F>("h_pvcxz", ";primary vertex cxz;events", 100, -1e-6, 1e-6);
   h_pvcyz = fs->make<TH1F>("h_pvcyz", ";primary vertex cyz;events", 100, -1e-6, 1e-6);
   h_pvrho = fs->make<TH1F>("h_pvrho", ";primary vertex rho (cm);events/5 #mum", 40, 0, 0.02);
+  h_pvrho_track20 = fs->make<TH1F>("h_pvrho_track20", ";primary vertex rho (cm) w/ < 20 tracks;events/5 #mum", 40, 0, 0.02);  
   h_pvrhowide = fs->make<TH1F>("h_pvrhowide", ";primary vertex rho (cm);events/10 #mum", 100, 0, 0.1);
   h_pvphi = fs->make<TH1F>("h_pvphi", ";primary vertex #phi (rad);events/.063", 100, -3.1416, 3.1416);
   h_pvntracks = fs->make<TH1F>("h_pvntracks", ";# of tracks in primary vertex;events/3", 100, 0, 300);
@@ -235,7 +335,15 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
 
   h_jet_pairdphi = fs->make<TH1F>("h_jet_pairdphi", ";jet pair #Delta#phi (rad);jet pairs/.063", 100, -3.1416, 3.1416);
   h_jet_pairdr = fs->make<TH1F>("h_jet_pairdr", ";jet pair #DeltaR (rad);jet pairs/.063", 100, 0, 6.3);
-
+  h_jetel_pairdphi = fs->make<TH1F>("h_jetel_pairdphi", ";jet electron pair #Delta#phi (rad);jetel pairs/.063", 100, -3.1416, 3.1416);
+  h_jetel_pairdr = fs->make<TH1F>("h_jetel_pairdr", ";jet electron pair #DeltaR (rad);jetel pairs/.063", 100, 0, 6.3);
+  h_jetmu_pairdphi = fs->make<TH1F>("h_jetmu_pairdphi", ";jet muon pair #Delta#phi (rad);jetmu pairs/.063", 100, -3.1416, 3.1416);
+  h_jetmu_pairdr = fs->make<TH1F>("h_jetmu_pairdr", ";jet muon pair #DeltaR (rad);jetmu pairs/.063", 100, 0, 6.3);
+  h_highjetel_pairdphi = fs->make<TH1F>("h_highjetel_pairdphi", ";jet electron pair #Delta#phi (rad);jetel pairs/.063", 100, -3.1416, 3.1416);
+  h_highjetel_pairdr = fs->make<TH1F>("h_highjetel_pairdr", ";jet electron pair #DeltaR (rad);jetel pairs/.063", 100, 0, 6.3);
+  h_highjetmu_pairdphi = fs->make<TH1F>("h_highjetmu_pairdphi", ";jet muon pair #Delta#phi (rad);jetmu pairs/.063", 100, -3.1416, 3.1416);
+  h_highjetmu_pairdr = fs->make<TH1F>("h_highjetmu_pairdr", ";jet muon pair #DeltaR (rad);jetmu pairs/.063", 100, 0, 6.3);
+ 
   h_n_vertex_seed_tracks = fs->make<TH1F>("h_n_vertex_seed_tracks", ";# vertex seed tracks;events", 100, 0, 100);
   h_vertex_seed_track_chi2dof = fs->make<TH1F>("h_vertex_seed_track_chi2dof", ";vertex seed track #chi^{2}/dof;tracks/1", 10, 0, 10);
   h_vertex_seed_track_q = fs->make<TH1F>("h_vertex_seed_track_q", ";vertex seed track charge;tracks", 3, -1, 2);
@@ -275,24 +383,119 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   h_bjet_pairdphi = fs->make<TH1F>("h_bjet_pairdphi", ";bjet pair #Delta#phi (rad);bjet pairs/.063", 100, -3.1416, 3.1416);
 
   //lepton histos
-  h_nmuons = fs->make<TH1F>("h_nmuons", ";# of muons;events", 8, 0, 8);
-  h_nelectrons = fs->make<TH1F>("h_nelectrons", ";# of electrons;events", 8, 0, 8);
+  h_nmuons = fs->make<TH1F>("h_nmuons", ";# of muons;events", 10, 0, 10);
+  h_nelectrons = fs->make<TH1F>("h_nelectrons", ";# of electrons;events", 10, 0, 10);
   h_nleptons = fs->make<TH1F>("h_nleptons", ";# of leptons;events", 10, 0, 10);
+  h_ndispl50_electrons = fs->make<TH1F>("h_ndispl50_electrons", ";# of electrons w/ |dxy|>50um", 10, 0, 10);
+  h_ndispl50_muons = fs->make<TH1F>("h_ndispl50_muons", ";# of muons w/ |dxy|>50um", 10, 0, 10);
+  h_ndispl50_leptons = fs->make<TH1F>("h_ndispl50_leptons", ";# of leptons w/ |dxy|>50um", 10, 0, 10);
+  h_ndispl100_electrons = fs->make<TH1F>("h_ndispl100_electrons", ";# of electrons w/ |dxy|>100um", 10, 0, 10);
+  h_ndispl100_muons = fs->make<TH1F>("h_ndispl100_muons", ";# of muons w/ |dxy|>100um", 10, 0, 10);
+  h_ndispl100_leptons = fs->make<TH1F>("h_ndispl100_leptons", ";# of leptons w/ |dxy|>100um", 10, 0, 10);
+  h_nseldispl50_electrons = fs->make<TH1F>("h_nseldispl50_electrons", ";# of electrons w/ |dxy|>50um", 10, 0, 10);
+  h_nseldispl50_muons = fs->make<TH1F>("h_nseldispl50_muons", ";# of muons w/ |dxy|>50um", 10, 0, 10);
+  h_nseldispl50_leptons = fs->make<TH1F>("h_nseldispl50_leptons", ";# of leptons w/ |dxy|>50um", 10, 0, 10);
+  h_nseldispl100_electrons = fs->make<TH1F>("h_nseldispl100_electrons", ";# of electrons w/ |dxy|>100um", 10, 0, 10);
+  h_nseldispl100_muons = fs->make<TH1F>("h_nseldispl100_muons", ";# of muons w/ |dxy|>100um", 10, 0, 10);
+  h_nseldispl100_leptons = fs->make<TH1F>("h_nseldispl100_leptons", ";# of leptons w/ |dxy|>100um", 10, 0, 10);
 
-  h_muon_pt  = fs->make<TH1F>("h_muon_pt",";muon p_{T} (GeV);muon/5 GeV", 40, 0, 200);
-  h_muon_eta = fs->make<TH1F>("h_muon_eta", ";muon #eta (rad);muon/.104", 50, -2.6, 2.6);
-  h_muon_phi = fs->make<TH1F>("h_muon_phi",";muon #phi (rad);muon/.126", 50, -3.1416, 3.1416);
-  h_muon_dxy = fs->make<TH1F>("h_muon_dxy", ";muon dxy(PV) (cm);muon/50 #mum", 200, -0.5, 0.5);
-  h_muon_dxybs = fs->make<TH1F>("h_muon_dxybs", ";muon dxy(BS) (cm);muon/50 #mum", 200, -0.5, 0.5);
-  h_muon_dz  = fs->make<TH1F>("h_muon_dz",";muon dz (cm);muon/50 #mum", 200, -0.5, 0.5);
+  
+  // h_muon_pt  = fs->make<TH1F>("h_muon_pt",";muon p_{T} (GeV);muon/5 GeV", 200, 0, 1000);
+  // h_muon_eta = fs->make<TH1F>("h_muon_eta", ";muon #eta (rad);muon/.104", 50, -2.6, 2.6);
+  // h_muon_phi = fs->make<TH1F>("h_muon_phi",";muon #phi (rad);muon/.126", 50, -3.1416, 3.1416);
+  // h_muon_dxy = fs->make<TH1F>("h_muon_dxy", ";muon dxy(PV) (cm);muon/50 #mum", 200, -0.5, 0.5);
+  // h_muon_dxybs = fs->make<TH1F>("h_muon_dxybs", ";muon dxy(BS) (cm);muon/50 #mum", 200, -0.5, 0.5);
+  // h_muon_absdxybs = fs->make<TH1F>("h_muon_absdxybs", ";muon abs dxy(BS) (cm);muon/50 #mum", 400, 0, 2.0);
+  // h_muon_dz  = fs->make<TH1F>("h_muon_dz",";muon dz (cm);muon/50 #mum", 200, -0.5, 0.5);
+  // h_muon_absdz  = fs->make<TH1F>("h_muon_absdz",";muon abs dz (cm);muon/50 #mum", 400, 0, 2.0);
+  // h_muon_npxhits = fs->make<TH1F>("h_muon_npxhits", ";muon # pixel hits;tracks", 10, 0, 10);
+  // h_muon_nsthits = fs->make<TH1F>("h_muon_nsthits", ";muon # strip hits;tracks", 50, 0, 50);
+  // h_muon_nhits = fs->make<TH1F>("h_muon_nhits", ";muon # hits;tracks", 60, 0, 60);
+  // h_muon_npxlayers = fs->make<TH1F>("h_muon_npxlayers", ";muon # pixel layers;tracks", 10, 0, 10);
+  // h_muon_nstlayers = fs->make<TH1F>("h_muon_nstlayers", ";muon # strip layers;tracks", 20, 0, 20);
+  // h_muon_nlayers = fs->make<TH1F>("h_muon_nlayers", ";muon # layers;tracks", 30, 0, 30);
  
-  h_electron_pt  = fs->make<TH1F>("h_electron_pt", ";electron p_{T} (GeV);electron/5 GeV", 40, 0, 200);
-  h_electron_eta = fs->make<TH1F>("h_electron_eta", ";electron #eta (rad);electron/.104", 50, -2.6, 2.6);
-  h_electron_phi = fs->make<TH1F>("h_electron_phi", ";electron #phi (rad);electron/.126", 50, -3.1416, 3.1416);
-  h_electron_dxy = fs->make<TH1F>("h_electron_dxy", ";electron dxy(PV) (cm);electron/50 #mum", 200, -0.5, 0.5);
-  h_electron_dxybs = fs->make<TH1F>("h_electron_dxybs", ";electron dxy(BS) (cm);electron/50 #mum", 200, -0.5, 0.5);
-  h_electron_dz  = fs->make<TH1F>("h_electron_dz",  ";electron dz (cm);electron/50 #mum", 200, -0.5, 0.5);
-   
+  // h_electron_pt  = fs->make<TH1F>("h_electron_pt", ";electron p_{T} (GeV);electron/5 GeV", 200, 0, 1000);
+  // h_electron_eta = fs->make<TH1F>("h_electron_eta", ";electron #eta (rad);electron/.104", 50, -2.6, 2.6);
+  // h_electron_phi = fs->make<TH1F>("h_electron_phi", ";electron #phi (rad);electron/.126", 50, -3.1416, 3.1416);
+  // h_electron_dxy = fs->make<TH1F>("h_electron_dxy", ";electron dxy(PV) (cm);electron/50 #mum", 200, -0.5, 0.5);
+  // h_electron_dxybs = fs->make<TH1F>("h_electron_dxybs", ";electron dxy(BS) (cm);electron/50 #mum", 200, -0.5, 0.5);
+  // h_electron_absdxybs = fs->make<TH1F>("h_electron_absdxybs", ";electron abs dxy(BS) (cm);electron/50 #mum", 400, 0, 2.0);
+  // h_electron_dz  = fs->make<TH1F>("h_electron_dz",  ";electron dz (cm);electron/50 #mum", 200, -0.5, 0.5);
+  // h_electron_absdz  = fs->make<TH1F>("h_electron_absdz",  ";electron abs dz (cm);electron/50 #mum", 400, 0, 2.0);
+  // h_electron_npxhits = fs->make<TH1F>("h_electron_npxhits", ";electron # pixel hits;tracks", 10, 0, 10);
+  // h_electron_nsthits = fs->make<TH1F>("h_electron_nsthits", ";electron # strip hits;tracks", 50, 0, 50);
+  // h_electron_nhits = fs->make<TH1F>("h_electron_nhits", ";electron # hits;tracks", 60, 0, 60);
+  // h_electron_npxlayers = fs->make<TH1F>("h_electron_npxlayers", ";electron # pixel layers;tracks", 10, 0, 10);
+  // h_electron_nstlayers = fs->make<TH1F>("h_electron_nstlayers", ";electron # strip layers;tracks", 20, 0, 20);
+  // h_electron_nlayers = fs->make<TH1F>("h_electron_nlayers", ";electron # layers;tracks", 30, 0, 30);
+
+  
+  //lepton pt change xrange to NOT include 0 bin
+  const char* ele_ex[4] = {"veto", "loose", "medium", "tight"};
+  for (int i = 0; i< 4; ++i) {
+    h_nelectrons_[i] = fs->make<TH1F>(TString::Format("h_nelectrons_%s", ele_ex[i]), TString::Format(";# of %s electrons;events", ele_ex[i]), 10, 0, 10);
+    h_nfullselel_[i] = fs->make<TH1F>(TString::Format("h_nfullselel_%s", ele_ex[i]), TString::Format(";# of base sel %s electrons;events", ele_ex[i]), 10, 0, 10);
+    h_electron_pt_[i] = fs->make<TH1F>(TString::Format("h_electron_pt_%s", ele_ex[i]), TString::Format(";pt of %s electrons;electron/5 GeV", ele_ex[i]), 200, 0, 1000);
+    h_electron_eta_[i] = fs->make<TH1F>(TString::Format("h_electron_eta_%s", ele_ex[i]), TString::Format(";%s electron #eta (rad);electron/.104", ele_ex[i]), 50, -2.6, 2.6);
+    h_electron_phi_[i] = fs->make<TH1F>(TString::Format("h_electron_phi_%s", ele_ex[i]), TString::Format( ";%s electron #phi (rad);electron/.126", ele_ex[i]),  50, -3.1416, 3.1416);
+    h_electron_iso_[i] = fs->make<TH1F>(TString::Format("h_electron_iso_%s", ele_ex[i]), TString::Format(";%s electron iso;electron/.04", ele_ex[i]), 50, 0, 2.0);
+    h_electron_absdxybs_[i] = fs->make<TH1F>(TString::Format("h_electron_absdxybs_%s", ele_ex[i]), TString::Format(";abs dxybs of %s electrons;electron/50 #mum", ele_ex[i]), 400, 0, 2.0);
+    h_electron_dxybs_[i] = fs->make<TH1F>(TString::Format("h_electron_dxybs_%s", ele_ex[i]), TString::Format(";dxybs of %s electrons;electron/50 #mum", ele_ex[i]), 400, -2.0, 2.0);
+    h_electron_nsigmadxy_[i] = fs->make<TH1F>(TString::Format("h_electron_nsigmadxy_%s", ele_ex[i]), TString::Format(";%s muon n#sigma(dxy);arb. units", ele_ex[i]), 400, -60, 60);
+    h_electron_absdz_[i] = fs->make<TH1F>(TString::Format("h_electron_absdz_%s", ele_ex[i]), TString::Format(";abs dz of %s electrons;electron/50 #mum", ele_ex[i]), 400, 0, 2.0);
+    h_electron_absdz_EB_[i] = fs->make<TH1F>(TString::Format("h_electron_absdz_EB_%s", ele_ex[i]), TString::Format(";abs dz of %s EB electrons;electron/50 #mum", ele_ex[i]), 400, 0, 2.0);
+    h_electron_absdz_EE_[i] = fs->make<TH1F>(TString::Format("h_electron_absdz_EE_%s", ele_ex[i]), TString::Format(";abs dz of %s EE electrons;electron/50 #mum", ele_ex[i]), 400, 0, 2.0);
+    h_electron_dz_[i] = fs->make<TH1F>(TString::Format("h_electron_dz_%s", ele_ex[i]), TString::Format(";dz of %s electrons;electron/50 #mum", ele_ex[i]), 400, -2.0, 2.0);
+    h_electron_dz_EB_[i] = fs->make<TH1F>(TString::Format("h_electron_dz_EB_%s", ele_ex[i]), TString::Format(";dz of %s EB electrons;electron/50 #mum", ele_ex[i]), 400, -2.0, 2.0);
+    h_electron_dz_EE_[i] = fs->make<TH1F>(TString::Format("h_electron_dz_EE_%s", ele_ex[i]), TString::Format(";dz of %s EE electrons;electron/50 #mum", ele_ex[i]), 400, -2.0, 2.0);
+    h_electron_x_[i] = fs->make<TH1F>(TString::Format("h_electron_x_%s", ele_ex[i]), TString::Format(";x of %s electrons;electron/100 #mum", ele_ex[i]), 400, -2, 2);
+    h_electron_y_[i] = fs->make<TH1F>(TString::Format("h_electron_y_%s", ele_ex[i]), TString::Format(";y of %s electrons;electron/100 #mum", ele_ex[i]), 400, -2, 2);
+    h_electron_z_[i] = fs->make<TH1F>(TString::Format("h_electron_z_%s", ele_ex[i]), TString::Format(";z of %s electrons;electron/100 #mum", ele_ex[i]), 400, -2, 2);
+    h_electron_lxy_[i] = fs->make<TH1F>(TString::Format("h_electron_lxy_%s", ele_ex[i]), TString::Format(";lxy of %s electrons;electron/50 #mum", ele_ex[i]), 400, 0, 2.0);
+    h_electron_l_[i] = fs->make<TH1F>(TString::Format("h_electron_l_%s", ele_ex[i]), TString::Format(";l of %s electrons;electron/50 #mum", ele_ex[i]), 400, 0, 2.0);
+    h_electron_npxhits_[i] = fs->make<TH1F>(TString::Format("h_electron_npxhits_%s", ele_ex[i]), TString::Format("; %s electron # pixel hits;tracks", ele_ex[i]), 10, 0, 10);
+    h_electron_nsthits_[i] = fs->make<TH1F>(TString::Format("h_electron_nsthits_%s", ele_ex[i]), TString::Format("; %s electron # strip hits;tracks", ele_ex[i]), 50, 0, 50);
+    h_electron_nhits_[i] = fs->make<TH1F>(TString::Format("h_electron_nhits_%s", ele_ex[i]), TString::Format("; %s electron # hits;tracks", ele_ex[i]), 60, 0, 60);
+    h_electron_npxlayers_[i] = fs->make<TH1F>(TString::Format("h_electron_npxlayers_%s", ele_ex[i]), TString::Format(";%s electron # pixel layers;tracks", ele_ex[i]), 10, 0, 10);
+    h_electron_nstlayers_[i] = fs->make<TH1F>(TString::Format("h_electron_nstlayers_%s", ele_ex[i]), TString::Format(";%s electron # strip layers;tracks", ele_ex[i]), 20, 0, 20);
+    h_electron_nlayers_[i] = fs->make<TH1F>(TString::Format("h_electron_nlayers_%s", ele_ex[i]), TString::Format("; %s electron # layers;tracks", ele_ex[i]), 30, 0, 30);
+    
+
+  }
+
+  const char* mu_ex[3] = {"loose", "medium", "tight"};
+  for (int i = 0; i < 3; ++i) {
+    h_nmuons_[i] = fs->make<TH1F>(TString::Format("h_nmuons_%s", mu_ex[i]), TString::Format(";# of %s muons;events", mu_ex[i]), 10, 0, 10);
+    h_nfullselmu_[i] = fs->make<TH1F>(TString::Format("h_nfullselmu_%s", mu_ex[i]), TString::Format(";# of base sel %s muons;events", mu_ex[i]), 10, 0, 10);
+    h_muon_pt_[i] = fs->make<TH1F>(TString::Format("h_muon_pt_%s", mu_ex[i]), TString::Format(";pt of %s muons;muon/5 GeV", mu_ex[i]), 200, 0, 1000);
+    h_muon_eta_[i] = fs->make<TH1F>(TString::Format("h_muon_eta_%s", mu_ex[i]), TString::Format("; %s muon #eta (rad);muon/.104", mu_ex[i]), 50, -2.6, 2.6);
+    h_muon_phi_[i] = fs->make<TH1F>(TString::Format("h_muon_phi_%s", mu_ex[i]), TString::Format("; %s muon #phi (rad);muon/.126", mu_ex[i]), 50, -3.1416, 3.1416);
+    h_muon_iso_[i] = fs->make<TH1F>(TString::Format("h_muon_iso_%s", mu_ex[i]), TString::Format(";%s muon iso;muon/.04", mu_ex[i]), 50, 0, 2.0);
+    h_muon_absdxybs_[i] = fs->make<TH1F>(TString::Format("h_muon_absdxybs_%s", mu_ex[i]), TString::Format(";abs dxybs of %s muons;muon/50 #mum", mu_ex[i]), 400, 0, 2.0);
+    h_muon_dxybs_[i] = fs->make<TH1F>(TString::Format("h_muon_dxybs_%s", mu_ex[i]), TString::Format(";dxybs of %s muons;muon/50 #mum", mu_ex[i]), 400, -2.0, 2.0);
+    h_muon_nsigmadxy_[i] = fs->make<TH1F>(TString::Format("h_muon_nsigmadxy_%s", mu_ex[i]), TString::Format(";%s muon n#sigma(dxy);arb. units", mu_ex[i]), 400, -60, 60);
+    h_muon_absdz_[i] = fs->make<TH1F>(TString::Format("h_muon_absdz_%s", mu_ex[i]), TString::Format(";abs dz of %s muons;muon/50 #mum", mu_ex[i]), 400, 0, 2.0);
+    h_muon_dz_[i] = fs->make<TH1F>(TString::Format("h_muon_dz_%s", mu_ex[i]), TString::Format(";dz of %s muons;muon/50 #mum", mu_ex[i]), 400, -2.0, 2.0);
+    h_muon_x_[i] = fs->make<TH1F>(TString::Format("h_muon_x_%s", mu_ex[i]), TString::Format(";x of %s muons;muon/100 #mum", mu_ex[i]), 400, -2, 2.);
+    h_muon_y_[i] = fs->make<TH1F>(TString::Format("h_muon_y_%s", mu_ex[i]), TString::Format(";y of %s muons;muon/100 #mum", mu_ex[i]), 400, -2, 2);
+    h_muon_z_[i] = fs->make<TH1F>(TString::Format("h_muon_z_%s", mu_ex[i]), TString::Format(";z of %s muons;muon/100 #mum", mu_ex[i]), 400, -2, 2);
+    h_muon_lxy_[i] = fs->make<TH1F>(TString::Format("h_muon_lxy_%s", mu_ex[i]), TString::Format(";lxy of %s muons;muon/50 #mum", mu_ex[i]), 400, 0, 2.0);
+    h_muon_l_[i] = fs->make<TH1F>(TString::Format("h_muon_l_%s", mu_ex[i]), TString::Format(";l of %s muons;muon/50 #mum", mu_ex[i]), 400, 0, 2.0);
+    h_muon_npxhits_[i] = fs->make<TH1F>(TString::Format("h_muon_npxhits_%s", mu_ex[i]), TString::Format("; %s muon # pixel hits;tracks", mu_ex[i]), 10, 0, 10);
+    h_muon_nsthits_[i] = fs->make<TH1F>(TString::Format("h_muon_nsthits_%s", mu_ex[i]), TString::Format("; %s muon # strip hits;tracks", mu_ex[i]), 50, 0, 50);
+    h_muon_nhits_[i] = fs->make<TH1F>(TString::Format("h_muon_nhits_%s", mu_ex[i]), TString::Format("; %s muon # hits;tracks", mu_ex[i]),  60, 0, 60);
+    h_muon_npxlayers_[i] = fs->make<TH1F>(TString::Format("h_muon_npxlayers_%s", mu_ex[i]), TString::Format("; %s muon # pixel layers;tracks", mu_ex[i]), 10, 0, 10);
+    h_muon_nstlayers_[i] = fs->make<TH1F>(TString::Format("h_muon_nstlayers_%s", mu_ex[i]), TString::Format("; %s muon # strip layers;tracks", mu_ex[i]), 20, 0, 20);
+    h_muon_nlayers_[i] = fs->make<TH1F>(TString::Format("h_muon_nlayers_%s", mu_ex[i]), TString::Format("; %s muon # layers;tracks", mu_ex[i]), 30, 0, 30);
+  }
+
+  //  for nsel leptons; as stated above 
+  const char* sel_ex[6] = {"loose_emu", "med_emu", "tight_emu", "tight_e_med_mu", "tight_e_loose_mu", "med_e_loose_mu"};
+  for (int i = 0; i < 6; ++i) {
+    h_nselleptons_[i] = fs->make<TH1F>(TString::Format("h_nselleptons_%s", sel_ex[i]), TString::Format(";# of %s;events", sel_ex[i]), 10, 0, 10);
+    h_nfullsellep_[i] = fs->make<TH1F>(TString::Format("h_fullsellep_%s", sel_ex[i]), TString::Format(";# of base sel %s;events", sel_ex[i]), 10, 0, 10);
+  }
   
 }
 
@@ -361,6 +564,9 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   h_pvntracks->Fill(mevent->pv_ntracks, w);
   h_pvscore->Fill(mevent->pv_score, w);
   h_pvrho->Fill(mevent->pv_rho(), w);
+  if (mevent->pv_ntracks < 20) {
+    h_pvrho_track20->Fill(mevent->pv_ntracks, w);
+  }
   for (auto h : { h_pvrho, h_pvrhowide }) h->Fill(mevent->pv_rho(), w);
   for (size_t i = 0; i < mevent->npv; ++i) {
     const float z = mevent->pv_z(i);
@@ -422,26 +628,242 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   h_nmuons->Fill(mevent->nmuons(), w);
   h_nelectrons->Fill(mevent->nelectrons(), w);
   h_nleptons->Fill(mevent->nlep(), w);
+  //initialize number of muons that pass : loose, medium, tight (similar for electrons, but add veto)
+  std::vector<int> nmuons{ 0, 0, 0 };
+  std::vector<int> nelectrons{ 0, 0, 0, 0 };
 
+  //same as above but now with partial object selection (pt not matched)
+  std::vector<int> nselmu{ 0, 0, 0 };
+  std::vector<int> nselel{ 0, 0, 0, 0 };
+
+  std::vector<int> nseldispl50_mu{ 0, 0, 0 };
+  std::vector<int> nseldispl50_el{ 0, 0, 0, 0 };
+  std::vector<int> nseldispl100_mu{ 0, 0, 0 };
+  std::vector<int> nseldispl100_el{ 0, 0, 0, 0 };
+
+  //initialize number of muons, electrons that have |dxy| > 50 um
+  int ndispl50_mu = 0;
+  int ndispl50_el = 0;
+  int ndispl100_mu = 0;
+  int ndispl100_el = 0;
+  
+  //placeholder 2d vector to be able to fill nsellepton histo for all the different cases; 1st is el, 2nd is mu
+  std::vector<std::vector<int>> nlept_idx{
+  					  { 0, 1 },
+  					  { 1, 2 },
+  					  { 2, 3 },
+  					  { 1, 3 },
+  					  { 0, 3 },
+  					  { 0, 2 } };
+
+    
+  
   for (int imu = 0; imu < mevent->nmuons(); ++imu) {
-    h_muon_pt->Fill(mevent->muon_pt[imu], w);
-    h_muon_eta->Fill(mevent->muon_eta[imu], w);
-    h_muon_phi->Fill(mevent->muon_phi[imu], w);
-    h_muon_dxy->Fill(mevent->muon_dxy[imu], w);
-    h_muon_dxybs->Fill(mevent->muon_dxybs[imu], w);
-    h_muon_dz->Fill(mevent->muon_dz[imu], w);
+    // h_muon_pt->Fill(mevent->muon_pt[imu], w);
+    // h_muon_eta->Fill(mevent->muon_eta[imu], w);
+    // h_muon_phi->Fill(mevent->muon_phi[imu], w);
+    // h_muon_dxy->Fill(mevent->muon_dxy[imu], w);
+    // h_muon_dxybs->Fill(mevent->muon_dxybs[imu], w);
+    // h_muon_dz->Fill(mevent->muon_dz[imu], w);
+    // h_muon_absdxybs->Fill(abs(mevent->muon_dxybs[imu]), w);
+    // h_muon_absdz->Fill(abs(mevent->muon_dz[imu]), w);
+    
+    if (abs(mevent->muon_dxybs[imu]) >= 0.005)
+      ndispl50_mu +=1;
+    if (abs(mevent->muon_dxybs[imu]) >= 0.01)
+      ndispl100_mu +=1;
+    
+
+    for (int j = 0; j < 3; ++j) {
+
+      if (mevent->muon_ID[imu][j] == 1) {
+      	nmuons[j] += 1;
+      	if (mevent->muon_pt[imu] > 26) {
+      	  if (abs(mevent->muon_eta[imu]) < 2.4) {
+      	    if (mevent->muon_iso[imu] < 0.15) {
+      	    nselmu[j] += 1;
+	    if (abs(mevent->muon_dxybs[imu]) >= 0.005)
+	      nseldispl50_mu[j] +=1;
+	    if (abs(mevent->muon_dxybs[imu]) >= 0.01)
+	      nseldispl100_mu[j] +=1;
+      	    }
+      	  }
+      	}
+	      
+	
+	h_muon_pt_[j]->Fill(mevent->muon_pt[imu], w);
+	h_muon_eta_[j]->Fill(mevent->muon_eta[imu], w);
+	h_muon_phi_[j]->Fill(mevent->muon_phi[imu], w);
+	h_muon_iso_[j]->Fill(mevent->muon_iso[imu], w);
+	h_muon_absdxybs_[j]->Fill(abs(mevent->muon_dxybs[imu]), w);
+	h_muon_dxybs_[j]->Fill(mevent->muon_dxybs[imu], w);
+	h_muon_nsigmadxy_[j]->Fill(mevent->muon_dxybs[imu] / mevent->muon_dxyerr[imu], w);
+	h_muon_absdz_[j]->Fill(abs(mevent->muon_dz[imu]), w);
+	h_muon_dz_[j]->Fill(mevent->muon_dz[imu], w);
+	h_muon_x_[j]->Fill(mevent->muon_x[imu], w);
+	h_muon_y_[j]->Fill(mevent->muon_y[imu], w);
+	h_muon_z_[j]->Fill(mevent->muon_z[imu], w);
+	h_muon_lxy_[j]->Fill(mevent->muon_lxy[imu], w);
+	h_muon_l_[j]->Fill(mevent->muon_l[imu], w);
+	h_muon_npxhits_[j]->Fill(mevent->muon_npxhits(imu), w);
+	h_muon_nsthits_[j]->Fill(mevent->muon_nsthits(imu), w);
+	h_muon_nhits_[j]->Fill(mevent->muon_nhits(imu) , w);
+	h_muon_nstlayers_[j]->Fill(mevent->muon_nstlayers(imu), w);
+	h_muon_npxlayers_[j]->Fill(mevent->muon_npxlayers(imu), w);
+	h_muon_nlayers_[j]->Fill(mevent->muon_nlayers(imu), w);
+      }
+    }
+	
   }
+  for (int j = 0; j < 3; ++j) {
+    h_nmuons_[j]->Fill(nmuons[j], w);
+    h_nfullselmu_[j]->Fill(nselmu[j], w);
+  }
+  h_ndispl50_muons->Fill(ndispl50_mu, 1);
+  h_ndispl100_muons->Fill(ndispl100_mu, 1);
+  h_nseldispl50_muons->Fill(nseldispl50_mu[1], 1);
+  h_nseldispl100_muons->Fill(nseldispl100_mu[1], 1);
+  
   for (int iel = 0; iel < mevent->nelectrons(); ++iel) {
-    h_electron_pt->Fill(mevent->electron_pt[iel], w);
-    h_electron_eta->Fill(mevent->electron_eta[iel], w);
-    h_electron_phi->Fill(mevent->electron_phi[iel], w);
-    h_electron_dxy->Fill(mevent->electron_dxy[iel], w);
-    h_electron_dxybs->Fill(mevent->electron_dxybs[iel], w);
-    h_electron_dz->Fill(mevent->electron_dz[iel], w);
+    // h_electron_pt->Fill(mevent->electron_pt[iel], w);
+    // h_electron_eta->Fill(mevent->electron_eta[iel], w);
+    // h_electron_phi->Fill(mevent->electron_phi[iel], w);
+    // h_electron_dxy->Fill(mevent->electron_dxy[iel], w);
+    // h_electron_dxybs->Fill(mevent->electron_dxybs[iel], w);
+    // h_electron_dz->Fill(mevent->electron_dz[iel], w);
+    // h_electron_absdxybs->Fill(abs(mevent->electron_dxybs[iel]), w);
+    // h_electron_absdz->Fill(abs(mevent->electron_dz[iel]), w);
+
+
+    if (abs(mevent->electron_dxybs[iel]) >= 0.005)
+      ndispl50_el +=1;
+    if (abs(mevent->electron_dxybs[iel]) >= 0.01)
+      ndispl100_el +=1;
+    
+    for (int j = 0; j < 4; ++j) {
+
+      if (mevent->electron_ID[iel][j] == 1) {
+      	nelectrons[j] +=1;
+      	if (mevent->electron_pt[iel] > 35) {
+      	  if (abs(mevent->electron_eta[iel]) < 2.5) {
+      	    if (mevent->electron_iso[iel] < 0.1) {
+      	      nselel[j] +=1;
+	      if (abs(mevent->electron_dxybs[iel]) >= 0.005)
+		nseldispl50_el[j] +=1;
+	      if (abs(mevent->electron_dxybs[iel]) >= 0.01)
+		nseldispl100_el[j] +=1;
+      	    }
+      	  }
+      	}
+	    
+	
+        h_electron_pt_[j]->Fill(mevent->electron_pt[iel], w);
+	h_electron_eta_[j]->Fill(mevent->electron_eta[iel], w);
+	h_electron_phi_[j]->Fill(mevent->electron_phi[iel], w);
+	h_electron_iso_[j]->Fill(mevent->electron_iso[iel], w);	
+	h_electron_absdxybs_[j]->Fill(abs(mevent->electron_dxybs[iel]), w);
+	h_electron_dxybs_[j]->Fill(mevent->electron_dxybs[iel], w);
+	h_electron_nsigmadxy_[j]->Fill(mevent->electron_dxybs[iel] / mevent->electron_dxyerr[iel], w);
+	h_electron_absdz_[j]->Fill(abs(mevent->electron_dz[iel]), w);
+	h_electron_dz_[j]->Fill(mevent->electron_dz[iel], w);
+	h_electron_x_[j]->Fill(mevent->electron_x[iel], w);
+	h_electron_y_[j]->Fill(mevent->electron_y[iel], w);
+	h_electron_z_[j]->Fill(mevent->electron_z[iel], w);
+	h_electron_lxy_[j]->Fill(mevent->electron_lxy[iel], w);
+	h_electron_l_[j]->Fill(mevent->electron_l[iel], w);
+	h_electron_npxhits_[j]->Fill(mevent->electron_npxhits(iel), w);
+	h_electron_nsthits_[j]->Fill(mevent->electron_nsthits(iel), w);
+	h_electron_nhits_[j]->Fill(mevent->electron_nhits(iel), w);
+	h_electron_nstlayers_[j]->Fill(mevent->electron_nstlayers(iel), w);
+	h_electron_npxlayers_[j]->Fill(mevent->electron_npxlayers(iel), w);
+	h_electron_nlayers_[j]->Fill(mevent->electron_nlayers(iel), w);
+	if (mevent->electron_isEB[iel] == 1) {
+	  h_electron_absdz_EB_[j]->Fill(abs(mevent->electron_dz[iel]), w);
+	  h_electron_dz_EB_[j]->Fill(mevent->electron_dz[iel], w);
+	}
+
+	else if (mevent->electron_isEE[iel] == 1) {
+	  h_electron_absdz_EE_[j]->Fill(abs(mevent->electron_dz[iel]), w);
+	  h_electron_dz_EE_[j]->Fill(mevent->electron_dz[iel], w);
+	}
+      }
+    }
   }
+  
+  for (int j = 0; j < 4; ++j) {
+    h_nelectrons_[j]->Fill(nelectrons[j], w);
+    h_nfullselel_[j]->Fill(nselel[j], w);
+  }
+  h_ndispl50_electrons->Fill(ndispl50_el, w);
+  h_ndispl100_electrons->Fill(ndispl100_el, w);
+  h_nseldispl50_electrons->Fill(nseldispl50_el[3], w);
+  h_nseldispl100_electrons->Fill(nseldispl100_el[3], w);
+  
+  h_ndispl50_leptons->Fill(ndispl50_el + ndispl50_mu, w);
+  h_ndispl100_leptons->Fill(ndispl100_el + ndispl100_mu, w);
+  h_nseldispl50_leptons->Fill(nseldispl50_el[3] + nseldispl50_mu[1], w);
+  h_nseldispl100_leptons->Fill(nseldispl100_el[3] + nseldispl100_mu[1], w);
+  
+  // to get the correct muon, electron -- have to reference the lepton index
+  for (int l = 0; l < 6; ++l) {
+      h_nselleptons_[l]->Fill((nmuons[nlept_idx[l][0]] + nelectrons[nlept_idx[l][1]]), w);
+      h_nfullsellep_[l]->Fill((nselmu[nlept_idx[l][0]] + nselel[nlept_idx[l][1]]), w);
+      
+  }
+
+
+  // loop over jets and selected electrons/muons to obtain deltaR (similar to finding deltaR btwn jetpair)
+  // only doing tight electrons and medium muons ...
+  //also looking at deltaR and deltaphi between the 2 highest jets and the highest e/mu
+  int highjet = 0;
+  for (size_t ijet = 0; ijet < mevent->jet_id.size(); ++ijet) {
+    if (mevent->jet_pt[ijet] < mfv::min_jet_pt)
+      continue;
+    highjet +=1;
+    int highel = 0;
+    for (int iselel = 0; iselel < mevent->nelectrons(); ++iselel) {
+      if (mevent->electron_ID[iselel][3] == 1) {
+	if (mevent->electron_pt[iselel] > 35) {
+	  if (abs(mevent->electron_eta[iselel]) < 2.5) {
+	    if (mevent->electron_iso[iselel] < 0.1) {
+	      highel +=1;
+	      h_jetel_pairdphi->Fill(reco::deltaPhi(mevent->jet_phi[ijet], mevent->electron_phi[iselel]), w);
+	      h_jetel_pairdr->Fill(reco::deltaR(mevent->jet_eta[ijet], mevent->jet_phi[ijet], mevent->electron_eta[iselel], mevent->electron_phi[iselel]), w);
+	      if (highjet < 3 && highel < 2) {
+		h_highjetel_pairdphi->Fill(reco::deltaPhi(mevent->jet_phi[ijet], mevent->electron_phi[iselel]), w);
+		h_highjetel_pairdr->Fill(reco::deltaR(mevent->jet_eta[ijet], mevent->jet_phi[ijet], mevent->electron_eta[iselel], mevent->electron_phi[iselel]), w);
+	      }
+	    }
+	  }
+	}
+      }
+    }
+    int highmu = 0;
+    for (int iselmu = 0; iselmu < mevent->nmuons(); ++iselmu) {
+      if (mevent->muon_ID[iselmu][1] == 1) {
+	if (mevent->muon_pt[iselmu] > 26) {
+	  if (abs(mevent->muon_eta[iselmu]) < 2.4) {
+	    if (mevent->muon_iso[iselmu] < 0.15) {
+	      highmu +=1;
+	      h_jetmu_pairdphi->Fill(reco::deltaPhi(mevent->jet_phi[ijet], mevent->muon_phi[iselmu]), w);
+	      h_jetmu_pairdr->Fill(reco::deltaR(mevent->jet_eta[ijet], mevent->jet_phi[ijet], mevent->muon_eta[iselmu], mevent->muon_phi[iselmu]), w);
+	      if (highjet < 3 && highmu < 2) {
+		h_highjetmu_pairdphi->Fill(reco::deltaPhi(mevent->jet_phi[ijet], mevent->muon_phi[iselmu]), w);
+		h_highjetmu_pairdr->Fill(reco::deltaR(mevent->jet_eta[ijet], mevent->jet_phi[ijet], mevent->muon_eta[iselmu], mevent->muon_phi[iselmu]), w);
+	      }
+	    }
+	  }
+	}
+      }
+    }
+  }
+
+
+
+
   // 
-    
-    
+  
+  
   h_met->Fill(mevent->met(), w);
   h_metphi->Fill(mevent->metphi(), w);
 

@@ -81,12 +81,14 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
   int nmuons = 0, nelectrons = 0;
 
   for (const pat::Muon& muon : *muons)
-    if (muon.passed(reco::Muon::CutBasedIdMedium) && muon.pt() > min_muon_pt)
+    //  if (muon.passed(reco::Muon::CutBasedIdMedium) && muon.pt() > min_muon_pt)
+    if (muon.pt() > min_muon_pt && abs(muon.eta()) < 2.4)
       ++nmuons;
 
   for (const pat::Electron& electron : *electrons) {
-    bool passloose = electron.electronID("cutBasedElectronID-Fall17-94X-V2-loose");
-    if (passloose && electron.pt() > min_electron_pt)
+    // bool passloose = electron.electronID("cutBasedElectronID-Fall17-94X-V2-loose");
+    // if (passloose && electron.pt() > min_electron_pt)
+    if (electron.pt() > min_electron_pt && abs(electron.eta()) < 2.5)
       ++nelectrons;
   }
   const bool leptons_pass = nmuons + nelectrons >= min_nleptons;

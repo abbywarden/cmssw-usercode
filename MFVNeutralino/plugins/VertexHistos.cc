@@ -38,10 +38,21 @@ class MFVVertexHistos : public edm::EDAnalyzer {
 
   TH2F* h_sv_bs2derr_bsbs2ddist[sv_num_indices];
   TH2F* h_pvrho_bsbs2ddist[sv_num_indices];
+  TH2F* h_pvrho20_bsbs2ddist[sv_num_indices];
+  //2D histos to get a better understanding of isolation and bs2derr 
+  TH2F* h_sv_bs2derr_pfmuiso[sv_num_indices];
+  TH2F* h_sv_bs2derr_pfeliso[sv_num_indices];
+  TH2F* h_sv_bs2derr_jetel_deltaR[sv_num_indices];
+  TH2F* h_sv_bs2derr_jetmu_deltaR[sv_num_indices];
+  TH2F* h_sv_bs2derr_nbjet[sv_num_indices];
+  
+  //TH1F* h_sv_all_ntrackssharedwpvsmall;
+  //TH1F* h_sv_all_fractrackssharedwpvsmall;
 
   TH1F* h_w;
   TH1F* h_nsv;
   TH2F* h_sv_xy;
+  //TH2F* h_sv_nm1_xy;
   TH2F* h_sv_yz;
   TH2F* h_sv_xz;
   TH2F* h_sv_rz;
@@ -58,6 +69,12 @@ class MFVVertexHistos : public edm::EDAnalyzer {
   TH1F* h_svdist2d_no_shared_jets;
   TH1F* h_absdeltaphi01_shared_jets;
   TH1F* h_absdeltaphi01_no_shared_jets;
+
+  // static const int MAX_NSV = 3;
+  // TH1F* h_eldist2d_sv[3];
+  // TH1F* h_eldist3d_sv[3];
+  // TH1F* h_mudist2d_sv[3];
+  // TH1F* h_mudist3d_sv[3];
 
   TH1F* h_sv_track_weight[sv_num_indices];
   TH1F* h_sv_track_q[sv_num_indices];
@@ -138,7 +155,9 @@ MFVVertexHistos::MFVVertexHistos(const edm::ParameterSet& cfg)
   hs.add("max_nm1_refit_dist2", "maximum n-1 refit distance (2D) (cm)", 1000, 0, 1);
   hs.add("max_nm1_refit_distz", "maximum n-1 refit z distance (cm)", 1000, 0, 1);
 
-  hs.add("nlep", "# leptons", 10, 0, 10);
+  // hs.add("nlep", "# leptons", 10, 0, 10);
+  //  hs.add("nmuons", "# of muons", 5, 0, 5);
+  //  hs.add("nelectrons", "# of electrons", 5, 0, 5);
 
   hs.add("ntracks",                       "# of tracks/SV",                                                               40,    0,      40);
   hs.add("ntracksptgt3",                  "# of tracks/SV w/ p_{T} > 3 GeV",                                              40,    0,      40);
@@ -189,9 +208,11 @@ MFVVertexHistos::MFVVertexHistos(const edm::ParameterSet& cfg)
 					  
   hs.add("sumpt2",                        "SV #Sigma p_{T}^{2} (GeV^2)",                                                  50,    0,    10000);
 
-  hs.add("ntrackssharedwpv",  "number of tracks shared with the PV", 30, 0, 30);
+  hs.add("ntrackssharedwpv",  "number of tracks shared with the PV", 20, 0, 20);
+  hs.add("ntrackssharedwpvsmall", "number of tracks shared with the PV w/ < 20 tracks", 20, 0, 20);
   hs.add("ntrackssharedwpvs", "number of tracks shared with any PV", 30, 0, 30);
   hs.add("fractrackssharedwpv",  "fraction of tracks shared with the PV", 41, 0, 1.025);
+  hs.add("fractrackssharedwpvsmall", "fraction of tracks shared with the PV w/ < 20 tracks", 41, 0, 1.025);
   hs.add("fractrackssharedwpvs", "fraction of tracks shared with any PV", 41, 0, 1.025);
   hs.add("npvswtracksshared", "number of PVs having tracks shared",  30, 0, 30);
   
@@ -319,6 +340,15 @@ MFVVertexHistos::MFVVertexHistos(const edm::ParameterSet& cfg)
     h_sv_bs2derr_bsbs2ddist[j] = fs->make<TH2F>(TString::Format("h_sv_%s_bs2derr_bsbs2ddist", exc), TString::Format("%s SV;dist2d(SV, beamspot) (cm);#sigma(dist2d(SV, beamspot)) (cm)", exc), 500, 0, 2.5, 100, 0, 0.05);
     h_pvrho_bsbs2ddist[j] = fs->make<TH2F>(TString::Format("h_pvrho_sv_%s_bsbs2ddist", exc), TString::Format("%s SV;dist2d(SV, beamspot) (cm);dist2d(PV, beamspot)) (cm)", exc), 5000, 0, 2.5, 200, 0, 0.1);
 
+    //same as above but only filling pvrho for pv with less than 20 tracks (and others)
+    h_pvrho20_bsbs2ddist[j] = fs->make<TH2F>(TString::Format("h_pvrho20_sv_%s_bsbs2ddist", exc), TString::Format("%s SV;dist2d(SV, beamspot) (cm);dist2d(PV_smtrks, beamspot)) (cm)", exc), 500, 0, 2.5, 200, 0, 0.1);
+    
+    h_sv_bs2derr_pfmuiso[j] = fs->make<TH2F>(TString::Format("h_sv_%s_bs2derr_pfmuiso", exc), TString::Format("%s SV; muon pfiso;#sigma(dist2d(SV, beamspot)) (cm)", exc), 50, 0, 2.5, 100, 0, 0.05);
+    h_sv_bs2derr_pfeliso[j] = fs->make<TH2F>(TString::Format("h_sv_%s_bs2derr_pfeliso", exc), TString::Format("%s SV; ele pfiso;#sigma(dist2d(SV, beamspot)) (cm)", exc), 50, 0, 2.5, 100, 0, 0.05);
+    h_sv_bs2derr_jetel_deltaR[j] = fs->make<TH2F>(TString::Format("h_sv_%s_bs2derr_jetel_deltaR", exc), TString::Format("%s SV; deltaR (jet-ele);#sigma(dist2d(SV, beamspot)) (cm)", exc), 100, 0, 6.3, 100, 0, 0.05);
+    h_sv_bs2derr_jetmu_deltaR[j] = fs->make<TH2F>(TString::Format("h_sv_%s_bs2derr_jetmu_deltaR", exc), TString::Format("%s SV; deltaR (jet-mu);#sigma(dist2d(SV, beamspot)) (cm)", exc), 100, 0, 6.3, 100, 0, 0.05);
+    h_sv_bs2derr_nbjet[j] = fs->make<TH2F>(TString::Format("h_sv_%s_bs2derr_nbjet", exc), TString::Format("%s SV; # of bjets;#sigma(dist2d(SV, beamspot)) (cm)", exc), 10, 0, 10, 100, 0, 0.05);
+       
     h_sv_track_weight[j] = fs->make<TH1F>(TString::Format("h_sv_%s_track_weight", exc), TString::Format(";%s SV tracks weight;arb. units", exc), 21, 0, 1.05);
     h_sv_track_q[j] = fs->make<TH1F>(TString::Format("h_sv_%s_track_q", exc), TString::Format(";%s SV tracks charge;arb. units.", exc), 4, -2, 2);
     h_sv_track_pt[j] = fs->make<TH1F>(TString::Format("h_sv_%s_track_pt", exc), TString::Format(";%s SV tracks p_{T} (GeV);arb. units", exc), 200, 0, 200);
@@ -343,6 +373,7 @@ MFVVertexHistos::MFVVertexHistos(const edm::ParameterSet& cfg)
   }
 
   h_sv_xy = fs->make<TH2F>("h_sv_xy", ";SV x (cm);SV y (cm)", 100, -4, 4, 100, -4, 4);
+  // h_sv_nm1_xy = fs->make<TH2F>("h_sv_nm1_xy", ";SV x (cm);SV y (cm)", 100, -4, 4, 100, -4, 4);
   h_sv_xz = fs->make<TH2F>("h_sv_xz", ";SV x (cm);SV z (cm)", 100, -4, 4, 100, -25, 25);
   h_sv_yz = fs->make<TH2F>("h_sv_yz", ";SV y (cm);SV z (cm)", 100, -4, 4, 100, -25, 25);
   h_sv_rz = fs->make<TH2F>("h_sv_rz", ";SV r (cm);SV z (cm)", 100, -4, 4, 100, -25, 25);
@@ -359,6 +390,15 @@ MFVVertexHistos::MFVVertexHistos(const edm::ParameterSet& cfg)
   h_svdist2d_no_shared_jets = fs->make<TH1F>("h_svdist2d_no_shared_jets", ";dist2d(sv #0, #1) (cm);arb. units", 500, 0, 1);
   h_absdeltaphi01_shared_jets = fs->make<TH1F>("h_absdeltaphi01_shared_jets", ";abs(delta(phi of sv #0, phi of sv #1));arb. units", 316, 0, 3.16);
   h_absdeltaphi01_no_shared_jets = fs->make<TH1F>("h_absdeltaphi01_no_shared_jets", ";abs(delta(phi of sv #0, phi of sv #1));arb. units", 316, 0, 3.16);
+
+  // for (int i = 0; i < 3; ++i) {
+  //   // TString ivertex = i == MAX_NSV ? TString("all") : TString::Format("%i", i);
+  //   h_eldist2d_sv[i] = fs->make<TH1F>(TString::Format("h_eldist2d_sv_%i", i), TString::Format(";dist2d(sv #%i, el) (cm);arb. units", i), 500, 0, 1);
+  //   h_mudist2d_sv[i] = fs->make<TH1F>(TString::Format("h_mudist2d_sv_%i", i), TString::Format(";dist2d(sv #%i, mu) (cm);arb. units", i), 500, 0, 1);
+  //   h_eldist3d_sv[i] = fs->make<TH1F>(TString::Format("h_eldist3d_sv_%i", i), TString::Format(";dist3d(sv #%i, el) (cm);arb. units", i), 500, 0, 1);
+  //   h_mudist3d_sv[i] = fs->make<TH1F>(TString::Format("h_mudist3d_sv_%i", i), TString::Format(";dist3d(sv #%i, mu) (cm);arb. units", i), 500, 0, 1);
+  // }
+  
 }
 
 void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
@@ -387,6 +427,7 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     const int ntracks = aux.ntracks();
 
     h_sv_xy->Fill(aux.x - mevent->bsx_at_z(aux.z), aux.y - mevent->bsy_at_z(aux.z), w);
+    // h_sv_nm1_xy->Fill(aux.nm1_x - mevent->bsx_at_z(aux.z), aux.nm1_y - mevent->bsy_at_z(aux.z), w);    
     h_sv_xz->Fill(aux.x - mevent->bsx_at_z(aux.z), aux.z - bsz, w);
     h_sv_yz->Fill(aux.y - mevent->bsy_at_z(aux.z), aux.z - bsz, w);
     h_sv_rz->Fill(mevent->bs2ddist(aux) * (aux.y - mevent->bsy_at_z(aux.z) >= 0 ? 1 : -1), aux.z - bsz, w);
@@ -451,7 +492,9 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
         {"max_nm1_refit_dist2", max_nm1_refit_dist2},
         {"max_nm1_refit_distz", max_nm1_refit_distz},
 
-        {"nlep",                    aux.which_lep.size()},
+	// {"nlep",                    aux.which_lep.size()},
+	//	{"nmuons",                  aux.nmuons()},
+	//	{"nelectrons",              aux.nelectrons()},
         {"ntracks",                 ntracks},
         {"ntracksptgt3",            aux.ntracksptgt(3)},
         {"ntracksptgt10",           aux.ntracksptgt(10)},
@@ -502,8 +545,10 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
         {"sumpt2",                  aux.sumpt2()},
 
         {"ntrackssharedwpv", aux.ntrackssharedwpv()},
+	{"ntrackssharedwpvsmall", mevent->pv_ntracks < 20 ? aux.ntrackssharedwpv() : -1},
         {"ntrackssharedwpvs", aux.ntrackssharedwpvs()},
         {"fractrackssharedwpv", float(aux.ntrackssharedwpv()) / ntracks},
+       	{"fractrackssharedwpvsmall", mevent->pv_ntracks < 20 ? float(aux.ntrackssharedwpv()) / ntracks : -1},
         {"fractrackssharedwpvs", float(aux.ntrackssharedwpvs()) / ntracks},
         {"npvswtracksshared", aux.npvswtracksshared()},
 
@@ -635,6 +680,59 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     fill(h_sv_bs2derr_bsbs2ddist, isv, mevent->bs2ddist(aux), aux.bs2derr, w);
     fill(h_pvrho_bsbs2ddist, isv, mevent->bs2ddist(aux), mevent->pv_rho(), w);
 
+    if (mevent->pv_ntracks < 20) {
+      fill(h_pvrho20_bsbs2ddist, isv, mevent->bs2ddist(aux), mevent->pv_rho(), w);
+    }
+
+    for (int imu=0; imu < mevent->nmuons(); ++imu) {
+
+      if (mevent->muon_ID[imu][1] == 1) {
+	if (mevent->muon_pt[imu] > 26) {
+	  if (abs(mevent->muon_eta[imu]) < 2.4) {
+	    if (mevent->muon_iso[imu] < 0.15) {
+	    
+	      fill(h_sv_bs2derr_pfmuiso, isv, mevent->muon_iso[imu], aux.bs2derr, w);
+
+	      for (size_t ijet = 0; ijet < mevent->jet_id.size(); ++ijet) {
+		if (mevent->jet_pt[ijet] < mfv::min_jet_pt)
+		  continue;
+		fill(h_sv_bs2derr_jetmu_deltaR, isv, reco::deltaR(mevent->jet_eta[ijet], mevent->jet_phi[ijet], mevent->muon_eta[imu], mevent->muon_phi[imu]), aux.bs2derr, w);
+	      }
+	    }
+	  }
+	}
+      }
+    }
+    for (int iel =0; iel < mevent->nelectrons(); ++iel) {
+
+      if (mevent->electron_ID[iel][3] == 1) {
+	if (mevent->electron_pt[iel] > 35) {
+	  if (abs(mevent->electron_eta[iel]) < 2.4) {
+	    if (mevent->electron_iso[iel] < 0.1) {
+
+	      fill(h_sv_bs2derr_pfeliso, isv, mevent->electron_iso[iel], aux.bs2derr, w);
+
+	      for (size_t ijet = 0; ijet < mevent->jet_id.size(); ++ijet) {
+		if (mevent->jet_pt[ijet] < mfv::min_jet_pt)
+		  continue;
+		fill(h_sv_bs2derr_jetel_deltaR, isv, reco::deltaR(mevent->jet_eta[ijet], mevent->jet_phi[ijet], mevent->electron_eta[iel], mevent->electron_phi[iel]), aux.bs2derr, w);
+	      }
+	    }
+	  }
+	}
+      }
+    }
+    const int ibtag = 2;
+    int bjet = 0;
+    for (size_t ijet = 0; ijet < mevent->jet_id.size(); ++ijet) {
+      if (mevent->jet_pt[ijet] < mfv::min_jet_pt)
+	continue;
+      if (mevent->is_btagged(ijet, ibtag)) {
+	bjet +=1;
+      }
+    }
+    fill(h_sv_bs2derr_nbjet, isv, bjet, aux.bs2derr, w);
+
     for (int i = 0; i < ntracks; ++i) {
       fill(h_sv_track_weight, isv, aux.track_weight(i), w);
       fill(h_sv_track_q, isv, aux.track_q(i), w);
@@ -728,6 +826,53 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     fill(h_sv, isv, v, w);
   }
 
+  //////////////////////////////////////////////////////////////////////
+
+  /// only consider the first 3 secondary vertices? 0, 1, 2 ///
+  // if (nsv >= 1) {
+  //   for (int i = 0; i < 3; ++i) {
+
+  //     const MFVVertexAux& sv = auxes->at(i);
+   
+  //     std::vector<float> el_2d; 
+  //     std::vector<float> el_3d;
+  //     std::vector<float> mu_2d;
+  //     std::vector<float> mu_3d;
+    
+  //     for (int iel =0; iel < mevent->nelectrons(); ++iel) {
+  // 	float svdist2d_el = mag(sv.x - mevent->electron_x[iel],
+  // 				sv.y - mevent->electron_y[iel]);
+  // 	float svdist3d_el = mag(sv.x - mevent->electron_x[iel],
+  // 				sv.y - mevent->electron_y[iel],
+  // 				sv.z - mevent->electron_z[iel]);
+  // 	el_2d.push_back(svdist2d_el);
+  // 	el_3d.push_back(svdist3d_el);
+  //     }
+
+  //     for (size_t idx =0; idx < el_2d.size(); ++idx) {
+  // 	h_eldist2d_sv[i]->Fill(el_2d[idx], w);
+  // 	h_eldist3d_sv[i]->Fill(el_3d[idx], w);
+  //     }
+
+  //     for (int imu =0; imu < mevent->nmuons(); ++imu) {
+  // 	float svdist2d_mu = mag(sv.x - mevent->muon_x[imu],
+  // 				sv.y - mevent->muon_y[imu]);
+  // 	float svdist3d_mu = mag(sv.x - mevent->muon_x[imu],
+  // 				sv.y - mevent->muon_y[imu],
+  // 				sv.z - mevent->muon_z[imu]);
+  // 	mu_2d.push_back(svdist2d_mu);
+  // 	mu_3d.push_back(svdist3d_mu);
+  //     }
+      
+  //     for (size_t idx = 0; idx < mu_2d.size(); ++idx) {
+  // 	h_mudist2d_sv[i]->Fill(mu_2d[idx], w);
+  // 	h_mudist3d_sv[i]->Fill(mu_2d[idx], w);
+  //     }
+  //   }
+  // }
+    
+      
+	  
   //////////////////////////////////////////////////////////////////////
 
   if (nsv >= 2) {

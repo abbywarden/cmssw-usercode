@@ -4,11 +4,15 @@ from JMTucker.Tools.Year import year
 #ntuple version for ht trigger
 #ntuple_version_ = 'V28'
 #ntuple version for lepton trigger
-ntuple_version_ = 'V28Lep'
+ntuple_version_ = 'V30Lep'
+#iso version has the different isolation variables separated 
+#ntuple_version_ = 'V30Lepiso'
 use_btag_triggers = False
 use_Lepton_triggers = True
 #if use_btag_triggers : 
 #    ntuple_version_ += "B" # for "Btag triggers"; also includes DisplacedDijet triggers
+
+#version use:  only trigger (no requirements on leptons) 
 ntuple_version_use = ntuple_version_ + 'm'
 dataset = 'ntuple' + ntuple_version_use.lower()
 

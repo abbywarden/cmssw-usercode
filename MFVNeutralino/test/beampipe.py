@@ -2,7 +2,8 @@ from JMTucker.Tools.ROOTTools import *
 from JMTucker.Tools.Samples import *
 
 set_style()
-ps = plot_saver(plot_dir('beampipe_nobssub'), size=(600,600), log=False, pdf=False)
+#ps = plot_saver(plot_dir('beampipe_nobssub'), size=(600,600), log=False, pdf=False)
+ps = plot_saver(plot_dir('beampipe'), size=(600, 600), log = False, pdf = False)
 
 # need to run non-beamspot subtracted minitrees or modify the detree below to undo the bs subtraction, it only matters slightly with 2017/8 beamspots
 # beampipe fits from https://indico.cern.ch/event/750054/contributions/3181607/attachments/1740361/2816115/2018.10.17_2018Data_kropiv.pdf slide 8
@@ -24,29 +25,35 @@ def circles(sample):
     new_cut_mc2017 = new_cut(beampipe_mc2017)
     new_cut_mc2018 = new_cut(beampipe_mc2018)
 
-    if sample.startswith('JetHT2017'):
-        return [old_cut_circle, new_cut_2017 + new_cut_style, beampipe_2017 + beampipe_style]
-    elif sample.startswith('JetHT2018'):
-        return [old_cut_circle, new_cut_2018 + new_cut_style, beampipe_2018 + beampipe_style]
-    else:
-        assert 'qcdht' in sample or 'ttbarht' in sample or sample.startswith('MC201')
-        if sample.endswith('2017'):
-            return [old_cut_circle, new_cut_mc2017 + new_cut_style, beampipe_mc2017 + beampipe_style]
-        elif sample.endswith('2018'):
-            return [old_cut_circle, new_cut_mc2018 + new_cut_style, beampipe_mc2018 + beampipe_style]
+    # if sample.startswith('JetHT2017'):
+    #     return [old_cut_circle, new_cut_2017 + new_cut_style, beampipe_2017 + beampipe_style]
+    # elif sample.startswith('JetHT2018'):
+    #     return [old_cut_circle, new_cut_2018 + new_cut_style, beampipe_2018 + beampipe_style]
+    # else:
+    #     assert 'qcdht' in sample or 'ttbarht' in sample or sample.startswith('MC201')
+    #     if sample.endswith('2017'):
+    #         return [old_cut_circle, new_cut_mc2017 + new_cut_style, beampipe_mc2017 + beampipe_style]
+    #     elif sample.endswith('2018'):
+    #         return [old_cut_circle, new_cut_mc2018 + new_cut_style, beampipe_mc2018 + beampipe_style]
+    if sample.endswith('2018'):
+        return [old_cut_circle, new_cut_mc2018 + new_cut_style, beampipe_mc2018 + beampipe_style]
 
     return []
 
-if 1:
-    data_samples = ['JetHT2017', 'JetHT2018'] 
-    mc_samples = ['MC2017', 'MC2018']
-else:
-    data_samples = [s.name for s in data_samples_2017 + data_samples_2018]
-    mc_samples = [s.name for s in qcd_samples_2017 + ttbar_samples_2017 + qcd_samples_2018 + ttbar_samples_2018]
+#if 1:
+#    data_samples = ['JetHT2017', 'JetHT2018'] 
+#    mc_samples = ['MC2017', 'MC2018']
+#else:
+   # data_samples = [s.name for s in data_samples_2017 + data_samples_2018]
+   # mc_samples = [s.name for s in qcd_samples_2017 + ttbar_samples_2017 + qcd_samples_2018 + ttbar_samples_2018]
 
-for sample in data_samples + mc_samples:
-    f = ROOT.TFile('/uscms_data/d2/tucker/crab_dirs/MiniTreeV25m_nofiducial_nobssub/%s.root' % sample)
-    t = f.Get('mfvMiniTreeNtk3/t')
+mc_samples = [s.name for s in mfv_stoplb_samples_2018 + mfv_stopld_samples_2018]
+    
+#for sample in data_samples + mc_samples:
+for sample in mc_samples: 
+    #f = ROOT.TFile('/uscms_data/d2/tucker/crab_dirs/MiniTreeV25m_nofiducial_nobssub/%s.root' % sample)
+    f = ROOT.TFile('/afs/hep.wisc.edu/home/acwarden/crabdirs/MiniTreeV30Lepm/%s.root' % sample)
+    t = f.Get('mfvMiniTreeMinNtk4/t')
     l = list(detree(t, 'x0:y0', 'dist0>0.3', float))
 
     g = tgraph(l)

@@ -6,9 +6,10 @@ from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, d
 #sample_files(process, 'qcdht2000_2017' if is_mc else 'JetHT2017B', dataset, 1)
 
 #dataset = dataset + '_noef'
-#version = version + '_NoEF'
+#version = version + '_nodxycut'
 
 sample_files(process, 'mfv_stoplb_tau001000um_M1000_2018', dataset, 1)
+#sample_files(process, 'ttbar_2018', dataset, 1)
 
 tfileservice(process, 'minitree.root')
 cmssw_from_argv(process)
@@ -21,7 +22,8 @@ if not is_mc and use_btag_triggers :
     del process.pMiniTreeNtk3or4
     del process.pMiniTree
 
-
+#Oct 28th -- creating minitree w/ lepton selection : loose ele , medium muon 
+#Dec 6th -- creating minitree w/ lepton selection : tight ele, medium muon
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
 
@@ -29,7 +31,7 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = pick_samples(dataset, qcd=True, ttbar=False, all_signal=True, data=False, bjet=True) # no data currently; no sliced ttbar since inclusive is used
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     else :
-        samples = pick_samples(dataset, qcd=False, ttbar=False, all_signal=True, data=False, bjet=False, wjet=False, diboson=False)
+        samples = pick_samples(dataset, qcd=False, ttbar=False, all_signal=True, data=False, wjet=False, diboson=False, leptonic = False, drellyan=False)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     set_splitting(samples, dataset, 'minitree', data_json=json_path('ana_2017p8.json'))
 

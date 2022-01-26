@@ -4,13 +4,19 @@ namespace mfv {
   // be sure these end in _v
   const char* hlt_paths[mfv::n_hlt_paths] = {
     "HLT_PFHT1050_v",
-    "HLT_Ele35_WPTight_Gsf_v",
+
+    //2018 lepton triggers
+    "HLT_Ele32_WPTight_Gsf_v",
     "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
     "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v",
-    "HLT_IsoMu27_v",
+    "HLT_IsoMu24_v",
     "HLT_Mu50_v",
-    "HLT_Ele15_IsoVVVL_PFHT450_v",
-    "HLT_Mu15_IsoVVVL_PFHT450_v",
+
+    //2018 displaced dilepton paths
+    "HLT_Mu43NoFiltersNoVtx_Photon43_CaloIdL_v",
+    "HLT_Diphoton30_22_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90_v",
+    "HLT_DoublePhoton70_v",
+    "HLT_DoubleMu43NoFiltersNoVtx_v",
 
     // 2017 bjet triggers
     "HLT_DoublePFJets100MaxDeta1p6_DoubleCaloBTagCSV_p33_v",

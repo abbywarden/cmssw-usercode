@@ -6,6 +6,7 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
+//#include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "FWCore/Common/interface/TriggerNames.h"
 #include "FWCore/Framework/interface/EDProducer.h"
@@ -19,6 +20,7 @@
 #include "TrackingTools/Records/interface/TransientTrackRecord.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
+#include "TrackingTools/IPTools/interface/IPTools.h"
 #include "JMTucker/MFVNeutralinoFormats/interface/VertexAux.h"
 #include "JMTucker/MFVNeutralino/interface/VertexAuxSorter.h"
 #include "JMTucker/MFVNeutralino/interface/VertexerParams.h"
@@ -46,6 +48,8 @@ class MFVVertexAuxProducer : public edm::EDProducer {
   const edm::EDGetTokenT<reco::VertexCollection> vertex_token;
   const std::string sv_to_jets_src;
   edm::EDGetTokenT<mfv::JetVertexAssociation> sv_to_jets_token[mfv::NJetsByUse];
+  // edm::EDGetTokenT<mfv::LepVertexAssociation> sv_to_el_token[mfv::NElByUse];
+  // edm::EDGetTokenT<mfv::LepVertexAssociation> sv_to_mu_token[mfv::NMuByUse];
   jmt::TrackRefGetter track_ref_getter;
   const mfv::VertexAuxSorter sorter;
   const bool verbose;
@@ -55,6 +59,10 @@ class MFVVertexAuxProducer : public edm::EDProducer {
   VertexDistance3D distcalc_3d;
   Measurement1D gen_dist(const reco::Vertex&, const std::vector<double>& gen, const bool use3d);
   Measurement1D miss_dist(const reco::Vertex&, const reco::Vertex&, const math::XYZTLorentzVector& mom);
+  
+  //  std::pair<bool, Measurement1D> absoluteTransverseImpactParameter(const reco::TransientTrack&, const reco::Vertex&);
+							   
+  
 };
 
 MFVVertexAuxProducer::MFVVertexAuxProducer(const edm::ParameterSet& cfg)
@@ -66,6 +74,7 @@ MFVVertexAuxProducer::MFVVertexAuxProducer(const edm::ParameterSet& cfg)
     gen_vertices_token(consumes<std::vector<double> >(cfg.getParameter<edm::InputTag>("gen_vertices_src"))),
     vertex_token(consumes<reco::VertexCollection>(cfg.getParameter<edm::InputTag>("vertex_src"))),
     sv_to_jets_src(cfg.getParameter<std::string>("sv_to_jets_src")),
+    //sv_to_mu_src(cfg.getParameter<std::string.("sv_to_mu_src")),
     //sv_to_jets_token(consumes<mfv::JetVertexAssociation>(edm::InputTag("sv_to_jets_src"))),
     track_ref_getter(cfg.getParameter<std::string>("@module_label"),
                          cfg.getParameter<edm::ParameterSet>("track_ref_getter"),
@@ -79,6 +88,7 @@ MFVVertexAuxProducer::MFVVertexAuxProducer(const edm::ParameterSet& cfg)
 
   produces<std::vector<MFVVertexAux> >();
 }
+
 
 Measurement1D MFVVertexAuxProducer::gen_dist(const reco::Vertex& sv, const std::vector<double>& gen, const bool use3d) {
   jmt::MinValue d;
@@ -108,7 +118,11 @@ Measurement1D MFVVertexAuxProducer::miss_dist(const reco::Vertex& v0, const reco
                        2*d(1) - 2*n_dot_d*n(1),
                        2*d(2) - 2*n_dot_d*n(2));
   return Measurement1D(val, sqrt(ROOT::Math::Similarity(jac, v0.covariance() + v1.covariance())) / 2 / val);
+
 }
+
+
+
 
 void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
   if (verbose) std::cout << "MFVVertexAuxProducer " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
@@ -120,6 +134,8 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
 
   edm::ESHandle<TransientTrackBuilder> tt_builder;
   setup.get<TransientTrackRecord>().get("TransientTrackBuilder", tt_builder);
+
+    
 
   //////////////////////////////////////////////////////////////////////
 
@@ -149,10 +165,11 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
 
   edm::Handle<pat::MuonCollection> muons;
   event.getByToken(muons_token, muons);
-
+ 
   edm::Handle<pat::ElectronCollection> electrons;
   event.getByToken(electrons_token, electrons);
-
+  
+ 
   //////////////////////////////////////////////////////////////////////
 
   edm::Handle<std::vector<double> > gen_vertices;
@@ -181,7 +198,7 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
     const reco::VertexRef svref(secondary_vertices, isv);
     MFVVertexAux& aux = auxes->at(isv);
     aux.which = int2uchar(isv);
-    aux.which_lep.clear();
+    
 
     aux.x = sv.x();
     aux.y = sv.y();
@@ -196,13 +213,43 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
 
     aux.chi2 = sv.chi2();
     aux.ndof_ = int2uchar_clamp(int(sv.ndof()));
+    
+    std::vector<reco::TransientTrack> mu_ttks, el_ttks;
+    for (const pat::Muon& muon : *muons) {
+      if (!muon.innerTrack().isNull()) {
+	reco::TransientTrack ttrack = tt_builder->build(muon.innerTrack());
+	mu_ttks.push_back(ttrack);
+      }
+      else if (!muon.outerTrack().isNull()) {
+	reco::TransientTrack ttrack = tt_builder->build(muon.outerTrack());
+	mu_ttks.push_back(ttrack);
+      }
+    }
+    for (const pat::Electron& electron : *electrons) {
+      if (!electron.gsfTrack().isNull()) {
+	reco::TransientTrack ttrack = tt_builder->build(electron.gsfTrack());
+	el_ttks.push_back(ttrack);
+      }
+    }
+	
+    const size_t nel = el_ttks.size();
+    const size_t nmu = mu_ttks.size();
 
+    aux.nmuons = nmu;
+    aux.nelectrons = nel;
+
+    
     std::vector<reco::TransientTrack> ttks, rs_ttks;
     for (auto it = sv.tracks_begin(), ite = sv.tracks_end(); it != ite; ++it)
       if (sv.trackWeight(*it) >= mfv::track_vertex_weight_min) {
         ttks.push_back(tt_builder->build(**it));
         rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it).rescaled_tk));
+
+	
       }
+    aux.n_rsttks = rs_ttks.size();
+    aux.n_ttks = ttks.size();
+    
     if (rs_ttks.size() > 1) {
       reco::Vertex rs_sv(TransientVertex(kv_reco->vertex(rs_ttks)));
       if (rs_sv.isValid()) {
@@ -404,16 +451,22 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
       if (sv.trackWeight(tri) < mfv::track_vertex_weight_min)
         continue;
 
-      assert(muons->size() <= 128);
-      assert(electrons->size() <= 128);
-      for (size_t i = 0, ie = muons->size(); i < ie; ++i)
-        if (muons->at(i).track() == trref)
-          aux.which_lep.push_back(i);
-      if (aux.which_lep.size() == 0) // if a muon matched, don't check for electrons
-        for (size_t i = 0, ie = electrons->size(); i < ie; ++i)
-          if (electrons->at(i).closestCtfTrackRef() == trref)
-            aux.which_lep.push_back(i | (1<<7));
-
+      //needs work?? 
+      // assert(muons->size() <= 128);
+      // assert(electrons->size() <= 128);
+      // for (size_t i = 0, ie = muons->size(); i < ie; ++i) {
+      //   if (muons->at(i).track() == trref) {
+      // 	  aux.nmuons.push_back(i);
+      // 	}
+      // }
+      // }
+      // if (aux.which_lep.size() == 0) // if a muon matched, don't check for electrons
+      //   for (size_t i = 0, ie = electrons->size(); i < ie; ++i)
+      //     if (electrons->at(i).closestCtfTrackRef() == trref)
+      //       aux.which_lep.push_back(i | (1<<7));
+  
+	    
+     
       costhtkmomvtxdisps.push_back(jmt::costh3(tri->momentum(), pv2sv));
 
       const uchar nhitsbehind = 0; //int2uchar(tracker_extents.numHitsBehind(tri->hitPattern(), sv_r, sv_z));
@@ -448,6 +501,8 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
       aux.track_pt_err.push_back(tri->ptError());
       aux.track_eta.push_back(tri->eta());
       aux.track_phi.push_back(tri->phi());
+
+      
     }
 
     jmt::StatCalculator costhtkmomvtxdisp(costhtkmomvtxdisps);
@@ -495,9 +550,10 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
           aux.missdistpv[i] = mdpv.value();
           aux.missdistpverr[i] = mdpv.error();
         }
-      }
+      } 
     }
 
+    
     if (verbose) printf("aux finish isv %i at %f %f %f ntracks %i bs2ddist %f bs2derr %f\n", isv, aux.x, aux.y, aux.z, aux.ntracks(), aux.bs2ddist, aux.bs2derr);
   }
 

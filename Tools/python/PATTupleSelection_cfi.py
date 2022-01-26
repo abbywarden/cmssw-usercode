@@ -6,6 +6,8 @@ import FWCore.ParameterSet.Config as cms
 # impact parameter cuts not included on leptons, and conversion veto not included on electrons
 # electron H/E cut uses fixed rho number, MFVEventProducer does it right
 
+#leptoncuts are no longer used in this way; keeping for reference Oct. 2021
+
 jet_cuts = (
     'pt > 20',
     'abs(eta) < 2.5',
@@ -16,6 +18,7 @@ jet_cuts = (
     '(abs(eta) >= 2.4 || (chargedEmEnergyFraction < 0.80 && chargedHadronEnergyFraction > 0. && chargedMultiplicity > 0))',
     )
 
+#TightMuon but without dxy cuts
 muon_cuts = (
     'isPFMuon',
     'isGlobalMuon',
@@ -26,8 +29,12 @@ muon_cuts = (
     'numberOfMatchedStations > 1',
     )
 
+
+
 electron_rho95 = 43. # this is the 95% point for double_fixedGridRhoFastjetCentral__RECO.obj from one file of QCD HT2000, a wjets file wants 37 but that rho distribution has a peak at 0 (?)
 
+
+#barrel 92X-tuned selection (veto)
 electron_EB_cuts = (
     'full5x5_sigmaIetaIeta < 0.0128',
     'abs(deltaEtaSuperClusterTrackAtVtx - superCluster.eta + superCluster.seed.eta) < 0.00523',
@@ -36,7 +43,7 @@ electron_EB_cuts = (
     'abs(1/ecalEnergy - eSuperClusterOverP/ecalEnergy) < 0.193',
     'gsfTrack.hitPattern.numberOfAllHits("MISSING_INNER_HITS") <= 2',
     )
-
+#endcap; 92X-tuned selection (veto)
 electron_EE_cuts = (
     'full5x5_sigmaIetaIeta < 0.0445',
     'abs(deltaEtaSuperClusterTrackAtVtx - superCluster.eta + superCluster.seed.eta) < 0.00984',

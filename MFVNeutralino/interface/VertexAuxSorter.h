@@ -6,7 +6,7 @@
 namespace mfv {
   class VertexAuxSorter {
   public:
-    enum sort_by_this { sort_by_mass, sort_by_ntracks, sort_by_ntracks_then_mass };
+    enum sort_by_this { sort_by_mass, sort_by_ntracks, sort_by_ntracks_then_mass, sort_by_mass_then_ntracks };
 
     VertexAuxSorter(const std::string&);
     void sort(VertexAuxCollection&) const;
@@ -19,6 +19,11 @@ namespace mfv {
       if (a.ntracks() == b.ntracks())
         return by_mass(a,b);
       return by_ntracks(a,b);
+    }
+    static bool by_mass_then_ntracks(const MFVVertexAux& a, const MFVVertexAux& b) {
+      if (a.mass[0] == b.mass[0])
+        return by_ntracks(a,b);
+      return by_mass(a,b);
     }
   };
 }

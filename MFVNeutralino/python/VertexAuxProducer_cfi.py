@@ -14,6 +14,7 @@ mfvVerticesAuxTmp = cms.EDProducer('MFVVertexAuxProducer',
                                    sv_to_jets_src = cms.string('dummy'),
                                    track_ref_getter = jmtTrackRefGetter,
                                    sort_by = cms.string('ntracks_then_mass'),
+                                   #sort_by = cms.string('mass_then_ntracks'),
                                    verbose = cms.untracked.bool(False),
                                    )
 

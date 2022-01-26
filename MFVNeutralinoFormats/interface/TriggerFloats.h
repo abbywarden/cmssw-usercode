@@ -33,7 +33,7 @@ namespace mfv {
     float htall;
     float ht;
     float htptgt30;
-
+    
     TriggerFloats()
     : l1htt(-1), myhtt(-1), myhttwbug(-1), hltht(-1),
       L1decisions(n_l1_paths, -1),

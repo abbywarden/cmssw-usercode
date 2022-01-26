@@ -28,8 +28,10 @@ mindbv = typed_from_argv(float, name='mindbv')
 maxdbv = typed_from_argv(float, name='maxdbv')
 
 which = typed_from_argv(int, -1)
-ntks = ('mfvMiniTreeNtk3', 'mfvMiniTreeNtk4', 'mfvMiniTree')
-ntks_to_trees = {3: 'mfvMiniTreeNtk3', 4: 'mfvMiniTreeNtk4', 5: 'mfvMiniTree', 7: 'mfvMiniTreeNtk3or4'}
+#ntks = ('mfvMiniTreeNtk3', 'mfvMiniTreeNtk4', 'mfvMiniTree')
+ntks = ('mfvMiniTreeMinNtk3', 'mfvMiniTreeMinNtk4', 'mfvMiniTree')
+#ntks_to_trees = {3: 'mfvMiniTreeNtk3', 4: 'mfvMiniTreeNtk4', 5: 'mfvMiniTree', 7: 'mfvMiniTreeNtk3or4'}
+ntks_to_trees = {3: 'mfvMiniTreeNtk3', 4: 'mfvMiniTreeNtk4', 5: 'mfvMiniTree'}
 trees_to_ntks = {v:k for k,v in ntks_to_trees.iteritems()}
 if which != -1:
     if which not in ntks_to_trees:
@@ -49,10 +51,14 @@ for x in sys.argv[1:]:
         print 'using', x2
         fns.extend(glob(x2))
 if not fns:
-    from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version
-    gg = '/uscms_data/d2/tucker/crab_dirs/MiniTree%s/*.root' % version
+    version = 'V29Lepm_nodxycut'
+    #from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version
+   # gg = '/uscms_data/d2/tucker/crab_dirs/MiniTree%s/*.root' % version
+    gg = '/afs/hep.wisc.edu/home/acwarden/crabdirs/MiniTree%s/*.root' % version
+        
     print 'using default', gg
     fns = glob(gg)
+    
 
 def fn2sname(fn):
     return os.path.basename(fn).replace('.root', '')
@@ -132,11 +138,31 @@ for ntk in ntks:
     print ntk
     print fmt % ('sample', 'nevents', 'weight', 'f1vb', 'rn1v', 'unc', 'wn1v', 'unc', 'f2vb', 'rn2v', 'unc', 'wn2v', 'unc')
 
+#     latex_table = r''' 
+
+# \usepackage{multirow}
+# \usepackage{lmodern}
+# \usepackage[T1]{fontenc}
+# \usepackage{textcomp}
+# \begin{tabular} { |p{7cm}||p{5cm}|p{5cm}|  }
+# \hline
+# \multicolumn{3}{|c|}{ Weighted N\string_SV } \\ 
+# \hline 
+# Sample Name& 1vtx %s& 2vtx %s \\
+# \hline
+#     '''
+
+#     latex_table_end = '''
+# \end{tabular}
+#     '''
+
     raw_n1v, sum_n1v, var_n1v, sum_n1vb, raw_n2v, sum_n2v, var_n2v, sum_n2vb = 0, 0, 0, 0, 0, 0, 0, 0
     seen_bkg, seen_data = False, False
 
     weighted = []
+    table_entries = ''
     for fn in fns:
+        #print fn
         if yearcheck and str(year) not in fn:
             continue
 
@@ -151,6 +177,7 @@ for ntk in ntks:
             name = fn.replace(snames[sname], '').replace('.root', '')
         else:
             name = sname
+           # name = sname.replace('_', '\string_')
 
         is_sig = sname.startswith('mfv_')
         is_data = sname.startswith('JetHT') or sname.startswith('SingleMuon') or sname.startswith('SingleElectron')
@@ -189,6 +216,8 @@ for ntk in ntks:
 
                 x = (r1v, r1v**0.5, w*n1v, w*en1v), (r2v, r2v**0.5, w*n2v, w*en2v)
                 weighted.append((w*n1v, w*en1v, w*n2v, w*en2v))
+                
+                #old print 
                 print fmt % (name,
                              '%.0f' % sample.nevents(fn),
                              '%9.3g' % w,
@@ -203,6 +232,14 @@ for ntk in ntks:
                              '%9.2f' % x[1][2],
                              '%9.2f' % x[1][3],
                              )
+
+                #new print to immediately be placed in a latex table
+                # table_entries += "%s & %.2f \pm %.2f & %.2f \pm %.2f\\\ \n" % (name, x[0][2], x[0][3], x[1][2], x[1][3])
+                # table_entries += "\hline \n"
+            
+
+                
+                
         else:
             print '%36s  n1v = %9.2f  n2v = %9.2f' % (name, n1v, n2v)
 
@@ -216,6 +253,9 @@ for ntk in ntks:
             var_n2v += (en2v * w)**2
             sum_n2vb += n2vb * w
 
+   # print latex_table % (ntk, ntk) + table_entries + latex_table_end
+    
+    
     if len(weighted) == 2:
         (n1v1, en1v1, n2v1, en2v1), (n1v2, en1v2, n2v2, en2v2) = weighted
         ratn1 = (-1, -1) if n1v1 == 0 else interval_to_vpme(*propagate_ratio(n1v2, n1v1, en1v2, en1v1))

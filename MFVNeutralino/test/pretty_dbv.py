@@ -21,12 +21,10 @@ ttbar_samples = Samples.ttbar_samples_2017
 signal_sample = Samples.mfv_neu_tau001000um_M0800_2017
 data_samples = Samples.data_samples_2017
 
-background_samples = ttbar_samples + qcd_samples
-for s in qcd_samples:
-    s.join_info = True, 'Multijet events', ROOT.kBlue-9
-for s in ttbar_samples:
-    s.join_info = True, 't#bar{t}', ROOT.kBlue-7
 
+background_samples = ttbar_samples + qcd_samples
+
+    
 signal_samples = [signal_sample]
 signal_sample.nice_name = 'Multijet signal: #sigma = 1 fb,\\c#tau = 1 mm, M = 800 GeV'
 signal_sample.color = 8

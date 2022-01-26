@@ -2,11 +2,12 @@
 
 import os
 from JMTucker.Tools.ROOTTools import *
+from JMTucker.Tools import Sample
 from JMTucker.Tools import Samples
 from JMTucker.MFVNeutralino.PerSignal import PerSignal
 
 set_style()
-version = 'V27Lepm'
+version = 'V30Lepm'
 ps = plot_saver(plot_dir('sigeff_%s' % version), size=(600,600), pdf=True, log=False)
 
 #multijet = Samples.mfv_signal_samples_2017
@@ -20,15 +21,17 @@ for sample in stoplb + stopld:
         print 'no', sample.name
         continue
     f = ROOT.TFile(fn)
-    t = f.Get('mfvMiniTree/t')
+    t = f.Get('mfvMiniTreeMinNtk4/t')
     hr = draw_hist_register(t, True)
     cut = 'nvtx>=2' # && svdist > 0.04'
     h = hr.draw('weight', cut, binning='1,0,1', goff=True)
     num, _ = get_integral(h)
-    den = Samples.norm_from_file(f)
+    print num
+    den = Sample.norm_from_file(f)
+    print den
     sample.y, sample.yl, sample.yh = clopper_pearson(num, den) # ignore integral != entries, just get central value right
     print '%26s: efficiency = %.3f (%.3f, %.3f)' % (sample.name, sample.y, sample.yl, sample.yh)
-
+       
 per = PerSignal('efficiency', y_range=(0.,1.05))
 
 #per.add(multijet, title='#tilde{N} #rightarrow tbs')

@@ -2,6 +2,9 @@
 #define JMTucker_Tools_TrackRefGetter_h
 
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
+#include "DataFormats/PatCandidates/interface/Electron.h"
+
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "FWCore/Framework/interface/ConsumesCollector.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -25,9 +28,14 @@ namespace jmt {
   public:
     TrackRefGetter(const std::string& label, const edm::ParameterSet&, edm::ConsumesCollector&&);
     std::vector<reco::TrackRef> tracks(const edm::Event&, const pat::Jet&);
+    std::vector<reco::TrackRef> eltracks(const edm::Event&, const pat::Electron&);
+    std::vector<reco::TrackRef> mutracks(const edm::Event&, const pat::Muon&);
     std::vector<std::pair<reco::TrackRef,int>> tracks(const edm::Event&, const reco::VertexRef&);
 
     bool has_track(const edm::Event&, const pat::Jet&, const reco::TrackRef&);
+    bool has_track(const edm::Event&, const pat::Electron&, const reco::TrackRef&);
+    bool has_track(const edm::Event&, const pat::Muon&, const reco::TrackRef&);
+
     int  has_track(const edm::Event&, const reco::VertexRef&, const reco::TrackRef&);
   };
 }

@@ -9,7 +9,12 @@ from JMTucker.Tools.general import mkdirs_if_needed, popen, save_git_status, int
 
 if not os.environ.has_key('SCRAM_ARCH') or not os.environ.has_key('CMSSW_VERSION'):
     raise EnvironmentError('CMSSW environment not set?')
+#currently (11.21) need to force the use of IPv4 to fix "No servers are available to read the file" 
+# thus export XRD_NETWORKSTACK
 
+## having problems again... 12/12
+## unsure about the recent OSG_major requirement on my jobs (when I do condor_q analyze I see a set of requirements
+## and OSglibc is one so... here goes nothing 
 class CondorSubmitter:
     sh_template = '''#!/bin/bash
 
@@ -22,6 +27,7 @@ echo realjob $realjob job $job start at $(date)
 
 export SCRAM_ARCH=__SCRAM_ARCH__
 source /cvmfs/cms.cern.ch/cmsset_default.sh
+export XRD_NETWORKSTACK=IPv4
 
 scram project CMSSW __CMSSW_VERSION__ 2>&1 > /dev/null
 scramexit=$?
@@ -92,6 +98,8 @@ if [[ $xrdcp_problem -ne 0 ]]; then
 fi
 ''' # 60307 will show up as unix code 147
     #including request_memory A.Warden
+
+    ## add requirement?????? 
     jdl_template = '''
 universe = vanilla
 Executable = __SH_FN__
@@ -100,6 +108,7 @@ Output = stdout.$(Process)
 Error = stderr.$(Process)
 Log = log.$(Process)
 request_memory = 2 GB
+requirements = TARGET.HAS_OSG_WN_CLIENT =?= TRUE
 stream_output = false
 stream_error = false
 notification = never

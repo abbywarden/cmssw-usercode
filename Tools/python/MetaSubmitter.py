@@ -209,6 +209,7 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
             'qcdht1000_2018': 11,
             'qcdht1500_2018': 11,
             'qcdht2000_2018': 11,
+            'qcdmupt15_2018': 1,
             'ttbar_2018': 22,
             'ttbarht0600_2018': 8,
             'ttbarht0800_2018': 8,
@@ -219,6 +220,12 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
             sample.set_curr_dataset(dataset)
             sample.split_by = 'files'
             sample.files_per = d.get(sample.name, 10000)
+           # name = sample.name
+
+            # if 'qcdmupt15' in name:
+            #     sample.split_by = 'events'
+
+            # sample.files_per, sample.events_per = d.get(name, (10000, 100000))
 
     elif jobtype == 'ntuple' or jobtype == 'trackmover':
         # Shed/presel_splitting.py
@@ -275,10 +282,16 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
                     sample.events_per /= 3
 
     elif jobtype == 'default':
+        d = {
+            'qcdmupt15_2018': 1,
+            }
+        
         for sample in samples:
             sample.set_curr_dataset(dataset)
             sample.split_by = 'files'
-            sample.files_per = default_files_per 
+            
+            sample.files_per = d.get(sample.name, default_files_per)
+            
 
     else:
         raise ValueError("don't know anything about jobtype %s" % jobtype)

@@ -9,15 +9,15 @@ mfvEventFilter = cms.EDFilter('MFVEventFilter',
                               min_pt_for_ht = cms.double(40),
                               min_ht = cms.double(1200),
                               muons_src = cms.InputTag('selectedPatMuons'),
-                              min_muon_pt = cms.double(24),
+                              min_muon_pt = cms.double(5),
                               electrons_src = cms.InputTag('selectedPatElectrons'),
-                              min_electron_pt = cms.double(32),
-                              min_nleptons = cms.int32(1),
+                              min_electron_pt = cms.double(5),
+                              min_nleptons = cms.int32(0),
                               debug = cms.untracked.bool(False),
                               )
 
 mfvEventFilterJetsOnly = mfvEventFilter.clone(mode = 'jets only')
-mfvEventFilterLeptonsOnly = mfvEventFilter.clone(mode = 'leptons only', min_ht = cms.double(-1), min_njets = cms.int32(2))
+mfvEventFilterLeptonsOnly = mfvEventFilter.clone(mode = 'leptons only', min_ht = cms.double(-1), min_njets = cms.int32(1), min_pt_for_ht = cms.double(0))
 mfvEventFilterHTORBjetsORDisplacedDijet = mfvEventFilter.clone(mode = 'HT OR bjets OR displaced dijet', min_ht = cms.double(-1))
 mfvEventFilterBjetsORDisplacedDijetVetoHT = mfvEventFilter.clone(mode = 'bjets OR displaced dijet veto HT', min_ht = cms.double(-1))
 

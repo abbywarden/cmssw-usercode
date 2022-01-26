@@ -1,0 +1,208 @@
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdht0700_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdht1000_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdht1500_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdht2000_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_ttbar_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_ttbarht0600_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_ttbarht0800_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_ttbarht1200_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_ttbarht2500_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau001000um_M1000_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau010000um_M1000_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau100000um_M1000_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau001000um_M1200_2018[0m
+[33mwarning: # files 490 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau010000um_M1200_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau100000um_M1200_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau001000um_M1400_2018[0m
+[33mwarning: # files 480 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau010000um_M1400_2018[0m
+[33mwarning: # files 480 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau100000um_M1400_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau001000um_M1600_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau010000um_M1600_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau100000um_M1600_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau001000um_M1800_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_zz_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau100000um_M1800_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau001000um_M0200_2018[0m
+[33mwarning: missing /afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau001000um_M0200_2018/publish_8.txt[0m
+[33mwarning: # files 499 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau010000um_M0200_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau100000um_M0200_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau001000um_M0400_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau010000um_M0400_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau100000um_M0400_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau001000um_M0600_2018[0m
+[33mwarning: # files 499 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau010000um_M0600_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau100000um_M0600_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau001000um_M0800_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau010000um_M0800_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau100000um_M0800_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau001000um_M1000_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau010000um_M1000_2018[0m
+[33mwarning: # files 485 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau100000um_M1000_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau001000um_M1200_2018[0m
+[33mwarning: # files 490 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau010000um_M1200_2018[0m
+[33mwarning: # files 490 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau100000um_M1200_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau001000um_M1400_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau010000um_M1400_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau100000um_M1400_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau001000um_M1600_2018[0m
+[33mwarning: # files 490 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau010000um_M1600_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau001000um_M1800_2018[0m
+[33mwarning: # files 470 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau010000um_M1800_2018[0m
+[33mwarning: # files 480 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau100000um_M1800_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau001000um_M0200_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau010000um_M0200_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau100000um_M0200_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_ww_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau100000um_M1600_2018[0m
+[33mwarning: # files 430 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau010000um_M0400_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau100000um_M0400_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau001000um_M0600_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau010000um_M0600_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau100000um_M0600_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau001000um_M0800_2018[0m
+[33mwarning: # files 475 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau010000um_M0800_2018[0m
+[33mwarning: # files 485 != njobs 500, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau100000um_M0800_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_wz_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_wjetstolnu_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_wjetstolnu_ht0400_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_wjetstolnu_ht0600_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_wjetstolnu_ht0800_2018[0m
+[33mwarning: missing /afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_wjetstolnu_ht0800_2018/publish_0.txt[0m
+[33mwarning: # files 6 != njobs 7, but partial publish allowed[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_wjetstolnu_ht1200_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_wjetstolnu_ht2500_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_dyjetstollM10_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_dyjetstollM50_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stopld_tau001000um_M0400_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdmupt15_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdempt015_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdempt020_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdempt030_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdempt050_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdempt080_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdempt120_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdempt170_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdempt300_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdbctoept015_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdbctoept020_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdbctoept030_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdbctoept080_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdbctoept170_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_qcdbctoept250_2018[0m
+[1m/afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau010000um_M1800_2018[0m
+[33mwarning: missing /afs/hep.wisc.edu/home/acwarden/crabdirs/NtupleV30Lepm/condor_mfv_stoplb_tau010000um_M1800_2018/publish_85.txt[0m
+[33mwarning: # files 499 != njobs 500, but partial publish allowed[0m
+
+[1mnew entries:[0m
+_add_ds("ntuplev30lepm", {
+'qcdmupt15_2018': _fromnum0("/store/user/awarden/QCD_Pt-20toInf_MuEnrichedPt15_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145151", 7),
+'qcdempt015_2018': _fromnum0("/store/user/awarden/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145152", 5),
+'qcdempt020_2018': _fromnum0("/store/user/awarden/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145153", 4),
+'qcdempt030_2018': _fromnum0("/store/user/awarden/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145154", 5),
+'qcdempt050_2018': _fromnum0("/store/user/awarden/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145155", 4),
+'qcdempt080_2018': _fromnum0("/store/user/awarden/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145156", 4),
+'qcdempt120_2018': _fromnum0("/store/user/awarden/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145157", 3),
+'qcdempt170_2018': _fromnum0("/store/user/awarden/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145158", 2),
+'qcdempt300_2018': _fromnum0("/store/user/awarden/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145159", 2),
+'qcdbctoept015_2018': _fromnum0("/store/user/awarden/QCD_Pt_15to20_bcToE_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145200", 3),
+'qcdbctoept020_2018': _fromnum0("/store/user/awarden/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145201", 4),
+'qcdbctoept030_2018': _fromnum0("/store/user/awarden/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145202", 7),
+'qcdbctoept080_2018': _fromnum0("/store/user/awarden/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145203", 8),
+'qcdbctoept170_2018': _fromnum0("/store/user/awarden/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145204", 6),
+'qcdbctoept250_2018': _fromnum0("/store/user/awarden/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145205", 8),
+'qcdht0700_2018': _fromnum0("/store/user/awarden/QCD_HT700to1000_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162110", 23),
+'qcdht1000_2018': _fromnum0("/store/user/awarden/QCD_HT1000to1500_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162111", 37),
+'qcdht1500_2018': _fromnum0("/store/user/awarden/QCD_HT1500to2000_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162112", 76),
+'qcdht2000_2018': _fromnum0("/store/user/awarden/QCD_HT2000toInf_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162113", 34),
+'ttbar_2018': _fromnum0("/store/user/awarden/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/NtupleV30Lepm_2018/220105_162114", 70),
+'ttbarht0600_2018': _fromnum0("/store/user/awarden/TTJets_HT-600to800_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162115", 5),
+'ttbarht0800_2018': _fromnum0("/store/user/awarden/TTJets_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162116", 4),
+'ttbarht1200_2018': (1, ['/store/user/awarden/TTJets_HT-1200to2500_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162117/0000/ntuple_0.root']),
+'ttbarht2500_2018': (1, ['/store/user/awarden/TTJets_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162118/0000/ntuple_0.root']),
+'zz_2018': _fromnum0("/store/user/awarden/ZZ_TuneCP5_13TeV-pythia8/NtupleV30Lepm_2018/220105_162213", 2),
+'ww_2018': _fromnum0("/store/user/awarden/WW_TuneCP5_13TeV-pythia8/NtupleV30Lepm_2018/220105_162214", 4),
+'wz_2018': _fromnum0("/store/user/awarden/WZ_TuneCP5_13TeV-pythia8/NtupleV30Lepm_2018/220105_162215", 2),
+'wjetstolnu_2018': _fromnum0("/store/user/awarden/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162216", 20),
+'wjetstolnu_ht0400_2018': _fromnum0("/store/user/awarden/WJetsToLNu_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162217", 5),
+'wjetstolnu_ht0600_2018': _fromnum0("/store/user/awarden/WJetsToLNu_HT-600To800_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162218", 12),
+'wjetstolnu_ht0800_2018': _fromnum1("/store/user/awarden/WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162219", 6),
+'wjetstolnu_ht1200_2018': _fromnum0("/store/user/awarden/WJetsToLNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162220", 6),
+'wjetstolnu_ht2500_2018': _fromnum0("/store/user/awarden/WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162221", 3),
+'dyjetstollM10_2018': _fromnum0("/store/user/awarden/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162222", 12),
+'dyjetstollM50_2018': _fromnum0("/store/user/awarden/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleV30Lepm_2018/220105_162223", 26),
+'mfv_stoplb_tau001000um_M1000_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1000_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162119", 500),
+'mfv_stoplb_tau010000um_M1000_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1000_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162120", 500),
+'mfv_stoplb_tau100000um_M1000_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1000_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162121", 500),
+'mfv_stoplb_tau001000um_M1200_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1200_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162122", 490),
+'mfv_stoplb_tau010000um_M1200_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1200_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162123", 500),
+'mfv_stoplb_tau100000um_M1200_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1200_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162124", 500),
+'mfv_stoplb_tau001000um_M1400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1400_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162125", 480),
+'mfv_stoplb_tau010000um_M1400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1400_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162126", 480),
+'mfv_stoplb_tau100000um_M1400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1400_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162127", 500),
+'mfv_stoplb_tau001000um_M1600_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1600_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162128", 500),
+'mfv_stoplb_tau010000um_M1600_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1600_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162129", 500),
+'mfv_stoplb_tau100000um_M1600_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1600_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162130", 500),
+'mfv_stoplb_tau001000um_M1800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1800_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162131", 500),
+'mfv_stoplb_tau010000um_M1800_2018': (499, ['/store/user/awarden/DisplacedSUSY_stopToBottom_M_1800_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220107_114038/0000/ntuple_%i.root' % i for i in chain(xrange(85), xrange(86,500))]),
+'mfv_stoplb_tau100000um_M1800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_1800_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162133", 500),
+'mfv_stoplb_tau001000um_M0200_2018': (499, ['/store/user/awarden/DisplacedSUSY_stopToBottom_M_200_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162134/0000/ntuple_%i.root' % i for i in chain(xrange(8), xrange(9,500))]),
+'mfv_stoplb_tau010000um_M0200_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_200_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162135", 500),
+'mfv_stoplb_tau100000um_M0200_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_200_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162136", 500),
+'mfv_stoplb_tau001000um_M0400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_400_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162137", 500),
+'mfv_stoplb_tau010000um_M0400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_400_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162138", 500),
+'mfv_stoplb_tau100000um_M0400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_400_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162139", 500),
+'mfv_stoplb_tau001000um_M0600_2018': (499, ['/store/user/awarden/DisplacedSUSY_stopToBottom_M_600_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162140/0000/ntuple_%i.root' % i for i in chain(xrange(83), xrange(84,500))]),
+'mfv_stoplb_tau010000um_M0600_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_600_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162141", 500),
+'mfv_stoplb_tau100000um_M0600_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_600_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162142", 500),
+'mfv_stoplb_tau001000um_M0800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_800_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162143", 500),
+'mfv_stoplb_tau010000um_M0800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_800_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162144", 500),
+'mfv_stoplb_tau100000um_M0800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToBottom_M_800_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162145", 500),
+'mfv_stopld_tau001000um_M1000_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162146", 500),
+'mfv_stopld_tau010000um_M1000_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162147", 485),
+'mfv_stopld_tau100000um_M1000_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162148", 500),
+'mfv_stopld_tau001000um_M1200_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162149", 490),
+'mfv_stopld_tau010000um_M1200_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162150", 490),
+'mfv_stopld_tau100000um_M1200_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162151", 500),
+'mfv_stopld_tau001000um_M1400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162152", 500),
+'mfv_stopld_tau010000um_M1400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162153", 500),
+'mfv_stopld_tau100000um_M1400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162154", 500),
+'mfv_stopld_tau001000um_M1600_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162155", 490),
+'mfv_stopld_tau010000um_M1600_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162156", 500),
+'mfv_stopld_tau100000um_M1600_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145135", 430),
+'mfv_stopld_tau001000um_M1800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162158", 470),
+'mfv_stopld_tau010000um_M1800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162159", 480),
+'mfv_stopld_tau100000um_M1800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162200", 500),
+'mfv_stopld_tau001000um_M0200_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162201", 500),
+'mfv_stopld_tau010000um_M0200_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162202", 500),
+'mfv_stopld_tau100000um_M0200_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162203", 500),
+'mfv_stopld_tau001000um_M0400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220106_145142", 500),
+'mfv_stopld_tau010000um_M0400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162205", 500),
+'mfv_stopld_tau100000um_M0400_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162206", 500),
+'mfv_stopld_tau001000um_M0600_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162207", 500),
+'mfv_stopld_tau010000um_M0600_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162208", 500),
+'mfv_stopld_tau100000um_M0600_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162209", 500),
+'mfv_stopld_tau001000um_M0800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162210", 475),
+'mfv_stopld_tau010000um_M0800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162211", 485),
+'mfv_stopld_tau100000um_M0800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162212", 500),
+})
+
+[1mline for SampleFiles (len(repr(publish)) = 14777, len(encoded) = 2964):[0m
+_add('eJytW11v21YSfeevEAQUlgE5mpn7yddtUkSFXWRhtWlTLAjFVmovLFErU5ttfv3ikhI5lGmG4vAtD7FzMpp7zpwzo8n9FqPbi/WX/ybPWbp9+pxkyz0AAsB+ndwgACQE6C+iLUWTuQGIbi+SL7t0vdmvYTKePWfpbjXbP692s+XX5e5+tZm9fXzePi3vVve3v97+kYRfu0j/kWZZuk5ukvw34nqdLPab1Y8fTIJqsfot2f6dPTwu/eyXbL99Wv2m4Hq1XSfhX54RAYJJ0BJiPJ6ODMDlRZRtVfR8e3H/979X2XOWPj3dIByR6mgyR+oA9I+fV9nzIr2+Tm6uELLUQFKDdbVe3v+1W24fbq5vrjpBJKLxdISUIzQBYZZ9Xu6OyGw0mTv4PrLF4udV9lyv0dVyfbfMNk/pT7//9PtVx4Lp8XTkIEfjApqvh3Jt9slDRgbKT9dHk7mKvgvs46Fiv+yT94srMgCLdL75Ii8bjqcjdRlwxgHnf+7uHzI0FT6EUDr7/dL988e3yftF+NEsJQCQQkOkUEOb1xCxBEdQPQ2kUD3dFVz40WyIsiGqUDZdYFMB28lLDg+5eMmewdXRZK7jOLod/3kxO/sFh9+EsD73CbsEUYPyswBptsn/VvLD45tdmmYXox9Gj6Mv6W70OHrcjO4elo+byf92y81fq4k3l9PR8c92Gp7/5b/G0RZN+E/b6LSrwbP/qYsmc940OOnQ1h5gkSLJe4cwEJYtPh4fFa2zWm8zdCVZYRxN5h3IKrTOh+wKHWSpAkje3bzb7B7vHlb3yXmfg01QGzR+PB1Rjowgetk4lQRYJgEYDaIBVqAB5MeVBhCxogKa5AhUBaDfp7NjUU2WkrykgShMzmGkayW9r5cUNCupkZT0+m1yk+he1Swwa+LVtA2oSwYBYqidGDX1Y5HiXUENtm8tNqMDiqPJXLsOjfEqbN+/dQlhPB1pZ/IWUXBo3c93WbqqUYLCE9Zq7d4kpwQykHy+W6Tv+rQBgR4feUpRWxNwNlBK3AQFE/TsAjSWdYHS9XoCVUBN+Ng715MgMKykmmGY0QUq28atvDeVG4RbBf2JWvHx2r/sgzC8NyCPxX1QjBTQkw2Qyj7YaoiyrcaojchshV2LXE2OXdLCBFzNtGqAXQkxm+B0sDjadXASrz89Safk04M+GAtt2gbPWrXtIB5SRBoaWZNrF9VJQ1UmMjgi13WESBRkqQcJaQRJc7k06Li1oEyHDQxSUIkWozKsoAYboDe2sKFh8gRJGyvk0Bv8UzPhGT0IdBHpoTYcuzkx90ekNprMqQNQZoDEnieoMh1wuTYi5umS8YHRvBGMZkW01JsXXBBtX8zvJn6Jm/UCozQLAwlIX/GDmPWBxbYe5vW2Q8Z5vZuYOBnbXP6+fj02r81FrkPvfjzp2Y59GrKxYkqzprVNiZXN5tGJSHhFbGtyDxEXymtz+fr2rUQXNKtDlvDpU9KrYiFtKjID2ypRqKuKOcgftrjRtKRqZEPVfNFnrlWj+ON2JAnKJCmHhrNjMsViMl3GZNnWqdbm5h+VSNeK5hZ9TEYxOnAmYtmOr1DabrRwyHY8ZCHLE4c7tmQL506Gxip3cr5bjH507kXuJBgaYXyMzV3My2XKOdbDWeUyxRwrrZYpHbBvkCQ2zLKxyg8jST3j6cO708yPedU6zLKX4/WAJNc3GDXjiuN8gydjgwCHPownOzz83oOAYy/fu7bpi5sI7+WMJcse8hdYAm9SxUpZmHGLQaIsJPE8+mxluSyFJZ5WuhLjyQLWlJwTB90ke+YGdojta0iwqAgy4/Z9GAsy42H8nCzMJD7Hx0ftW++3WSUvsT0nk7iiw5bxZn8k8w/hl/Ui9OCUi3Qidq2syIbl2EuG5aquknYnYvNyHL/YgQPbxSDkZu7cLbgO60I7xLbQjY8LJAQsjwceMrAcJHUDebgheL+4smHd7OUAEQ0D2BpWcq5D0GKWFrQAATeZCK3KCLV2GEYaZcqo4hp6x6Y8xc8jOlq/AzUoOHCDdNCLS0uI0KB+TLYZ4SIOk1uiKDpBBUy7EavbDgSONT/u6Mi67xfhZ7MUw+mK+LkF0lWueG/YbuP4eQdqyTTKp6K+Pi5moyiiaR3nNEduh3KgfXvC6FpPNGldZV44WaAfkCz6NrSvgW8IMZvvOpBAHmtJ4o7CLx5UGgnrBpsqN4sU1M933+UaKHhO4LGDr/IHZIqpMhKvYH50+Oo4X4lxmGbydf0A/OBmfJSHN/kknw/nSK2RJrfdSFYcvUvYghBZ8o7kWlWkVnOR+zuZL/tbVx4ZIMWtZMfhK5EI8iy5N9nx/Reqply0MQVHNdDyThSFk6qhb9LHRluCSg8U4vcNd2POdqrY3X2r4Nluo9zHT/1SfFONbMoxPuPnwKh8Rz4LTDbQMWv9NLRGZypundq5P9KijdzJkUHv7Sw/UEN9ImgszUZ9nqDlcbYTXSepSs+0YnYCiaHS5wTZQdQKWFI74cozcNRNCta4pkEtMmrVEravweThJeqG9JIREbcWeoD4EiREZGtdGr9IR2ojjgl61eEssZ6OBKZcDDLvEEF5pYgGW3WWV9mIxIqfFvRmA37lhUaVRhMco1wTZIlUV6PpAu/mwMTEG3wwHZ6dqa3diME7b+9GxRWllBBUuUhC03BM8kq+YPLkUcn9TI+PvACeX0VpddB4027FuAW28oMS0RrJEO9V23BJ+UpaZuWnlCLrTlBjM9uUTzZbdyvPJyW2nYCfcqFtDyh5sGqHCShlJkLZWtkb7FvzxRfagewbiEwE1NDHnPyqY1B00C10L+PV/MuEUvLT5RdK0LXqXa0rnFzvRB1BUDNmTvFNRu3LWbqbolRmw0NxzTGA5lX3HOhOrycf6hsXZzt+obQ++dgw+AywdiH01XdK0bWu32q85gaMJPtum12tFVpdXC3D9sO4ONl2HxU/SEKP0fOb/wMF2M94')
+
+[1mlines for Samples:[0m
+for x in qcdmupt15_2018, qcdempt015_2018, qcdempt020_2018, qcdempt030_2018, qcdempt050_2018, qcdempt080_2018, qcdempt120_2018, qcdempt170_2018, qcdempt300_2018, qcdbctoept015_2018, qcdbctoept020_2018, qcdbctoept030_2018, qcdbctoept080_2018, qcdbctoept170_2018, qcdbctoept250_2018, qcdht0700_2018, qcdht1000_2018, qcdht1500_2018, qcdht2000_2018, ttbar_2018, ttbarht0600_2018, ttbarht0800_2018, ttbarht1200_2018, ttbarht2500_2018, zz_2018, ww_2018, wz_2018, wjetstolnu_2018, wjetstolnu_ht0400_2018, wjetstolnu_ht0600_2018, wjetstolnu_ht0800_2018, wjetstolnu_ht1200_2018, wjetstolnu_ht2500_2018, dyjetstollM10_2018, dyjetstollM50_2018, mfv_stoplb_tau001000um_M1000_2018, mfv_stoplb_tau010000um_M1000_2018, mfv_stoplb_tau100000um_M1000_2018, mfv_stoplb_tau001000um_M1200_2018, mfv_stoplb_tau010000um_M1200_2018, mfv_stoplb_tau100000um_M1200_2018, mfv_stoplb_tau001000um_M1400_2018, mfv_stoplb_tau010000um_M1400_2018, mfv_stoplb_tau100000um_M1400_2018, mfv_stoplb_tau001000um_M1600_2018, mfv_stoplb_tau010000um_M1600_2018, mfv_stoplb_tau100000um_M1600_2018, mfv_stoplb_tau001000um_M1800_2018, mfv_stoplb_tau010000um_M1800_2018, mfv_stoplb_tau100000um_M1800_2018, mfv_stoplb_tau001000um_M0200_2018, mfv_stoplb_tau010000um_M0200_2018, mfv_stoplb_tau100000um_M0200_2018, mfv_stoplb_tau001000um_M0400_2018, mfv_stoplb_tau010000um_M0400_2018, mfv_stoplb_tau100000um_M0400_2018, mfv_stoplb_tau001000um_M0600_2018, mfv_stoplb_tau010000um_M0600_2018, mfv_stoplb_tau100000um_M0600_2018, mfv_stoplb_tau001000um_M0800_2018, mfv_stoplb_tau010000um_M0800_2018, mfv_stoplb_tau100000um_M0800_2018, mfv_stopld_tau001000um_M1000_2018, mfv_stopld_tau010000um_M1000_2018, mfv_stopld_tau100000um_M1000_2018, mfv_stopld_tau001000um_M1200_2018, mfv_stopld_tau010000um_M1200_2018, mfv_stopld_tau100000um_M1200_2018, mfv_stopld_tau001000um_M1400_2018, mfv_stopld_tau010000um_M1400_2018, mfv_stopld_tau100000um_M1400_2018, mfv_stopld_tau001000um_M1600_2018, mfv_stopld_tau010000um_M1600_2018, mfv_stopld_tau100000um_M1600_2018, mfv_stopld_tau001000um_M1800_2018, mfv_stopld_tau010000um_M1800_2018, mfv_stopld_tau100000um_M1800_2018, mfv_stopld_tau001000um_M0200_2018, mfv_stopld_tau010000um_M0200_2018, mfv_stopld_tau100000um_M0200_2018, mfv_stopld_tau001000um_M0400_2018, mfv_stopld_tau010000um_M0400_2018, mfv_stopld_tau100000um_M0400_2018, mfv_stopld_tau001000um_M0600_2018, mfv_stopld_tau010000um_M0600_2018, mfv_stopld_tau100000um_M0600_2018, mfv_stopld_tau001000um_M0800_2018, mfv_stopld_tau010000um_M0800_2018, mfv_stopld_tau100000um_M0800_2018:
+    x.add_dataset("ntuplev30lepm")
