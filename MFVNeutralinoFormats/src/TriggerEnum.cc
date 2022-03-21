@@ -8,8 +8,8 @@ namespace mfv {
     //2018 lepton triggers
     "HLT_Ele32_WPTight_Gsf_v",
     "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
-    "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v",
-    "HLT_IsoMu24_v",
+    "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v", 
+     "HLT_IsoMu24_v",
     "HLT_Mu50_v",
 
     //2018 displaced dilepton paths

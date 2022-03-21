@@ -91,17 +91,19 @@ mfvSelectedVertices = cms.EDProducer('MFVVertexSelector',
                                      max_nsingleclusterspb025 = cms.int32(1000000),
                                      max_nsingleclusterspb050 = cms.int32(1000000),
                                      min_avgnconstituents     = cms.double(0),
-                                    # sort_by = cms.string('mass_then_ntracks'),
                                      sort_by = cms.string('ntracks_then_mass'),
 )
 
 mfvSelectedVerticesLoose = mfvSelectedVertices.clone(
     mevent_src = 'mfvEvent',
+    exclude_beampipe = True,
     min_ntracks = 5,
-    min_bsbs2ddist = 0.016,
-    max_rescale_bs2derr = 0.004,
+    min_bsbs2ddist = 0.01,
+    max_rescale_bs2derr = 0.0050,
     )
 
+# currently using Tight also to relax bs2derr -> make sure to check before running (for histos) (above is for minitree)
+# loose : 0.0050  orig : 0.0025
 mfvSelectedVerticesTight = mfvSelectedVertices.clone(
     mevent_src = 'mfvEvent',
     exclude_beampipe = True,
@@ -112,27 +114,26 @@ mfvSelectedVerticesTight = mfvSelectedVertices.clone(
 
 mfvSelectedVerticesTightMinNtk3 = mfvSelectedVerticesTight.clone(min_ntracks = 3)
 mfvSelectedVerticesTightMinNtk4 = mfvSelectedVerticesTight.clone(min_ntracks = 4)
-
-mfvSelectedVerticesLooseMinNtk3 = mfvSelectedVerticesLoose.clone(min_ntracks = 3)
-mfvSelectedVerticesLooseMinNtk4 = mfvSelectedVerticesLoose.clone(min_ntracks = 4)
-
-# mfvSelectedVerticesTightNtk3    = mfvSelectedVerticesTight.clone(min_ntracks = 3, max_ntracks = 3)
+mfvSelectedVerticesTightNtk3    = mfvSelectedVerticesTight.clone(min_ntracks = 3, max_ntracks = 3)
 # mfvSelectedVerticesTightNtk4    = mfvSelectedVerticesTight.clone(min_ntracks = 4, max_ntracks = 4)
 # mfvSelectedVerticesTightNtk3or4 = mfvSelectedVerticesTight.clone(min_ntracks = 3, max_ntracks = 4)
 # mfvSelectedVerticesTightNtk3or5 = mfvSelectedVerticesTight.clone(min_ntracks = 3, max_ntracks = 5)
 # mfvSelectedVerticesTightNtk4or5 = mfvSelectedVerticesTight.clone(min_ntracks = 4, max_ntracks = 5)
 mfvSelectedVerticesTightNtk5    = mfvSelectedVerticesTight.clone() # for looping convenience
-#mfvSelectedVerticesMedtNtk5    = mfvSelectedVerticesMed.clone()
+
+mfvSelectedVerticesLooseMinNtk3 = mfvSelectedVerticesLoose.clone(min_ntracks = 3)
+mfvSelectedVerticesLooseMinNtk4 = mfvSelectedVerticesLoose.clone(min_ntracks = 4)
+mfvSelectedVerticesLoosetNtk5    = mfvSelectedVerticesLoose.clone() # for looping convenience
 
 mfvSelectedVerticesSeq = cms.Sequence(
     mfvSelectedVerticesTight *
-    # mfvSelectedVerticesTightNtk3 *
+    mfvSelectedVerticesTightNtk3 *
     # mfvSelectedVerticesTightNtk4 *
     mfvSelectedVerticesTightMinNtk3 *
     mfvSelectedVerticesTightMinNtk4 *
-    mfvSelectedVerticesLoose *
     mfvSelectedVerticesLooseMinNtk3 *
-    mfvSelectedVerticesLooseMinNtk4
+    mfvSelectedVerticesLooseMinNtk4 *
+    mfvSelectedVerticesLoose 
     # mfvSelectedVerticesTightNtk3or4 *
     # mfvSelectedVerticesTightNtk3or5 *
     # mfvSelectedVerticesTightNtk4or5

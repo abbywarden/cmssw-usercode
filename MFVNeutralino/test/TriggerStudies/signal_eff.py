@@ -3,23 +3,23 @@
 import os
 from JMTucker.Tools.ROOTTools import *
 from JMTucker.Tools import Samples
-#from JMTucker.MFVNeutralino.PerSignal import PerSignal
-from JMTucker.MFVNeutralino.PerSignal_hnl import PerSignal_hnl
+from JMTucker.MFVNeutralino.PerSignal import PerSignal
+#from JMTucker.MFVNeutralino.PerSignal_hnl import PerSignal_hnl
 
 set_style()
-ps = plot_saver(plot_dir('sigeff_trig'), size=(1200,600), log=False)
+ps = plot_saver(plot_dir('sigeff_trig'), size=(600,600), log=False)
 
 study_new_triggers = True
 
 if study_new_triggers :
-    root_file_dir = '/afs/hep.wisc.edu/home/acwarden/work/llp/mfv_1025p1/src/JMTucker/MFVNeutralino/test/TriggerStudies/TrigFilt/hnl_trilept/'
+    root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrigFiltCheckV1_lept/' #work/llp/mfv_1025p1/src/JMTucker/MFVNeutralino/test/TriggerStudies/TrigFilt/stopld/'
     #trigs = ['Trigger','TriggerBjets','TriggerDispDijet','TriggerOR']
     #nice = ['HT1050','Bjet','DisplacedDijet','Logical OR']
     #trigs = ['TriggerLeptons', 'TriggerDispLeptonsORLeptons', 'TriggerLeptonsORDiLeptons', 'TriggerDispLeptonsORDiLeptons']
     #nice = ['Lepton', '2DispLorL', 'Lor2L', '2DispLor2L']
 
-    trigs = ['TriggerLeptons','TriggerDispLeptons','TriggerDiLeptons']
-    nice = ['Lepton','Displ Dilept','Dilept']
+    trigs = ['TriggerLeptons','TriggerDispLeptons', 'TriggerDispLeptonsORLeptons']
+    nice = ['Single Lepton','Displaced Dilept', 'Logical OR']
     
    # trigs = ['TriggerLeptonsORHT','TriggerDispLeptonsORHT', 'TriggerDispLeptonsORLeptons','TriggerLeptonsORDiLeptons', 'TriggerDispLeptonsORDiLeptons']
    # nice = ['LorHT', '2DispLorHT', '2DispLorL', 'Lor2L', '2DispLor2L']
@@ -37,7 +37,8 @@ if study_new_triggers :
     #max 5
     colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen+2, ROOT.kOrange+3, ROOT.kMagenta-3]
 else :
-    root_file_dir = '/afs/hep.wisc.edu/home/acwarden/work/llp/mfv_1025p1/src/JMTucker/MFVNeutralino/test/TriggerStudies/'
+   # root_file_dir = '/afs/hep.wisc.edu/home/acwarden/work/llp/mfv_1025p1/src/JMTucker/MFVNeutralino/test/TriggerStudies/'
+    root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrigFiltCheckV1_lept/'
     trigs = ['Trigger']
     nice = ['PFHT1050']
     colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen+2, ROOT.kBlack]
@@ -47,8 +48,9 @@ def sample_ok(s):
 
 #semilept = Samples.mfv_stoplb_samples_2018
 #semilept = Samples.mfv_stopld_samples_2018
+assoc_higgs = Samples.ZH_HToSSTodddd_ZToLL_samples_2018
 #hnl_trilept_e =  Samples.hnl_trilept_e_samples_2018
-hnl_trilept_mu = Samples.hnl_trilept_mu_samples_2018
+#hnl_trilept_mu = Samples.hnl_trilept_mu_samples_2018
 #hnl_semilept_e = Samples.hnl_semilept_e_samples_2018
 #hnl_semilept_mu = Samples.hnl_semilept_mu_samples_2018
 #multijet = Samples.mfv_signal_samples_2018
@@ -68,7 +70,7 @@ def mvpave(pave, x1, y1, x2, y2):
     pave.SetY2(y2)
 
 
-for sample in hnl_trilept_mu:
+for sample in assoc_higgs:
     fn = os.path.join(root_file_dir, sample.name + '.root')
     if not os.path.exists(fn):
         print sample.name + '; not finding it'
@@ -78,11 +80,11 @@ for sample in hnl_trilept_mu:
 
     
 if len(trigs) > 1:
-    kind = 'hnl_trilept_mu'
-    #kind = 'hnl_semilept_e'
-    samples = hnl_trilept_mu
+    kind = 'STodd'
+   # kind = 'semilept_ld'
+    samples = assoc_higgs
     #y range original 1.15
-    per = PerSignal_hnl('efficiency', y_range=(0.,1.15))
+    per = PerSignal('efficiency', y_range=(0.,1.15))
     for itrig, trig in enumerate(trigs):
         for sample in samples:
             sample.y, sample.yl, sample.yh = sample.ys[trig]
@@ -93,14 +95,14 @@ if len(trigs) > 1:
         #if need shorter; used 0.16, 0.18 for di-e; y range 0.2
         # emu used 0.5, 0.55; y range 0.6
         
-       # mvpave(per.decay_paves[0], 5.0, 1.04, 9.8, 1.1)
-        #mvpave(per.decay_paves[1], 10.0, 1.04, 14.8, 1.1)
-        #mvpave(per.decay_paves[2], 15.0,  1.04, 19.8, 1.1) 
+        mvpave(per.decay_paves[0], 5.0, 1.04, 9.8, 1.1)
+        mvpave(per.decay_paves[1], 10.0, 1.04, 14.8, 1.1)
+        mvpave(per.decay_paves[2], 15.0,  1.04, 19.8, 1.1) 
        # mvpave(per.decay_paves[2], 20.0, 1.04, 24.8, 1.1)
         
-         mvpave(per.decay_paves[0], 2.0, 1.04, 3.5, 1.1)
-         mvpave(per.decay_paves[1], 3.6, 1.04, 5.1, 1.1)
-         mvpave(per.decay_paves[2], 5.2, 1.04, 6.8, 1.1)
+         # mvpave(per.decay_paves[0], 2.0, 1.04, 3.5, 1.1)
+         # mvpave(per.decay_paves[1], 3.6, 1.04, 5.1, 1.1)
+         # mvpave(per.decay_paves[2], 5.2, 1.04, 6.8, 1.1)
          
         # mvpave(per.decay_paves[3], 18.5, 1.04, 22.8, 1.1)
         # mvpave(per.decay_paves[4], 23.0, 1.04, 27.3, 1.1)
@@ -123,14 +125,12 @@ if len(trigs) > 1:
         #tlatex.DrawLatex(0.15, 0.18, '#tilde{t} #rightarrow lb')
     elif kind == 'semilept_ld':
         tlatex.DrawLatex(0.725, 1.05, '#tilde{t} #rightarrow ld')
-    elif kind == 'hnl_trilept_e':
-        tlatex.DrawLatex(0.725, 1.05, "N #rightarrow ee#nu")
-    elif kind == 'hnl_semilept_e':
-        tlatex.DrawLatex(0.725, 1.005, "N #rightarrow jje")
+    elif kind == 'STodd':
+        tlatex.DrawLatex(0.725, 1.05, 'S #rightarrow dd')
 
-    title = 'hnl_trilept_mu_test'
-    ps.save(title)
-    #ps.save(kind)
+   # title = 'hnl_trilept_mu_test'
+   # ps.save(title)
+    ps.save(kind)
         
 # else:
 #     for sample in multijet + dijet:

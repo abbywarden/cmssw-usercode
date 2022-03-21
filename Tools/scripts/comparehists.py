@@ -3,6 +3,7 @@
 import sys, argparse
 from pprint import pprint
 
+
 parser = argparse.ArgumentParser(description = 'comparehists: compare all histograms in multiple files or multiple directories',
                                  usage = '%(prog)s [options] file1.root [file2.root ... fileN.root] dir1_path [dir2_path ... dirN_path] plot_path')
 
@@ -47,7 +48,7 @@ group.add_argument('--draw-command', default='""',
                    help='Snippet for draw_command lambda (default: %(default)s).')
 group.add_argument('--scaling', default='1.',
                    help='Snippet for scaling lambda (default: %(default)s).')
-group.add_argument('--ratio', default='True',
+group.add_argument('--ratio', default='False',
                    help='Snippet for ratio lambda (default: %(default)s).')
 group.add_argument('--x-range', default='None',
                    help='Snippet for x_range lambda (default: %(default)s).')
@@ -70,6 +71,7 @@ from JMTucker.Tools.ROOTTools import *
 options.file_dirs = []
 options.files = []
 options.dir_paths = []
+options.hists = []
 for x in options.positional[:-1]:
     if '.root:' in x:
         options.file_dirs.append(x)

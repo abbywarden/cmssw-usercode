@@ -8,7 +8,8 @@ from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, d
 #dataset = dataset + '_noef'
 #version = version + '_nodxycut'
 
-sample_files(process, 'mfv_stoplb_tau001000um_M1000_2018', dataset, 1)
+
+sample_files(process, 'mfv_stoplb_tau010000um_M1000_2018', dataset, 1)
 #sample_files(process, 'ttbar_2018', dataset, 1)
 
 tfileservice(process, 'minitree.root')

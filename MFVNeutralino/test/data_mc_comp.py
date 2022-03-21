@@ -11,8 +11,8 @@ from JMTucker.Tools import Samples
 #root_file_dir = '/uscms_data/d2/tucker/crab_dirs/Histos%s' % version
 
 year = '2018'
-version = 'V30Lepm_matchTrig_wfull'
-#version = 'V30Lepm_wfull_lepsel'
+version = 'V30Lepm_fullsel_nm1tk'
+#version = 'V30Lepm_wfull_lepsel_nm1tk'
 root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/Histos%s' % version
 
 set_style()
@@ -30,13 +30,14 @@ if year == '2018':
     qcd_samples = Samples.qcd_samples_2018
     ttbar_samples = Samples.ttbar_samples_2018[:1]
     wjet_samples = Samples.wjet_samples_2018[:1]
+    zjet_samples = Samples.drellyan_samples_2018
     diboson_samples = Samples.diboson_samples_2018
     leptonic_samples = Samples.leptonic_samples_2018
     #signal_sample = Samples.mfv_neu_tau001000um_M0800_2017
     signal_sample = Samples.mfv_stoplb_tau001000um_M1000_2018
     data_samples = [] # Samples.data_samples_2017
    # background_samples = []
-    background_samples = ttbar_samples + wjet_samples + leptonic_samples
+    background_samples = ttbar_samples + wjet_samples + zjet_samples + leptonic_samples
     lumi = ac.int_lumi_2018 * ac.scale_factor_2018
     lumi_nice = ac.int_lumi_nice_2018
 
@@ -49,13 +50,15 @@ if year == '2017p8':
     background_samples = qcd_samples + ttbar_samples
     lumi = ac.int_lumi_2017p8 * ac.scale_factor_2017p8
     lumi_nice = ac.int_lumi_nice_2017p8
-
+#kblue-7, kblue-9, kmagenta-6, kmagenta-3
 for s in qcd_samples:
     s.join_info = True, 'Multijet events', ROOT.kBlue-9
 for s in ttbar_samples:
-    s.join_info = True, 't#bar{t}', ROOT.kBlue-7
+    s.join_info = True, 't#bar{t}', ROOT.kBlue-3
 for s in wjet_samples:
-    s.join_info = True, 'W+jets', ROOT.kMagenta-6
+    s.join_info = True, 'W+jets', ROOT.kBlue-7
+for s in zjet_samples:
+    s.join_info = True, 'Z+jets', ROOT.kMagenta-6
 for s in leptonic_samples:
     s.join_info = True, 'QCD lept enriched', ROOT.kMagenta-3
 
@@ -84,11 +87,42 @@ C = partial(data_mc_comparison,
 
 
 # unsure if this will work?
-C('lepton_cutflow',
-  histogram_path = 'mfvAnaCutFlowHistos/h_lepton_cutflow',
-  y_title = 'Events',
-  y_range = (1e-1, 1e7),
-  )
+# C('lepton_cutflow',
+#   histogram_path = 'mfvAnaCutFlowHistos/h_lepton_cutflow',
+#   y_title = 'Events',
+#   y_range = (10, 1e8),
+#  # x_range = (0, 5),
+#  # legend_pos = (0.18, 0.78, 0.58, 0.88),
+#   is_cutflow = True,
+#   )
+
+# C('singlee_cutflow',
+#   histogram_path = 'mfvAnaCutFlowHistos/h_electron_cutflow',
+#   y_title = 'Events',
+#   y_range = (1e-1, 1e8),
+#   #x_range = (0, 5),
+#   #legend_pos = (0.18, 0.78, 0.58, 0.88),
+#   is_cutflow = True,
+#   )
+
+# C('singlemu_cutflow',
+#   histogram_path = 'mfvAnaCutFlowHistos/h_muon_cutflow',
+#   y_title = 'Events',
+#   y_range = (1e-1, 1e8),
+#  # x_range = (0, 5),
+#   #legend_pos = (0.18, 0.78, 0.58, 0.88),
+#   is_cutflow = True,
+#   )
+
+
+# C('dilepton_cutflow',
+#   histogram_path = 'mfvAnaCutFlowHistos/h_dilepton_cutflow',
+#   y_title = 'Events',
+#   y_range = (1e-1, 1e8),
+#  # x_range = (0, 5),
+#  # legend_pos = (0.18, 0.78, 0.58, 0.88),
+#   is_cutflow = True,
+#   )
   
 C('presel_njets',
   histogram_path = 'mfvEventHistosPreSel/h_njets',
@@ -198,26 +232,67 @@ C('presel_nselleptons',
   y_range = (1, 1e8),
   )
 
-C('presel_nfull_selleptons',
-  histogram_path = 'mfvEventHistosPreSel/h_fullsellep_tight_e_med_mu',
-  x_title = '# of sel leptons',
+# C('presel_nfull_selleptons',
+#   histogram_path = 'mfvEventHistosPreSel/h_fullsellep_tight_e_med_mu',
+#   x_title = '# of sel leptons',
+#   y_title = 'Events',
+#   y_range = (1, 1e8),
+#   )
+
+# C('presel_nfull_selelectrons',
+#   histogram_path = 'mfvEventHistosPreSel/h_nfullselel_tight',
+#   x_title = '# of sel electrons',
+#   y_title = 'Events',
+#   y_range = (1, 1e8),
+#   )
+
+# C('presel_nfull_selmuons',
+#   histogram_path = 'mfvEventHistosPreSel/h_nfullselmu_medium',
+#   x_title = '# of sel muons',
+#   y_title = 'Events',
+#   y_range = (1, 1e8),
+#   )
+
+C('presel_nsel_el',
+  histogram_path = 'mfvEventHistosPreSelEl/h_highest_selel',
+  x_title = 'highest pt electron that passes sel',
   y_title = 'Events',
   y_range = (1, 1e8),
+#  cut_line = ((1, 0, 1, 2.5e8), 2, 5, 1)
   )
 
-C('presel_nfull_selelectrons',
-  histogram_path = 'mfvEventHistosPreSel/h_nfullselel_tight',
-  x_title = '# of sel electrons',
+C('presel_nsel_mu',
+  histogram_path = 'mfvEventHistosPreSelMu/h_highest_selmu',
+  x_title = 'highest pt muon that passes sel',
   y_title = 'Events',
   y_range = (1, 1e8),
+ # cut_line = ((1, 0, 1, 2.5e8), 2, 5, 1)
   )
 
-C('presel_nfull_selmuons',
-  histogram_path = 'mfvEventHistosPreSel/h_nfullselmu_medium',
-  x_title = '# of sel muons',
+C('presel_nsel_2el',
+  histogram_path = 'mfvEventHistosPreSel2El/h_highest_sel2el',
+  x_title = 'two highest pt electrons that pass sel',
   y_title = 'Events',
   y_range = (1, 1e8),
+ # cut_line = ((2, 0, 2, 2.5e8), 2, 5, 1)
   )
+
+C('presel_nsel_2mu',
+  histogram_path = 'mfvEventHistosPreSel2Mu/h_highest_sel2mu',
+  x_title = 'two highest pt muons that pass sel',
+  y_title = 'Events',
+  y_range = (1, 1e8),
+ # cut_line = ((2, 0, 2, 2.5e8), 2, 5, 1)
+  )
+
+C('presel_nsel_muel',
+  histogram_path = 'mfvEventHistosPreSelMuEl/h_highest_selmuel',
+  x_title = 'highest pt electron & muon that pass sel',
+  y_title = 'Events',
+  y_range = (1, 1e8),
+ # cut_line = ((2, 0, 2, 2.5e8), 2, 5, 1)
+  )
+
 
 C('presel_ndispleptons50',
   histogram_path = 'mfvEventHistosPreSel/h_ndispl50_leptons',
@@ -233,36 +308,43 @@ C('presel_ndispleptons100',
   y_range = (1, 1e8),
   )
 
-C('presel_nselleptons_nm1',
- histogram_path = 'mfvEventHistosPreSelNoLep/h_nselleptons_tight_e_med_mu',
- x_title = '# of sel. leptons',
- y_title = 'Events',
- y_range = (1, 1e8),
- )
+C('presel_nhighestsellep',
+  histogram_path = 'mfvEventHistosPreSel/h_highest_sellep',
+  x_title = 'four highest pt leptons that pass sel',
+  y_title = 'Events',
+  y_range = (1, 1e8),
+  )
 
-C('presel_nfull_selleptons_nm1',
- histogram_path = 'mfvEventHistosPreSelNoLep/h_fullsellep_tight_e_med_mu',
- x_title = '# of sel leptons',
- y_title = 'Events',
- y_range = (1, 1e8),
- cut_line = ((1, 0, 1, 2.5e8), 2, 5, 1)
- )
+# C('presel_nselleptons_nm1',
+#  histogram_path = 'mfvEventHistosPreSelNoLep/h_nselleptons_tight_e_med_mu',
+#  x_title = '# of sel. leptons',
+#  y_title = 'Events',
+#  y_range = (1, 1e8),
+#  )
 
-C('presel_nfull_selelectrons_nm1',
- histogram_path = 'mfvEventHistosPreSelNoLep/h_nfullselel_tight',
- x_title = '# of sel electrons',
- y_title = 'Events',
- y_range = (1, 1e8),
+# C('presel_nfull_selleptons_nm1',
+#  histogram_path = 'mfvEventHistosPreSelNoLep/h_fullsellep_tight_e_med_mu',
+#  x_title = '# of sel leptons',
+#  y_title = 'Events',
+#  y_range = (1, 1e8),
+#  cut_line = ((1, 0, 1, 2.5e8), 2, 5, 1)
+#  )
+
+# C('presel_nfull_selelectrons_nm1',
+#  histogram_path = 'mfvEventHistosPreSelNoLep/h_nfullselel_tight',
+#  x_title = '# of sel electrons',
+#  y_title = 'Events',
+#  y_range = (1, 1e8),
+# # cut_line = ((1, 0, 1, 2.5e8), 2, 5, 1)
+#  )
+
+# C('presel_nfull_selmuons_nm1',
+#  histogram_path = 'mfvEventHistosPreSelNoLep/h_nfullselmu_medium',
+#  x_title = '# of sel muons',
+#  y_title = 'Events',
+#  y_range = (1, 1e8),
 # cut_line = ((1, 0, 1, 2.5e8), 2, 5, 1)
- )
-
-C('presel_nfull_selmuons_nm1',
- histogram_path = 'mfvEventHistosPreSelNoLep/h_nfullselmu_medium',
- x_title = '# of sel muons',
- y_title = 'Events',
- y_range = (1, 1e8),
-# cut_line = ((1, 0, 1, 2.5e8), 2, 5, 1)
- )
+# )
 
 # C('presel_ndispleptons_nm1',
 #   histogram_path = 'mfvEventHistosPreSelNoDxy/h_ndispl_leptons',
@@ -480,8 +562,8 @@ C('presel_seedtrack_dz',
 #   )
 
 C('nsv_min3track',
-  histogram_path = 'MinNtk3mfvVertexHistosPreSel/h_nsv',
-  x_title = 'Number of min 3-track vertices',
+  histogram_path = 'Ntk3mfvVertexHistosPreSel/h_nsv',
+  x_title = 'Number of 3-track vertices',
   y_title = 'Events',
   x_range = (0, 8),
   y_range = (1e-3, 1e8),
@@ -513,7 +595,7 @@ C('sv_njetsntks',
   )
 
 C('sv_ntracks_nm1',
-  histogram_path = 'MinNtk3mfvVertexHistosPreSel/h_sv_all_ntracks',
+  histogram_path = 'vtxHst1VNontracks/h_sv_all_ntracks',
   x_title = 'Number of tracks per SV',
   y_title = 'arb. units',
   y_range = (1, 1e5),
@@ -577,7 +659,8 @@ C('dbv_nm1',
 
 C('bs2derr_nm1',
   histogram_path = 'MinNtk4vtxHst1VNoBs2derr/h_sv_all_bs2derr',
-  x_title = '#sigma(dist2d(SV, beamspot)) (cm)',
+  x_title = 'Uncertainty in dbv (cm)',
+ # x_title = '#sigma(dist2d(SV, beamspot)) (cm)',
   y_title = 'arb. units',
   x_range = (0, 0.05),
   y_range = (1e-1, 1e4),
@@ -602,70 +685,72 @@ C('bs2derr_nm1',
 #   y_range = (1, 1e6),
 #   )
 
+#different signal 
 C('dvv',
   histogram_path = 'mfvVertexHistosFullSel/h_svdist2d',
   rebin = 10,
   x_title = 'd_{VV} (cm)',
   y_title = 'Events/200 #mum',
+ # x_range = (0, 
   y_range = (1e-2, 10),
   )
 
 
 # ## TrackerMapper
-# C('track_pt',
-#   file_path = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackerMapperV1', '%(name)s.root'),
-#   histogram_path = 'TrackerMapper/h_nm1_sel_tracks_pt',
-#   x_title = 'Track p_{T} (GeV)',
-#   y_title = 'Tracks/0.1 GeV',
-#   y_range = (1, 1e12),
-#   cut_line = ((1, 0, 1, 2.8e12), 2, 5, 1),
-#   )
+C('track_pt',
+  file_path = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackerMapperV1', '%(name)s.root'),
+  histogram_path = 'TrackerMapper/h_nm1_sel_tracks_pt',
+  x_title = 'Track p_{T} (GeV)',
+  y_title = 'Tracks/0.1 GeV',
+  y_range = (1, 1e12),
+  cut_line = ((1, 0, 1, 2.8e12), 2, 5, 1),
+  )
 
-# C('track_min_r',
+C('track_min_r',
+  file_path = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackerMapperV1', '%(name)s.root'),
+  histogram_path = 'TrackerMapper/h_nm1_sel_tracks_min_r',
+  x_title = 'Minimum layer number',
+  y_title = 'Tracks',
+  y_range = (1, 1e12),
+  cut_line = ((2, 0, 2, 2.8e12), 2, 5, 1),
+  )
+
+C('track_npxlayers',
+  file_path = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackerMapperV1', '%(name)s.root'),
+  histogram_path = 'TrackerMapper/h_nm1_sel_tracks_npxlayers',
+  x_title = 'Number of pixel layers',
+  y_title = 'Tracks',
+  y_range = (1, 1e12),
+  cut_line = ((2, 0, 2, 2.8e12), 2, 5, 1),
+  )
+
+C('track_nstlayers',
+  file_path = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackerMapperV1', '%(name)s.root'),
+  histogram_path = 'TrackerMapper/h_nm1_sel_tracks_nstlayers',
+  x_title = 'Number of strip layers',
+  y_title = 'Tracks',
+  y_range = (1, 1e12),
+  cut_line = ((6, 0, 6, 2.8e12), 2, 5, 1),
+  )
+
+# C('track_nstlayers_etagt2',
 #   file_path = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackerMapperV1', '%(name)s.root'),
-#   histogram_path = 'TrackerMapper/h_nm1_sel_tracks_min_r',
-#   x_title = 'Minimum layer number',
+#   histogram_path = 'TrackerMapper/h_nm1_sel_tracks_nstlayers_etagt2',
+#   x_title = 'Number of strip layers (|#eta| #geq 2)',
 #   y_title = 'Tracks',
-#   y_range = (1, 1e12),
-#   cut_line = ((2, 0, 2, 2.8e12), 2, 5, 1),
-#   )
-
-# C('track_npxlayers',
-#   file_path = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackerMapperV1', '%(name)s.root'),
-#   histogram_path = 'TrackerMapper/h_nm1_sel_tracks_npxlayers',
-#   x_title = 'Number of pixel layers',
-#   y_title = 'Tracks',
-#   y_range = (1, 1e12),
-#   cut_line = ((2, 0, 2, 2.8e12), 2, 5, 1),
-#   )
-
-# C('track_nstlayers',
-#   file_path = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackerMapperV1', '%(name)s.root'),
-#   histogram_path = 'TrackerMapper/h_nm1_sel_tracks_nstlayers',
-#   x_title = 'Number of strip layers',
-#   y_title = 'Tracks',
-#   y_range = (1, 1e12),
-#   cut_line = ((6, 0, 6, 2.8e12), 2, 5, 1),
-#   )
-
-# # C('track_nstlayers_etagt2',
-# #   file_path = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackerMapperV1', '%(name)s.root'),
-# #   histogram_path = 'TrackerMapper/h_nm1_sel_tracks_nstlayers_etagt2',
-# #   x_title = 'Number of strip layers (|#eta| #geq 2)',
-# #   y_title = 'Tracks',
-# #   y_range = (1, 1e10),
-# #   cut_line = ((7, 0, 7, 2.8e10), 2, 5, 1),
-# #   )
-
-# C('track_nsigmadxy',
-#   file_path = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackerMapperV1', '%(name)s.root'),
-#   histogram_path = 'TrackerMapper/h_nm1_sel_tracks_nsigmadxy',
-#   x_title = 'N#sigma(dxy)',
-#   y_title = 'Tracks',
-#   x_range = (0, 10),
 #   y_range = (1, 1e10),
-#   cut_line = ((4, 0, 4, 2.8e10), 2, 5, 1),
+#   cut_line = ((7, 0, 7, 2.8e10), 2, 5, 1),
 #   )
+
+C('track_nsigmadxy',
+  file_path = os.path.join('/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackerMapperV1', '%(name)s.root'),
+  histogram_path = 'TrackerMapper/h_nm1_sel_tracks_nsigmadxy',
+  x_title = 'N#sigma(dxy)',
+  y_title = 'Tracks',
+  x_range = (0, 10),
+  y_range = (1, 1e10),
+  cut_line = ((4, 0, 4, 2.8e10), 2, 5, 1),
+  )
 
 
 

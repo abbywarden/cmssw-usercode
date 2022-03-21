@@ -42,6 +42,11 @@ private:
   const int l1_bit;
   const int trigger_bit;
   const int apply_trigger;
+  const bool apply_singleel_trig;
+  const bool apply_singlemu_trig;
+  const bool apply_doubleel_trig;
+  const bool apply_doublemu_trig;
+  const bool apply_doublemuel_trig;
   const bool apply_cleaning_filters;
   const int min_npv;
   const int max_npv;
@@ -107,6 +112,11 @@ MFVAnalysisCuts::MFVAnalysisCuts(const edm::ParameterSet& cfg)
     l1_bit(apply_presel ? -1 : cfg.getParameter<int>("l1_bit")),
     trigger_bit(apply_presel ? -1 : cfg.getParameter<int>("trigger_bit")),
     apply_trigger(apply_presel ? 0 : cfg.getParameter<int>("apply_trigger")),
+    apply_singleel_trig(cfg.getParameter<bool>("apply_singleel_trig")),
+    apply_singlemu_trig(cfg.getParameter<bool>("apply_singlemu_trig")),
+    apply_doubleel_trig(cfg.getParameter<bool>("apply_doubleel_trig")),
+    apply_doublemu_trig(cfg.getParameter<bool>("apply_doublemu_trig")),
+    apply_doublemuel_trig(cfg.getParameter<bool>("apply_doublemuel_trig")),
     apply_cleaning_filters(cfg.getParameter<bool>("apply_cleaning_filters")),
     min_npv(cfg.getParameter<int>("min_npv")),
     max_npv(cfg.getParameter<int>("max_npv")),
@@ -190,33 +200,42 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup&) {
 	    break;
 	  }
 	}
-	else {
-	  if(mevent->pass_hlt(trig)) {
-	    success = true;
-	    break;
-	  }
-	}
+	// if (!apply_lept_cuts) {
+	//   if (mevent->pass_hlt(trig)) {
+	//     success = true;
+	//     break;
+	//   }
+	// }
       }
-      
-      if (!success) return false;
-    }
-
-    
-    // separate displaced lepton requirement
-    if (apply_displept_cuts) {
-      if(!satisfiesDispLep(mevent, min_dxy)) return false;
-    }
-    
-    
-    // HT or Bjet or DisplacedDijet trigger && offline presel
-    if (apply_presel == 3) {
-
-      bool success = false;
-      for(size_t trig : mfv::HTOrBjetOrDisplacedDijetTriggers){
-        if(satisfiesTrigger(mevent, trig)){
-          success = true;
-          break;
-        }
+      if (!apply_lept_cuts) {
+	if (apply_singleel_trig) {
+	  if(mevent->pass_hlt(mfv::b_HLT_Ele32_WPTight_Gsf))
+	    success = true;
+	  if(mevent->pass_hlt(mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT))
+	    success = true;
+	  if(mevent->pass_hlt(mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165))
+	    success = true;
+	}
+	if (apply_singlemu_trig) {
+	  if(mevent->pass_hlt(mfv::b_HLT_IsoMu24))
+	    success = true;
+	  if(mevent->pass_hlt(mfv::b_HLT_Mu50))
+	    success = true;
+	}
+	if (apply_doubleel_trig) {
+	  if(mevent->pass_hlt(mfv::b_HLT_Diphoton30_22_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90))
+	    success = true;
+	  if(mevent->pass_hlt(mfv::b_HLT_DoublePhoton70))
+	    success = true;
+	}
+	if (apply_doublemu_trig) {
+	  if(mevent->pass_hlt(mfv::b_HLT_DoubleMu43NoFiltersNoVtx))
+	    success = true;
+	}
+	if (apply_doublemuel_trig) {
+	  if(mevent->pass_hlt(mfv::b_HLT_Mu43NoFiltersNoVtx_Photon43_CaloIdL))
+	    success = true;
+	}
       }
       if(!success) return false;
     }
@@ -449,7 +468,7 @@ bool MFVAnalysisCuts::satisfiesDispLep(edm::Handle<MFVEvent> mevent, double dxy)
   return pass_dxy;
 }
   
-
+//splitting up the satisfieslep trigger into muon/ele trigger 
 bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t trig) const { 
   if(!mevent->pass_hlt(trig)) return false;
 
@@ -460,8 +479,9 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
   int njets      = mevent->njets(20);
     
 
-  // since each lepton trigger has different pts need(?) to be careful to match the resulting lepton(s) + jets (when applicable)
+  // since each lepton trigger has different pts need to be careful to match the resulting lepton(s) + jets (when applicable)
   bool passed_kinematics = false;
+
 
   
   switch(trig){
@@ -617,10 +637,10 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
 
   return false;
 }
-	
-      
-	
-      
+
+
+
+	     
   
 bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig) const {
   if(!mevent->pass_hlt(trig)) return false;

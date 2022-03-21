@@ -13,10 +13,10 @@ settings.cross = '' # 2017to2018' # 2017to2017p8'
 version = '2017p8v4'
 
 #TODO: double check these thresholds
-mu_thresh_hlt = 27
-mu_thresh_offline = 30
-#ele_thresh_hlt = 27
-#ele_thresh_offline = 35
+mu_thresh_hlt = 24
+mu_thresh_offline = 24
+#ele_thresh_hlt = 32
+#ele_thresh_offline = 32
 weight_l1ecal = ''
 
 tfileservice(process, 'eff.root')
@@ -77,7 +77,7 @@ process.den = cms.EDAnalyzer('MFVTriggerEfficiency',
                              require_ht = cms.double(-1),
                              weight_src = cms.InputTag('jmtWeightMiniAOD'),
                              muons_src = cms.InputTag('slimmedMuons'),
-                             muon_cut = cms.string(jtupleParams.muonCut.value() + ' && pt > %i' % mu_thresh_offline),
+                           #  muon_cut = cms.string(jtupleParams.muonCut.value() + ' && pt > %i' % mu_thresh_offline),
                              genjets_src = cms.InputTag(''), #'ak4GenJets' if is_mc else ''),
                              )
 

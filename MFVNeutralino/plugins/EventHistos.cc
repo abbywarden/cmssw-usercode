@@ -135,15 +135,23 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_nseldispl100_muons;
   TH1F* h_nseldispl100_leptons;
 
+  TH1F* h_highest_selmu;
+  TH1F* h_highest_selel;
+  TH1F* h_highest_sel2mu;
+  TH1F* h_highest_sel2el;
+  TH1F* h_highest_selmuel;
+  TH1F* h_highest_sellep;
+  
+
   TH1F* h_nmuons_[3];
   TH1F* h_nelectrons_[4];
   //this is a bit uneven due to considering different el/mu working points (not much focus on tight mu or loose el) 
   // 0: loose el,mu //  1: med el,mu // 2: tight el,mu // 3: tight el, med. mu // 4: tight el, loose mu // 5: med el, loose mu 
   TH1F* h_nselleptons_[6];
-  TH1F* h_nfullsellep_[6];
+  // TH1F* h_nfullsellep_[6];
 
-  TH1F* h_nfullselel_[4];
-  TH1F* h_nfullselmu_[3];
+  // TH1F* h_nfullselel_[4];
+  // TH1F* h_nfullselmu_[3];
    
   TH1F* h_muon_pt_[3];
   TH1F* h_muon_eta_[3];
@@ -234,6 +242,7 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_vertex_seed_track_err_eta;
   TH1F* h_vertex_seed_track_err_phi;
   TH1F* h_vertex_seed_track_err_dxy;
+  TH1F* h_vertex_seed_track_nsigmadxy;
   TH1F* h_vertex_seed_track_err_dz;
   TH1F* h_vertex_seed_track_npxhits;
   TH1F* h_vertex_seed_track_nsthits;
@@ -357,6 +366,7 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   h_vertex_seed_track_err_eta = fs->make<TH1F>("h_vertex_seed_track_err_eta", ";vertex seed track #sigma(#eta);tracks/5e-5", 100, 0, 0.005);
   h_vertex_seed_track_err_phi = fs->make<TH1F>("h_vertex_seed_track_err_phi", ";vertex seed track #sigma(#phi);tracks/5e-5", 100, 0, 0.005);
   h_vertex_seed_track_err_dxy = fs->make<TH1F>("h_vertex_seed_track_err_dxy", ";vertex seed track #sigma(dxy) (cm);tracks/3 #mum", 100, 0, 0.03);
+  h_vertex_seed_track_nsigmadxy = fs->make<TH1F>("h_vertex_seed_track_nsigmadxy", ";vertex seed track #Nsigma(dxy) (cm);tracks/0.1", 250, 0, 25);  
   h_vertex_seed_track_err_dz = fs->make<TH1F>("h_vertex_seed_track_err_dz", ";vertex seed track #sigma(dz) (cm);tracks/15 #mum", 100, 0, 0.15);
   h_vertex_seed_track_npxhits = fs->make<TH1F>("h_vertex_seed_track_npxhits", ";vertex seed track # pixel hits;tracks", 10, 0, 10);
   h_vertex_seed_track_nsthits = fs->make<TH1F>("h_vertex_seed_track_nsthits", ";vertex seed track # strip hits;tracks", 50, 0, 50);
@@ -398,8 +408,13 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   h_nseldispl100_electrons = fs->make<TH1F>("h_nseldispl100_electrons", ";# of electrons w/ |dxy|>100um", 10, 0, 10);
   h_nseldispl100_muons = fs->make<TH1F>("h_nseldispl100_muons", ";# of muons w/ |dxy|>100um", 10, 0, 10);
   h_nseldispl100_leptons = fs->make<TH1F>("h_nseldispl100_leptons", ";# of leptons w/ |dxy|>100um", 10, 0, 10);
-
-  
+  h_highest_selmu = fs->make<TH1F>("h_highest_selmu", ";# of muons;events", 5, 0, 5);
+  h_highest_selel = fs->make<TH1F>("h_highest_selel", ";# of electrons;events", 5, 0, 5);
+  h_highest_sel2mu = fs->make<TH1F>("h_highest_sel2mu", ";# of muons;events", 5, 0, 5);
+  h_highest_sel2el = fs->make<TH1F>("h_highest_sel2el", ";# of electrons;events", 5, 0, 5);
+  h_highest_selmuel = fs->make<TH1F>("h_highest_selmuel", ";# of mu-el;events", 5, 0, 5);
+  h_highest_sellep = fs->make<TH1F>("h_highest_sellep", ";# of lep;events", 5, 0, 5);
+   
   // h_muon_pt  = fs->make<TH1F>("h_muon_pt",";muon p_{T} (GeV);muon/5 GeV", 200, 0, 1000);
   // h_muon_eta = fs->make<TH1F>("h_muon_eta", ";muon #eta (rad);muon/.104", 50, -2.6, 2.6);
   // h_muon_phi = fs->make<TH1F>("h_muon_phi",";muon #phi (rad);muon/.126", 50, -3.1416, 3.1416);
@@ -435,7 +450,7 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   const char* ele_ex[4] = {"veto", "loose", "medium", "tight"};
   for (int i = 0; i< 4; ++i) {
     h_nelectrons_[i] = fs->make<TH1F>(TString::Format("h_nelectrons_%s", ele_ex[i]), TString::Format(";# of %s electrons;events", ele_ex[i]), 10, 0, 10);
-    h_nfullselel_[i] = fs->make<TH1F>(TString::Format("h_nfullselel_%s", ele_ex[i]), TString::Format(";# of base sel %s electrons;events", ele_ex[i]), 10, 0, 10);
+    // h_nfullselel_[i] = fs->make<TH1F>(TString::Format("h_nfullselel_%s", ele_ex[i]), TString::Format(";# of base sel %s electrons;events", ele_ex[i]), 10, 0, 10);
     h_electron_pt_[i] = fs->make<TH1F>(TString::Format("h_electron_pt_%s", ele_ex[i]), TString::Format(";pt of %s electrons;electron/5 GeV", ele_ex[i]), 200, 0, 1000);
     h_electron_eta_[i] = fs->make<TH1F>(TString::Format("h_electron_eta_%s", ele_ex[i]), TString::Format(";%s electron #eta (rad);electron/.104", ele_ex[i]), 50, -2.6, 2.6);
     h_electron_phi_[i] = fs->make<TH1F>(TString::Format("h_electron_phi_%s", ele_ex[i]), TString::Format( ";%s electron #phi (rad);electron/.126", ele_ex[i]),  50, -3.1416, 3.1416);
@@ -467,7 +482,7 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   const char* mu_ex[3] = {"loose", "medium", "tight"};
   for (int i = 0; i < 3; ++i) {
     h_nmuons_[i] = fs->make<TH1F>(TString::Format("h_nmuons_%s", mu_ex[i]), TString::Format(";# of %s muons;events", mu_ex[i]), 10, 0, 10);
-    h_nfullselmu_[i] = fs->make<TH1F>(TString::Format("h_nfullselmu_%s", mu_ex[i]), TString::Format(";# of base sel %s muons;events", mu_ex[i]), 10, 0, 10);
+    // h_nfullselmu_[i] = fs->make<TH1F>(TString::Format("h_nfullselmu_%s", mu_ex[i]), TString::Format(";# of base sel %s muons;events", mu_ex[i]), 10, 0, 10);
     h_muon_pt_[i] = fs->make<TH1F>(TString::Format("h_muon_pt_%s", mu_ex[i]), TString::Format(";pt of %s muons;muon/5 GeV", mu_ex[i]), 200, 0, 1000);
     h_muon_eta_[i] = fs->make<TH1F>(TString::Format("h_muon_eta_%s", mu_ex[i]), TString::Format("; %s muon #eta (rad);muon/.104", mu_ex[i]), 50, -2.6, 2.6);
     h_muon_phi_[i] = fs->make<TH1F>(TString::Format("h_muon_phi_%s", mu_ex[i]), TString::Format("; %s muon #phi (rad);muon/.126", mu_ex[i]), 50, -3.1416, 3.1416);
@@ -494,7 +509,7 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   const char* sel_ex[6] = {"loose_emu", "med_emu", "tight_emu", "tight_e_med_mu", "tight_e_loose_mu", "med_e_loose_mu"};
   for (int i = 0; i < 6; ++i) {
     h_nselleptons_[i] = fs->make<TH1F>(TString::Format("h_nselleptons_%s", sel_ex[i]), TString::Format(";# of %s;events", sel_ex[i]), 10, 0, 10);
-    h_nfullsellep_[i] = fs->make<TH1F>(TString::Format("h_fullsellep_%s", sel_ex[i]), TString::Format(";# of base sel %s;events", sel_ex[i]), 10, 0, 10);
+    // h_nfullsellep_[i] = fs->make<TH1F>(TString::Format("h_fullsellep_%s", sel_ex[i]), TString::Format(";# of base sel %s;events", sel_ex[i]), 10, 0, 10);
   }
   
 }
@@ -646,6 +661,13 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   int ndispl50_el = 0;
   int ndispl100_mu = 0;
   int ndispl100_el = 0;
+
+  //cases for different highest 1/2 combos of leptons to use for nm1 plots
+  int nhighmu = 0;
+  int nhigh2mu = 0;
+  int nhighel = 0;
+  int nhigh2el = 0;
+  int nhighmuel = 0;
   
   //placeholder 2d vector to be able to fill nsellepton histo for all the different cases; 1st is el, 2nd is mu
   std::vector<std::vector<int>> nlept_idx{
@@ -667,6 +689,21 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     // h_muon_dz->Fill(mevent->muon_dz[imu], w);
     // h_muon_absdxybs->Fill(abs(mevent->muon_dxybs[imu]), w);
     // h_muon_absdz->Fill(abs(mevent->muon_dz[imu]), w);
+
+    //select the highest pt mu (for cases : mu, 2mu, muel):
+    if (imu < 2) {
+      if (mevent->muon_ID[imu][1] == 1) {
+	if (abs(mevent->muon_eta[imu]) < 2.4) {
+	  if (mevent->muon_iso[imu] < 0.15) {
+	    nhigh2mu +=1;
+	    if (imu < 1) {
+	      nhighmu +=1;
+	      nhighmuel +=1;
+	    }
+	  }
+	}
+      }
+    }
     
     if (abs(mevent->muon_dxybs[imu]) >= 0.005)
       ndispl50_mu +=1;
@@ -717,7 +754,7 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   }
   for (int j = 0; j < 3; ++j) {
     h_nmuons_[j]->Fill(nmuons[j], w);
-    h_nfullselmu_[j]->Fill(nselmu[j], w);
+    //  h_nfullselmu_[j]->Fill(nselmu[j], w);
   }
   h_ndispl50_muons->Fill(ndispl50_mu, 1);
   h_ndispl100_muons->Fill(ndispl100_mu, 1);
@@ -734,6 +771,19 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     // h_electron_absdxybs->Fill(abs(mevent->electron_dxybs[iel]), w);
     // h_electron_absdz->Fill(abs(mevent->electron_dz[iel]), w);
 
+    if (iel < 2) {
+      if (mevent->electron_ID[iel][3] == 1) {
+	if (abs(mevent->electron_eta[iel]) < 2.4) {
+	  if (mevent->electron_iso[iel] < 0.1) {
+	    nhigh2el +=1;
+	    if (iel < 1) {
+	      nhighel +=1;
+	      nhighmuel +=1;
+	    }
+	  }
+	}
+      }
+    }
 
     if (abs(mevent->electron_dxybs[iel]) >= 0.005)
       ndispl50_el +=1;
@@ -792,7 +842,7 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   
   for (int j = 0; j < 4; ++j) {
     h_nelectrons_[j]->Fill(nelectrons[j], w);
-    h_nfullselel_[j]->Fill(nselel[j], w);
+    // h_nfullselel_[j]->Fill(nselel[j], w);
   }
   h_ndispl50_electrons->Fill(ndispl50_el, w);
   h_ndispl100_electrons->Fill(ndispl100_el, w);
@@ -803,12 +853,17 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   h_ndispl100_leptons->Fill(ndispl100_el + ndispl100_mu, w);
   h_nseldispl50_leptons->Fill(nseldispl50_el[3] + nseldispl50_mu[1], w);
   h_nseldispl100_leptons->Fill(nseldispl100_el[3] + nseldispl100_mu[1], w);
-  
+
+  h_highest_selmu->Fill(nhighmu, w);
+  h_highest_selel->Fill(nhighel, w);
+  h_highest_sel2mu->Fill(nhigh2mu, w);
+  h_highest_sel2el->Fill(nhigh2el, w);
+  h_highest_selmuel->Fill(nhighmuel, w);
+  h_highest_sellep->Fill(nhigh2mu + nhigh2el, w);
   // to get the correct muon, electron -- have to reference the lepton index
   for (int l = 0; l < 6; ++l) {
       h_nselleptons_[l]->Fill((nmuons[nlept_idx[l][0]] + nelectrons[nlept_idx[l][1]]), w);
-      h_nfullsellep_[l]->Fill((nselmu[nlept_idx[l][0]] + nselel[nlept_idx[l][1]]), w);
-      
+      // h_nfullsellep_[l]->Fill((nselmu[nlept_idx[l][0]] + nselel[nlept_idx[l][1]]), w);    
   }
 
 
@@ -909,6 +964,7 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     h_vertex_seed_track_err_eta->Fill(mevent->vertex_seed_track_err_eta[i], w);
     h_vertex_seed_track_err_phi->Fill(mevent->vertex_seed_track_err_phi[i], w);
     h_vertex_seed_track_err_dxy->Fill(mevent->vertex_seed_track_err_dxy[i], w);
+    h_vertex_seed_track_nsigmadxy->Fill(abs((mevent->vertex_seed_track_dxy[i]))/(mevent->vertex_seed_track_err_dxy[i]), w);
     h_vertex_seed_track_err_dz->Fill(mevent->vertex_seed_track_err_dz[i], w);
     h_vertex_seed_track_npxhits->Fill(mevent->vertex_seed_track_npxhits(i), w);
     h_vertex_seed_track_nsthits->Fill(mevent->vertex_seed_track_nsthits(i), w);

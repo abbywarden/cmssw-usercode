@@ -1,18 +1,18 @@
 from JMTucker.Tools.CMSSWTools import *
 from JMTucker.Tools.Year import year
 
-#ntuple version for ht trigger
-#ntuple_version_ = 'V28'
 #ntuple version for lepton trigger
+#ntuple_version_ = 'V30LepSigma2'
 ntuple_version_ = 'V30Lep'
-#iso version has the different isolation variables separated 
+#iso version has the different isolation variables separated;
+#also using this version to look at nm1 geo2ddist plots! 
 #ntuple_version_ = 'V30Lepiso'
 use_btag_triggers = False
 use_Lepton_triggers = True
 #if use_btag_triggers : 
 #    ntuple_version_ += "B" # for "Btag triggers"; also includes DisplacedDijet triggers
 
-#version use:  only trigger (no requirements on leptons) 
+#version m : original; sigma3/2 : reduce seed track sigmadxy to 3/2
 ntuple_version_use = ntuple_version_ + 'm'
 dataset = 'ntuple' + ntuple_version_use.lower()
 
@@ -36,7 +36,8 @@ def prepare_vis(process, mode, settings, output_commands):
         process.load('JMTucker.MFVNeutralino.VertexSelector_cfi')
         process.p *= process.mfvSelectedVerticesSeq
 
-        for x in process.mfvSelectedVerticesTight, process.mfvSelectedVerticesTightNtk3, process.mfvSelectedVerticesTightNtk4:
+       # for x in process.mfvSelectedVerticesTight, process.mfvSelectedVerticesTightNtk3, process.mfvSelectedVerticesTightNtk4:
+        for x in process.mfvSelectedVerticesTightMinNtk4, process.mfvSelectedVerticesTightMinNtk3:
             x.produce_vertices = True
             x.produce_tracks = True
             x.vertex_src = 'mfvVertices'
@@ -94,6 +95,7 @@ def event_filter(process, mode, settings, output_commands, **kwargs):
     if mode:
         from JMTucker.MFVNeutralino.EventFilter import setup_event_filter
         setup_event_filter(process, input_is_miniaod=settings.is_miniaod, mode=mode, **kwargs)
+        
 
 ########################################################################
 
@@ -107,6 +109,7 @@ class NtupleSettings(CMSSWSettings):
         self.keep_all = False
         self.keep_gen = False
         self.event_filter = True
+        self.rp_filter = False
 
     @property
     def version(self):
@@ -312,6 +315,34 @@ def ntuple_process(settings):
     else:
         return aod_ntuple_process(settings)
 
+def signal_uses_random_pars_modifier(sample): # Used for samples stored in inclusive miniaods
+    to_replace = []
+
+    if sample.is_signal:
+        if sample.name.startswith('ZH_') or sample.name.startswith('Wplus'):
+            magic_randpar = 'rp_filter = False'
+            if use_btag_triggers :
+                magic = "event_filter = 'bjets OR displaced dijet veto HT'"
+            elif use_Lepton_triggers :
+                magic = "event_filter = 'leptons only'" 
+            else :
+                magic = "event_filter = 'jets only'"
+            to_replace.append((magic_randpar, 'rp_filter = True', 'tuple template does not contain the magic string "%s"' % magic_randpar))
+            to_replace.append((magic,   "event_filter = 'randpar M%i_ct%i-'" % (sample.mass, sample.tau/1000), 'tuple template does not contain the magic string "%s"' % magic))
+    return [], to_replace
+
+
+def signal_alt_random_pars_modifier(sample):  # An alternate way to implement the above. Needed for certain scripts (e.g. filtercheck.py),
+   # to_replace = []                           # for which signal_uses_random_pars_modifier conflicts with existing routines
+    if sample.is_signal and (sample.name.startswith('ZH_') or sample.name.startswith('Wplus')):
+        magic_mode   = "rp_mode = 'None'"
+        #to_replace.append((magic_mode, "rp_mode = 'randpar M%i_ct%i-'" % (sample.mass, sample.tau/1000), 'tuple template does not contain the magic string "%s"' % magic_mode))
+        to_replace = [(magic_mode, "rp_mode = 'randpar M%i_ct%i-'" % (sample.mass, sample.tau/1000), 'tuple template does not contain the magic string "%s"' % magic_mode)]
+    else :
+        to_replace = []
+    return [], to_replace
+
+    
 def signals_no_event_filter_modifier(sample):
     if sample.is_signal:
         if use_btag_triggers :

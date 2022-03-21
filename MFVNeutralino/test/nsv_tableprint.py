@@ -9,8 +9,9 @@ year = '2018'
 version = 'V30Lepm'
 root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/MiniTree%s' % version
 #ntks = ('mfvMiniTreeMinNtk3', 'mfvMiniTreeMinNtk4', 'mfvMiniTree')
+ntks = ('mfvMiniTreeMinNtk3_loose', 'mfvMiniTreeMinNtk4_loose', 'mfvMiniTree_loose')
 #ntks = ('mfvMiniTreeMinNtk3_dxy', 'mfvMiniTreeMinNtk4_dxy', 'mfvMiniTree_dxy')
-ntks = ('mfvMiniTreeMinNtk3_seldxy', 'mfvMiniTreeMinNtk4_seldxy', 'mfvMiniTree_seldxy')
+#ntks = ('mfvMiniTreeMinNtk3_seldxy', 'mfvMiniTreeMinNtk4_seldxy', 'mfvMiniTree_seldxy')
 
 stoplb_samples = Samples.mfv_stoplb_samples_2018
 stopld_samples = Samples.mfv_stopld_samples_2018
@@ -29,9 +30,14 @@ data_samples = [] # Samples.data_samples_2017
 lumi = ac.int_lumi_2018 * ac.scale_factor_2018
 lumi_nice = ac.int_lumi_nice_2018
 
-sample_list = [stoplb_samples, stopld_samples, qcd_samples, ttbar_samples, wjet_samples, diboson_samples, leptonic_samples, dy_samples]
+sample_list = [stoplb_samples, stopld_samples, ttbar_samples, wjet_samples, diboson_samples, leptonic_samples, dy_samples]
 
-sample_title = ["Signal Samples : Stoplb", "Signal Samples: Stopld", "QCD Background", "TTbar Background", "WJet Background", "Diboson Background", "QCD Lepton-Enriched Background", "Drellyan Background"]
+sample_title = ["Signal Samples : Stoplb", "Signal Samples: Stopld", "TTbar Background", "WJet Background", "Diboson Background", "QCD Lepton-Enriched Background", "Drellyan Background"]
+
+
+#sample_list = [ttbar_samples, wjet_samples, diboson_samples, leptonic_samples, dy_samples]
+
+#sample_title = ["TTbar Background", "WJet Background", "Diboson Background", "QCD Lepton-Enriched Background", "Drellyan Background"]
 
 def getit(fn, ntk):
     f = ROOT.TFile.Open(fn)
@@ -96,6 +102,8 @@ Sample Name& 1vtx & 2vtx \\
         for sample in samples:
             sname = sample.name
             fn = os.path.join(root_file_dir, sname + '.root')
+            if not os.path.exists(fn):
+                continue
 
             # print getit(fn, ntk)
             (r1v, n1v, en1v), (r2v, n2v, en2v) = getit(fn, ntk)

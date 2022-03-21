@@ -5,7 +5,9 @@ kvr_params = cms.PSet(
     maxNbrOfIterations = cms.int32(10),
     doSmoothing = cms.bool(True),
 )
-
+# a) change to min_track_rescaled_sigmadxy = cms.double(3) to see...
+# and also try 2?
+# another try: lower track pt requirement? 
 mfvVertexTracks = cms.EDFilter('MFVVertexTracks',
                                beamspot_src = cms.InputTag('offlineBeamSpot'),
                                primary_vertices_src = cms.InputTag('goodOfflinePrimaryVertices'),
@@ -28,7 +30,7 @@ mfvVertexTracks = cms.EDFilter('MFVVertexTracks',
                                min_track_pt = cms.double(1),
                                min_track_dxy = cms.double(0),
                                min_track_sigmadxy = cms.double(0),
-                               min_track_rescaled_sigmadxy = cms.double(4),
+                               min_track_rescaled_sigmadxy = cms.double(2),
                                min_track_sigmadxypv = cms.double(0),
                                min_track_hit_r = cms.int32(1),
                                min_track_nhits = cms.int32(0),

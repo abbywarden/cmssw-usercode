@@ -194,6 +194,10 @@ class secondary_files_modifier:
 
 ####
 
+
+## for testing sigma2; halve everything
+## default files per = 20
+
 def set_splitting(samples, dataset, jobtype='default', data_json=None, default_files_per=20, limit_ttbar=False):
     if jobtype == 'histos' or jobtype == 'minitree':
         d = {
@@ -249,12 +253,11 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
                 'qcdht1000_2018':   (11,  551000),
                 'qcdht1500_2018':   ( 4,  186000),
                 'qcdht2000_2018':   ( 5,  202000),
-                'ttbar_2018':       (50, 3040000),
-                'ttbarht0600_2018': ( 5,   71500),
-                'ttbarht0800_2018': ( 3,   45000),
-                'ttbarht1200_2018': ( 3,   32500),
-                'ttbarht2500_2018': ( 3,   27500),
-             
+                # 'ttbar_2018':       (50, 3040000),
+                # 'ttbarht0600_2018': ( 5,   71500),
+                # 'ttbarht0800_2018': ( 3,   45000),
+                # 'ttbarht1200_2018': ( 3,   32500),
+                # 'ttbarht2500_2018': ( 3,   27500),
                 }
              }
         assert dataset == 'miniaod'
@@ -270,7 +273,8 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
                 name = 'signal'
                 sample.split_by = 'events'
 
-            sample.files_per, sample.events_per = d[dataset].get(name, (50, 100000))
+            ## orig: 50 100,000
+            sample.files_per, sample.events_per = d[dataset].get(name, (5, 100000))
 
             if jobtype == 'trackmover':
                 if name.startswith('ttbarht'):
@@ -282,9 +286,11 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
                     sample.events_per /= 3
 
     elif jobtype == 'default':
-        d = {
-            'qcdmupt15_2018': 1,
-            }
+        # d = {
+        #     'qcdmupt15_2018': 1,
+        #     'qcdempt015_2018': 1,
+            
+        #     }
         
         for sample in samples:
             sample.set_curr_dataset(dataset)

@@ -7,17 +7,19 @@ from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, d
 
 #dataset = dataset + '_noef'
 #version = version + '_NoEF'
-
+#version = version + '_loose'
 #as of Jan20th making sure the lepton pt matches with what trigger was fired (see AnalysisCuts; satisfiesLepTrigger)
 # also have standard iso cuts for leptons 
-version = version + '_matchTrig_wfull'
+#version = version + '_matchTrig_wfull'
 
-## Jan 17th : V30Lepm_wfull_lepsel has tight vertices, require at least 1 lepton to be displaced
+
+#Jan28th making a separate histo for the n-1 geo2ddist plots (only a select few)
+#version = version + '_nm1geo'
 
 
 #sample_files(process, 'qcdht2000_2017' if is_mc else 'JetHT2017B', dataset, 1)
-sample_files(process, 'mfv_stoplb_tau100000um_M1400_2018', dataset, 1)
-#sample_files(process, 'ttbar_2018', dataset, 1)
+#sample_files(process, 'mfv_stoplb_tau010000um_M1000_2018', dataset, 1)
+sample_files(process, 'ZH_HToSSTobbbb_tau001000um_M40_2018', dataset, 1)
 
 tfileservice(process, 'histos.root')
 cmssw_from_argv(process)
@@ -35,7 +37,7 @@ import JMTucker.Tools.SimpleTriggerResults_cfi as SimpleTriggerResults
 SimpleTriggerResults.setup_endpath(process, weight_src='mfvWeight')
 
 common = cms.Sequence(process.mfvSelectedVerticesSeq * process.mfvWeight)
-
+common_a = cms.Sequence(process.mfvWeight)
 process.mfvEventHistosNoCuts = process.mfvEventHistos.clone()
 process.pSkimSel = cms.Path(common * process.mfvEventHistosNoCuts) # just trigger for now
 
@@ -45,11 +47,24 @@ process.mfvAnalysisCutsPreSel = process.mfvAnalysisCuts.clone(apply_vertex_cuts 
 #process.mfvIsolationHistosPreSel = process.mfvIsolationHistos.clone()
 #process.mfvAnalysisCutsPreSelIso = process.mfvAnalysisCuts.clone(apply_vertex_cuts = False)
 
-process.mfvEventHistosPreSelNoJet = process.mfvEventHistos.clone()
-process.mfvAnalysisCutsPreSelNoJet = process.mfvAnalysisCuts.clone(min_njets = cms.int32(0), apply_vertex_cuts = False)
+# process.mfvEventHistosPreSelNoJet = process.mfvEventHistos.clone()
+# process.mfvAnalysisCutsPreSelNoJet = process.mfvAnalysisCuts.clone(min_njets = cms.int32(0), apply_vertex_cuts = False)
 
-process.mfvEventHistosPreSelNoLep = process.mfvEventHistos.clone()
-process.mfvAnalysisCutsPreSelNoLep = process.mfvAnalysisCuts.clone(apply_lept_cuts = False, apply_vertex_cuts = False)
+
+#process.mfvEventHistosPreSelNoLep = process.mfvEventHistos.clone()
+#process.mfvAnalysisCutsPreSelNoLep = process.mfvAnalysisCuts.clone(apply_lept_cuts = False, apply_vertex_cuts = False)
+
+# only trigger applied
+# process.mfvEventHistosPreSelEl = process.mfvEventHistos.clone()
+# process.mfvAnalysisCutsPreSelEl = process.mfvAnalysisCuts.clone(apply_lept_cuts = False, apply_singleel_trig = True, apply_vertex_cuts = False)
+# process.mfvEventHistosPreSelMu = process.mfvEventHistos.clone()
+# process.mfvAnalysisCutsPreSelMu = process.mfvAnalysisCuts.clone(apply_lept_cuts = False, apply_singlemu_trig = True, apply_vertex_cuts = False)
+# process.mfvEventHistosPreSel2El = process.mfvEventHistos.clone()
+# process.mfvAnalysisCutsPreSel2El = process.mfvAnalysisCuts.clone(apply_lept_cuts = False, apply_doubleel_trig = True, apply_vertex_cuts = False)
+# process.mfvEventHistosPreSel2Mu = process.mfvEventHistos.clone()
+# process.mfvAnalysisCutsPreSel2Mu = process.mfvAnalysisCuts.clone(apply_lept_cuts = False, apply_doublemu_trig = True, apply_vertex_cuts = False)
+# process.mfvEventHistosPreSelMuEl = process.mfvEventHistos.clone()
+# process.mfvAnalysisCutsPreSelMuEl = process.mfvAnalysisCuts.clone(apply_lept_cuts = False, apply_doublemuel_trig = True, apply_vertex_cuts = False)
 
 #process.mfvEventHistosPreSelNoDxy = process.mfvEventHistos.clone()
 #process.mfvAnalysisCutsPreSelNoDxy = process.mfvAnalysisCuts.clone(apply_displept_cuts = False, apply_vertex_cuts = False)
@@ -57,12 +72,23 @@ process.mfvAnalysisCutsPreSelNoLep = process.mfvAnalysisCuts.clone(apply_lept_cu
 process.mfvAnaCutFlowHistos = process.mfvCutFlowHistos.clone()
 
 
-process.pCutFlow = cms.Path(process.mfvAnaCutFlowHistos)
+process.pCutFlow = cms.Path(common_a * process.mfvAnaCutFlowHistos)
 process.pEventPreSel = cms.Path(common * process.mfvAnalysisCutsPreSel * process.mfvEventHistosPreSel)
 #process.pIsoPreSel = cms.Path(common * process.mfvAnalysisCutsPreSelIso * process.mfvIsolationHistosPreSel)
 
-process.pEventPreSelNoJet = cms.Path(common * process.mfvAnalysisCutsPreSelNoJet * process.mfvEventHistosPreSelNoJet)
-process.pEventPreSelNoLep = cms.Path(common * process.mfvAnalysisCutsPreSelNoLep * process.mfvEventHistosPreSelNoLep)
+#process.pEventPreSelNoJet = cms.Path(common * process.mfvAnalysisCutsPreSelNoJet * process.mfvEventHistosPreSelNoJet)
+#process.pEventPreSelNoLep = cms.Path(common * process.mfvAnalysisCutsPreSelNoLep * process.mfvEventHistosPreSelNoLep)
+
+# process.pEventPreSelEl = cms.Path(common * process.mfvAnalysisCutsPreSelEl * process.mfvEventHistosPreSelEl)
+# process.pEventPreSelMu = cms.Path(common * process.mfvAnalysisCutsPreSelMu * process.mfvEventHistosPreSelMu)
+# process.pEventPreSel2El = cms.Path(common * process.mfvAnalysisCutsPreSel2El * process.mfvEventHistosPreSel2El)
+# process.pEventPreSel2Mu = cms.Path(common * process.mfvAnalysisCutsPreSel2Mu * process.mfvEventHistosPreSel2Mu)
+# process.pEventPreSelMuEl = cms.Path(common * process.mfvAnalysisCutsPreSelMuEl * process.mfvEventHistosPreSelMuEl)
+
+
+
+
+
 #process.pEventPreSelNoDxy = cms.Path(common * process.mfvAnalysisCutsPreSelNoDxy * process.mfvEventHistosPreSelNoDxy)
 
 
@@ -70,7 +96,8 @@ process.pEventPreSelNoLep = cms.Path(common * process.mfvAnalysisCutsPreSelNoLep
 nm1s = [
     ('Bsbs2ddist', 'min_bsbs2ddist = 0'),
     ('Bs2derr',    'max_rescale_bs2derr = 1e9'),
-    ('geo2ddist',  'exclude_beampipe = False'),
+    ('ntracks',    'min_ntracks = 2'),
+   # ('geo2ddist',  'exclude_beampipe = False'),
     ]
 # evt_nm1s = [
 #     # ('Ntks',       'min_ntracks = 0'),
@@ -96,7 +123,10 @@ for ntk in ntks:
     # elif ntk == 9:
     #     EX1 = 'Ntk4or5'
     else:
-        EX1 = 'MinNtk%i' % ntk
+        if ntk == 3:
+            EX1 = 'Ntk3'
+        else: 
+            EX1 = 'MinNtk%i' % ntk
 
     if EX1:
         EX2 = "vertex_src = 'mfvSelectedVerticesTight%s', " % EX1
@@ -197,7 +227,7 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
      #   pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
 
     if use_Lepton_triggers :
-        samples = pick_samples(dataset, qcd=True, ttbar=True, all_signal=True, data=False, wjet=True, diboson=True, drellyan=True, leptonic=True)
+        samples = pick_samples(dataset, qcd=False, ttbar=True, all_signal=False, data=False, wjet=True, diboson=True, drellyan=False, leptonic=True)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
                 
     else :

@@ -684,6 +684,7 @@ def data_mc_comparison(name,
                        rebin = None,
                        bin_width_to = None,
                        poisson_intervals = False,
+                       is_cutflow = False,
                        x_title = '',
                        y_title = 'arb. units',
                        x_title_offset = 1.,
@@ -818,7 +819,15 @@ def data_mc_comparison(name,
             if not issubclass(type(sample.hist), ROOT.TH1):
                 raise RuntimeError('histogram %s not found in %s' % (histogram_path, sample._datamccomp_filename))
 
-            xax = sample.hist.GetXaxis()
+            ## the current framework is for TH1* histos, I'm using a TH1D for cutflows
+            if is_cutflow :
+                sample.hist.LabelsDeflate()
+                xax = sample.hist.GetXaxis()
+
+                
+            else :
+                xax = sample.hist.GetXaxis()
+                
             if not first_binning:
                 first_binning = [None] # ibin starts at 1
                 for ibin in xrange(1, xax.GetNbins()+2):
@@ -906,6 +915,8 @@ def data_mc_comparison(name,
     stack = ROOT.THStack('s_datamc_' + name, '')
     sum_background = None
     for sample in background_samples:
+        if is_cutflow :
+            sample.hist.LabelsDeflate()
         join, nice_name, color = sample.join_info if join_info_override is None else join_info_override(sample)
         sample.hist.SetLineColor(color)
         sample.hist.SetFillColor(color)
@@ -952,6 +963,8 @@ def data_mc_comparison(name,
         sum_background_uncert.Draw('E2 same')
         stack.SetMaximum(stack.GetMaximum() * (1.1 + extra_bkg_uncert_frac))
 
+
+                
     if x_range is not None:
         stack.GetXaxis().SetLimits(*x_range)
     y_range_min, y_range_max = y_range
