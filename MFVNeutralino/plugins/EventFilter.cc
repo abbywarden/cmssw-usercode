@@ -38,6 +38,7 @@ private:
   const bool parse_randpars;
   const int randpar_mass;
   const int randpar_ctau;
+  const std::string(randpar_dcay);
   const bool debug;
 
   
@@ -61,6 +62,7 @@ MFVEventFilter::MFVEventFilter(const edm::ParameterSet& cfg)
     parse_randpars(cfg.getParameter<bool>("parse_randpars")),
     randpar_mass(cfg.getParameter<int>("randpar_mass")),
     randpar_ctau(cfg.getParameter<int>("randpar_ctau")),
+    randpar_dcay(cfg.getParameter<std::string>("randpar_dcay")),
     debug(cfg.getUntrackedParameter<bool>("debug", false))
 {
 }
@@ -74,20 +76,22 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
 
   // If pertinent, parse randpar configuration
   if (parse_randpars) {
-      edm::Handle<GenLumiInfoHeader> gen_header;
-      lumi.getByToken(gen_lumi_header_token, gen_header);
-
-      std::string rp_config_desc = gen_header->configDescription();
-      std::string str_mass = "MS-" + std::to_string(randpar_mass);
-      std::string str_ctau = "ctauS-" + std::to_string(randpar_ctau);
-      std::string comp_string_Zn = "ZH_HToSSTodddd_ZToLL_MH-125_" + str_mass + "_" + str_ctau + "_TuneCP5_13TeV-powheg-pythia8";
-      std::string comp_string_Wp = "WplusH_HToSSTodddd_WToLNu_MH-125_" + str_mass + "_" + str_ctau + "_TuneCP5_13TeV-powheg-pythia8";
-      if (not ((comp_string_Wp == rp_config_desc) or (comp_string_Zn == rp_config_desc))) {
-        return false;
-      }
-      else {
-       return true;
-      }
+    
+    edm::Handle<GenLumiInfoHeader> gen_header;
+    lumi.getByToken(gen_lumi_header_token, gen_header);
+    
+    std::string rp_config_desc = gen_header->configDescription();
+    std::string str_mass = "MS-" + std::to_string(randpar_mass);
+    std::string str_ctau = "ctauS-" + std::to_string(randpar_ctau);
+    std::string str_dcay = randpar_dcay;
+    std::string comp_string_Zn = "ZH_" + str_dcay + "_ZToLL_MH-125_" + str_mass + "_" + str_ctau + "_TuneCP5_13TeV-powheg-pythia8";
+    std::string comp_string_Wp = "WplusH_HToSSTodddd_WToLNu_MH-125_" + str_mass + "_" + str_ctau + "_TuneCP5_13TeV-powheg-pythia8";
+    if (not ((comp_string_Wp == rp_config_desc) or (comp_string_Zn == rp_config_desc))) {
+      return false;
+    }
+    else {
+      return true;
+    }
   }
 
   int njets = 0;
@@ -118,13 +122,10 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
   int nmuons = 0, nelectrons = 0;
 
   for (const pat::Muon& muon : *muons)
-    //  if (muon.passed(reco::Muon::CutBasedIdMedium) && muon.pt() > min_muon_pt)
     if (muon.pt() > min_muon_pt && abs(muon.eta()) < 2.4)
       ++nmuons;
 
   for (const pat::Electron& electron : *electrons) {
-    // bool passloose = electron.electronID("cutBasedElectronID-Fall17-94X-V2-loose");
-    // if (passloose && electron.pt() > min_electron_pt)
     if (electron.pt() > min_electron_pt && abs(electron.eta()) < 2.5)
       ++nelectrons;
   }

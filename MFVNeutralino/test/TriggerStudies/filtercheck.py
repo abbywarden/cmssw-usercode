@@ -1,17 +1,17 @@
 import sys
 from JMTucker.Tools.BasicAnalyzer_cfg import *
-from JMTucker.MFVNeutralino.NtupleCommon import signal_alt_random_pars_modifier
+from JMTucker.MFVNeutralino.NtupleCommon import signal_uses_random_pars_modifier
 
 settings = CMSSWSettings()
 settings.is_mc = True
 settings.is_miniaod = True
 settings.cross = '' # 2017to2018' # 2017to2017p8'
 
-#this_rp_mode = 'randpar M15_ct10-'
-this_rp_mode = 'None'
+this_rp_mode = 'randpar HToSSTodddd M07_ct10-'
+#this_rp_mode = 'None'
 
 
-sample_files(process, 'ZH_HToSSTodddd_ZToLL_tau010000um_M15_2018', 'miniaod')
+sample_files(process, 'ZH_HToSSTo4Tau_ZToLL_tau010000um_M15_2018', 'miniaod')
 geometry_etc(process, settings)
 tfileservice(process, 'filtercheck.root')
 cmssw_from_argv(process)
@@ -27,8 +27,6 @@ sef('pTriggerOR', mode = 'trigger HT OR bjets OR displaced dijet', name_ex = 'HT
 #sef('pFull',    mode = 'jets only',         name_ex = 'Full') # uncomment to get efficiency of ntuple-level vertex filter
 sef('pTriggerLeptons', mode = 'trigger leptons only', name_ex = 'leptons')
 sef('pTriggerDispLeptons', mode = 'trigger displaced leptons', name_ex = 'displaced_leptons')
-#sef('pTriggerCross', mode = 'trigger cross', name_ex = 'cross')
-#sef('pTriggerCrossOnly', mode = 'trigger cross only', name_ex = 'cross_only')
 
 
 sef('pTriggerDiLeptons', mode = 'trigger dileptons', name_ex = 'dileptons')
@@ -37,15 +35,6 @@ sef('pTriggerDispLeptonsORLeptons', mode = 'DispLeptons OR Single Leptons', name
 
 #sef('pTriggerDispLeptonsORDiLeptons', mode = 'DispLeptons OR DiLeptons', name_ex = 'displeptons_OR_dileptons')
 #sef('pTriggerLeptonsORDiLeptons', mode = 'SingleLeptons OR DiLeptons', name_ex = 'lepton_OR_dileptons')
-
-
-#sef('pTriggerDispLeptonsORHT', mode = 'DispLeptons OR HT', name_ex = 'displeptons_OR_HT')
-#sef('pTriggerLeptonsORHT', mode = 'Leptons OR HT', name_ex = 'leptons_OR_HT')
-#sef('pTriggerLepton2ORHT', mode = 'Lepton2 OR HT', name_ex = 'lepton2_OR_HT')
-#sef('pTriggerLepton3ORHT', mode = 'Lepton3 OR HT', name_ex = 'lepton3_OR_HT')
-
-
-#sef('pTriggerLeptonsORDiLeptonsDZ', mode = 'SingleLeptons OR DiLeptons wDZ', name_ex = 'lepton_OR_dileptonswDZ')
 
 
 # #all the singles; first lepton
@@ -89,5 +78,5 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = Samples.ZH_HToSSTodddd_ZToLL_samples_2018 #+ Samples.ZH_HToSSTobbbb_ZToLL + Samples.ZH_HToSSTo4Tau_ZToLL
         
     ms = MetaSubmitter('TrigFiltCheckV1_lept', dataset='miniaod')
-    ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, npu_filter_modifier(settings.is_miniaod), per_sample_pileup_weights_modifier(cross=settings.cross), signal_alt_random_pars_modifier)
+    ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, npu_filter_modifier(settings.is_miniaod), per_sample_pileup_weights_modifier(cross=settings.cross), signal_uses_random_pars_modifier)
     ms.submit(samples)

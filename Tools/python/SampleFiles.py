@@ -970,6 +970,15 @@ _add_ds("ntuplev30lepm", {
 'mfv_stopld_tau001000um_M0800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162210", 475),
 'mfv_stopld_tau010000um_M0800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162211", 485),
 'mfv_stopld_tau100000um_M0800_2018': _fromnum0("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_100mm_TuneCP5_13TeV_pythia8/NtupleV30Lepm_2018/220105_162212", 500),
+'ZH_HToSSTodddd_ZToll_tau001000um_M15_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30Lepm_2018/220322_121030", 503),
+'ZH_HToSSTodddd_ZToll_tau010000um_M15_2018': (502, ['/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30Lepm_2018/220322_121031/0000/ntuple_%i.root' % i for i in chain(xrange(398), xrange(399,503))]),
+'ZH_HToSSTodddd_ZToll_tau100000um_M15_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30Lepm_2018/220322_121032", 503),
+'ZH_HToSSTodddd_ZToll_tau001000um_M40_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30Lepm_2018/220323_051525", 503),
+'ZH_HToSSTodddd_ZToll_tau010000um_M40_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30Lepm_2018/220323_051526", 503),
+'ZH_HToSSTodddd_ZToll_tau100000um_M40_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30Lepm_2018/220323_051527", 503),
+'ZH_HToSSTodddd_ZToll_tau001000um_M55_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30Lepm_2018/220323_051528", 503),
+'ZH_HToSSTodddd_ZToll_tau010000um_M55_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30Lepm_2018/220323_051529", 503),
+'ZH_HToSSTodddd_ZToll_tau100000um_M55_2018': (502, ['/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30Lepm_2018/220323_051530/0000/ntuple_%i.root' % i for i in chain(xrange(110), xrange(111,503))]),
 })
 
 
@@ -1299,7 +1308,7 @@ _add_ds("miniaod", {
 
 ## testing ZH
 _add_ds("miniaod", {
-    'ZH_HToSSTodddd_ZToLL_tau010000um_M15_2018': (1, ['/store/mc/RunIIAutumn18MiniAOD/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/rp_102X_upgrade2018_realistic_v15-v1/230000/C11502B6-076B-3D4C-B819-8D3158B30C98.root'])
+    'ZH_HToSSTodddd_ZToll_tau010000um_M15_2018': (1, ['/store/mc/RunIIAutumn18MiniAOD/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/rp_102X_upgrade2018_realistic_v15-v1/230000/C11502B6-076B-3D4C-B819-8D3158B30C98.root'])
     })
 
 ####################

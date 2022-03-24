@@ -12,14 +12,15 @@ def setup_event_filter(process,
                        rp_mode = 'None',
                        rp_mass = -1,
                        rp_ctau = -1,
+                       rp_dcay = '',
                        input_is_miniaod = False,
                        mode = None,
                        sequence_name = 'mfvEventFilterSequence',
                        name_ex = None,
                        ):
 
-   # print(mode)
-    #print(rp_mode)
+    print(mode)
+    print(rp_mode)
     if name_ex:
         trigger_filter_name += name_ex
         event_filter_name += name_ex
@@ -84,23 +85,13 @@ def setup_event_filter(process,
         event_filter = True
         event_filter_require_vertex = False
 
-   
-    # elif rp_mode.startswith('randpar') or (isinstance(mode, str) and mode.startswith('randpar')):
-    #     tmp_mode = rp_mode if rp_mode.startswith('randpar') else mode
-    #     event_filter = True
-    #     event_filter_require_vertex = False
-    #     event_filter_jes_mult = 0
-    #     rp_filter = True
-    #     rp_mass = (int)(tmp_mode[tmp_mode.find('M')+1 : tmp_mode.find('_')])
-    #     rp_ctau = (int)(tmp_mode[tmp_mode.find('t')+1 : tmp_mode.find('-')])
-    #     print(rp_mass, rp_ctau)
         
     elif mode:
         if mode is not True:
             raise ValueError('bad mode %r' % mode)
         event_filter = True
 
-   # print rp_mode
+    #for randpars scheme 
     if rp_mode.startswith('randpar') or (isinstance(mode, str) and mode.startswith('randpar')):
         tmp_mode = rp_mode if rp_mode.startswith('randpar') else mode
         event_filter = True
@@ -109,7 +100,9 @@ def setup_event_filter(process,
         rp_filter = True
         rp_mass = (int)(tmp_mode[tmp_mode.find('M')+1 : tmp_mode.find('_')])
         rp_ctau = (int)(tmp_mode[tmp_mode.find('t')+1 : tmp_mode.find('-')])
-        print(rp_mass, rp_ctau)
+        rp_dcay = tmp_mode[tmp_mode.find('H') : tmp_mode.find(' M')]
+
+        print(rp_dcay, rp_mass, rp_ctau)
 
   
 
@@ -191,6 +184,7 @@ def setup_event_filter(process,
             print "In EventFilter.py conditional"
             eventFilter.randpar_mass = rp_mass
             eventFilter.randpar_ctau = rp_ctau
+            eventFilter.randpar_dcay = rp_dcay
             eventFilter.parse_randpars = True
 
         if event_filter_jes_mult > 0:

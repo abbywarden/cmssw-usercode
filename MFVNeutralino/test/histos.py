@@ -10,16 +10,13 @@ from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, d
 #version = version + '_loose'
 #as of Jan20th making sure the lepton pt matches with what trigger was fired (see AnalysisCuts; satisfiesLepTrigger)
 # also have standard iso cuts for leptons 
-#version = version + '_matchTrig_wfull'
+version = version + '_fullsel'
 
-
-#Jan28th making a separate histo for the n-1 geo2ddist plots (only a select few)
-#version = version + '_nm1geo'
 
 
 #sample_files(process, 'qcdht2000_2017' if is_mc else 'JetHT2017B', dataset, 1)
 #sample_files(process, 'mfv_stoplb_tau010000um_M1000_2018', dataset, 1)
-sample_files(process, 'ZH_HToSSTobbbb_tau001000um_M40_2018', dataset, 1)
+sample_files(process, 'ZH_HToSSTodddd_ZToll_tau001000um_M40_2018', dataset, 1)
 
 tfileservice(process, 'histos.root')
 cmssw_from_argv(process)
@@ -227,7 +224,7 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
      #   pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
 
     if use_Lepton_triggers :
-        samples = pick_samples(dataset, qcd=False, ttbar=True, all_signal=False, data=False, wjet=True, diboson=True, drellyan=False, leptonic=True)
+        samples = pick_samples(dataset, qcd=False, ttbar=True, all_signal=True, data=False, wjet=False, diboson=False, drellyan=False, leptonic=False)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
                 
     else :

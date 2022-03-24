@@ -61,7 +61,10 @@ def getit(f, n):
     for ibin in xrange(1, hnum.GetNbinsX()+1):
         if hnum.GetXaxis().GetBinLabel(ibin) == n:
             break
+    print hnum.GetBinContent(ibin)
+    print hden.GetBinContent(ibin)
     return clopper_pearson(hnum.GetBinContent(ibin), hden.GetBinContent(ibin))
+
 
 def mvpave(pave, x1, y1, x2, y2):
     pave.SetX1(x1)
