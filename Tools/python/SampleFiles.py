@@ -981,6 +981,21 @@ _add_ds("ntuplev30lepm", {
 'ZH_HToSSTodddd_ZToll_tau100000um_M55_2018': (502, ['/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30Lepm_2018/220323_051530/0000/ntuple_%i.root' % i for i in chain(xrange(110), xrange(111,503))]),
 })
 
+#this is for the corrected assoc. higgs samples... 
+_add_ds("ntuplev30lepnoefm", {
+'ZH_HToSSTodddd_ZToll_tau001000um_M07_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_050559", 503),
+'ZH_HToSSTodddd_ZToll_tau010000um_M07_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_050600", 503),
+'ZH_HToSSTodddd_ZToll_tau100000um_M07_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_050601", 503),
+'ZH_HToSSTodddd_ZToll_tau001000um_M15_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_050602", 503),
+'ZH_HToSSTodddd_ZToll_tau010000um_M15_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_093013", 503),
+'ZH_HToSSTodddd_ZToll_tau100000um_M15_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_050604", 503),
+'ZH_HToSSTodddd_ZToll_tau001000um_M40_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_050605", 503),
+'ZH_HToSSTodddd_ZToll_tau010000um_M40_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_050606", 503),
+'ZH_HToSSTodddd_ZToll_tau100000um_M40_2018': (502, ['/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_050607/0000/ntuple_%i.root' % i for i in chain(xrange(388), xrange(389,503))]),
+'ZH_HToSSTodddd_ZToll_tau001000um_M55_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_050608", 503),
+'ZH_HToSSTodddd_ZToll_tau010000um_M55_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_050609", 503),
+'ZH_HToSSTodddd_ZToll_tau100000um_M55_2018': _fromnum0("/store/user/awarden/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/NtupleV30LepNoEFm_2018/220328_050610", 503),
+})
 
 #this is a lepton isolation check to compare ttbar and some signal (i don't think all signal made it but that's okay)
 # _add_ds("ntuplev30lepisom", {
@@ -1307,9 +1322,9 @@ _add_ds("miniaod", {
 })
 
 ## testing ZH
-_add_ds("miniaod", {
-    'ZH_HToSSTodddd_ZToll_tau010000um_M15_2018': (1, ['/store/mc/RunIIAutumn18MiniAOD/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/rp_102X_upgrade2018_realistic_v15-v1/230000/C11502B6-076B-3D4C-B819-8D3158B30C98.root'])
-    })
+# _add_ds("miniaod", {
+#     'ZH_HToSSTodddd_ZToll_tau010000um_M15_2018': (1, ['/store/mc/RunIIAutumn18MiniAOD/ZH_HToSSTodddd_ZToLL_MH-125_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/rp_102X_upgrade2018_realistic_v15-v1/230000/C11502B6-076B-3D4C-B819-8D3158B30C98.root'])
+#     })
 
 ####################
 

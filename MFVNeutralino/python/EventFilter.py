@@ -2,14 +2,14 @@ import FWCore.ParameterSet.Config as cms
 
 def setup_event_filter(process,
                        path_name='p',
-                       trigger_filter = True,
+                       trigger_filter = False,
                        trigger_filter_name = 'mfvTriggerFilter',
                        event_filter = False,
                        event_filter_jes_mult = 2,
                        event_filter_name = 'mfvEventFilter',
                        event_filter_require_vertex = True,
                        rp_filter = False,
-                       rp_mode = 'None',
+                       rp_mode = None,
                        rp_mass = -1,
                        rp_ctau = -1,
                        rp_dcay = '',
@@ -92,19 +92,22 @@ def setup_event_filter(process,
         event_filter = True
 
     #for randpars scheme 
-    if rp_mode.startswith('randpar') or (isinstance(mode, str) and mode.startswith('randpar')):
-        tmp_mode = rp_mode if rp_mode.startswith('randpar') else mode
+   # if rp_mode.startswith('randpar') or (isinstance(mode, str) and mode.startswith('randpar')):
+    if rp_mode :
+       # tmp_mode = rp_mode if rp_mode.startswith('randpar') else mode
+       # tmp_mode = rp_mode 
         event_filter = True
         event_filter_require_vertex = False
         event_filter_jes_mult = 0
         rp_filter = True
-        rp_mass = (int)(tmp_mode[tmp_mode.find('M')+1 : tmp_mode.find('_')])
-        rp_ctau = (int)(tmp_mode[tmp_mode.find('t')+1 : tmp_mode.find('-')])
-        rp_dcay = tmp_mode[tmp_mode.find('H') : tmp_mode.find(' M')]
+        rp_mass = (int)(rp_mode[rp_mode.find('M')+1 : rp_mode.find('_')])
+        rp_ctau = (int)(rp_mode[rp_mode.find('t')+1 : rp_mode.find('-')])
+        rp_dcay = rp_mode[rp_mode.find('H') : rp_mode.find(' M')]
 
         print(rp_dcay, rp_mass, rp_ctau)
 
-  
+  print trigger_filter
+  print event_filter
 
 
     if trigger_filter == 'jets only':
@@ -149,12 +152,16 @@ def setup_event_filter(process,
         raise ValueError('trigger_filter %r bad: must be one of ("jets only", "leptons only", "bjets only", "displaced dijet only", "HT OR bjets OR displaced dijet", "bjets OR displaced dijet veto HT", "displaced leptons", "displaced lepton pair", True, False)' % trigger_filter)
 
     overall = cms.Sequence()
+    
 
     if trigger_filter:
+      
         triggerFilter = triggerFilter.clone()
         setattr(process, trigger_filter_name, triggerFilter)
         overall *= triggerFilter
 
+        
+    
     if event_filter:
         if event_filter == 'jets only':
             from JMTucker.MFVNeutralino.EventFilter_cfi import mfvEventFilterJetsOnly as eventFilter
@@ -167,7 +174,14 @@ def setup_event_filter(process,
             from JMTucker.MFVNeutralino.EventFilter_cfi import mfvEventFilterBjetsORDisplacedDijetVetoHT as eventFilter
 
         elif event_filter is True:
-            from JMTucker.MFVNeutralino.EventFilter_cfi import mfvEventFilter as eventFilter
+
+            if rp_filter:
+                #this gives a 'bare bones' event filter to be used in the case that one uses rp_filter but no event_filter 
+                from JMTucker.MFVNeutralino.EventFilter_cfi import mfvEventFilterRandomParameters as eventFilter
+                
+            else :
+                from JMTucker.MFVNeutralino.EventFilter_cfi import mfvEventFilter as eventFilter
+                
         elif event_filter is not False:
             raise ValueError('event_filter must be one of ("jets only", "leptons only", "HT OR bjets OR displaced dijet", "bjets OR displaced dijet veto HT", "displaced leptons, "displaced lepton pair", True, False)')
 
@@ -179,7 +193,8 @@ def setup_event_filter(process,
             eventFilter.muons_src = 'slimmedMuons'
             eventFilter.electrons_src = 'slimmedElectrons'
         setattr(process, event_filter_name, eventFilter)
-
+      
+        
         if rp_filter:
             print "In EventFilter.py conditional"
             eventFilter.randpar_mass = rp_mass

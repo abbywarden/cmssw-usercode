@@ -234,7 +234,8 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
     elif jobtype == 'ntuple' or jobtype == 'trackmover':
         # Shed/presel_splitting.py
         d = {'miniaod': {
-                'signal':           ( 1,     200),
+                'signal':           ( 1,    200),
+                'rp_signal':        ( 1,    3000),   
                 'JetHT':            (15, 1350000),
                 'qcdht0300_2017':   (50, 3130000),
                 'qcdht0500_2017':   (50, 3130000),
@@ -271,10 +272,16 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
                 name = 'JetHT'
             elif sample.is_signal:
                 name = 'signal'
+                if 'ZH' in name:
+                    name = 'rp_signal'
+                    
                 sample.split_by = 'events'
+                
 
             ## orig: 50 100,000
-            sample.files_per, sample.events_per = d[dataset].get(name, (5, 100000))
+            ## for ZH: need to do 1,500,000 (?????)
+            ## or is it good as above? need to double check here
+            sample.files_per, sample.events_per = d[dataset].get(name, (50, 100000))
 
             if jobtype == 'trackmover':
                 if name.startswith('ttbarht'):

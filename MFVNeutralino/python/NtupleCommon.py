@@ -90,11 +90,11 @@ def minitree_only(process, mode, settings, output_commands):
 
         process.TFileService.fileName = 'minintuple.root'
 
+#updated event_filter : takes in two modes, the default/original and the rp_mode, indexed at 0 and 1 respectfully
 def event_filter(process, mode, settings, output_commands, **kwargs):
-    if mode:
+    if mode[0] or mode[1]:
         from JMTucker.MFVNeutralino.EventFilter import setup_event_filter
-        setup_event_filter(process, input_is_miniaod=settings.is_miniaod, mode=mode, rp_mode=settings.rp_mode,  **kwargs)
-
+        setup_event_filter(process, input_is_miniaod=settings.is_miniaod, mode=mode[0], rp_mode=mode[1], **kwargs)
         
 
 ########################################################################
@@ -109,7 +109,7 @@ class NtupleSettings(CMSSWSettings):
         self.keep_all = False
         self.keep_gen = False
         self.event_filter = True
-        self.rp_mode = 'None'
+        self.randpars_filter = False
        
     @property
     def version(self):
@@ -297,16 +297,24 @@ def miniaod_ntuple_process(settings):
     output_commands = make_output_commands(process, settings)
 
     mods = [
-        (prepare_vis,    settings.prepare_vis),
-        (run_n_tk_seeds, settings.run_n_tk_seeds),
-        (event_filter,   settings.event_filter),
-        (minitree_only,  settings.minitree_only),
+        (prepare_vis,     settings.prepare_vis),
+        (run_n_tk_seeds,  settings.run_n_tk_seeds),
+        (event_filter,    [settings.event_filter, settings.randpars_filter]),
+      #  (randpars_filter, settings.randpars_filter),
+        (minitree_only,   settings.minitree_only),
         ]
     
     for modifier, mode in mods:
         modifier(process, mode, settings, output_commands)
 
     set_output_commands(process, output_commands)
+
+    # event_mods = [
+    #     (event_filter,   settings.event_filter, settings.randpars_filter)
+    #     ]
+
+    # for evt_modifier, mode, rp_mode in event_mods:
+    #     modifier(process, mode, rp_mode, settings, output_commands)
 
     return process
 
@@ -322,10 +330,10 @@ def signal_uses_random_pars_modifier(sample): # Used for samples stored in inclu
 
     if sample.is_signal:
         if sample.name.startswith('ZH_') or sample.name.startswith('Wplus'):
-            magic_randpar = "rp_mode = 'None'"
+            magic_randpar = 'randpars_filter = False'
             
             decay = sample.name[sample.name.find('_')+1 : sample.name.find('_Z')]
-            to_replace.append((magic_randpar, "rp_mode = 'randpar %s M%i_ct%i-'" % (decay, sample.mass, sample.tau/1000), 'tuple template does not contain the magic string "%s"' % magic_randpar))
+            to_replace.append((magic_randpar, "randpars_filter = 'randpar %s M%i_ct%i-'" % (decay, sample.mass, sample.tau/1000), 'tuple template does not contain the magic string "%s"' % magic_randpar))
     return [], to_replace
    
     
