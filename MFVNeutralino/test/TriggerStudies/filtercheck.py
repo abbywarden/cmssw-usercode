@@ -7,17 +7,23 @@ settings.is_mc = True
 settings.is_miniaod = True
 settings.cross = '' # 2017to2018' # 2017to2017p8'
 
-this_rp_mode = 'randpar HToSSTodddd M07_ct10-'
-#this_rp_mode = 'None'
+#for local test
+# 10 -> 10mm
+# 0.05 -> 50um 
+#randpars_filter = 'randpar HToSSTodddd M07_ct0p05-'
 
+#for submission to condor
+randpars_filter = False
 
-sample_files(process, 'ZH_HToSSTo4Tau_ZToLL_tau010000um_M15_2018', 'miniaod')
+sample_files(process, 'qcdht1000_2018', 'miniaod')
+#sample_files(process, 'ZH_HToSSTodddd_ZToll_tau000050um_M15_2018', 'miniaod')
 geometry_etc(process, settings)
 tfileservice(process, 'filtercheck.root')
 cmssw_from_argv(process)
 
+
 from JMTucker.MFVNeutralino.EventFilter import setup_event_filter
-sef = lambda *a,**kwa: setup_event_filter(process, *a, input_is_miniaod=True, rp_mode = this_rp_mode,  **kwa)
+sef = lambda *a,**kwa: setup_event_filter(process, *a, input_is_miniaod=True, rp_mode = randpars_filter,  **kwa)
 sef('pTrigger', mode = 'trigger jets only')
 sef('pTriggerBjets', mode = 'trigger bjets only',name_ex = 'bjets')
 sef('pTriggerDispDijet', mode = 'trigger displaced dijet only',name_ex = 'displaced_dijet')
@@ -34,7 +40,7 @@ sef('pTriggerDiLeptons', mode = 'trigger dileptons', name_ex = 'dileptons')
 sef('pTriggerDispLeptonsORLeptons', mode = 'DispLeptons OR Single Leptons', name_ex = 'displeptons_OR_lepton')
 
 #sef('pTriggerDispLeptonsORDiLeptons', mode = 'DispLeptons OR DiLeptons', name_ex = 'displeptons_OR_dileptons')
-#sef('pTriggerLeptonsORDiLeptons', mode = 'SingleLeptons OR DiLeptons', name_ex = 'lepton_OR_dileptons')
+sef('pTriggerLeptonsORDiLeptons', mode = 'DiLeptons OR Single Leptons', name_ex = 'lepton_OR_dileptons')
 
 
 # #all the singles; first lepton
@@ -54,7 +60,6 @@ sef('pTriggerDispLeptonsORLeptons', mode = 'DispLeptons OR Single Leptons', name
 
 
 
-
 if len(process.mfvTriggerFilter.HLTPaths) > 1:
     for x in process.mfvTriggerFilter.HLTPaths:
         filt_name = ''.join(x.split('_')[1:-1])
@@ -63,7 +68,7 @@ if len(process.mfvTriggerFilter.HLTPaths) > 1:
         getattr(process, filt_name).HLTPaths = [x]
 
 import JMTucker.Tools.SimpleTriggerEfficiency_cfi as SimpleTriggerEfficiency
-SimpleTriggerEfficiency.setup_endpath(process)
+SimpleTriggerEfficiency.setup_endpath(process, randpars_filter)
 
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
@@ -74,8 +79,8 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = Samples.mfv_stoplb_samples_2017 + Samples.mfv_stopld_samples_2017
         #have not yet added 2017 samples 
     elif year == 2018:
-        #samples = Samples.mfv_stoplb_samples_2018 + Samples.mfv_stopld_samples_2018
-        samples = Samples.ZH_HToSSTodddd_ZToLL_samples_2018 #+ Samples.ZH_HToSSTobbbb_ZToLL + Samples.ZH_HToSSTo4Tau_ZToLL
+        samples = Samples.mfv_stoplb_samples_2018 + Samples.mfv_stopld_samples_2018
+       # samples = Samples.ZH_HToSSTodddd_ZToLL_samples_2018 + Samples.ZH_HToSSTobbbb_ZToLL_samples_2018 + Samples.ZH_HToSSTo4Tau_ZToLL_samples_2018
         
     ms = MetaSubmitter('TrigFiltCheckV1_lept', dataset='miniaod')
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, npu_filter_modifier(settings.is_miniaod), per_sample_pileup_weights_modifier(cross=settings.cross), signal_uses_random_pars_modifier)

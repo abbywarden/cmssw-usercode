@@ -15,7 +15,7 @@ if use_btag_triggers :
     settings.event_filter = 'bjets OR displaced dijet veto HT' # for new trigger studies
 elif use_Lepton_triggers :
     settings.event_filter = 'leptons only'
-    #settings.event_filter = False
+   # settings.event_filter = False
 else :
     settings.event_filter = 'jets only'
 
@@ -29,8 +29,9 @@ process = ntuple_process(settings)
 dataset = 'miniaod' if settings.is_miniaod else 'main'
 
 #sample_files(process, 'ZH_HToSSTodddd_ZToll_tau010000um_M15_2018', dataset, 1)
-sample_files(process, 'qcdht1000_2018', dataset, 1)
-max_events(process, 1000)
+#sample_files(process, 'qcdht1000_2018', dataset, 1)
+sample_files(process, 'mfv_stoplb_tau000100um_M0800_2018', dataset, 1)
+max_events(process, 10000)
 cmssw_from_argv(process)
 
 

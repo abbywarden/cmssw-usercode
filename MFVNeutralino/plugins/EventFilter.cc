@@ -37,7 +37,7 @@ private:
   const int min_nleptons;
   const bool parse_randpars;
   const int randpar_mass;
-  const int randpar_ctau;
+  const std::string(randpar_ctau);
   const std::string(randpar_dcay);
   const bool debug;
 
@@ -61,7 +61,7 @@ MFVEventFilter::MFVEventFilter(const edm::ParameterSet& cfg)
     min_nleptons(cfg.getParameter<int>("min_nleptons")),
     parse_randpars(cfg.getParameter<bool>("parse_randpars")),
     randpar_mass(cfg.getParameter<int>("randpar_mass")),
-    randpar_ctau(cfg.getParameter<int>("randpar_ctau")),
+    randpar_ctau(cfg.getParameter<std::string>("randpar_ctau")),
     randpar_dcay(cfg.getParameter<std::string>("randpar_dcay")),
     debug(cfg.getUntrackedParameter<bool>("debug", false))
 {
@@ -82,11 +82,13 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
     
     std::string rp_config_desc = gen_header->configDescription();
     std::string str_mass = "MS-" + std::to_string(randpar_mass);
-    std::string str_ctau = "ctauS-" + std::to_string(randpar_ctau);
+    std::string str_ctau = "ctauS-" + randpar_ctau;
+    //std::string str_ctau = randpar_ctau;
     std::string str_dcay = randpar_dcay;
     std::string comp_string_Zn = "ZH_" + str_dcay + "_ZToLL_MH-125_" + str_mass + "_" + str_ctau + "_TuneCP5_13TeV-powheg-pythia8";
     std::string comp_string_Wp = "WplusH_HToSSTodddd_WToLNu_MH-125_" + str_mass + "_" + str_ctau + "_TuneCP5_13TeV-powheg-pythia8";
     if (not ((comp_string_Wp == rp_config_desc) or (comp_string_Zn == rp_config_desc))) {
+      //std::cout<<rp_config_desc<<std::endl;
       return false;
     }
     else {
@@ -129,7 +131,9 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
     if (electron.pt() > min_electron_pt && abs(electron.eta()) < 2.5)
       ++nelectrons;
   }
-  const bool leptons_pass = nmuons + nelectrons >= min_nleptons;
+  //const bool leptons_pass = nmuons + nelectrons >= min_nleptons;
+  const bool leptons_pass = nelectrons >= min_nleptons;
+  // const bool leptons_pass = nelectrons >= min_nleptons;
 
   if (debug) printf("MFVEventFilter: nmuons: %i nelectrons: %i pass? %i\n", nmuons, nelectrons, leptons_pass);
 

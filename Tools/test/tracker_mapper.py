@@ -1,17 +1,22 @@
 import sys
 from JMTucker.Tools.BasicAnalyzer_cfg import *
-from JMTucker.MFVNeutralino.NtupleCommon import use_btag_triggers
+from JMTucker.MFVNeutralino.NtupleCommon import use_btag_triggers, signal_uses_random_pars_modifier
 
 settings = CMSSWSettings()
 settings.is_mc = True
 settings.cross = ''
+
+randpars_filter = False
+#for local test
+#randpars_filter = 'randpar HToSSTodddd M15_ct10-'
 
 max_events(process, 1000)
 report_every(process, 1000000)
 geometry_etc(process, which_global_tag(settings))
 tfileservice(process, 'tracker_mapper.root')
 #ww_2018, wjetstolnu_ht0400_2018, qcdempt170_2018, mfv_stopld_tau010000um_M1600_2018, mfv_stopld_tau100000um_M0600_2018
-sample_files(process, 'qcdht0700_2018', 'miniaod')
+#sample_files(process, 'mfv_stopld_tau010000um_M1200_2018', 'miniaod')
+sample_files(process, 'ZH_HToSSTodddd_ZToll_tau010000um_M15_2018', 'miniaod')
 file_event_from_argv(process)
 #want_summary(process)
 
@@ -51,6 +56,8 @@ if use_btag_triggers :
                               event_filter_require_vertex = False,
                               input_is_miniaod = True)
 
+# try : turn off trigger filter
+# turn off event filter 
 else :
     # event_filter = setup_event_filter(process,
     #                           path_name = '',
@@ -62,10 +69,14 @@ else :
     event_filter = setup_event_filter(process,
                                 path_name = '',
                                 trigger_filter = 'displeptons OR leptons',
+                                #trigger_filter = False,      
                                 event_filter = 'leptons only',
+                                #event_filter = False,
                                 event_filter_jes_mult = 0,
                                 event_filter_require_vertex = False,
-                                input_is_miniaod = True)
+                                input_is_miniaod = True,
+                                rp_mode = randpars_filter)
+
 
 common = cms.Sequence(event_filter * process.goodOfflinePrimaryVertices * process.jmtUnpackedCandidateTracks * process.jmtWeightMiniAOD)
 
@@ -96,8 +107,8 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = pick_samples(dataset, qcd=True, ttbar=False, all_signal=False, data=False, bjet=False, span_signal=True) # no data currently; no sliced ttbar since inclusive is used
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     else :
-        samples = pick_samples(dataset, qcd=False, ttbar=False, all_signal=False, diboson=False, wjet=False, leptonic=True, drellyan=False, data=False)
-        pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
+        samples = pick_samples(dataset, qcd=False, ttbar=False, all_signal=False, diboson=False, wjet=False, leptonic=False, drellyan=True, data=False)
+        pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier(), signal_uses_random_pars_modifier)
 
     set_splitting(samples, 'miniaod', 'default', json_path('ana_2017_1pc.json'), 16)
 

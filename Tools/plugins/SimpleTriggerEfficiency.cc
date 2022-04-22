@@ -11,6 +11,9 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/RandomNumberGenerator.h"
 
+#include "SimDataFormats/GeneratorProducts/interface/GenLumiInfoHeader.h"
+#include "FWCore/Framework/interface/LuminosityBlock.h"
+
 class SimpleTriggerEfficiency : public edm::EDAnalyzer {
 public:
   explicit SimpleTriggerEfficiency(const edm::ParameterSet&);
@@ -19,11 +22,18 @@ private:
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
 
   const edm::EDGetTokenT<edm::TriggerResults> trigger_results_token;
+  const edm::EDGetTokenT<GenLumiInfoHeader> gen_lumi_header_token; // for randpar parsing 
   const edm::EDGetTokenT<double> weight_token;
   const bool use_weight;
+  const bool parse_randpars;
+  const int randpar_mass;
+  const std::string(randpar_ctau);
+  const std::string(randpar_dcay);
+   
   std::map<std::string, unsigned> prescales;
 
   bool pass_prescale(std::string path, double rand) const;
+  
 
   TH1F* triggers_pass_num;
   TH1F* triggers_pass_den;
@@ -33,8 +43,14 @@ private:
 
 SimpleTriggerEfficiency::SimpleTriggerEfficiency(const edm::ParameterSet& cfg) 
   : trigger_results_token(consumes<edm::TriggerResults>(cfg.getParameter<edm::InputTag>("trigger_results_src"))),
+    gen_lumi_header_token(consumes<GenLumiInfoHeader, edm::InLumi>(edm::InputTag("generator"))),
     weight_token(consumes<double>(cfg.getParameter<edm::InputTag>("weight_src"))),
     use_weight(cfg.getParameter<edm::InputTag>("weight_src").label() != ""),
+    
+    parse_randpars(cfg.getParameter<bool>("parse_randpars")),
+    randpar_mass(cfg.getParameter<int>("randpar_mass")),
+    randpar_ctau(cfg.getParameter<std::string>("randpar_ctau")),
+    randpar_dcay(cfg.getParameter<std::string>("randpar_dcay")),
     triggers_pass_num(0),
     triggers_pass_den(0),
     triggers2d_pass_num(0),
@@ -78,6 +94,8 @@ void SimpleTriggerEfficiency::analyze(const edm::Event& event, const edm::EventS
   event.getByToken(trigger_results_token, trigger_results);
   const edm::TriggerNames& trigger_names = event.triggerNames(*trigger_results);
   const size_t npaths = trigger_names.size();
+  const edm::LuminosityBlock& lumi = event.getLuminosityBlock();
+
 
   if (triggers_pass_num == 0) {
     // Initialize the histograms now that we have the information on
@@ -120,29 +138,66 @@ void SimpleTriggerEfficiency::analyze(const edm::Event& event, const edm::EventS
     edm::Handle<double> weight_h;
     event.getByToken(weight_token, weight_h);
     weight = *weight_h;
+        
   }
 
   edm::Service<edm::RandomNumberGenerator> rng;
   CLHEP::HepRandomEngine& rng_engine = rng->getEngine(event.streamID());
 
+  
   std::vector<bool> acc(npaths, false);
-  
-  for (size_t ipath = 0; ipath < npaths; ++ipath)
-    acc[ipath] = trigger_results->accept(ipath) && pass_prescale(trigger_names.triggerName(ipath), rng_engine.flat());
-  
-  for (size_t ipath = 0; ipath < npaths; ++ipath) {
-    triggers_pass_den->Fill(ipath, weight);
-    const bool iacc = acc[ipath];
-    if (iacc)
-      triggers_pass_num->Fill(ipath, weight);
 
-    for (size_t jpath = 0; jpath < ipath; ++jpath) {
-      triggers2d_pass_den->Fill(ipath, jpath, weight);
-      const bool jacc = acc[jpath];
-      if (iacc || jacc)
-	triggers2d_pass_num->Fill(ipath, jpath, weight);
+  edm::Handle<GenLumiInfoHeader> gen_header;
+  lumi.getByToken(gen_lumi_header_token, gen_header);
+
+  // Simple Trigger Efficiency is currently only working for rp scheme (!)
+  if (parse_randpars) {
+    std::string rp_config_desc = gen_header->configDescription();
+    std::string str_mass = "MS-" + std::to_string(randpar_mass);
+    std::string str_ctau = "ctauS-" + randpar_ctau;
+    std::string str_dcay = randpar_dcay;
+    std::string comp_string_Zn = "ZH_" + str_dcay + "_ZToLL_MH-125_" + str_mass + "_" + str_ctau + "_TuneCP5_13TeV-powheg-pythia8";
+    std::string comp_string_Wp = "WplusH_HToSSTodddd_WToLNu_MH-125_" + str_mass + "_" + str_ctau + "_TuneCP5_13TeV-powheg-pythia8";
+    if (( comp_string_Wp == rp_config_desc) or (comp_string_Zn == rp_config_desc)) {
+    
+  
+      for (size_t ipath = 0; ipath < npaths; ++ipath)
+	acc[ipath] = trigger_results->accept(ipath) && pass_prescale(trigger_names.triggerName(ipath), rng_engine.flat());
+  
+      for (size_t ipath = 0; ipath < npaths; ++ipath) {
+	triggers_pass_den->Fill(ipath, weight);
+	const bool iacc = acc[ipath];
+	if (iacc)
+	  triggers_pass_num->Fill(ipath, weight);
+    
+	for (size_t jpath = 0; jpath < ipath; ++jpath) {
+	  triggers2d_pass_den->Fill(ipath, jpath, weight);
+	  const bool jacc = acc[jpath];
+	  if (iacc || jacc)
+	    triggers2d_pass_num->Fill(ipath, jpath, weight);
+	}
+      }
+    }
+  }
+  else {
+    for (size_t ipath = 0; ipath < npaths; ++ipath)
+      acc[ipath] = trigger_results->accept(ipath) && pass_prescale(trigger_names.triggerName(ipath), rng_engine.flat());
+  
+    for (size_t ipath = 0; ipath < npaths; ++ipath) {
+      triggers_pass_den->Fill(ipath, weight);
+      const bool iacc = acc[ipath];
+      if (iacc)
+	triggers_pass_num->Fill(ipath, weight);
+    
+      for (size_t jpath = 0; jpath < ipath; ++jpath) {
+	triggers2d_pass_den->Fill(ipath, jpath, weight);
+	const bool jacc = acc[jpath];
+	if (iacc || jacc)
+	  triggers2d_pass_num->Fill(ipath, jpath, weight);
+      }
     }
   }
 }
+
 
 DEFINE_FWK_MODULE(SimpleTriggerEfficiency);

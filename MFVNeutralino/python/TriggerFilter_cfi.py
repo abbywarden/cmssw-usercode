@@ -27,10 +27,10 @@ displaced_dijet_paths = [
 
 lepton_paths = [
     "HLT_Ele32_WPTight_Gsf_v*",
-    "HLT_Ele35_WPTight_Gsf_v*",
-   # "HLT_Ele115_CaloIdVT_GsfTrkIdT_v*",
-  #  "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v*",
-    "HLT_IsoMu27_v*",
+   # "HLT_Ele35_WPTight_Gsf_v*",
+    "HLT_Ele115_CaloIdVT_GsfTrkIdT_v*",
+    "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v*",
+  #  "HLT_IsoMu27_v*",
     "HLT_IsoMu24_v*",
     "HLT_Mu50_v*",
     ]
@@ -44,22 +44,21 @@ displaced_lepton_paths = [
 
 dilepton_paths = [
     "HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
-    "HLT_DoubleEle25_CaloIdL_MW_v*",
-    "HLT_DoubleEle27_CaloIdL_MW_v*",
-    "HLT_DoubleEle33_CaloIdL_MW_v*",
-    "HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT350_v*",
+   # "HLT_DoubleEle25_CaloIdL_MW_v*",
+   # "HLT_DoubleEle27_CaloIdL_MW_v*",
+  #  "HLT_DoubleEle33_CaloIdL_MW_v*",
+  #  "HLT_DoubleEle8_CaloIdM_TrackIdM_Mass8_PFHT350_v*",
     "HLT_Mu37_TkMu27_v*",
     "HLT_DoubleL2Mu50_v*",
-    "HLT_Mu27_Ele37_CaloIdL_MW_v*",
+  #  "HLT_Mu27_Ele37_CaloIdL_MW_v*",
     "HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v*",
-    "HLT_Mu37_Ele27_CaloIdL_MW_v*",
+   # "HLT_Mu37_Ele27_CaloIdL_MW_v*",
     "HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v*",
-    # "HLT_Mu17_Photon30_IsoCaloId_v*", Originally have this in, but as I am unsure about its validity as a dilepton
-    #trigger, I am leaving it out for the second round. ah, we would have to have a further selection to remove just the photons
+    # "HLT_Mu17_Photon30_IsoCaloId_v*", 
     ]
 
 
-#not finding a good selection for muon + jet so probably discard... 
+
 cross_paths = [
     "HLT_Ele15_IsoVVVL_PFHT450_v*", # JMTBAD these two cross triggers are rendered useless with the offline ht and lepton pt cuts imposed in eventFilter 
     #"HLT_Mu15_IsoVVVL_PFHT450_v*",

@@ -11,7 +11,7 @@ def setup_event_filter(process,
                        rp_filter = False,
                        rp_mode = None,
                        rp_mass = -1,
-                       rp_ctau = -1,
+                       rp_ctau = '',
                        rp_dcay = '',
                        input_is_miniaod = False,
                        mode = None,
@@ -19,8 +19,8 @@ def setup_event_filter(process,
                        name_ex = None,
                        ):
 
-    print(mode)
-    print(rp_mode)
+  #  print(mode)
+  #  print(rp_mode)
     if name_ex:
         trigger_filter_name += name_ex
         event_filter_name += name_ex
@@ -72,6 +72,8 @@ def setup_event_filter(process,
         trigger_filter = 'displeptons OR leptons'
     elif mode == 'DispLeptons OR DiLeptons':
         trigger_filter = 'displeptons OR dileptons'
+    elif mode == 'DiLeptons OR Single Leptons':
+        trigger_filter = 'leptons OR dileptons'
 
 
     #logical OR w/ displaced leptons and HT 
@@ -101,13 +103,13 @@ def setup_event_filter(process,
         event_filter_jes_mult = 0
         rp_filter = True
         rp_mass = (int)(rp_mode[rp_mode.find('M')+1 : rp_mode.find('_')])
-        rp_ctau = (int)(rp_mode[rp_mode.find('t')+1 : rp_mode.find('-')])
+        rp_ctau = rp_mode[rp_mode.find('t')+1 : rp_mode.find('-')]
         rp_dcay = rp_mode[rp_mode.find('H') : rp_mode.find(' M')]
 
         print(rp_dcay, rp_mass, rp_ctau)
 
-  print trigger_filter
-  print event_filter
+   # print trigger_filter
+   # print event_filter
 
 
     if trigger_filter == 'jets only':
@@ -176,7 +178,8 @@ def setup_event_filter(process,
         elif event_filter is True:
 
             if rp_filter:
-                #this gives a 'bare bones' event filter to be used in the case that one uses rp_filter but no event_filter 
+                #this gives a 'bare bones' event filter to be used in the case that one uses rp_filter but no event_filter;
+                # if both are true, the event filter will be over-written... currently I think it is okay...
                 from JMTucker.MFVNeutralino.EventFilter_cfi import mfvEventFilterRandomParameters as eventFilter
                 
             else :

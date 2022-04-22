@@ -2,8 +2,9 @@ from JMTucker.Tools.CMSSWTools import *
 from JMTucker.Tools.Year import year
 
 #ntuple version for lepton trigger
-#ntuple_version_ = 'V30LepSigma2'
-ntuple_version_ = 'V30LepNoEF'
+ntuple_version_ = 'V30Lep'
+#ntuple version for when doing ZH
+#ntuple_version_ = 'V30LepNoEF'
 #iso version has the different isolation variables separated;
 #also using this version to look at nm1 geo2ddist plots! 
 #ntuple_version_ = 'V30Lepiso'
@@ -333,7 +334,11 @@ def signal_uses_random_pars_modifier(sample): # Used for samples stored in inclu
             magic_randpar = 'randpars_filter = False'
             
             decay = sample.name[sample.name.find('_')+1 : sample.name.find('_Z')]
-            to_replace.append((magic_randpar, "randpars_filter = 'randpar %s M%i_ct%i-'" % (decay, sample.mass, sample.tau/1000), 'tuple template does not contain the magic string "%s"' % magic_randpar))
+            # special case : 50um is referenced as 0p05 in config string
+            ctau = '%s' % (sample.tau/1000)
+            if ctau == '0.05' :
+                ctau = '0p05'
+            to_replace.append((magic_randpar, "randpars_filter = 'randpar %s M%i_ct%s-'" % (decay, sample.mass, ctau), 'tuple template does not contain the magic string "%s"' % magic_randpar))
     return [], to_replace
    
     
