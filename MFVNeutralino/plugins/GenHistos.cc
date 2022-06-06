@@ -3,6 +3,7 @@
 #include "TLorentzVector.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -105,6 +106,10 @@ private:
   TH2F* h_bquarks_dR_dphi;
 
   TH1F* h_npartons_in_acc;
+  TH1F* h_gen_pdgID;
+  TH1F* h_gen_pdgID_posLarge;
+  TH1F* h_gen_pdgID_negLarge;
+  TH1F* h_gen_pdgID_posExLarge;
 
   TH1F* h_npartons_60;
   TH1F* h_njets_60;
@@ -409,6 +414,11 @@ MFVGenHistos::MFVGenHistos(const edm::ParameterSet& cfg)
 
   h_npartons_in_acc = fs->make<TH1F>("h_npartons_in_acc", ";number of LSP daughters in acceptance;Events", 40, 0, 40);
   h_npartons_60 = fs->make<TH1F>("h_npartons_60", ";number of partons with E_{T} > 60 GeV;Events", 40, 0, 40);
+  h_gen_pdgID = fs->make<TH1F>("h_gen_pdgID", ";gen particle pdgID;Events", 402, -201, 201);
+  h_gen_pdgID_posLarge = fs->make<TH1F>("h_gen_pdgID_posLarge", ";gen particle pdgID;Events", 302, 201, 501);
+  h_gen_pdgID_negLarge = fs->make<TH1F>("h_gen_pdgID_negLarge", ";gen particle pdgID;Events", 302, -501, -201);
+  h_gen_pdgID_posExLarge = fs->make<TH1F>("h_gen_pdgID_posExLarge", ";gen particle pdgID;Events", 501, 2200, 2701);
+
   h_njets_60 = fs->make<TH1F>("h_njets_60", ";number of jets with E_{T} > 60 GeV;Events", 40, 0, 40);
   h_ht = fs->make<TH1F>("h_ht", ";#SigmaH_{T} of jets with E_{T} > 20 GeV;Events/100 GeV", 100, 0, 10000);
   h_ht40 = fs->make<TH1F>("h_ht40", ";#SigmaH_{T} of jets with E_{T} > 40 GeV;Events/100 GeV", 100, 0, 10000);
@@ -563,6 +573,19 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
     h_npartons_60->Fill(npartons_60);
     
 
+    for (const reco::GenParticle& gen : *gen_particles) {
+      h_gen_pdgID->Fill(gen.pdgId());
+      if (gen.pdgId() > 200) {
+	h_gen_pdgID_posLarge->Fill(gen.pdgId());
+      }
+      if (gen.pdgId() > 2200) {
+	h_gen_pdgID_posExLarge->Fill(gen.pdgId());
+      }
+      if (gen.pdgId() < -200) {
+	h_gen_pdgID_negLarge->Fill(gen.pdgId());
+      }
+    }
+    
     if (mci->type() == mfv::mci_MFVtbs) { // || mci->type() == mci_Ttbar) {
       for (int i = 0; i < 2; ++i) {
         fill(Lsps           [i], &*mci->lsp(i));
@@ -608,12 +631,19 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
           if (is_lepton(lsp_daughters[j]))
             ++lsp_ntracks;
           else {
-            for (const reco::GenJet& jet : *gen_jets) {
+            // for (const reco::GenJet& jet : *gen_jets) {
+            //   if (reco::deltaR(*lsp_daughters[j], jet) < 0.4) {
+            //     for (const reco::GenParticle* g : jet.getGenConstituents())
+            //       if (g->charge())
+            //         ++lsp_ntracks;
+	    for (const reco::GenJet& jet : *gen_jets) {
               if (reco::deltaR(*lsp_daughters[j], jet) < 0.4) {
-                for (const reco::GenParticle* g : jet.getGenConstituents())
+                for (unsigned int idx = 0; idx < jet.numberOfDaughters(); ++idx) {
+                  const pat::PackedGenParticle* g = dynamic_cast<const pat::PackedGenParticle*>(jet.daughter(idx));
                   if (g->charge())
                     ++lsp_ntracks;
-              }
+		}
+	      }
             }
           }
           
@@ -743,10 +773,17 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
     int nchg = 0;
     int id = gen_jet_id(jet);
     int ntracksptgt3 = 0;
-    for (const reco::GenParticle* g : jet.getGenConstituents()) {
-      if (g->charge())
+    // for (const reco::GenParticle* g : jet.getGenConstituents()) {
+    //   if (g->charge())
+    //     ++nchg;
+    //   if (g->charge() && g->pt() > 3)
+    //     ++ntracksptgt3;
+    // }
+    for (unsigned int idx = 0; idx < jet.numberOfDaughters(); ++idx) {
+      const pat::PackedGenParticle* g = dynamic_cast<const pat::PackedGenParticle*>(jet.daughter(idx));
+      if (g && g->charge())
         ++nchg;
-      if (g->charge() && g->pt() > 3)
+      if (g && g->charge() && g->pt() > 3)
         ++ntracksptgt3;
     }
 

@@ -761,11 +761,11 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
       	if (mevent->muon_pt[imu] > 26) {
       	  if (abs(mevent->muon_eta[imu]) < 2.4) {
       	    if (mevent->muon_iso[imu] < 0.15) {
-      	    nselmu[j] += 1;
-	    if (abs(mevent->muon_dxybs[imu]) >= 0.005)
-	      nseldispl50_mu[j] +=1;
-	    if (abs(mevent->muon_dxybs[imu]) >= 0.01)
-	      nseldispl100_mu[j] +=1;
+	      // nselmu[j] += 1;
+	      if (abs(mevent->muon_dxybs[imu]) >= 0.005)
+		nseldispl50_mu[j] +=1;
+	      if (abs(mevent->muon_dxybs[imu]) >= 0.01)
+		nseldispl100_mu[j] +=1;
       	    }
       	  }
       	}
@@ -845,7 +845,7 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
       	if (mevent->electron_pt[iel] > 35) {
       	  if (abs(mevent->electron_eta[iel]) < 2.5) {
       	    if (mevent->electron_iso[iel] < 0.1) {
-      	      nselel[j] +=1;
+	      // nselel[j] +=1;
 	      if (abs(mevent->electron_dxybs[iel]) >= 0.005)
 		nseldispl50_el[j] +=1;
 	      if (abs(mevent->electron_dxybs[iel]) >= 0.01)

@@ -3,8 +3,11 @@ from JMTucker.Tools.BasicAnalyzer_cfg import *
 
 debug = 'debug' in sys.argv
 
-sample_files(process, 'mfv_neu_tau010000um_M1200_2017', 'main', 1)
-tfileservice(process, 'gen_histos.root')
+#sample_files(process, 'mfv_neu_tau010000um_M1200_2017', 'main', 1)
+sample_files(process, 'mfv_stopld_tau001000um_M1000_2018', 'miniaod', 3)
+
+#tfileservice(process, 'gen_histos.root')
+tfileservice(process, 'stopld_M1000_1mm_2018.root')
 file_event_from_argv(process)
 
 process.load('JMTucker.MFVNeutralino.GenParticles_cff')
@@ -13,8 +16,8 @@ process.load('JMTucker.MFVNeutralino.GenParticles_cff')
 
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.mfvGenHistos = cms.EDAnalyzer('MFVGenHistos',
-                                      gen_src = cms.InputTag('genParticles'),
-                                      gen_jet_src = cms.InputTag('ak4GenJetsNoNu'),
+                                      gen_src = cms.InputTag('prunedGenParticles'),
+                                      gen_jet_src = cms.InputTag('slimmedGenJets'),
                                       gen_vertex_src = cms.InputTag('mfvGenParticles', 'genVertex'),
                                       mci_src = cms.InputTag('mfvGenParticles'),
                                       )

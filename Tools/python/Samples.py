@@ -134,6 +134,7 @@ qcd_samples_2017 = [
     MCSample('qcdht2000_2017', '/QCD_HT2000toInf_TuneCP5_13TeV-madgraph-pythia8/RunIIFall17DRPremix-PU2017_94X_mc2017_realistic_v11-v2/AODSIM',           5941306, nice='QCD, H_{T} > 2000',            color=808, syst_frac=0.20, xsec=20.2),
     ]
 
+
 ttbar_samples_2017 = [
     MCSample('ttbarht0600_2017', '/TTJets_HT-600to800_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-PU2017_94X_mc2017_realistic_v11-v1/AODSIM',   81565576, nice='t#bar{t}, 600 < H_{T} < 800 GeV',   color=600, syst_frac=0.15, xsec=1.817),
     MCSample('ttbarht0800_2017', '/TTJets_HT-800to1200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17DRPremix-PU2017_94X_mc2017_realistic_v11-v1/AODSIM',  40248127, nice='t#bar{t}, 800 < H_{T} < 1200 GeV',  color=601, syst_frac=0.15, xsec=0.7520),
@@ -339,17 +340,13 @@ ttbar_samples_2018 = [
     MCSample('ttbarht2500_2018', '/TTJets_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15-v1/AODSIM',   1451104, nice='t#bar{t}, H_{T} > 2500 GeV',        color=603, syst_frac=0.15, xsec=1.41e-3),
     ]
 
-bjet_samples_2018 = [
-   # MCSample('qcdht0300_2018', '/QCD_HT300to500_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15-v1/AODSIM', 55094256, nice='QCD, 300 < H_{T} < 500 GeV',  color=803, syst_frac=0.20, xsec=3.226e5),
-   # MCSample('qcdht0500_2018', '/QCD_HT500to700_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15-v1/AODSIM', 55195716, nice='QCD, 500 < H_{T} < 700 GeV',  color=804, syst_frac=0.20, xsec=2.998e4),
-    #MCSample('ttbar_2018',     '/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIIAutumn18DRPremix-102X_upgrade2018_realistic_v15_ext1-v2/AODSIM',  145295353, nice='t#bar{t}', color=4, syst_frac=0.15, xsec=832.),
-    ]
 
 diboson_samples_2018 = [
     MCSample('zz_2018', '/ZZ_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 1979000, nice= 'ZZ', color=32, syst_frac=0.20 , xsec=12.17),
     MCSample('ww_2018', '/WW_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v2/MINIAODSIM', 7850000, nice = 'WW', color=32, syst_frac=0.20 , xsec=75.95),
     MCSample('wz_2018', '/WZ_TuneCP5_13TeV-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v3/MINIAODSIM', 3885000, nice = 'WZ', color=32, syst_frac=0.20 , xsec=27.59),
     ]
+
 
 
 wjet_samples_2018 = [
@@ -435,39 +432,39 @@ mfv_stopdbardbar_samples_2018 = [
 
 
 mfv_stoplb_samples_2018 = [
-    MCSample('mfv_stoplb_tau000100um_M1000_2018', '/StopToLBottom_M_1000_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stoplb_tau000100um_M1000_2018', '/StopToLBottom_M_1000_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stoplb_tau001000um_M1000_2018', '/DisplacedSUSY_stopToBottom_M_1000_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau010000um_M1000_2018', '/DisplacedSUSY_stopToBottom_M_1000_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau100000um_M1000_2018', '/DisplacedSUSY_stopToBottom_M_1000_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stoplb_tau000100um_M1200_2018', '/StopToLBottom_M_1200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stoplb_tau000100um_M1200_2018', '/StopToLBottom_M_1200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stoplb_tau001000um_M1200_2018', '/DisplacedSUSY_stopToBottom_M_1200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 98000),
     MCSample('mfv_stoplb_tau010000um_M1200_2018', '/DisplacedSUSY_stopToBottom_M_1200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau100000um_M1200_2018', '/DisplacedSUSY_stopToBottom_M_1200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stoplb_tau000100um_M1400_2018', '/StopToLBottom_M_1400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stoplb_tau000100um_M1400_2018', '/StopToLBottom_M_1400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stoplb_tau001000um_M1400_2018', '/DisplacedSUSY_stopToBottom_M_1400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 96000),
     MCSample('mfv_stoplb_tau010000um_M1400_2018', '/DisplacedSUSY_stopToBottom_M_1400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 96000),
     MCSample('mfv_stoplb_tau100000um_M1400_2018', '/DisplacedSUSY_stopToBottom_M_1400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stoplb_tau000100um_M1600_2018', '/StopToLBottom_M_1600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+    #MCSample('mfv_stoplb_tau000100um_M1600_2018', '/StopToLBottom_M_1600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stoplb_tau001000um_M1600_2018', '/DisplacedSUSY_stopToBottom_M_1600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau010000um_M1600_2018', '/DisplacedSUSY_stopToBottom_M_1600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau100000um_M1600_2018', '/DisplacedSUSY_stopToBottom_M_1600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stoplb_tau000100um_M1800_2018', '/StopToLBottom_M_1800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stoplb_tau000100um_M1800_2018', '/StopToLBottom_M_1800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stoplb_tau001000um_M1800_2018', '/DisplacedSUSY_stopToBottom_M_1800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau010000um_M1800_2018', '/DisplacedSUSY_stopToBottom_M_1800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau100000um_M1800_2018', '/DisplacedSUSY_stopToBottom_M_1800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stoplb_tau000100um_M0200_2018', '/StopToLBottom_M_200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stoplb_tau000100um_M0200_2018', '/StopToLBottom_M_200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stoplb_tau001000um_M0200_2018', '/DisplacedSUSY_stopToBottom_M_200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau010000um_M0200_2018', '/DisplacedSUSY_stopToBottom_M_200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau100000um_M0200_2018', '/DisplacedSUSY_stopToBottom_M_200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stoplb_tau000100um_M0400_2018', '/StopToLBottom_M_400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 10000),
+    #MCSample('mfv_stoplb_tau000100um_M0400_2018', '/StopToLBottom_M_400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 10000),
     MCSample('mfv_stoplb_tau001000um_M0400_2018', '/DisplacedSUSY_stopToBottom_M_400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau010000um_M0400_2018', '/DisplacedSUSY_stopToBottom_M_400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau100000um_M0400_2018', '/DisplacedSUSY_stopToBottom_M_400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stoplb_tau000100um_M0600_2018', '/StopToLBottom_M_600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stoplb_tau000100um_M0600_2018', '/StopToLBottom_M_600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stoplb_tau001000um_M0600_2018', '/DisplacedSUSY_stopToBottom_M_600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau010000um_M0600_2018', '/DisplacedSUSY_stopToBottom_M_600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau100000um_M0600_2018', '/DisplacedSUSY_stopToBottom_M_600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stoplb_tau000100um_M0800_2018', '/StopToLBottom_M_800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stoplb_tau000100um_M0800_2018', '/StopToLBottom_M_800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stoplb_tau001000um_M0800_2018', '/DisplacedSUSY_stopToBottom_M_800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau010000um_M0800_2018', '/DisplacedSUSY_stopToBottom_M_800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stoplb_tau100000um_M0800_2018', '/DisplacedSUSY_stopToBottom_M_800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
@@ -475,39 +472,39 @@ mfv_stoplb_samples_2018 = [
 ]
 
 mfv_stopld_samples_2018 = [
-    MCSample('mfv_stopld_tau000100um_M1000_2018', '/StopToLD_M_1000_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stopld_tau000100um_M1000_2018', '/StopToLD_M_1000_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stopld_tau001000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau010000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 97000),
     MCSample('mfv_stopld_tau100000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau000100um_M1200_2018', '/StopToLD_M_1200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+    #MCSample('mfv_stopld_tau000100um_M1200_2018', '/StopToLD_M_1200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stopld_tau001000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau010000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 98000),
     MCSample('mfv_stopld_tau100000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 98000),
-    MCSample('mfv_stopld_tau000100um_M1400_2018', '/StopToLD_M_1400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+    #MCSample('mfv_stopld_tau000100um_M1400_2018', '/StopToLD_M_1400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stopld_tau001000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau010000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau100000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau000100um_M1600_2018', '/StopToLD_M_1600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stopld_tau000100um_M1600_2018', '/StopToLD_M_1600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stopld_tau001000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 98000),
     MCSample('mfv_stopld_tau010000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau100000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 86000),
-    MCSample('mfv_stopld_tau000100um_M1800_2018', '/StopToLD_M_1800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stopld_tau000100um_M1800_2018', '/StopToLD_M_1800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stopld_tau001000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 94000),
     MCSample('mfv_stopld_tau010000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 96000),
     MCSample('mfv_stopld_tau100000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau000100um_M0200_2018', '/StopToLD_M_200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+    #MCSample('mfv_stopld_tau000100um_M0200_2018', '/StopToLD_M_200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stopld_tau001000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau010000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau100000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau000100um_M0400_2018', '/StopToLD_M_400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+    #MCSample('mfv_stopld_tau000100um_M0400_2018', '/StopToLD_M_400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stopld_tau001000um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau010000um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau100000um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau000100um_M0600_2018', '/StopToLD_M_600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stopld_tau000100um_M0600_2018', '/StopToLD_M_600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stopld_tau001000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau010000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
     MCSample('mfv_stopld_tau100000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),
-    MCSample('mfv_stopld_tau000100um_M0800_2018', '/StopToLD_M_800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
+   # MCSample('mfv_stopld_tau000100um_M0800_2018', '/StopToLD_M_800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000),
     MCSample('mfv_stopld_tau001000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 95000),
     MCSample('mfv_stopld_tau010000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 97000),
     MCSample('mfv_stopld_tau100000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000),    
@@ -757,7 +754,7 @@ __all__ = [
     'diboson_samples_2018',
     'ttbar_samples_2018',
     'drellyan_samples_2018',
-    'bjet_samples_2018',
+    #'bjet_samples_2018',
     'mfv_signal_samples_2018',
     'mfv_stopdbardbar_samples_2018',
     'mfv_stoplb_samples_2018',
@@ -1027,78 +1024,78 @@ _adbp('miniaod', '/StopStopbarTo2Dbar2D_M-1600_CTau-30mm_TuneCP2_13TeV_2018-pyth
 _adbp('miniaod', '/StopStopbarTo2Dbar2D_M-3000_CTau-30mm_TuneCP2_13TeV_2018-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 
 #Stop to LB
-_adbp3('miniaod', '/StopToLBottom_M_1000_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLBottom_M_1000_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1000_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1000_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1000_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLBottom_M_1200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLBottom_M_1200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLBottom_M_1400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLBottom_M_1400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLBottom_M_1600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLBottom_M_1600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLBottom_M_1800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLBottom_M_1800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_1800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLBottom_M_200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLBottom_M_200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLBottom_M_400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLBottom_M_400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLBottom_M_600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLBottom_M_600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLBottom_M_800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLBottom_M_800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToBottom_M_800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 
 
 #Stop to LD
-_adbp3('miniaod', '/StopToLD_M_1000_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLD_M_1000_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1000_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLD_M_1200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLD_M_1200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLD_M_1400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLD_M_1400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLD_M_1600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLD_M_1600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLD_M_1800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLD_M_1800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_1800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLD_M_200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLD_M_200_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_200_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLD_M_400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLD_M_400_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_400_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLD_M_600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLD_M_600_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_600_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
-_adbp3('miniaod', '/StopToLD_M_800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
+#_adbp3('miniaod', '/StopToLD_M_800_0p1mm_13TeV_2018MC/jalimena-MiniAod-c21dec93027231dc6f615dfe5c662834/USER', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
 _adbp('miniaod', '/DisplacedSUSY_stopToLD_M_800_100mm_TuneCP5_13TeV_pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 100000)
@@ -1133,8 +1130,8 @@ for sample in wjet_samples_2018 :
     sample.add_dataset('miniaod', sample.dataset, sample.nevents_orig)
 for sample in drellyan_samples_2018 :
     sample.add_dataset('miniaod', sample.dataset, sample.nevents_orig)
-for sample in bjet_samples_2018 :
-    sample.add_dataset('miniaod', sample.dataset, sample.nevents_orig)
+# for sample in bjet_samples_2018 :
+#     sample.add_dataset('miniaod', sample.dataset, sample.nevents_orig)
 
 
 ########
@@ -1228,12 +1225,12 @@ for s in registry.all():
 # other condor declarations, generate condorable dict with Shed/condor_list.py
 ########
 
+#mfv_stoplb_tau000100um_M1000_2018, mfv_stoplb_tau000100um_M1200_2018, mfv_stoplb_tau000100um_M1400_2018, mfv_stoplb_tau000100um_M1600_2018, mfv_stoplb_tau000100um_M1800_2018,  mfv_stoplb_tau000100um_M0200_2018, mfv_stoplb_tau000100um_M0400_2018, mfv_stoplb_tau000100um_M0600_2018, mfv_stoplb_tau000100um_M0800_2018, mfv_stopld_tau000100um_M1000_2018, mfv_stopld_tau000100um_M1200_2018, mfv_stopld_tau000100um_M1400_2018, mfv_stopld_tau000100um_M1600_2018, mfv_stopld_tau000100um_M1800_2018, mfv_stopld_tau000100um_M0200_2018, mfv_stopld_tau000100um_M0400_2018, mfv_stopld_tau000100um_M0600_2018, mfv_stopld_tau000100um_M0800_2018
 condorable = {
     "T3_US_FNALLPC": {
         "miniaod": ttbar_samples_2017 + [qcdht1000_2017, qcdht1500_2018, qcdht2000_2018, ttbarht0600_2018, ttbarht1200_2018, ttbarht2500_2018,
                                          mfv_neu_tau000100um_M0400_2017, mfv_neu_tau000100um_M0800_2017, mfv_neu_tau000100um_M1200_2017, mfv_neu_tau000100um_M1600_2017, mfv_neu_tau000100um_M3000_2017, mfv_neu_tau000300um_M0600_2017, mfv_neu_tau000300um_M1200_2017, mfv_neu_tau000300um_M1600_2017, mfv_neu_tau001000um_M0400_2017, mfv_neu_tau001000um_M0600_2017, mfv_neu_tau001000um_M0800_2017, mfv_neu_tau001000um_M1200_2017, mfv_neu_tau001000um_M1600_2017, mfv_neu_tau001000um_M3000_2017, mfv_neu_tau010000um_M0600_2017, mfv_neu_tau010000um_M1200_2017, mfv_neu_tau010000um_M3000_2017, mfv_neu_tau030000um_M0400_2017, mfv_neu_tau030000um_M0600_2017, mfv_neu_tau030000um_M1200_2017, mfv_stopdbardbar_tau000100um_M0400_2017, mfv_stopdbardbar_tau000100um_M0800_2017, mfv_stopdbardbar_tau000100um_M3000_2017, mfv_stopdbardbar_tau000300um_M0400_2017, mfv_stopdbardbar_tau000300um_M0800_2017, mfv_stopdbardbar_tau000300um_M1600_2017, mfv_stopdbardbar_tau000300um_M3000_2017, mfv_stopdbardbar_tau001000um_M0600_2017, mfv_stopdbardbar_tau001000um_M0800_2017, mfv_stopdbardbar_tau001000um_M1600_2017, mfv_stopdbardbar_tau010000um_M0400_2017, mfv_stopdbardbar_tau010000um_M0600_2017, mfv_stopdbardbar_tau010000um_M1200_2017, mfv_stopdbardbar_tau010000um_M1600_2017, mfv_stopdbardbar_tau030000um_M0400_2017, mfv_stopdbardbar_tau030000um_M0600_2017, mfv_stopdbardbar_tau030000um_M0800_2017, mfv_stopdbardbar_tau030000um_M3000_2017,
-                                         mfv_neu_tau000100um_M0400_2018, mfv_neu_tau000100um_M0600_2018, mfv_neu_tau000100um_M0800_2018, mfv_neu_tau000100um_M1200_2018, mfv_neu_tau000100um_M1600_2018, mfv_neu_tau000100um_M3000_2018, mfv_neu_tau000300um_M0400_2018, mfv_neu_tau000300um_M0600_2018, mfv_neu_tau000300um_M0800_2018, mfv_neu_tau000300um_M1200_2018, mfv_neu_tau000300um_M1600_2018, mfv_neu_tau000300um_M3000_2018, mfv_neu_tau001000um_M0400_2018, mfv_neu_tau001000um_M0600_2018, mfv_neu_tau001000um_M1200_2018, mfv_neu_tau001000um_M1600_2018, mfv_neu_tau001000um_M3000_2018, mfv_neu_tau010000um_M0400_2018, mfv_neu_tau010000um_M0600_2018, mfv_neu_tau010000um_M0800_2018, mfv_neu_tau010000um_M1200_2018, mfv_neu_tau010000um_M1600_2018, mfv_neu_tau010000um_M3000_2018, mfv_neu_tau030000um_M0400_2018, mfv_neu_tau030000um_M0600_2018, mfv_neu_tau030000um_M0800_2018, mfv_neu_tau030000um_M1200_2018, mfv_neu_tau030000um_M1600_2018, mfv_neu_tau030000um_M3000_2018, mfv_stopdbardbar_tau000100um_M0400_2018, mfv_stopdbardbar_tau000100um_M0600_2018, mfv_stopdbardbar_tau000100um_M0800_2018, mfv_stopdbardbar_tau000100um_M1200_2018, mfv_stopdbardbar_tau000100um_M3000_2018, mfv_stopdbardbar_tau000300um_M0600_2018, mfv_stopdbardbar_tau000300um_M0800_2018, mfv_stopdbardbar_tau000300um_M1200_2018, mfv_stopdbardbar_tau000300um_M3000_2018, mfv_stopdbardbar_tau001000um_M0400_2018, mfv_stopdbardbar_tau001000um_M0600_2018, mfv_stopdbardbar_tau001000um_M0800_2018, mfv_stopdbardbar_tau001000um_M1200_2018, mfv_stopdbardbar_tau001000um_M1600_2018, mfv_stopdbardbar_tau001000um_M3000_2018, mfv_stopdbardbar_tau010000um_M0400_2018, mfv_stopdbardbar_tau010000um_M0600_2018, mfv_stopdbardbar_tau010000um_M0800_2018, mfv_stopdbardbar_tau010000um_M1600_2018, mfv_stopdbardbar_tau030000um_M0400_2018, mfv_stopdbardbar_tau030000um_M0600_2018, mfv_stopdbardbar_tau030000um_M0800_2018, mfv_stopdbardbar_tau030000um_M1200_2018, mfv_stopdbardbar_tau030000um_M3000_2018,
-                                         mfv_stoplb_tau000100um_M1000_2018, mfv_stoplb_tau000100um_M1200_2018, mfv_stoplb_tau000100um_M1400_2018, mfv_stoplb_tau000100um_M1600_2018, mfv_stoplb_tau000100um_M1800_2018,  mfv_stoplb_tau000100um_M0200_2018, mfv_stoplb_tau000100um_M0400_2018, mfv_stoplb_tau000100um_M0600_2018, mfv_stoplb_tau000100um_M0800_2018, mfv_stopld_tau000100um_M1000_2018, mfv_stopld_tau000100um_M1200_2018, mfv_stopld_tau000100um_M1400_2018, mfv_stopld_tau000100um_M1600_2018, mfv_stopld_tau000100um_M1800_2018, mfv_stopld_tau000100um_M0200_2018, mfv_stopld_tau000100um_M0400_2018, mfv_stopld_tau000100um_M0600_2018, mfv_stopld_tau000100um_M0800_2018],
+                                         mfv_neu_tau000100um_M0400_2018, mfv_neu_tau000100um_M0600_2018, mfv_neu_tau000100um_M0800_2018, mfv_neu_tau000100um_M1200_2018, mfv_neu_tau000100um_M1600_2018, mfv_neu_tau000100um_M3000_2018, mfv_neu_tau000300um_M0400_2018, mfv_neu_tau000300um_M0600_2018, mfv_neu_tau000300um_M0800_2018, mfv_neu_tau000300um_M1200_2018, mfv_neu_tau000300um_M1600_2018, mfv_neu_tau000300um_M3000_2018, mfv_neu_tau001000um_M0400_2018, mfv_neu_tau001000um_M0600_2018, mfv_neu_tau001000um_M1200_2018, mfv_neu_tau001000um_M1600_2018, mfv_neu_tau001000um_M3000_2018, mfv_neu_tau010000um_M0400_2018, mfv_neu_tau010000um_M0600_2018, mfv_neu_tau010000um_M0800_2018, mfv_neu_tau010000um_M1200_2018, mfv_neu_tau010000um_M1600_2018, mfv_neu_tau010000um_M3000_2018, mfv_neu_tau030000um_M0400_2018, mfv_neu_tau030000um_M0600_2018, mfv_neu_tau030000um_M0800_2018, mfv_neu_tau030000um_M1200_2018, mfv_neu_tau030000um_M1600_2018, mfv_neu_tau030000um_M3000_2018, mfv_stopdbardbar_tau000100um_M0400_2018, mfv_stopdbardbar_tau000100um_M0600_2018, mfv_stopdbardbar_tau000100um_M0800_2018, mfv_stopdbardbar_tau000100um_M1200_2018, mfv_stopdbardbar_tau000100um_M3000_2018, mfv_stopdbardbar_tau000300um_M0600_2018, mfv_stopdbardbar_tau000300um_M0800_2018, mfv_stopdbardbar_tau000300um_M1200_2018, mfv_stopdbardbar_tau000300um_M3000_2018, mfv_stopdbardbar_tau001000um_M0400_2018, mfv_stopdbardbar_tau001000um_M0600_2018, mfv_stopdbardbar_tau001000um_M0800_2018, mfv_stopdbardbar_tau001000um_M1200_2018, mfv_stopdbardbar_tau001000um_M1600_2018, mfv_stopdbardbar_tau001000um_M3000_2018, mfv_stopdbardbar_tau010000um_M0400_2018, mfv_stopdbardbar_tau010000um_M0600_2018, mfv_stopdbardbar_tau010000um_M0800_2018, mfv_stopdbardbar_tau010000um_M1600_2018, mfv_stopdbardbar_tau030000um_M0400_2018, mfv_stopdbardbar_tau030000um_M0600_2018, mfv_stopdbardbar_tau030000um_M0800_2018, mfv_stopdbardbar_tau030000um_M1200_2018, mfv_stopdbardbar_tau030000um_M3000_2018],
         },
     "T1_US_FNAL_Disk": {
         "miniaod": [qcdht1500_2017, qcdht2000_2017, dyjetstollM10_2017, #qcdmupt15_2017, qcdht0300_2018,

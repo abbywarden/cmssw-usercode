@@ -321,7 +321,6 @@ struct MFVEvent {
   std::vector<float> muon_pt;
   std::vector<float> muon_eta;
   std::vector<float> muon_phi;
-  //std::vector<float> muon_validfrac;
   std::vector<float> muon_pt_err;
   std::vector<float> muon_eta_err;
   std::vector<float> muon_phi_err;

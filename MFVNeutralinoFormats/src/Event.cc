@@ -21,7 +21,6 @@ void MFVEvent::muon_push_back(const reco::Muon& muon,
   muon_pt_err.push_back(trk.ptError());
   muon_eta_err.push_back(trk.etaError());
   muon_phi_err.push_back(trk.phiError());
-  //do you do muon or track? 
   muon_x.push_back(trk.vx());
   muon_y.push_back(trk.vy());
   muon_z.push_back(trk.vz());

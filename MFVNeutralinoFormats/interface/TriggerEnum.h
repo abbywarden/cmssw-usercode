@@ -13,7 +13,7 @@ namespace mfv {
   // have updated lepton triggers
   static const int n_clean_paths = 7;
   enum {
-	b_HLT_PFHT1050, b_HLT_Ele32_WPTight_Gsf, b_HLT_Ele115_CaloIdVT_GsfTrkIdT, b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165, b_HLT_IsoMu24, b_HLT_Mu50,
+	b_HLT_PFHT1050, b_HLT_Ele35_WPTight_Gsf, b_HLT_Ele32_WPTight_Gsf, b_HLT_Ele115_CaloIdVT_GsfTrkIdT, b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165, b_HLT_IsoMu27, b_HLT_IsoMu24, b_HLT_Mu50,
 	//b_HLT_Ele15_IsoVVVL_PFHT450, b_HLT_Mu15_IsoVVVL_PFHT450,
     b_HLT_Mu43NoFiltersNoVtx_Photon43_CaloIdL, b_HLT_Diphoton30_22_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90, b_HLT_DoublePhoton70, b_HLT_DoubleMu43NoFiltersNoVtx, 
     b_HLT_DoublePFJets100MaxDeta1p6_DoubleCaloBTagCSV_p33, b_HLT_PFHT300PT30_QuadPFJet_75_60_45_40_TriplePFBTagCSV_3p0, b_HLT_PFHT380_SixPFJet32_DoublePFBTagDeepCSV_2p2, b_HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2, b_HLT_PFHT430_SixPFJet40_PFBTagCSV_1p5, // 2017 bjet triggers

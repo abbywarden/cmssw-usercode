@@ -7,6 +7,7 @@ settings.is_mc = True
 settings.is_miniaod = True
 settings.cross = '' # 2017to2018' # 2017to2017p8'
 
+<<<<<<< Updated upstream
 #for local test
 # 10 -> 10mm
 # 0.05 -> 50um 
@@ -17,6 +18,10 @@ randpars_filter = False
 
 sample_files(process, 'qcdht1000_2018', 'miniaod')
 #sample_files(process, 'ZH_HToSSTodddd_ZToll_tau000050um_M15_2018', 'miniaod')
+=======
+#sample_files(process, 'qcdht1000_2017', 'miniaod')
+sample_files(process, 'mfv_splitSUSY_tau000000300um_M2400_2300_2017', 'miniaod')
+>>>>>>> Stashed changes
 geometry_etc(process, settings)
 tfileservice(process, 'filtercheck.root')
 cmssw_from_argv(process)

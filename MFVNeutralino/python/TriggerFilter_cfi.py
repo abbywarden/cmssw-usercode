@@ -25,6 +25,9 @@ displaced_dijet_paths = [
     "HLT_HT650_DisplacedDijet60_Inclusive_v*",
     ]
 
+#ToDo: Year dependency on lepton trigger paths
+#2017 : Ele 35, Mu 27
+#2018 : Ele 32, Mu 24
 lepton_paths = [
     "HLT_Ele32_WPTight_Gsf_v*",
    # "HLT_Ele35_WPTight_Gsf_v*",
@@ -82,9 +85,10 @@ mfvTriggerFilterSingle = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clon
 mfvTriggerFilterJetsOnly = mfvTriggerFilter.clone(HLTPaths = jet_paths)
 mfvTriggerFilterBJetsOnly = mfvTriggerFilter.clone(HLTPaths = bjet_paths)
 mfvTriggerFilterDisplacedDijetOnly = mfvTriggerFilter.clone(HLTPaths = displaced_dijet_paths)
-mfvTriggerFilterLeptons = mfvTriggerFilter.clone(HLTPaths = lepton_paths)
-mfvTriggerFilterDisplacedLeptons = mfvTriggerFilter.clone(HLTPaths = displaced_lepton_paths)
 mfvTriggerFilterDileptons = mfvTriggerFilter.clone(HLTPaths = dilepton_paths)
+mfvTriggerFilterLeptonsOnly = mfvTriggerFilter.clone(HLTPaths = lepton_paths)
+mfvTriggerFilterDisplacedLeptons = mfvTriggerFilter.clone(HLTPaths = displaced_lepton_paths)
+
 
 mfvTriggerFilterHTORBjetsORDisplacedDijet = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
         HLTPaths = jet_paths + bjet_paths + displaced_dijet_paths,
@@ -99,7 +103,6 @@ mfvTriggerFilterBjetsORDisplacedDijetVetoHT = HLTrigger.HLTfilters.hltHighLevel_
         )
 
 #new Logical OR 
-
 mfvTriggerFilterDispLeptonsORSingleLeptons = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
         HLTPaths = displaced_lepton_paths + lepton_paths,
         andOr = True, # OR
@@ -131,3 +134,4 @@ mfvTriggerFilterDispLeptonsORHT = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighL
         andOr = True, # OR
         throw = False,
         )
+

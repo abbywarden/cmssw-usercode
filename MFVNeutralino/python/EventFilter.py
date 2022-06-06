@@ -49,10 +49,10 @@ def setup_event_filter(process,
         
     elif mode == 'trigger displaced leptons':
         trigger_filter = 'displaced leptons'
-    elif mode == 'trigger cross':
-        trigger_filter = 'cross'
-    elif mode == 'trigger cross only':
-        trigger_filter = 'cross only'    
+
+    elif mode == 'met only':
+        trigger_filter = event_filter = 'met only'
+        
     elif mode == 'HT OR bjets OR displaced dijet':
         trigger_filter = event_filter = 'HT OR bjets OR displaced dijet'
     elif mode == 'bjets OR displaced dijet veto HT':
@@ -128,7 +128,7 @@ def setup_event_filter(process,
         from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilterCross as triggerFilter
         
     elif trigger_filter == 'leptons only':
-        from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilterLeptons as triggerFilter
+        from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilterLeptonsOnly as triggerFilter
     elif trigger_filter == 'displaced leptons':
         from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilterDisplacedLeptons as triggerFilter
     elif trigger_filter == 'dileptons':
@@ -145,9 +145,6 @@ def setup_event_filter(process,
         from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilterDispLeptonsORHT as triggerFilter
     elif trigger_filter == 'leptons OR ht':
         from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilterSingleLeptonsORHT as triggerFilter
-
-
-        
     elif trigger_filter is True:
         from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilter as triggerFilter
     elif trigger_filter is not False:

@@ -6,6 +6,7 @@
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenLumiInfoHeader.h"
+#include "RecoEgamma/EgammaTools/interface/EffectiveAreas.h"
 #include "FWCore/Framework/interface/LuminosityBlock.h"
 
 class MFVEventFilter : public edm::EDFilter {
@@ -35,14 +36,16 @@ private:
   // const StringCutObjectSelector<pat::Electron> electron_selector;
   const double min_electron_pt;
   const int min_nleptons;
+  EffectiveAreas electron_effective_areas;
+  const edm::EDGetTokenT<double> rho_token;
   const bool parse_randpars;
   const int randpar_mass;
   const std::string(randpar_ctau);
   const std::string(randpar_dcay);
   const bool debug;
 
-  
 };
+
 
 MFVEventFilter::MFVEventFilter(const edm::ParameterSet& cfg)
   : mode(cfg.getParameter<std::string>("mode")),
@@ -59,11 +62,14 @@ MFVEventFilter::MFVEventFilter(const edm::ParameterSet& cfg)
     // electron_selector(cfg.getParameter<std::string>("electron_cut")),
     min_electron_pt(cfg.getParameter<double>("min_electron_pt")),
     min_nleptons(cfg.getParameter<int>("min_nleptons")),
+    electron_effective_areas(cfg.getParameter<edm::FileInPath>("electron_effective_areas").fullPath()),
+    rho_token(consumes<double>(cfg.getParameter<edm::InputTag>("rho_src"))),
     parse_randpars(cfg.getParameter<bool>("parse_randpars")),
     randpar_mass(cfg.getParameter<int>("randpar_mass")),
     randpar_ctau(cfg.getParameter<std::string>("randpar_ctau")),
     randpar_dcay(cfg.getParameter<std::string>("randpar_dcay")),
     debug(cfg.getUntrackedParameter<bool>("debug", false))
+   
 {
 }
 
@@ -83,12 +89,10 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
     std::string rp_config_desc = gen_header->configDescription();
     std::string str_mass = "MS-" + std::to_string(randpar_mass);
     std::string str_ctau = "ctauS-" + randpar_ctau;
-    //std::string str_ctau = randpar_ctau;
     std::string str_dcay = randpar_dcay;
     std::string comp_string_Zn = "ZH_" + str_dcay + "_ZToLL_MH-125_" + str_mass + "_" + str_ctau + "_TuneCP5_13TeV-powheg-pythia8";
     std::string comp_string_Wp = "WplusH_HToSSTodddd_WToLNu_MH-125_" + str_mass + "_" + str_ctau + "_TuneCP5_13TeV-powheg-pythia8";
     if (not ((comp_string_Wp == rp_config_desc) or (comp_string_Zn == rp_config_desc))) {
-      //std::cout<<rp_config_desc<<std::endl;
       return false;
     }
     else {
@@ -120,20 +124,41 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
   edm::Handle<pat::ElectronCollection> electrons;
   event.getByToken(muons_token, muons);
   event.getByToken(electrons_token, electrons);
+  
+  edm::Handle<double> rho;
+  event.getByToken(rho_token, rho);
 
   int nmuons = 0, nelectrons = 0;
 
-  for (const pat::Muon& muon : *muons)
-    if (muon.pt() > min_muon_pt && abs(muon.eta()) < 2.4)
-      ++nmuons;
+  for (const pat::Muon& muon : *muons) {
+    if (muon.pt() > min_muon_pt && abs(muon.eta()) < 2.4) {
 
-  for (const pat::Electron& electron : *electrons) {
-    if (electron.pt() > min_electron_pt && abs(electron.eta()) < 2.5)
-      ++nelectrons;
+      //new muon selector : is cut based medium & iso < 0.15
+      bool isMedMuon = muon.passed(reco::Muon::CutBasedIdMedium);
+      const float iso = (muon.pfIsolationR04().sumChargedHadronPt + std::max(0., muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt -0.5*muon.pfIsolationR04().sumPUPt))/muon.pt();
+
+      if (isMedMuon && iso < 0.15) {
+	++nmuons;
+      }
+    }
   }
-  //const bool leptons_pass = nmuons + nelectrons >= min_nleptons;
-  const bool leptons_pass = nelectrons >= min_nleptons;
-  // const bool leptons_pass = nelectrons >= min_nleptons;
+  for (const pat::Electron& electron : *electrons) {
+    if (electron.pt() > min_electron_pt && abs(electron.eta()) < 2.4) {
+
+      //new electron selector : is cut based tight & iso < 0.10
+      bool isTightEl = electron.electronID("cutBasedElectronID-Fall17-94X-V1-tight");
+      const auto pfIso = electron.pfIsolationVariables();
+      const float eA = electron_effective_areas.getEffectiveArea(fabs(electron.superCluster()->eta()));
+      const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - *rho*eA)) / electron.pt();
+      const bool passveto = electron.passConversionVeto();
+
+      if (isTightEl && passveto && iso < 0.10) {
+	++nelectrons;
+      }
+    }
+  }
+
+  const bool leptons_pass = nmuons + nelectrons >= min_nleptons;
 
   if (debug) printf("MFVEventFilter: nmuons: %i nelectrons: %i pass? %i\n", nmuons, nelectrons, leptons_pass);
 

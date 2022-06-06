@@ -14,9 +14,14 @@ max_events(process, 1000)
 report_every(process, 1000000)
 geometry_etc(process, which_global_tag(settings))
 tfileservice(process, 'tracker_mapper.root')
+<<<<<<< Updated upstream
 #ww_2018, wjetstolnu_ht0400_2018, qcdempt170_2018, mfv_stopld_tau010000um_M1600_2018, mfv_stopld_tau100000um_M0600_2018
 #sample_files(process, 'mfv_stopld_tau010000um_M1200_2018', 'miniaod')
 sample_files(process, 'ZH_HToSSTodddd_ZToll_tau010000um_M15_2018', 'miniaod')
+=======
+#sample_files(process, 'qcdht0200_2017', 'miniaod')
+sample_files(process, 'qcdmupt15_2017', 'miniaod')
+>>>>>>> Stashed changes
 file_event_from_argv(process)
 #want_summary(process)
 
@@ -67,6 +72,7 @@ else :
     #                           event_filter_require_vertex = False,
     #                           input_is_miniaod = True)
     event_filter = setup_event_filter(process,
+<<<<<<< Updated upstream
                                 path_name = '',
                                 trigger_filter = 'displeptons OR leptons',
                                 #trigger_filter = False,      
@@ -77,6 +83,16 @@ else :
                                 input_is_miniaod = True,
                                 rp_mode = randpars_filter)
 
+=======
+                              path_name = '',
+                             # trigger_filter = 'jets only',
+                             # event_filter = 'jets only',
+                              trigger_filter = 'leptons only',
+                              event_filter = 'leptons only',
+                              event_filter_jes_mult = 0,
+                              event_filter_require_vertex = False,
+                              input_is_miniaod = True)
+>>>>>>> Stashed changes
 
 common = cms.Sequence(event_filter * process.goodOfflinePrimaryVertices * process.jmtUnpackedCandidateTracks * process.jmtWeightMiniAOD)
 
@@ -107,8 +123,13 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = pick_samples(dataset, qcd=True, ttbar=False, all_signal=False, data=False, bjet=False, span_signal=True) # no data currently; no sliced ttbar since inclusive is used
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     else :
+<<<<<<< Updated upstream
         samples = pick_samples(dataset, qcd=False, ttbar=False, all_signal=False, diboson=False, wjet=False, leptonic=False, drellyan=True, data=False)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier(), signal_uses_random_pars_modifier)
+=======
+        samples = pick_samples(dataset, all_signal=False, data=False, qcd_lept=False)
+        pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
+>>>>>>> Stashed changes
 
     set_splitting(samples, 'miniaod', 'default', json_path('ana_2017_1pc.json'), 16)
 
