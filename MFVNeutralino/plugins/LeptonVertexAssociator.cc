@@ -2,6 +2,7 @@
 #include "TVector3.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/Common/interface/AssociationMap.h"
+#include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/TrackReco/interface/Track.h"
@@ -39,14 +40,21 @@ private:
   const bool histos;
   const bool verbose;
 
-  TH1F* h_mutrack_dr; 
-  TH1F* h_mutrack_bestdr;
-  TH1F* h_eltrack_dr;
-  TH1F* h_eltrack_bestdr;
+  //how far away the matched leptons are from their respective vertex 
   TH1F* h_ele_vtx_miss_dist;
   TH1F* h_mu_vtx_miss_dist;
-  TH1F* h_matchedele_vtx_miss_dist;
-  TH1F* h_matchedmu_vtx_miss_dist;
+
+  //also get how many leptons/electrons/muons are in vertex + their pt 
+  TH1F* h_nlepinSV;
+  TH1F* h_nmuinSV;
+  TH1F* h_neleinSV;
+  TH1F* h_eleinSV_pt;
+  TH1F* h_muinSV_pt;
+  TH1F* h_ele_pt;
+  TH1F* h_mu_pt;
+
+  TH2F* h_nmu_vs_nmuinSV;
+  TH2F* h_nele_vs_neleinSV;
 
 };
 
@@ -67,16 +75,18 @@ MFVLeptonVertexAssociator::MFVLeptonVertexAssociator(const edm::ParameterSet& cf
   if(histos) {
     edm::Service<TFileService> fs;
 
-    h_mutrack_dr = fs->make<TH1F>("h_mutrack_dr", ";dr between vertex tracks and muon;arb. units", 5000, -1.0, 4.0);
-    h_mutrack_bestdr = fs->make<TH1F>("h_mutrack_bestdr", ";best dr between vertex tracks and muon;arb. units", 5000, -1.0, 4.0);
-    h_eltrack_dr = fs->make<TH1F>("h_eltrack_dr", ";dr between vertex tracks and electron;arb. units", 5000, -1.0, 4.0);
-    h_eltrack_bestdr = fs->make<TH1F>("h_eltrack_bestdr", ";best dr between vertex tracks and electron;arb. units", 5000, -1.0, 4.0);
-
-    h_mu_vtx_miss_dist = fs->make<TH1F>("h_mu_vtx_miss_dist", ";miss dist between muon and vertex;arb. units", 100, 0, 0.5);
     h_ele_vtx_miss_dist = fs->make<TH1F>("h_ele_vtx_miss_dist", ";miss dist between electron and vertex;arb. units", 100, 0, 0.5);
-    h_matchedmu_vtx_miss_dist = fs->make<TH1F>("h_matchedmu_vtx_miss_dist", ";miss dist between matched muon and vertex;arb. units", 100, 0, 0.5);
-    h_matchedele_vtx_miss_dist = fs->make<TH1F>("h_matchedele_vtx_miss_dist", ";miss dist between matched electron and vertex;arb. units", 100, 0, 0.5);
+    h_mu_vtx_miss_dist = fs->make<TH1F>("h_mu_vtx_miss_dist", ";miss dist between muon and vertex;arb. units", 100, 0, 0.5);
+    h_nlepinSV = fs->make<TH1F>("h_nlepinSV", ";# of leptons associated to SV;arb. units", 5, 0, 5);
+    h_nmuinSV = fs->make<TH1F>("h_nmuinSV", ";# of muons associated to SV;arb. units", 5, 0, 5);
+    h_neleinSV = fs->make<TH1F>("h_neleinSV", ";# of electrons associated to SV;arb. units", 5, 0, 5);
+    h_muinSV_pt = fs->make<TH1F>("h_nmuinSV_pt", ";pt of muons associated to SV (GeV);arb. units", 400, 0, 2000);
+    h_eleinSV_pt = fs->make<TH1F>("h_neleinSV_pt", ";pt of electrons associated to SV (GeV);arb. units", 400, 0, 2000);
+    h_mu_pt = fs->make<TH1F>("h_nmu_pt", ";pt of muons not associated to SV (GeV);arb. units", 400, 0, 2000);
+    h_ele_pt = fs->make<TH1F>("h_nele_pt", ";pt of electrons not associated to SV (GeV);arb. units", 400, 0, 2000);
 
+    h_nmu_vs_nmuinSV = fs->make<TH2F>("h_nmu_vs_nmuinSV", ";# of mu in SV;# of mu", 5, 0, 5, 5, 0, 5);
+    h_nele_vs_neleinSV = fs->make<TH2F>("h_nele_vs_neleinSV", ";# of ele in SV;# of ele", 5, 0, 5, 5, 0, 5);
   }
 }
 
@@ -105,51 +115,23 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
     for (size_t i = 0; i < h->size(); ++i)
       vertices.push_back(reco::VertexRef(h, i));
   }
-
   const size_t n_muons = muons->size();
   const size_t n_electrons = electrons->size();
   const size_t n_vertices = vertices.size();
 
-  if (verbose) {
-    for (size_t ivtx = 0; ivtx < n_vertices; ++ivtx) {
-      const reco::Vertex& vtx = *vertices.at(ivtx);
-      printf("ivtx %lu ntracks %i mass %f\n", ivtx, vtx.nTracks(min_vertex_track_weight), vtx.p4().mass());
-    }
-  }
 
   // Associate leptons (muons and electrons) to vertices. For each 
   // lepton, determine if it matches to a track in a vertex. 
-  //
-
-  // Possible TODO :
-  // Try taking closest in cos(angle between lepton momentum and
-  // (TV-SV)), as well as the distance of closest approach ("miss
-  // distance").
 
   // have the index == muon, but the value is which vertex the muon is
   // associated to (which starts at 0) 
   std::vector<int> mu_index_in_vertex(n_muons, -1);
   std::vector<int> el_index_in_vertex(n_electrons, -1);
 
-// with this set up, it is possible that a muon could be associated to 
-// more than one vertex -- have a printout set up but yet to cause an issue 
   if (enable) {
-    if (verbose) printf("starting now to check leptons to tracks \n");      
-    if (verbose) std::cout << "Nmuons: " << n_muons << " Nelectrons: " << n_electrons << std::endl;
-    std::set<reco::TrackRef> mu_tracks;
-    std::set<reco::TrackRef> el_tracks;
-    std::vector<double> mu_dr;
-    std::vector<std::vector<double>> mu_vtx_drpairs;
-    std::vector<double> el_dr;
-    std::vector<std::vector<double>> el_vtx_drpairs;
-    std::pair<bool, Measurement1D> mu_vtx_dist;
-    std::pair<bool, Measurement1D> ele_vtx_dist;
-    std::vector<reco::TransientTrack> mu_ttracks;
-    std::vector<reco::TransientTrack> ele_ttracks;
-    std::pair<bool, Measurement1D> matchedmu_vtx_dist;
-    std::pair<bool, Measurement1D> matchedele_vtx_dist;
-    std::vector<reco::TransientTrack> matchedmu_ttracks;
-    std::vector<reco::TransientTrack> matchedele_ttracks;
+    //which vertex it is associated to and the transient track 
+    std::vector<std::pair<size_t, reco::TransientTrack>> matchedmu_ttracks;
+    std::vector<std::pair<size_t, reco::TransientTrack>> matchedele_ttracks;
 
     for (size_t imuon = 0; imuon < n_muons; ++imuon) {
       const pat::Muon& muon = muons->at(imuon);
@@ -157,127 +139,116 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
       reco::TrackRef mtk = muon.innerTrack();
 
       if (!mtk.isNull()) {
-        mu_ttracks.push_back(tt_builder->build(mtk));
         for (size_t ivtx = 0; ivtx < n_vertices; ++ivtx) {
-          std::vector<double> drpairs;
           const reco::Vertex& vtx = *vertices.at(ivtx);
+          std::vector<int> mu_tk_idx;
+          
           for (auto itk = vtx.tracks_begin(), itke = vtx.tracks_end(); itk != itke; ++itk) {
             if (vtx.trackWeight(*itk) >= min_vertex_track_weight) {
               reco::TrackRef tk = itk->castTo<reco::TrackRef>();
 
               if (mtk->pt() > 1) {
                 double dr = reco::deltaR(tk->eta(), tk->phi(), mtk->eta(), mtk->phi());
-                if (verbose) printf("tk pt %f eta %f phi %f in vtx %f,%f,%f \n", tk->pt(), tk->eta(), tk->phi(), vtx.x(), vtx.y(), vtx.z());
-                if (verbose) printf("mu tk comparison : pt %f eta %f phi %f; dr : %f \n", mtk->pt(), mtk->eta(), mtk->phi(), dr);
-                //filling the 1d vector & 2d vector 
-                mu_dr.push_back(dr);
-                drpairs.push_back(dr);
                 if (dr < 0.001 ) {
-                  mu_tracks.insert(tk);
-                  matchedmu_ttracks.push_back(tt_builder->build(mtk));
+                  matchedmu_ttracks.push_back( std::make_pair(ivtx, tt_builder->build(mtk)));
                   if (mu_index_in_vertex[imuon] != -1) {
-                    std::cout << "overwrite warning : found a muon attached to more than one vertex \n" << std::endl;
+                    std::cout << "overwrite warning : found a muon attached to more than one track/vertex \n" << std::endl;
                   }
                   mu_index_in_vertex[imuon] = ivtx;
                 }
+
               }
             }
           }
-          mu_vtx_drpairs.push_back(drpairs);
         }
       }
     }
 
-    if (verbose) printf("\n");
     for (size_t iel = 0; iel < n_electrons; ++iel) {
       const pat::Electron& electron = electrons->at(iel);
+      
       reco::GsfTrackRef etk = electron.gsfTrack();
-            
       if (!etk.isNull()) {
-        ele_ttracks.push_back(tt_builder->build(etk));
         for (size_t ivtx = 0; ivtx < n_vertices; ++ivtx) {
-          std::vector<double> drpairs;
           const reco::Vertex& vtx = *vertices.at(ivtx);
           for (auto itk = vtx.tracks_begin(), itke = vtx.tracks_end(); itk != itke; ++itk) {
             if (vtx.trackWeight(*itk) >= min_vertex_track_weight) {
               reco::TrackRef tk = itk->castTo<reco::TrackRef>();
 
-              if (etk->pt() > 1) {
-                double dr = reco::deltaR(tk->eta(), tk->phi(), etk->eta(), etk->phi());
-                if (verbose) printf("tk pt %f eta %f phi %f in vtx %f,%f,%f \n", tk->pt(), tk->eta(), tk->phi(), vtx.x(), vtx.y(), vtx.z());
-                if (verbose) printf("el tk comparison : pt %f eta %f phi %f; dr : %f \n", etk->pt(), etk->eta(), etk->phi(), dr);
-                el_dr.push_back(dr);
-                drpairs.push_back(dr);
-                if (dr < 0.001 ) {
-                  el_tracks.insert(tk);
-                  matchedele_ttracks.push_back(tt_builder->build(etk));
-                  if (el_index_in_vertex[iel] != -1) {
-                    std::cout << "overwrite warning : found an electron attached to more than one vertex \n" << std::endl;
+              //first check against footprints of electron 
+              for (unsigned int i = 0, n = electron.numberOfSourceCandidatePtrs(); i < n; ++i){
+                if (electron.pt() > 5 && electron.sourceCandidatePtr(i).isNonnull() && electron.sourceCandidatePtr(i).isAvailable()) {
+                  double dr = reco::deltaR(tk->eta(), tk->phi(), electron.sourceCandidatePtr(i)->eta(), electron.sourceCandidatePtr(i)->phi());
+                  if (dr < 0.001) {
+                    el_index_in_vertex[iel] = ivtx;
+                    matchedele_ttracks.push_back(std::make_pair(ivtx, tt_builder->build(etk)));
                   }
-                  el_index_in_vertex[iel] = ivtx;
                 }
               }
+                // if there are no footprints/ or still haven't found a match, do the usual check
+              if (el_index_in_vertex[iel] < 0) {
+                if (etk->pt() > 1) {
+                  double dr = reco::deltaR(tk->eta(), tk->phi(), etk->eta(), etk->phi());
+                  if (dr < 0.001 ) {
+                    el_index_in_vertex[iel] = ivtx;
+                    matchedele_ttracks.push_back(std::make_pair(ivtx, tt_builder->build(etk)));
+                  }
+                }
+              }
+              
             }
           }
-          el_vtx_drpairs.push_back(drpairs);
         }
-      }
-    }
-
-    // finding transverse impact parameter between leptons and vertices 
-    for (size_t ivtx = 0; ivtx < n_vertices; ++ivtx) {
-      const reco::Vertex& vtx = *vertices.at(ivtx);
-      for (auto ettk : ele_ttracks ) {
-        ele_vtx_dist = IPTools::absoluteTransverseImpactParameter(ettk, vtx);
-      }
-      for (auto mettk : matchedele_ttracks ) {
-        matchedele_vtx_dist = IPTools::absoluteTransverseImpactParameter(mettk, vtx);
-       }
-      for (auto mttk : mu_ttracks ) {
-        mu_vtx_dist = IPTools::absoluteTransverseImpactParameter(mttk, vtx);
-       }
-      for (auto mmttk : matchedmu_ttracks ) {
-        matchedmu_vtx_dist = IPTools::absoluteTransverseImpactParameter(mmttk, vtx);
-      }
+      } 
     }
 
     if (histos) {
-      for (auto mu_deltaR : mu_dr ) {
-        h_mutrack_dr->Fill(mu_deltaR);
-      }
-      
-      for (auto el_deltaR : el_dr ) {
-        h_eltrack_dr->Fill(el_deltaR);
-      }
-      
-      for (auto& outer : mu_vtx_drpairs) {
-        if (!outer.empty()) {
-          auto min = std::min_element(outer.begin(), outer.end());
-          h_mutrack_bestdr->Fill(*min);
+      int nmuinSV = 0;
+      int neleinSV = 0;
+      for (size_t imuon = 0; imuon < n_muons; ++imuon) {
+        const pat::Muon& muon = muons->at(imuon);
+        if (mu_index_in_vertex[imuon] > 0) {
+          nmuinSV += 1;
+          h_muinSV_pt->Fill(muon.pt());
+        }
+        else {
+          h_mu_pt->Fill(muon.pt());
         }
       }
-
-      for (auto& outer : el_vtx_drpairs) {
-        if (!outer.empty()) {
-          auto min = std::min_element(outer.begin(), outer.end());
-          h_eltrack_bestdr->Fill(*min);
+      for (size_t iel = 0; iel < n_electrons; ++iel) {
+        const pat::Electron& electron = electrons->at(iel);
+        if (el_index_in_vertex[iel] > 0) {
+          neleinSV += 1;
+          h_eleinSV_pt->Fill(electron.pt());
+        }
+        else {
+          h_ele_pt->Fill(electron.pt());
         }
       }
+      h_nmuinSV->Fill(nmuinSV);
+      h_neleinSV->Fill(neleinSV);
+      h_nlepinSV->Fill(nmuinSV + neleinSV);
 
-      h_mu_vtx_miss_dist->Fill(mu_vtx_dist.second.value());
-      h_ele_vtx_miss_dist->Fill(ele_vtx_dist.second.value());
-      h_matchedmu_vtx_miss_dist->Fill(matchedmu_vtx_dist.second.value());
-      h_matchedele_vtx_miss_dist->Fill(matchedele_vtx_dist.second.value());
-   }
+      h_nmu_vs_nmuinSV->Fill(nmuinSV, n_muons);
+      h_nele_vs_neleinSV->Fill(neleinSV, n_electrons);
+
+      for (size_t ivtx = 0; ivtx < n_vertices; ++ivtx) {
+        const reco::Vertex& vtx = *vertices.at(ivtx);
+        for (unsigned int j = 0; j < matchedele_ttracks.size(); j++ ) {
+          if (matchedele_ttracks[j].first == ivtx) h_ele_vtx_miss_dist->Fill(IPTools::absoluteTransverseImpactParameter(matchedele_ttracks[j].second, vtx).second.value());
+        }
+        for (unsigned int j = 0; j < matchedmu_ttracks.size(); j++ ) {
+          if (matchedmu_ttracks[j].first == ivtx) h_mu_vtx_miss_dist->Fill(IPTools::absoluteTransverseImpactParameter(matchedmu_ttracks[j].second, vtx).second.value());
+        }
+      }
+    }
   }
-
-
+  
   std::unique_ptr<MuAssociation> mu_assoc;
   mu_assoc.reset(new MuAssociation(&event.productGetter()));
 
   std::unique_ptr<ElAssociation> el_assoc;
   el_assoc.reset(new ElAssociation(&event.productGetter()));
-
 
   if (enable) {
     for (size_t ivtx = 0; ivtx < n_vertices; ++ivtx) {
@@ -285,15 +256,12 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
 
       for (size_t imuon = 0; imuon < n_muons; ++imuon) {
         pat::MuonRef muonref(muons, imuon);
-
         if (mu_index_in_vertex[imuon] == int(ivtx)) {
           mu_assoc->insert(vtxref, muonref);
         }
       }
-
       for (size_t iel = 0; iel < n_electrons; ++iel) {
         pat::ElectronRef eleref(electrons, iel);
-
         if (el_index_in_vertex[iel] == int(ivtx)) {
           el_assoc->insert(vtxref, eleref);
         }
