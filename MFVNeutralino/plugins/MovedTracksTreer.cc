@@ -142,8 +142,16 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
                 (*move_vertex)[1] - nt_filler.bs().y((*move_vertex)[2]),
                 (*move_vertex)[2]);
 
-    for (const reco::TrackRef& tk : *sel_tracks)
+    //for (const reco::TrackRef tk : *sel_tracks)
+    //  tks_push_back(*tk);
+
+    for (reco::TrackRef tk : *sel_tracks) {
+      const int whichtk = nt.tracks().n();
       tks_push_back(*tk);
+      auto vf = nt_filler.pvs_filler();
+      const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, tk);
+      nt.tracks().set_which_pv(whichtk, whichpv);
+    }
 
     for (const reco::Track& tk : *moved_tracks) {
       double dist2min = 0.1;
@@ -199,6 +207,9 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
           }
           if (whichtk != -1)
             nt.tracks().set_which_jet(whichtk, whichjet);
+    
+
+ 
         }
       }
     }

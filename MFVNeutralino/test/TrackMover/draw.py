@@ -7,7 +7,9 @@ from JMTucker.Tools.ROOTTools import *
 set_style()
 ROOT.TH1.AddDirectory(0)
 
-variables = ['_movedist', '_ht_', '_sump_', 'tks', '_vtx', '_trk_', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+#variables = ['_movedist', 'lsp', '_npv_', '_dvv', '_sump_', 'tks', '_vtx', '_trk_', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+
+variables = ['_movedist', 'lsp', '_npv_', '_dvv', '_sump_', 'tks', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
 
 def get_em(fn, scale=1., alpha=1-0.6827):
     #f = ROOT.TFile(fn)
@@ -19,7 +21,7 @@ def get_em(fn, scale=1., alpha=1-0.6827):
 
     def skip(name, obj):
         return not obj.Class().GetName().startswith('TH1') or obj.GetName() in ('h_norm', 'h_weight', 'h_npu') #or name in ('nlep')
-
+    
     def rebin(name, obj):
         return obj
         if 'jetdravg' == name or \
@@ -37,10 +39,11 @@ def get_em(fn, scale=1., alpha=1-0.6827):
              'pvscore' == name or \
              'pvx' == name or \
              'pvy' == name or \
+             'lsp' == name or \
              'pvz' == name:
             obj.Rebin(4)
         return obj
-
+    
     hdummy = f.Get('h_weight')
     integ = hdummy.Integral(0,hdummy.GetNbinsX()+2)
     print 'integral:', integ
@@ -84,6 +87,15 @@ def get_em(fn, scale=1., alpha=1-0.6827):
             if 'movedist2' in name:
               num = num.Rebin(10)
               den = den.Rebin(10)
+            if 'lsp' in name:
+              num = num.Rebin(4)
+              den = den.Rebin(4)
+            if 'dvv' in name:
+              num = num.Rebin(4)
+              den = den.Rebin(4)
+            #if 'movedist' in name:
+              #num = num.Rebin(4)
+              #den = den.Rebin(4)
             g = histogram_divide(num, den, confint_params=(alpha,), use_effective=use_effective)
             print(name)
             g.SetTitle('')
@@ -157,43 +169,47 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root'):
             
             data.SetName("SingleMuon")
             data.SetMarkerSize(0.8)
-            data.SetMarkerColor(ROOT.kBlack)
-            data.SetLineColor(ROOT.kBlack)
-            data.SetFillColor(ROOT.kBlack)
+            data.SetMarkerColor(ROOT.kBlack)#Blue)
+            data.SetLineColor(ROOT.kBlack)#lue)
+            data.SetFillColor(ROOT.kBlack)#lue)
 
             mc.SetName("MC bkg")
             mc.SetMarkerSize(0.8)
-            mc.SetMarkerColor(ROOT.kMagenta)
-            mc.SetLineColor(ROOT.kMagenta)
-            mc.SetFillColor(ROOT.kMagenta)
+            mc.SetMarkerColor(ROOT.kRed)#Black)
+            mc.SetLineColor(ROOT.kRed)#Black)
+            mc.SetFillColor(ROOT.kRed)#Black)
             
             signal.SetName("MC signal")
             signal.SetMarkerSize(0.8)
-            signal.SetMarkerColor(ROOT.kBlue)
-            signal.SetLineColor(ROOT.kBlue)
-            signal.SetFillColor(ROOT.kBlue)
+            signal.SetMarkerColor(ROOT.kBlue)#Violet+1)
+            signal.SetLineColor(ROOT.kBlue)#Violet+1)
+            signal.SetFillColor(ROOT.kBlue)#Violet+1)
             
             x_range = None
             y_range = None
-            objs = [data, mc]
+            res_x_range = None
+            objs = [signal, mc]
             statbox_size = (0.2,0.2)
             if name.endswith('_rat'):
                 for g in both:
                     g.GetYaxis().SetTitle('efficiency')
-                objs = [(signal, 'P'), (data, 'P'), (mc, 'PE2')]
+                objs = [(signal, 'P'), (mc, 'P'), (data, 'P'),]
                 y_range = (0, 1.05)
                 statbox_size = None
             if 'bs2derr' in name:
                 x_range = (0, 0.01)
-
+            if 'movedist' in name:
+                x_range = (0.0, 0.2)
+                #res_x_range = (0.07,0.12)
+            
             ratios_plot(name,
                         objs,
                         plot_saver=ps,
                         x_range=x_range,
                         y_range=y_range,
                         #res_y_range=0.10,
-                        res_y_range=(0.4,1.6),
-                        res_y_title='TM/signal MC',
+                        res_y_range=(0.4,1.5),
+                        res_y_title='data/MC',
                         res_fit=False,
                         res_divide_opt={'confint': propagate_ratio, 'force_le_1': False, 'allow_subset': True}, #name in ('all_jetsumntracks_rat', )},
                         res_lines=1.,
