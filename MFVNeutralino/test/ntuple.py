@@ -11,7 +11,7 @@ settings.minitree_only = False
 settings.prepare_vis = False
 settings.keep_all = False
 settings.keep_gen = False
-settings.keep_tk = True
+settings.keep_tk = False
 if use_btag_triggers :
     settings.event_filter = 'bjets OR displaced dijet veto HT' # for new trigger studies
 elif use_MET_triggers :
@@ -27,10 +27,11 @@ settings.randpars_filter = False
 
 process = ntuple_process(settings)
 dataset = 'miniaod' if settings.is_miniaod else 'main'
-#sample_files(process, 'ttbar_2018', dataset, 1)
+sample_files(process, 'ttbar_semilep_2018', dataset, 3)
+#sample_files(process, 'qcdmupt15_2017', dataset, 1)
 #sample_files(process, 'mfv_neu_tau010000um_M0800_2018', dataset, 1)
-sample_files(process, 'mfv_stopld_tau010000um_M0800_2018', dataset, 3)
-#sample_files(process, 'mfv_stopld_tau000300um_M0800_2018', dataset, 1)
+#sample_files(process, 'mfv_stoplb_tau000300um_M0800_2018', dataset, 1)
+
 
 max_events(process, 10000)
 cmssw_from_argv(process)
@@ -46,10 +47,11 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = pick_samples(dataset, qcd=True, ttbar=False, data=False, leptonic=True, splitSUSY=True, Zvv=True, met=True, span_signal=False)
 
     if use_Lepton_triggers :
-        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=True, leptonic=True, met=True, diboson=True, Lepton_data=False)
+        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=True, met=False, leptonic=True, ttbar=True, diboson=True, Lepton_data=False)
     else :
         samples = pick_samples(dataset, qcd=False, ttbar=False, data=False, all_signal=not settings.run_n_tk_seeds)
-
+        
+        
     set_splitting(samples, dataset, 'ntuple', data_json=json_path('ana_SingleLept_2017_10pc.json'), limit_ttbar=True)
 
     ms = MetaSubmitter(settings.batch_name(), dataset=dataset)

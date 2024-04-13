@@ -325,7 +325,7 @@ def get(i): return _l[i]
                 stageout_user = username # JMTBAD use getUsernameFromSiteDB?
                 if stageout_path:
                     stageout_path = '/' + stageout_path
-               # stageout_path = 'root://cmseos.fnal.gov//store/user/' + stageout_user + stageout_path
+                #stageout_path = 'root://cmseos.fnal.gov//store/user/' + stageout_user + stageout_path
                 stageout_path = 'root://cmsxrootd.hep.wisc.edu//store/user/' + stageout_user + stageout_path
                 if not publish_name:
                     publish_name = batch_name.replace('/', '_')

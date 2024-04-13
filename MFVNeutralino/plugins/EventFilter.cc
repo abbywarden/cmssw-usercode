@@ -32,10 +32,8 @@ private:
   const double min_pt_for_ht;
   const double min_ht;
   const edm::EDGetTokenT<pat::MuonCollection> muons_token;
-  //const StringCutObjectSelector<pat::Muon> muon_selector;
   const double min_muon_pt;
   const edm::EDGetTokenT<pat::ElectronCollection> electrons_token;
-  //const StringCutObjectSelector<pat::Electron> electron_selector;
   const double min_electron_pt;
   const int min_nleptons;
   EffectiveAreas electron_effective_areas;
@@ -57,10 +55,8 @@ MFVEventFilter::MFVEventFilter(const edm::ParameterSet& cfg)
     min_pt_for_ht(cfg.getParameter<double>("min_pt_for_ht")),
     min_ht(cfg.getParameter<double>("min_ht")),
     muons_token(consumes<pat::MuonCollection>(cfg.getParameter<edm::InputTag>("muons_src"))),
-    // muon_selector(cfg.getParameter<std::string>("muon_cut")),
     min_muon_pt(cfg.getParameter<double>("min_muon_pt")),
     electrons_token(consumes<pat::ElectronCollection>(cfg.getParameter<edm::InputTag>("electrons_src"))),
-    // electron_selector(cfg.getParameter<std::string>("electron_cut")),
     min_electron_pt(cfg.getParameter<double>("min_electron_pt")),
     min_nleptons(cfg.getParameter<int>("min_nleptons")),
     electron_effective_areas(cfg.getParameter<edm::FileInPath>("electron_effective_areas").fullPath()),
@@ -125,13 +121,9 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
   int nmuons = 0, nelectrons = 0;
 
   for (const pat::Muon& muon : *muons) {
-    //if (muon_selector(muon) && muon.pt() > min_muon_pt)
     if (muon.pt() > min_muon_pt && abs(muon.eta()) < 2.4) {
-
-      //new muon selector : is cut based medium & iso < 0.15
       bool isMedMuon = muon.passed(reco::Muon::CutBasedIdMedium);
       const float iso = (muon.pfIsolationR04().sumChargedHadronPt + std::max(0., muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt -0.5*muon.pfIsolationR04().sumPUPt))/muon.pt();
-
       if (isMedMuon && iso < 0.15) {
   	    ++nmuons;
       } 
@@ -139,10 +131,7 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
   } 
 
   for (const pat::Electron& electron : *electrons) {
-    // if (electron_selector(electron) && electron.pt() > min_electron_pt)
-    //new electron selector : is cut based tight & iso < 0.10
     if (electron.pt() > min_electron_pt && abs(electron.eta()) < 2.4) {
-      
       bool isTightEl = electron.electronID("cutBasedElectronID-Fall17-94X-V1-tight");
       const auto pfIso = electron.pfIsolationVariables();
       const float eA = electron_effective_areas.getEffectiveArea(fabs(electron.superCluster()->eta()));
@@ -156,11 +145,8 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
   } 
   
   const bool leptons_pass = nmuons + nelectrons >= min_nleptons;
-  
-
   if (debug) printf("MFVEventFilter: nmuons: %i nelectrons: %i pass? %i\n", nmuons, nelectrons, leptons_pass);
 
-  //return leptons_pass;
 
   if (mode == Mode::jets_only)
     return jets_pass;

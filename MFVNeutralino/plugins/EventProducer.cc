@@ -73,7 +73,6 @@ namespace {
   }
 }
 
-//electron helper function
 bool cutBasedIDHelper(pat::Electron el, double dEtaIn, double dPhiIn, double full5x5_sigmaIetaIeta, double ooEmooP, int expectedMissingInnerHits) {
 
   float dEtaIn_ = el.deltaEtaSuperClusterTrackAtVtx();
@@ -126,9 +125,6 @@ MFVEventProducer::MFVEventProducer(const edm::ParameterSet& cfg)
     electrons_token(consumes<pat::ElectronCollection>(cfg.getParameter<edm::InputTag>("electrons_src"))),
     use_vertex_seed_tracks(cfg.getParameter<edm::InputTag>("vertex_seed_tracks_src").label() != ""),
     vertex_seed_tracks_token(consumes<reco::TrackCollection>(cfg.getParameter<edm::InputTag>("vertex_seed_tracks_src"))),
-    // muon_selectors(cuts2selectors<pat::Muon>(cfg.getParameter<std::vector<std::string>>("muon_cuts"))),
-    // electron_EB_selectors(cuts2selectors<pat::Electron>(cfg.getParameter<std::vector<std::string>>("electron_EB_cuts"))),
-    // electron_EE_selectors(cuts2selectors<pat::Electron>(cfg.getParameter<std::vector<std::string>>("electron_EE_cuts"))),
     electron_effective_areas(cfg.getParameter<edm::FileInPath>("electron_effective_areas").fullPath()),
     lightweight(cfg.getParameter<bool>("lightweight"))
 {
@@ -228,6 +224,7 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
     mevent->gen_pv[1] = (*gen_vertex)[1];
     mevent->gen_pv[2] = (*gen_vertex)[2];
 
+
     edm::Handle<reco::GenParticleCollection> gen_particles;
     event.getByToken(gen_particles_token, gen_particles);
     
@@ -313,6 +310,7 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
       if (id == 11) {
         mevent->gen_electrons.push_back(MFVEvent::p4(gen.pt(), gen.eta(), gen.phi(), gen.mass()));
         mevent->gen_leptons.push_back(MFVEvent::p4(gen.pt(), gen.eta(), gen.phi(), gen.mass()));
+
       }
       //else if ((id == 13) && (gen.status() == 1 || (gen.status() >= 21 && gen.status() <= 29))) {
       else if (id == 13) {
@@ -477,7 +475,7 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
       }
       else {
         const pat::PackedCandidate* pk = dynamic_cast<const pat::PackedCandidate*>(dau);
-        if (pk && pk->charge() && pk->hasTrackDetails())
+        if (pk && pk->charge() !=0 && pk->hasTrackDetails())
           tk = &pk->pseudoTrack();
       }
 
