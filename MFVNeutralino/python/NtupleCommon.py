@@ -1,7 +1,7 @@
 from JMTucker.Tools.CMSSWTools import *
 from JMTucker.Tools.Year import year
 
-ntuple_version_ = 'ULV5'
+ntuple_version_ = 'ULV9' #V8 : new vertexer; no ordering;  V9 : new vertexer w/ pt ordering of seed tracks && seed vertices 
 lsp_id = 1000006 # should do that in a smarter way; currently for stop
 use_btag_triggers = False
 use_MET_triggers = False
@@ -159,6 +159,7 @@ def make_output_commands(process, settings):
         'keep *_mcStat_*_*',
         'keep MFVVertexAuxs_mfvVerticesAux_*_*',
         'keep MFVEvent_mfvEvent__*',
+        'keep MFVSeedTracks_mfvSeedTracks__*',
         ]
 
     if settings.keep_gen:
@@ -268,6 +269,7 @@ def miniaod_ntuple_process(settings):
     process.load('JMTucker.MFVNeutralino.TriggerFilter_cfi')
     process.load('JMTucker.MFVNeutralino.TriggerFloats_cff')
     process.load('JMTucker.MFVNeutralino.EventProducer_cfi')
+    process.load('JMTucker.MFVNeutralino.SeedTracks_cfi')
     process.load('JMTucker.MFVNeutralino.TrackTree_cfi')
 
     process.goodOfflinePrimaryVertices.input_is_miniaod = True
@@ -325,7 +327,8 @@ def miniaod_ntuple_process(settings):
                          process.jmtUnpackedCandidateTracks *
                          process.mfvVertexSequence *
                          process.prefiringweight *
-                         process.mfvEvent)
+                         process.mfvEvent *
+                         process.mfvSeedTracks)
 
     output_commands = make_output_commands(process, settings)
 
