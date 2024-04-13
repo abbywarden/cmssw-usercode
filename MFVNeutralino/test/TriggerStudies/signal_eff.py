@@ -57,45 +57,35 @@ def mvpave(pave, x1, y1, x2, y2):
     pave.SetY1(y1)
     pave.SetY2(y2)
 
-#for sample in multijet + dijet:
-#for sample in splitSUSY:
-for sample in multijet + dijet_d + dijet_b:# +  higgs:
+for sample in DisplacedSUSY: 
     fn = os.path.join(root_file_dir, sample.name + '.root')
     if not os.path.exists(fn):
-        #print sample.name + '; not finding it'
         continue
     f = ROOT.TFile(fn)
     sample.ys = {n: getit(f,'p'+n) for n in trigs}
 
 if len(trigs) > 1:
-    for kind, samples in ('multijet', multijet), ('dijet_d', dijet_d), ('dijet_b', dijet_b):
-        per = PerSignal('efficiency', y_range=(0.,1.15))
-        for itrig, trig in enumerate(trigs):
-            for sample in samples:
-                sample.y, sample.yl, sample.yh = sample.ys[trig]
-            per.add(samples, title=nice[itrig], color=colors[itrig])
-        per.draw(canvas=ps.c)
+    #for kind, samples in ('multijet', multijet), ('dijet_d', dijet_d), ('dijet_b', dijet_b):
+    kind = 'semilept_lb'
+    samples = DisplacedSUSY
 
-        if study_new_triggers :
-            mvpave(per.decay_paves[0], 7.5, 1.04, 10.4, 1.1)
-            mvpave(per.decay_paves[1], 11.5,1.00 , 17.5, 1.14)
-            mvpave(per.decay_paves[2], 18.5,  1.04, 23.5, 1.1) 
-        #    mvpave(per.decay_paves[3], 11.5, 1.04, 13.5, 1.1) 
-        else :
-            mvpave(per.decay_paves[0], 0.703, 1.018, 6.227, 1.098)
-            mvpave(per.decay_paves[1], 6.729, 1.021, 14.073, 1.101)
-            mvpave(per.decay_paves[2], 14.45, 1.033, 21.794, 1.093) 
+    per = PerSignal('efficiency', y_range=(0.,1.15))
+    for itrig, trig in enumerate(trigs):
+        for sample in samples:
+            sample.y, sample.yl, sample.yh = sample.ys[trig]
+        per.add(samples, title=nice[itrig], color=colors[itrig])
+    per.draw(canvas=ps.c)
 
-        tlatex = ROOT.TLatex()
-        tlatex.SetTextSize(0.04)
-        if kind == 'multijet' :
-            tlatex.DrawLatex(0.725, 1.05, '#tilde{N} #rightarrow tbs')
-        elif kind == 'dijet_d' :
-            tlatex.DrawLatex(0.725, 1.05, '#tilde{t} #rightarrow #bar{d}#bar{d}')
-        elif kind == 'dijet_b' :
-            tlatex.DrawLatex(0.725, 1.05, '#tilde{t} #rightarrow #bar{b}#bar{b}')
-        else:
-            tlatex.DrawLatex(0.725, 1.05, kind)
+    if study_new_triggers :
+        mvpave(per.decay_paves[0], 7.5, 1.04, 10.4, 1.1)
+        mvpave(per.decay_paves[1], 11.5,1.00 , 17.5, 1.14)
+        mvpave(per.decay_paves[2], 18.5,  1.04, 23.5, 1.1) 
+    #    mvpave(per.decay_paves[3], 11.5, 1.04, 13.5, 1.1) 
+    else :
+        mvpave(per.decay_paves[0], 0.703, 1.018, 6.227, 1.098)
+        mvpave(per.decay_paves[1], 6.729, 1.021, 14.073, 1.101)
+        mvpave(per.decay_paves[2], 14.45, 1.033, 21.794, 1.093) 
+        
 
     tlatex = ROOT.TLatex()
     tlatex.SetTextSize(0.04)

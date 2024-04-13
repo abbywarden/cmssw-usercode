@@ -148,8 +148,6 @@ namespace mfv {
     mfv::b_HLT_HT350_DisplacedDijet40_DisplacedTrack, mfv::b_HLT_HT650_DisplacedDijet80_Inclusive
   };
  
-  //For Lepton Trigger Studies; the following depends on years 
-  // 2016
   static const std::vector<size_t> ElectronTriggers = {
     //electron triggers
     mfv::b_HLT_Ele27_WPTight_Gsf,

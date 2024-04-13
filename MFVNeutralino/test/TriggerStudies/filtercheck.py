@@ -24,8 +24,8 @@ sef('pTriggerMET', mode = 'trigger met only', name_ex = 'met')
 #sef('pTriggerOR', mode = 'trigger bjets OR displaced dijet', name_ex = 'bjets_OR_displaced_dijet')
 #sef('pFull',    mode = 'jets only',         name_ex = 'Full') # uncomment to get efficiency of ntuple-level vertex filter
 sef('pTriggerMuons', mode = 'trigger muons only',name_ex = 'muons')
-
-
+sef('pTriggerLeptons', mode = 'trigger leptons only',name_ex = 'leptons')
+sef('pTriggerLeptonsORDispLep', mode = 'trigger leptons OR displaced leptons',name_ex = 'leptons_OR_displep')
 
 #if len(process.mfvTriggerFilter.HLTPaths) > 1:
 #    for x in process.mfvTriggerFilter.HLTPaths:
@@ -52,7 +52,8 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         #samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
     elif year == 2018:
         #samples = Samples.qcd_samples_2018 + Samples.data_samples_2018
-        samples = Samples.all_signal_samples_2018
+        samples = Samples.mfv_stoplb_samples_2018 + Samples.mfv_stopld_samples_2018
+        #samples = Samples.all_signal_samples_2018
 
     ms = MetaSubmitter('TrigFiltCheck', dataset='miniaod')
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, npu_filter_modifier(settings.is_miniaod), per_sample_pileup_weights_modifier(cross=settings.cross))
