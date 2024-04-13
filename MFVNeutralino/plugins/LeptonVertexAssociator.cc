@@ -133,75 +133,80 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
     std::vector<std::pair<size_t, reco::TransientTrack>> matchedmu_ttracks;
     std::vector<std::pair<size_t, reco::TransientTrack>> matchedele_ttracks;
 
-    for (size_t imuon = 0; imuon < n_muons; ++imuon) {
-      const pat::Muon& muon = muons->at(imuon);
-      //reco::TrackRef mtk = muon.globalTrack();
-      reco::TrackRef mtk = muon.innerTrack();
+    for (size_t ivtx = 0; ivtx < n_vertices; ++ivtx) {
+      const reco::Vertex& vtx = *vertices.at(ivtx);
+      for (auto itk = vtx.tracks_begin(), itke = vtx.tracks_end(); itk != itke; ++itk) {
+        if (vtx.trackWeight(*itk) >= min_vertex_track_weight) {
+          reco::TrackRef tk = itk->castTo<reco::TrackRef>();
 
-      if (!mtk.isNull()) {
-        for (size_t ivtx = 0; ivtx < n_vertices; ++ivtx) {
-          const reco::Vertex& vtx = *vertices.at(ivtx);
-          std::vector<int> mu_tk_idx;
-          
-          for (auto itk = vtx.tracks_begin(), itke = vtx.tracks_end(); itk != itke; ++itk) {
-            if (vtx.trackWeight(*itk) >= min_vertex_track_weight) {
-              reco::TrackRef tk = itk->castTo<reco::TrackRef>();
+          std::tuple<double, size_t, reco::TransientTrack> matchedmuons; 
+          std::tuple<double, size_t, reco::TransientTrack> matchedelectrons;
 
+          for (size_t imuon = 0; imuon < n_muons; ++imuon) {
+            const pat::Muon& muon = muons->at(imuon);
+            //reco::TrackRef mtk = muon.globalTrack();
+            reco::TrackRef mtk = muon.innerTrack();
+
+            if (!mtk.isNull()) {
               if (mtk->pt() > 1) {
                 double dr = reco::deltaR(tk->eta(), tk->phi(), mtk->eta(), mtk->phi());
                 if (dr < 0.001 ) {
-                  matchedmu_ttracks.push_back( std::make_pair(ivtx, tt_builder->build(mtk)));
-                  if (mu_index_in_vertex[imuon] != -1) {
-                    std::cout << "overwrite warning : found a muon attached to more than one track/vertex \n" << std::endl;
-                  }
-                  mu_index_in_vertex[imuon] = ivtx;
+                  matchedmuons = std::make_tuple(dr, imuon, tt_builder->build(mtk));
                 }
-
               }
+            }
+          }
+          for (size_t iel = 0; iel < n_electrons; ++iel) {
+            const pat::Electron& electron = electrons->at(iel);
+      
+            reco::GsfTrackRef etk = electron.gsfTrack();
+            if (!etk.isNull()) {
+              bool matchbyfootprint = false;
+              for (unsigned int i = 0, n = electron.numberOfSourceCandidatePtrs(); i < n; ++i){
+                if (electron.pt() > 5 && electron.sourceCandidatePtr(i).isNonnull() && electron.sourceCandidatePtr(i).isAvailable()) {
+                  double dr = reco::deltaR(tk->eta(), tk->phi(), electron.sourceCandidatePtr(i)->eta(), electron.sourceCandidatePtr(i)->phi());
+                  if (dr < 0.001) {
+                    matchedelectrons = std::make_tuple(dr, iel, tt_builder->build(etk));
+                    matchbyfootprint = true;
+                  }
+                }
+              }
+                // if there are no footprints/ or still haven't found a match, do the usual check
+              if (!matchbyfootprint) {
+                if (etk->pt() > 1) {
+                  double dr = reco::deltaR(tk->eta(), tk->phi(), etk->eta(), etk->phi());
+                  if (dr < 0.001 ) {
+                    matchedelectrons = std::make_tuple(dr, iel, tt_builder->build(etk));
+                  }
+                }
+              }
+            }
+          }
+          // case 1 : have a matched ele 
+          if (std::get<0>(matchedelectrons) !=0) {
+            if (std::get<0>(matchedmuons) == 0) {
+              matchedele_ttracks.push_back(std::make_pair(ivtx, std::get<2>(matchedelectrons)));
+              el_index_in_vertex[std::get<1>(matchedelectrons)] = ivtx;
+            }
+          }
+          // case 2 : have a matched mu 
+          if (std::get<0>(matchedelectrons) == 0) {
+            if (std::get<0>(matchedmuons) != 0) {
+              matchedmu_ttracks.push_back(std::make_pair(ivtx, std::get<2>(matchedmuons)));
+              mu_index_in_vertex[std::get<1>(matchedmuons)] = ivtx;
+            }
+          }
+          // case 3 : have both matched ele and matched mu --> chose the muon over the electron 
+          if (std::get<0>(matchedelectrons) != 0) {
+            if (std::get<0>(matchedmuons) != 0) {
+              matchedmu_ttracks.push_back(std::make_pair(ivtx, std::get<2>(matchedmuons)));
+              mu_index_in_vertex[std::get<1>(matchedmuons)] = ivtx;
             }
           }
         }
       }
     }
-
-    for (size_t iel = 0; iel < n_electrons; ++iel) {
-      const pat::Electron& electron = electrons->at(iel);
-      
-      reco::GsfTrackRef etk = electron.gsfTrack();
-      if (!etk.isNull()) {
-        for (size_t ivtx = 0; ivtx < n_vertices; ++ivtx) {
-          const reco::Vertex& vtx = *vertices.at(ivtx);
-          for (auto itk = vtx.tracks_begin(), itke = vtx.tracks_end(); itk != itke; ++itk) {
-            if (vtx.trackWeight(*itk) >= min_vertex_track_weight) {
-              reco::TrackRef tk = itk->castTo<reco::TrackRef>();
-
-              //first check against footprints of electron 
-              for (unsigned int i = 0, n = electron.numberOfSourceCandidatePtrs(); i < n; ++i){
-                if (electron.pt() > 5 && electron.sourceCandidatePtr(i).isNonnull() && electron.sourceCandidatePtr(i).isAvailable()) {
-                  double dr = reco::deltaR(tk->eta(), tk->phi(), electron.sourceCandidatePtr(i)->eta(), electron.sourceCandidatePtr(i)->phi());
-                  if (dr < 0.001) {
-                    el_index_in_vertex[iel] = ivtx;
-                    matchedele_ttracks.push_back(std::make_pair(ivtx, tt_builder->build(etk)));
-                  }
-                }
-              }
-                // if there are no footprints/ or still haven't found a match, do the usual check
-              if (el_index_in_vertex[iel] < 0) {
-                if (etk->pt() > 1) {
-                  double dr = reco::deltaR(tk->eta(), tk->phi(), etk->eta(), etk->phi());
-                  if (dr < 0.001 ) {
-                    el_index_in_vertex[iel] = ivtx;
-                    matchedele_ttracks.push_back(std::make_pair(ivtx, tt_builder->build(etk)));
-                  }
-                }
-              }
-              
-            }
-          }
-        }
-      } 
-    }
-
+    
     if (histos) {
       int nmuinSV = 0;
       int neleinSV = 0;
@@ -253,7 +258,6 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
   if (enable) {
     for (size_t ivtx = 0; ivtx < n_vertices; ++ivtx) {
       reco::VertexRef vtxref = vertices.at(ivtx);
-
       for (size_t imuon = 0; imuon < n_muons; ++imuon) {
         pat::MuonRef muonref(muons, imuon);
         if (mu_index_in_vertex[imuon] == int(ivtx)) {
