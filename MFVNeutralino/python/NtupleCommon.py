@@ -1,8 +1,8 @@
 from JMTucker.Tools.CMSSWTools import *
 from JMTucker.Tools.Year import year
 
-ntuple_version_ = 'OnnormdzULV30'
-lsp_id = -1 #1000009 # should do that in a smarter way; currently for stop if not -1
+ntuple_version_ = 'ULV9' #V8 : new vertexer; no ordering;  V9 : new vertexer w/ pt ordering of seed tracks && seed vertices 
+lsp_id = 1000006 # should do that in a smarter way; currently for stop
 use_btag_triggers = False
 use_MET_triggers = False
 use_Muon_triggers = True
