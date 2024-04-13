@@ -6,10 +6,10 @@ import JMTucker.MFVNeutralino.AnalysisConstants as ac
 from JMTucker.Tools.ROOTTools import *
 from JMTucker.Tools import Samples
 
-#year = '2018'
-#version = 'ULV5Lepm_SingleLep'
+year = '2018'
+version = 'ULV5Lepm_SingleLep'
 
-#root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/HistosULV5Lepm_SingleLep'
+root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/HistosULV5Lepm_SingleLep'
 #root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV1_Lepm_cut0_etagt1p5_2017_wsellep/'
 
 year = 'run2'
@@ -33,9 +33,13 @@ lumi = ac.int_lumi_2017 * ac.scale_factor_2017
 lumi_nice = ac.int_lumi_nice_2017
 
 if year == '2018':
-    qcd_samples = Samples.qcd_samples_2018
+    qcd_samples = Samples.qcd_lep_samples_2018
     ttbar_samples = Samples.ttbar_samples_2018
-    signal_sample = Samples.mfv_stopdbardbar_tau001000um_M0300_2018
+    wjet_samples = [Samples.leptonic_samples_2018[0]]
+    dyjet_samples = Samples.leptonic_samples_2018[1:]
+    diboson_samples = Samples.diboson_samples_2018
+    signal_lb = Samples.mfv_stoplb_tau001000um_M1000_2018
+    signal_ld = Samples.mfv_stopld_tau001000um_M1000_2018
     data_samples = [] # Samples.data_samples_2017
     background_samples = ttbar_samples + qcd_samples
     lumi = ac.int_lumi_2018 * ac.scale_factor_2018

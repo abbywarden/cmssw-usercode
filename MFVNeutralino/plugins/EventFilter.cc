@@ -134,7 +134,6 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
   bool leptons_pass = nmuons + nelectrons >= min_nleptons;
   
   for (const pat::Muon& muon : *muons) {
-    //if (muon_selector(muon) && muon.pt() > min_muon_pt)
     reco::TrackRef mtk = muon.track();
     if (mtk.isNull()){
       continue;

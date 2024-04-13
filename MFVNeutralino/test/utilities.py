@@ -133,6 +133,11 @@ def _background_samples(trigeff=False, year=2017, bkg_tag='others'):
         x = ['qcdmupt15']
         x += ['qcdempt%03i' % x for x in [15,20,30,50,80,120,170]]
         x += ['qcdbctoept%03i' % x for x in [15,20,30,80,170,250]]
+    elif _leptonpresel:
+        #x = ['ttbar', 'wjetstolnu', 'dyjetstollM10', 'dyjetstollM50', 'qcdmupt15', 'ww', 'wz', 'zz']
+        x = ['ttbar_had', 'ttbar_lep', 'ttbar_semilep', 'wjetstolnu', 'dyjetstollM10', 'dyjetstollM50', 'qcdmupt15', 'ww', 'wz', 'zz']
+        x += ['qcdempt%03i' % x for x in [15,20,30,50,80,120,170]]
+        x += ['qcdbctoept%03i' % x for x in [15,20,30,80,170,250]]
     elif _leptonpresel or trigeff: #FIXME
         if bkg_tag == 'wjetstolnu':
             x = ['wjetstolnu_0j']

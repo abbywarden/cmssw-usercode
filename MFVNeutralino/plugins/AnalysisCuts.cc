@@ -965,7 +965,7 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
     {
       for(int ie =0; ie < nelectrons; ++ie){
         //if (mevent->electron_pt[ie] < 35) continue; //For 2018
-	if (mevent->electron_pt[ie] < 38) continue; //For 2017
+	      if (mevent->electron_pt[ie] < 38) continue; //For 2017
 	      if (mevent->electron_ID[ie][3] == 1) {
 	        if (abs(mevent->electron_eta[ie]) < 2.4) { 
 	          if (mevent->electron_iso[ie] < 0.10) {
@@ -980,8 +980,8 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
   //case mfv::b_HLT_IsoMu24 : //For 2018
     {
       for(int im =0; im < nmuons; ++im) {
-	//if (mevent->muon_pt[im] < 27) continue; //For 2018
-          if (mevent->muon_pt[im] < 30) continue; //For 2017
+	      //if (mevent->muon_pt[im] < 27) continue; //For 2018
+        if (mevent->muon_pt[im] < 30) continue; //For 2017
 	      if (mevent->muon_ID[im][1] == 1) {
 	        if (abs(mevent->muon_eta[im]) < 2.4) {
 	          if (mevent->muon_iso[im] < 0.15) {
