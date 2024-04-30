@@ -40,6 +40,7 @@ EOF
 #include "TF1.h"
 #include "TFile.h"
 #include "TH2F.h"
+#include "TH3F.h"
 #include "TLegend.h"
 #include "TMath.h"
 #include "TRandom3.h"
@@ -81,6 +82,7 @@ struct ConstructDvvcParameters {
       btags_(-1),
       vary_dphi_(false),
       clearing_from_eff_(true),
+      //clearing_from_eff_(true),
       vary_eff_(false),
       min_npu_(0),
       max_npu_(255)
@@ -120,6 +122,18 @@ struct ConstructDvvcParameters {
   void print() const {
     printf("ibkg_begin-end = %d-%d, is_mc = %d, only_10pc = %d, inject_signal = %d, year = %s, ntracks = %d, bquarks = %d, btags = %d, vary_dphi = %d, clearing_from_eff = %d, vary_eff = %d, min_npu = %d, max_npu = %d", ibkg_begin(), ibkg_end(), is_mc(), only_10pc(), inject_signal(), year_.c_str(), ntracks(), bquarks(), btags(), vary_dphi(), clearing_from_eff(), vary_eff(), min_npu(), max_npu());
   }
+
+  float extra_eff_2d(float dvv) {
+    if (dvv < 0.06) return 0.60;
+    if (dvv > 0.15) return 0.86;
+    else return (0.60 + 2.9*(dvv-0.06));
+  }
+  float extra_eff_3d(float dvv) {
+    if (dvv < 0.05) return 0.50;
+    if (dvv > 0.15) return 0.86;
+    else return (0.50 + 3.6*(dvv-0.05));
+  }
+
 };
 
 void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
@@ -128,7 +142,7 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
 
   const char* file_path; //which filepath?
   if (p.is_mc()) {
-    file_path = "/uscms_data/d3/shogan/crab_dirs/MiniTreeULV4_trig_Bm_BjetAgnostic_P1p00";
+    file_path = "/uscms_data/d3/shogan/crab_dirs/MiniTreeULV11Bm";
   } else if (p.only_10pc()) {
     file_path = "/uscms_data/d2/tucker/crab_dirs/MiniTreeV27m";
   } else {
@@ -145,52 +159,51 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   // close to, but not necessarily 100% of ntuples). When it comes time to do the
   // final studies, we'll need to make sure ALL ntuples/minitrees finish, and then
   // update some of the weights
-  samples[0]  = "mfv_neu_tau001000um_M0800_2017";  weights[0]  = 0.00083;
+  samples[0]  = "mfv_stopdbardbar_tau001000um_M0300_2017";  weights[0]  = 0.00083;
   samples[1]  = "qcdht0300_2017";                  weights[1]  = 290.26;
   samples[2]  = "qcdht0500_2017";                  weights[2]  = 24.29;
   samples[3]  = "qcdht0700_2017";                  weights[3]  = 6.55;
   samples[4]  = "qcdht1000_2017";                  weights[4]  = 3.86;
   samples[5]  = "qcdht1500_2017";                  weights[5]  = 0.42;
   samples[6]  = "ttbar_2017";                      weights[6]  = 0.54;
-  samples[7]  = "qcdht0200_2018";                  weights[7]  = 1710.53;
-  samples[8]  = "qcdht0300_2018";                  weights[8]  = 381.08;
-  samples[9]  = "qcdht0500_2018";                  weights[9]  = 33.30;
-  samples[10] = "qcdht0700_2018";                  weights[10] = 9.11;
-  samples[11] = "qcdht1000_2018";                  weights[11] = 5.00;
-  samples[12] = "qcdht1500_2018";                  weights[12] = 0.62;
-  samples[13] = "qcdht2000_2018";                  weights[13] = 0.26;
-  samples[14] = "ttbar_2018";                      weights[14] = 0.18;
-  samples[15] = "mfv_neu_tau001000um_M0400_2018";  weights[15] = 0.00119;
-  samples[16] = "JetHT2017B";                      weights[16] = 1;
-  samples[17] = "JetHT2017C";                      weights[17] = 1;
-  samples[18] = "JetHT2017D";                      weights[18] = 1;
-  samples[19] = "JetHT2017E";                      weights[19] = 1;
-  samples[20] = "JetHT2017F";                      weights[20] = 1;
-  samples[21] = "JetHT2018A";                      weights[21] = 1;
-  samples[22] = "JetHT2018B";                      weights[22] = 1;
-  samples[23] = "JetHT2018C";                      weights[23] = 1;
-  samples[24] = "JetHT2018D";                      weights[24] = 1;
+  samples[7]  = "qcdht0300_2018";                  weights[7]  = 381.08;
+  samples[8]  = "qcdht0500_2018";                  weights[8]  = 33.30;
+  samples[9] = "qcdht0700_2018";                   weights[9] = 9.11;
+  samples[10] = "qcdht1000_2018";                  weights[10] = 5.00;
+  samples[11] = "qcdht1500_2018";                  weights[11] = 0.62;
+  samples[12] = "qcdht2000_2018";                  weights[12] = 0.26;
+  samples[13] = "ttbar_2018";                      weights[13] = 0.18;
+  samples[14] = "mfv_dbardbar_tau001000um_M0400_2018";  weights[14] = 0.00119;
+  samples[15] = "JetHT2017B";                      weights[15] = 1;
+  samples[16] = "JetHT2017C";                      weights[16] = 1;
+  samples[17] = "JetHT2017D";                      weights[17] = 1;
+  samples[18] = "JetHT2017E";                      weights[18] = 1;
+  samples[19] = "JetHT2017F";                      weights[19] = 1;
+  samples[20] = "JetHT2018A";                      weights[20] = 1;
+  samples[21] = "JetHT2018B";                      weights[21] = 1;
+  samples[22] = "JetHT2018C";                      weights[22] = 1;
+  samples[23] = "JetHT2018D";                      weights[23] = 1;
 
   int ibkg_begin; int ibkg_end;
   if (p.is_mc()) {
     if (p.year() == "2017")         { ibkg_begin =  1; ibkg_end =  6; if (p.inject_signal()) ibkg_begin = 0; }
-    else if (p.year() == "2018")    { ibkg_begin =  7; ibkg_end = 14; if (p.inject_signal()) ibkg_end = 15; }
-    else if (p.year() == "2017p8")  { ibkg_begin =  1; ibkg_end = 14; if (p.inject_signal()) {ibkg_begin = 0; ibkg_end = 15;} }
+    else if (p.year() == "2018")    { ibkg_begin =  8; ibkg_end = 13; if (p.inject_signal()) ibkg_end = 14; }
+    else if (p.year() == "2017p8")  { ibkg_begin =  1; ibkg_end = 13; if (p.inject_signal()) {ibkg_begin = 0; ibkg_end = 14;} }
     else { fprintf(stderr, "bad year"); exit(1); }
   } 
   else {
-    if (p.year() == "2017")         { ibkg_begin = 16; ibkg_end = 20; }
-    else if (p.year() == "2018")    { ibkg_begin = 21; ibkg_end = 24; }
-    else if (p.year() == "2017p8")  { ibkg_begin = 16; ibkg_end = 24; }
-    else if (p.year() == "2017B")   { ibkg_begin = 16; ibkg_end = 16; }
-    else if (p.year() == "2017C")   { ibkg_begin = 17; ibkg_end = 17; }
-    else if (p.year() == "2017D")   { ibkg_begin = 18; ibkg_end = 18; }
-    else if (p.year() == "2017E")   { ibkg_begin = 19; ibkg_end = 19; }
-    else if (p.year() == "2017F")   { ibkg_begin = 20; ibkg_end = 20; }
-    else if (p.year() == "2018A")   { ibkg_begin = 21; ibkg_end = 21; }
-    else if (p.year() == "2018B")   { ibkg_begin = 22; ibkg_end = 22; }
-    else if (p.year() == "2018C")   { ibkg_begin = 23; ibkg_end = 23; } 
-    else if (p.year() == "2018D")   { ibkg_begin = 24; ibkg_end = 24; }
+    if (p.year() == "2017")         { ibkg_begin = 15; ibkg_end = 19; }
+    else if (p.year() == "2018")    { ibkg_begin = 20; ibkg_end = 23; }
+    else if (p.year() == "2017p8")  { ibkg_begin = 15; ibkg_end = 23; }
+    else if (p.year() == "2017B")   { ibkg_begin = 15; ibkg_end = 15; }
+    else if (p.year() == "2017C")   { ibkg_begin = 16; ibkg_end = 16; }
+    else if (p.year() == "2017D")   { ibkg_begin = 17; ibkg_end = 17; }
+    else if (p.year() == "2017E")   { ibkg_begin = 18; ibkg_end = 18; }
+    else if (p.year() == "2017F")   { ibkg_begin = 19; ibkg_end = 19; }
+    else if (p.year() == "2018A")   { ibkg_begin = 20; ibkg_end = 20; }
+    else if (p.year() == "2018B")   { ibkg_begin = 21; ibkg_end = 21; }
+    else if (p.year() == "2018C")   { ibkg_begin = 22; ibkg_end = 22; } 
+    else if (p.year() == "2018D")   { ibkg_begin = 23; ibkg_end = 23; }
     else { fprintf(stderr, "bad year"); exit(1); }
   }
 
@@ -231,11 +244,17 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
 
   const char* vpeffs_version; //efficiency input
   if (p.only_10pc()) {
-    vpeffs_version = "ULV1Bm";
+    vpeffs_version = "ULV11Bm";
   } else {
-    vpeffs_version = "ULV1Bm";
+    vpeffs_version = "ULV11Bm";
   }
-  TString eff_file_name = TString::Format("vpeffs%s_%s_%s%s.root", p.is_mc() ? "" : "_data", p.year().c_str(), vpeffs_version, p.vary_eff() ? "_ntkseeds" : "");
+  //TString eff_file_name_2d = TString::Format("vpeffs%s_%s_%s%s.root", p.is_mc() ? "" : "_data", p.year().c_str(), vpeffs_version, p.vary_eff() ? "_ntkseeds" : "");
+  //TString eff_file_name_2d = TString::Format("vpeffs%s_%s_%s%s.root", p.is_mc() ? "" : "_data", p.year().c_str(), vpeffs_version, p.vary_eff() ? "_ntkseeds" : "");
+  TString eff_file_name_2d = TString::Format("vpeffs_2d%s.root", p.vary_eff() ? "_ntkseeds" : "");
+  TString eff_file_name_3d = TString::Format("vpeffs_3d%s.root", p.vary_eff() ? "_ntkseeds" : "");
+  TString jet_angle_fname = TString::Format("background_lw_2017.root");
+  //TString jet_angle_hname = TString::Format("h_jet_pairdalpha");
+  //TString angle_dir_name  = TString::Format("mfvEventHistosNoCuts");
 
   const char* eff_hist = "maxtk3";
   if (p.vary_eff()) {
@@ -251,8 +270,12 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   //fill only-one-vertex dBV distribution
   TH1D* h_1v_dbv = new TH1D("h_1v_dbv", "only-one-vertex events;d_{BV} (cm);events", 1250, 0, 2.5);
   TH2D* h_1v_xy  = new TH2D("h_1v_xy", "only-one-vertex events;x0 (cm);y0 (cm)", 250, -1.0, 1.0, 250, -1.0, 1.0);
-  TH1D* h_1v_dbv0 = new TH1D("h_1v_dbv0", "only-one-vertex events;d_{BV}^{0} (cm);events", 1250, 0, 2.5);
-  TH1D* h_1v_dbv1 = new TH1D("h_1v_dbv1", "only-one-vertex events;d_{BV}^{1} (cm);events", 1250, 0, 2.5);
+  TH1D* h_1v_dbv0 = new TH1D("h_1v_dbv0", "only-one-vertex events;d_{BV}^{0} (cm);events", 1000, 0, 2.0);
+  TH1D* h_1v_dbv1 = new TH1D("h_1v_dbv1", "only-one-vertex events;d_{BV}^{1} (cm);events", 1000, 0, 2.0);
+  TH1D* h_1v_rhobv0 = new TH1D("h_1v_rhobv0", "only-one-vertex events;#rho_{BV}^{0} (cm);events", 1000, 0, 8.0);
+  TH1D* h_1v_rhobv1 = new TH1D("h_1v_rhobv1", "only-one-vertex events;#rho_{BV}^{1} (cm);events", 1000, 0, 8.0);
+  TH2D* h_1v_dbv_dz = new TH2D("h_1v_dbv_dz", "only-one-vertex events;d_{BV} (cm); d_{z} (cm)", 1000, 0, 2.0, 1000, 0, 2.0);
+  TH2D* h_1v_dbv0_rhobv0 = new TH2D("h_1v_dbv0_rhobv0", "only-one-vertex events;d_{BV}^{0} (cm);#rho_{BV}^{1} (cm)", 500, 0, 2.0, 500, 0, 2.0);
   TH1F* h_1v_phiv = new TH1F("h_1v_phiv", "only-one-vertex events;vertex #phi;events", 50, -3.15, 3.15);
   TH1D* h_1v_npu = new TH1D("h_1v_npu", "only-one-vertex events;# PU interactions;events", 100, 0, 100);
   TH1F* h_1v_njets = new TH1F("h_1v_njets", "only-one-vertex events;number of jets;events", 20, 0, 20);
@@ -313,14 +336,40 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
       if (nt.npu < p.min_npu() || nt.npu > p.max_npu()) continue;
       const float w = weights[i] * nt.weight;
       if (nt.nvtx == 1) {
-        h_1v_dbv->Fill(sqrt(nt.x0*nt.x0 + nt.y0*nt.y0), w);
+        float temp_dbv      = sqrt(nt.x0*nt.x0 + nt.y0*nt.y0);
+        //float temp_dbv      = sqrt((nt.x0-nt.bsx)*(nt.x0-nt.bsx) + (nt.y0-nt.bsy)*(nt.y0-nt.bsy));
+        float temp_dbv_pv   = sqrt((nt.x0-nt.pvx)*(nt.x0-nt.pvx) + (nt.y0-nt.pvy)*(nt.y0-nt.pvy));
+        float temp_rhobv    = sqrt((nt.x0-nt.bsx)*(nt.x0-nt.bsx) + (nt.y0-nt.bsy)*(nt.y0-nt.bsy) + (nt.z0-nt.bsz)*(nt.z0-nt.bsz));
+        float temp_rhobv_pv = sqrt((nt.x0-nt.pvx)*(nt.x0-nt.pvx) + (nt.y0-nt.pvy)*(nt.y0-nt.pvy) + (nt.z0-nt.pvz)*(nt.z0-nt.pvz));
+        float temp_dz_pv    = nt.z0-nt.pvz;
+
+        h_1v_dbv->Fill(temp_dbv, w);
         h_1v_xy->Fill(nt.x0, nt.y0, w);
-        if (nt.ntk0 >= min_ntracks0 && nt.ntk0 <= max_ntracks0) h_1v_dbv0->Fill(sqrt(nt.x0*nt.x0 + nt.y0*nt.y0), w);
-        if (nt.ntk0 >= min_ntracks1 && nt.ntk0 <= max_ntracks1) h_1v_dbv1->Fill(sqrt(nt.x0*nt.x0 + nt.y0*nt.y0), w);
-        h_1v_phiv->Fill(atan2(nt.y0,nt.x0), w);
-        h_1v_npu->Fill(nt.npu, w);
-        h_1v_njets->Fill(nt.njets, w);
-        h_1v_ht40->Fill(nt.ht(40.), w);
+
+        //printf("\n BS position:    x: %.3f   y: %.3f   z: %.3f   \n", nt.bsx, nt.bsy, nt.bsz);
+        //printf(  " PV position:    x: %.3f   y: %.3f   z: %.3f   \n", nt.pvx, nt.pvy, nt.pvz);
+        //printf(  "vtx position:    x: %.3f   y: %.3f   z: %.3f   \n", nt.x0, nt.y0, nt.z0);
+        //printf(  "---------------------------------------------------------\n");
+        //printf(  "2D dist(beamspot): %.3f      2D dist(PV): %.3f \n", temp_dbv, temp_dbv_pv);
+        //printf(  "3D dist(beamspot): %.3f      3D dist(PV): %.3f \n", temp_rhobv, temp_rhobv_pv);
+        
+        bool skip_hw = (temp_dbv > 0.32 && temp_dbv < 0.34) || (temp_dbv > 0.550 && temp_dbv < 0.555);
+        if (not skip_hw) {
+          if (nt.ntk0 >= min_ntracks0 && nt.ntk0 <= max_ntracks0) h_1v_dbv0->Fill(temp_dbv_pv, w);
+          if (nt.ntk0 >= min_ntracks1 && nt.ntk0 <= max_ntracks1) h_1v_dbv1->Fill(temp_dbv_pv, w);
+          if (nt.ntk0 >= min_ntracks0 && nt.ntk0 <= max_ntracks0) h_1v_dbv_dz->Fill(temp_dbv, temp_dz_pv, w);
+          //if (not ((temp_rhobv > 0.37 and temp_rhobv < 0.40) or (temp_rhobv > 2))) {
+          //    if (nt.ntk0 >= min_ntracks0 && nt.ntk0 <= max_ntracks0) h_1v_rhobv0->Fill(temp_rhobv_pv, w);
+          //    if (nt.ntk0 >= min_ntracks1 && nt.ntk0 <= max_ntracks1) h_1v_rhobv1->Fill(temp_rhobv_pv, w);
+          //}
+          if (nt.ntk0 >= min_ntracks0 && nt.ntk0 <= max_ntracks0) h_1v_rhobv0->Fill(temp_rhobv_pv, w);
+          if (nt.ntk0 >= min_ntracks1 && nt.ntk0 <= max_ntracks1) h_1v_rhobv1->Fill(temp_rhobv_pv, w);
+          h_1v_dbv0_rhobv0->Fill(temp_dbv_pv, temp_rhobv_pv, w);
+          h_1v_phiv->Fill(atan2(nt.y0,nt.x0), w);
+          h_1v_npu->Fill(nt.npu, w);
+          h_1v_njets->Fill(nt.njets, w);
+          h_1v_ht40->Fill(nt.ht(40.), w);
+        }
         double dphijvmin = M_PI;
         for (int k = 0; k < nt.njets; ++k) {
           h_1v_phij->Fill(nt.jet_phi[k], w);
@@ -364,14 +413,38 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
         h->SetBinContent(ibin, 0);
       }
 
+  // check for negative bins in rhobv histograms that we throw from below--JMTBAD set zero, only wrong ~by a little
+  for (TH1* h : { h_1v_rhobv0, h_1v_rhobv1})
+    for (int ibin = 0; ibin <= h->GetNbinsX()+1; ++ibin)
+      if (h->GetBinContent(ibin) < 0) {
+        printf("\e[1;31mdbv histogram %s has negative content %f in bin %i\e[0m\n", h->GetName(), h->GetBinContent(ibin), ibin);
+        h->SetBinContent(ibin, 0);
+      }
+
+  // check for negative bins in rhobv histograms that we throw from below--JMTBAD set zero, only wrong ~by a little
+  for (TH2* h : {h_1v_dbv_dz} ) {
+    for (int ibin = 0; ibin <= h->GetNbinsX()+1; ++ibin) {
+      for (int jbin = 0; jbin <= h->GetNbinsY()+1; ++jbin) {
+        if (h->GetBinContent(ibin, jbin) < 0) {
+          printf("\e[1;31mdbv histogram %s has negative content %f in bin %i, %i \e[0m\n", h->GetName(), h->GetBinContent(ibin, jbin), ibin, jbin);
+          h->SetBinContent(ibin, jbin, 0);
+        }
+      }
+    }
+  }
+
+
+
   //construct dvvc
   TH1F* h_c1v_dbv = new TH1F("h_c1v_dbv", "constructed from only-one-vertex events;d_{BV} (cm);vertices", 1250, 0, 2.5);
+  TH1F* h_c1v_rhobv = new TH1F("h_c1v_rhobv", "constructed from only-one-vertex events;#rho_{BV} (cm);vertices", 1000, 0, 8.0);
   TH1F* h_c1v_dvv = new TH1F("h_c1v_dvv", "constructed from only-one-vertex events;d_{VV} (cm);events", 500, 0, 2.);
-  TH1F* h_c1v_sumdbv = new TH1F("h_c1v_sumdbv", "constructed from only-one-vertex events;#Sigma(d_{BV}) (cm);events", 500, 0, 2.);
+  TH1F* h_c1v_sumdbv = new TH1F("h_c1v_sumdbv", "constructed from only-one-vertex events;#Sigma(d_{BV}) (cm);events", 100, 0, 1.);
   TH1F* h_c1v_absdphivv = new TH1F("h_c1v_absdphivv", "constructed from only-one-vertex events;|#Delta#phi_{VV}|;events", 5, 0, 3.15);
   TH1F* h_c1v_dbv0 = new TH1F("h_c1v_dbv0", "constructed from only-one-vertex events;d_{BV}^{0} (cm);events", 1250, 0, 2.5);
   TH1F* h_c1v_dbv1 = new TH1F("h_c1v_dbv1", "constructed from only-one-vertex events;d_{BV}^{1} (cm);events", 1250, 0, 2.5);
   TH2F* h_c1v_dbv1_dbv0 = new TH2F("h_c1v_dbv1_dbv0", "constructed from only-one-vertex events;d_{BV}^{0} (cm);d_{BV}^{1} (cm)", 1250, 0, 2.5, 1250, 0, 2.5);
+
 
   TF1* f_dphi = new TF1("f_dphi", "(abs(x)-[0])**[1] + [2]", 0, M_PI);
   f_dphi->SetParameters(dphi_pdf_c, dphi_pdf_e, dphi_pdf_a);
@@ -384,13 +457,28 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
     i_dphi2 = new TF1("i_dphi2", "x/3.14159", 0, M_PI);
   }
 
-  TH1F* h_eff = 0;
+  TFile* jet_angle_file = TFile::Open(jet_angle_fname);
+  //TH1F* h_alpha = 0;
+  //h_alpha = (TH1F*)(jet_angle_file->Get("mfvEventHistosNoCuts/h_jet_pairdalpha"));
+  TH3F* h_angle = 0;
+  h_angle = (TH3F*)(jet_angle_file->Get("mfvEventHistosNoCuts/h_jet_th0_th1_pairdphi"));
+
+  TH1F* h_eff_2d = 0;
   if (p.clearing_from_eff()) {
-    TFile* eff_file = TFile::Open(eff_file_name);
+    TFile* eff_file = TFile::Open(eff_file_name_2d);
     if (!eff_file || !eff_file->IsOpen()) { fprintf(stderr, "bad file"); exit(1); }
-    h_eff = (TH1F*)eff_file->Get(eff_hist);
-    h_eff->SetBinContent(h_eff->GetNbinsX()+1, h_eff->GetBinContent(h_eff->GetNbinsX()));
+    h_eff_2d = (TH1F*)eff_file->Get(eff_hist);
+    h_eff_2d->SetBinContent(h_eff_2d->GetNbinsX()+1, h_eff_2d->GetBinContent(h_eff_2d->GetNbinsX()));
   }
+
+  TH1F* h_eff_3d = 0;
+  if (p.clearing_from_eff()) {
+    TFile* eff_file = TFile::Open(eff_file_name_3d);
+    if (!eff_file || !eff_file->IsOpen()) { fprintf(stderr, "bad file"); exit(1); }
+    h_eff_3d = (TH1F*)eff_file->Get(eff_hist);
+    h_eff_3d->SetBinContent(h_eff_3d->GetNbinsX()+1, h_eff_3d->GetBinContent(h_eff_3d->GetNbinsX()));
+  }
+
 
   int bin1 = 0;
   int bin2 = 0;
@@ -406,15 +494,31 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   printf("sampling %i times (should be %i)\n", nsamples, 20*int(h_1v_dbv->Integral()));
   double events_after_eff = 0;
   for (int ij = 0; ij < nsamples; ++ij) {
-    double dbv0 = h_1v_dbv0->GetRandom();
-    double dbv1 = h_1v_dbv1->GetRandom();
+    double dbv0;
+    double dbv1;
+    double dz0;
+    double dz1;
+    double rhobv0 = h_1v_rhobv0->GetRandom();
+    double rhobv1 = h_1v_rhobv1->GetRandom();
+
+    h_1v_dbv_dz->GetRandom2(dbv0, dz0);
+    h_1v_dbv_dz->GetRandom2(dbv1, dz1);
+
     h_c1v_dbv->Fill(dbv0);
     h_c1v_dbv->Fill(dbv1);
+    h_c1v_rhobv->Fill(rhobv0);
+    h_c1v_rhobv->Fill(rhobv1);
 
-    double dphi = f_dphi->GetRandom();
+    double dphi   = f_dphi->GetRandom();
+    double th0, th1, dazi;
+    h_angle->GetRandom3(th0, th1, dazi);
+    double dtheta = fabs(th0 - th1);
 
     double dvvc   = sqrt(dbv0*dbv0 + dbv1*dbv1 - 2*dbv0*dbv1*cos(dphi));
     double sumdbv = dbv0 + dbv1;
+    //double rhovvc = sqrt(dbv0*dbv0 + dbv1*dbv1 - 2*dbv0*dbv1*(cos(dtheta)+(sin(th0)*sin(th1)*(cos(dazi)-1))));
+    double rhovvc = sqrt(dvvc*dvvc + (dz0-dz1)*(dz0-dz1));
+    double sumdbv_new = dbv0 + dbv1;
 
     if (p.vary_dphi()) {
       double dphi2 = i_dphi2->GetX(i_dphi->Eval(dphi), 0, M_PI);
@@ -432,14 +536,39 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
       dvvc = dvvc2;
     }
 
-    double prob = 1;
+    double prob  = 1;
+    double prob2 = 1;
+    double prob3 = 1;
+    double phyb  = 1;
+    bool try_hybrid = false;
     if (p.clearing_from_eff()) {
-      prob = h_eff->GetBinContent(h_eff->FindBin(sumdbv));
+      prob2 = h_eff_2d->GetBinContent(h_eff_2d->FindBin(dvvc));
+      prob3 = h_eff_3d->GetBinContent(h_eff_3d->FindBin(try_hybrid ? dvvc : rhovvc));
+      //std::cout << "prob2: " << prob2 << "    prob3: " << prob3 << std::endl;
+    }
+
+    bool use_3d_efficiencies = true;
+
+    if (use_3d_efficiencies) {
+        if (p.clearing_from_eff()) {
+            prob = prob3 * p.extra_eff_3d(rhovvc);
+        }
+        sumdbv = sumdbv_new;
+        //std::cout << "prob3: " << prob3 << "   prob: " << prob << "   rhovvc: " << rhovvc << std::endl;
+    }
+
+    else if (p.clearing_from_eff()) {
+        prob = prob2 * p.extra_eff_2d(dvvc);
+        phyb = prob3 * p.extra_eff_3d(dvvc);
+    }
+
+    if (try_hybrid) {
+        prob = phyb;
     }
 
     if (dvvc > dvv_nbins * dvv_bin_width - 0.5*dvv_bin_width) dvvc = dvv_nbins * dvv_bin_width - 0.5*dvv_bin_width;
     h_c1v_dvv->Fill(dvvc, prob);
-    h_c1v_sumdbv->Fill(dbv0 + dbv1, prob);
+    h_c1v_sumdbv->Fill(sumdbv, prob);
     h_c1v_absdphivv->Fill(fabs(dphi), prob);
     h_c1v_dbv0->Fill(dbv0, prob);
     h_c1v_dbv1->Fill(dbv1, prob);
@@ -471,6 +600,9 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   h_1v_xy->Write();
   h_1v_dbv0->Write();
   h_1v_dbv1->Write();
+  h_1v_rhobv0->Write();
+  h_1v_rhobv1->Write();
+  h_1v_dbv_dz->Write();
   h_1v_phiv->Write();
   h_1v_npu->Write();
   h_1v_njets->Write();
@@ -489,6 +621,7 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   h_2v_npu->Write();
 
   h_c1v_dbv->Write();
+  h_c1v_rhobv->Write();
   h_c1v_dvv->Scale(1./h_c1v_dvv->Integral());
   h_c1v_dvv->Write();
   h_c1v_sumdbv->Scale(1./h_c1v_sumdbv->Integral());
@@ -519,6 +652,28 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   c_dvv->SetTicky();
   c_dvv->Write();
 
+  TCanvas* c_sumdbv = new TCanvas("c_sumdbv", "c_sumdbv", 700, 700);
+  TLegend* l_sumdbv = new TLegend(0.35,0.75,0.85,0.85);
+  h_2v_sumdbv->SetTitle(";#Sigmad_{BV} (cm);events");
+  h_2v_sumdbv->SetLineColor(kBlue);
+  h_2v_sumdbv->SetLineWidth(3);
+  h_2v_sumdbv->Scale(1./h_2v_sumdbv->Integral());
+  h_2v_sumdbv->SetStats(0);
+  h_2v_sumdbv->Draw();
+  l_sumdbv->AddEntry(h_2v_sumdbv, "two-vertex events");
+  h_c1v_sumdbv->SetLineColor(kRed);
+  h_c1v_sumdbv->SetLineWidth(3);
+  h_c1v_sumdbv->Scale(1./h_c1v_sumdbv->Integral());
+  h_c1v_sumdbv->SetStats(0);
+  h_c1v_sumdbv->Draw("sames");
+  l_sumdbv->AddEntry(h_c1v_sumdbv, "constructed from only-one-vertex events");
+  l_sumdbv->SetFillColor(0);
+  l_sumdbv->Draw();
+  c_sumdbv->SetTickx();
+  c_sumdbv->SetTicky();
+  c_sumdbv->Write();
+
+
   TCanvas* c_absdphivv = new TCanvas("c_absdphivv", "c_absdphivv", 700, 700);
   TLegend* l_absdphivv = new TLegend(0.25,0.75,0.75,0.85);
   h_2v_absdphivv->SetTitle(";|#Delta#phi_{VV}|;events");
@@ -542,8 +697,10 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
 
   f_dphi->Write();
   if (p.clearing_from_eff()) {
-    h_eff->SetName("h_eff");
-    h_eff->Write();
+    h_eff_2d->SetName("h_eff_2d");
+    h_eff_2d->Write();
+    h_eff_3d->SetName("h_eff_3d");
+    h_eff_3d->Write();
   }
   if (p.vary_dphi()) {
     i_dphi->Write();
@@ -556,6 +713,9 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   delete h_1v_xy;
   delete h_1v_dbv0;
   delete h_1v_dbv1;
+  delete h_1v_rhobv0;
+  delete h_1v_rhobv1;
+  delete h_1v_dbv_dz;
   delete h_1v_phiv;
   delete h_1v_npu;
   delete h_1v_njets;
@@ -573,8 +733,10 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   delete h_2v_absdphivv;
   delete h_2v_npu;
   delete c_dvv;
+  delete c_sumdbv;
   delete c_absdphivv;
   delete h_c1v_dbv;
+  delete h_c1v_rhobv;
   delete h_c1v_dvv;
   delete h_c1v_sumdbv;
   delete h_c1v_absdphivv;
