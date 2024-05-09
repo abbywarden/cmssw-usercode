@@ -15,35 +15,15 @@ def shiftTOC(num, den, sint, fr):
         s_num.SetBinContent(b, fr*num.GetBinContent(b+sint) + (1-fr)*num.GetBinContent(b+1+sint))
         s_num.SetBinError(b, np.hypot(fr*num.GetBinError(b+sint), (1-fr)*num.GetBinError(b+1+sint)))
 
-        #print(" Before : den"+str(int(b))+ " " + str(den.GetBinContent(b)))
         s_den.SetBinContent(b, fr*den.GetBinContent(b+sint) + (1-fr)*den.GetBinContent(b+1+sint))
-        #print(" After : den"+str(int(b))+ " " + str(s_den.GetBinContent(b)))
         s_den.SetBinError(b, np.hypot(fr*den.GetBinError(b+sint), (1-fr)*den.GetBinError(b+1+sint)))
 
     s_num.Divide(s_den)
     return s_num
 
-def shiftTOC_alt(curve, sint, fr):
-    s_curve = ROOT.TH1D("shifted_curve", "", 80, 0, 80)
-    fout = ROOT.TFile("shifttoc.root", "recreate")
-    fr = 1.0-fr
-
-    for b in range(0,80):
-        s_curve.SetBinContent(b, fr*curve.GetBinContent(b+sint) + (1-fr)*curve.GetBinContent(b+1+sint))
-        s_curve.SetBinError(b, np.hypot(fr*curve.GetBinError(b+sint), (1-fr)*curve.GetBinError(b+1+sint)))
-
-        #print(" Before : den"+str(int(b))+ " " + str(curve.GetBinContent(b)))
-        s_curve.SetBinContent(b, fr*curve.GetBinContent(b+sint) + (1-fr)*curve.GetBinContent(b+1+sint))
-        #print(" After : den"+str(int(b))+ " " + str(s_curve.GetBinContent(b)))
-        s_curve.SetBinError(b, np.hypot(fr*curve.GetBinError(b+sint), (1-fr)*curve.GetBinError(b+1+sint)))
-    s_curve.Write()
-    return s_curve
-
 def scaledTOC(sig_curve, data_curve, sim_curve):
     s_curve = ROOT.TH1D("scaled_curve", "", 80, 0, 80)
     fout = ROOT.TFile("scaledtoc.root", "recreate")
-    #data_curve.Divide(sim_curve) 
-    #sig_curve.Multiply(data_curve)
     for b in range(0,80):
         if (sim_curve.GetBinContent(b) > 0):
             s_curve.SetBinContent(b, sig_curve.GetBinContent(b)*data_curve.GetBinContent(b)/sim_curve.GetBinContent(b))
@@ -56,8 +36,6 @@ def cutZero(original, name):
     for b in range(0,80):
         curve.SetBinContent(1, 0)
         curve.SetBinError(1, 0)
-        curve.SetBinContent(2, 0)
-        curve.SetBinError(2, 0)
     return curve
 
 #############################################################################################
@@ -78,9 +56,10 @@ def shiftDIST(den, sint, fr):
 def assessMCToDataUncerts(slide_uncerts, scale_uncerts, toc_uncerts, tkscl_uncerts, mc_unc, stat_unc):
 
     sys_dist_val = max(abs(slide_uncerts), abs(scale_uncerts))
-    total = np.sqrt (sys_dist_val**2 + toc_uncerts**2 + 10.0**2 + stat_unc**2)
+    #print("slide n scale distr", slide_uncerts, scale_uncerts)
+    total = np.sqrt (sys_dist_val**2 + toc_uncerts**2 + 0.0**2 + stat_unc**2)
 
-    print( " 1-vtx Unc. by SF_{nclsedtks,non} : %.3f (sys_distr) +/- %.3f (sys_scale_toc) +/- %.3f (sig_stat) +/- %.3f (sys_reweight) (+/- %.3f (sys_tkrescl)?) : %.3f %% " % (sys_dist_val, toc_uncerts, stat_unc, 10.0, tkscl_uncerts, total) )
+    print( " 1-vtx Unc. by SF_{nclsedtks,non} : %.3f (sys_distr) +/- %.3f (sys_scale_toc) +/- %.3f (sig_stat) +/- %.3f (sys_reweight) (+/- %.3f (sys_tkrescl)?) : %.3f %% " % (sys_dist_val, toc_uncerts, stat_unc, 0.0, tkscl_uncerts, total) )
 
     return total
 
@@ -111,11 +90,8 @@ reweight = True
 #shift_fr  = 0.0   # How much to slide the closeseedtk dist by (decimal part)
 #shift_val = 0     # How much to slide the closeseedtk dist by (integer part)
 
-
-masses = ['55',]
-#masses = ['0800']
-ctaus       = ['1000']#,'3','30']
-#psd_methods = ['vary_distr', 'vary_toc', 'vary_tkrescale', 'vary_reweight'] 
+masses = ['15','40','55']
+ctaus       = ['1000','3000','30000'] 
 psd_methods = ['none', 'slide_distr', 'scale_distr', 'scale_toc', 'trackrescl']
 
 """
@@ -152,54 +128,48 @@ for mass in masses:
                 dat_str = ''
 
                 if not reweight:
-                    #sim_str = '../combined_extrastats_multijet/bg' + year + '_' + ctau + 'um_merged.root'
-                    sim_str = "~/nobackup/crabdirs/TrackMoverJetByJetHistsOnnormdzulv30lepmumv6_20_tau%06ium_noCorrection/background_leptonpresel_%i.root" % (int(ctau), int(year))
-                    dat_str = "~/nobackup/crabdirs/TrackMoverJetByJetHistsOnnormdzulv30lepmumv6_20_tau%06ium_noCorrection/SingleMuon%i.root" % (int(ctau), int(year))
+                    sim_str = "~/nobackup/crabdirs/TrackMoverNoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv7_20_tau%06ium_noCorrection/background_leptonpresel_%i.root" % (int(ctau), int(year))
+                    dat_str = "~/nobackup/crabdirs/TrackMoverNoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv7_20_tau%06ium_noCorrection/SingleMuon%i.root" % (int(ctau), int(year))
                 else:
-                    sim_str = "~/nobackup/crabdirs/TrackMoverRelaxPreSel3JetByJetHistsOnnormdzulv30lepmumv6_20_tau%06ium_M%i_2Djetdrjet1sump1Dmovedist3Correction/background_leptonpresel_%i.root" % (int(ctau), int(mass), int(year))
-                    dat_str = "~/nobackup/crabdirs/TrackMoverRelaxPreSel3JetByJetHistsOnnormdzulv30lepmumv6_20_tau%06ium_M%i_2Djetdrjet1sump1Dmovedist3Correction/SingleMuon%i.root" % (int(ctau), int(mass), int(year))
+                    sim_str = "~/nobackup/crabdirs/TrackMoverNoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv7_20_tau%06ium_M%i_2Dmovedist3movedist2jetdrjet1sumpCorrection/background_leptonpresel_%i.root" % (int(ctau), int(mass), int(year))
+                    dat_str = "~/nobackup/crabdirs/TrackMoverNoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv7_20_tau%06ium_M%i_2Dmovedist3movedist2jetdrjet1sumpCorrection/SingleMuon%i.root" % (int(ctau), int(mass), int(year))
 
                 tm_sim  = ROOT.TFile(sim_str)
                 tm_dat  = ROOT.TFile(dat_str)
-                signal  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruthRelaxPreSel3VetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/WplusHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
-                signal_jetht  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruthRelaxPreSel3VetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/WplusHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
-                signal_non  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruthRelaxPreSel3VetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/WplusHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                signal  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijets_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/WplusHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                signal_jetht  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijets_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/WplusHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                if mass == '15': 
+                    signal_non  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijets_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVV0p5JetByMiniJetHistsOnnormdzUlv30lepmumv6/WplusHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                elif mass == '40':
+                    signal_non  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijets_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVV0p25JetByMiniJetHistsOnnormdzUlv30lepmumv6/WplusHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                else :
+                    signal_non  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijets_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/WplusHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
                 dat_den = tm_dat.Get('all_closeseedtks_den')
-                #dat_den = cutZero(dat_den, "dat_den") 
                 sim_den = tm_sim.Get('all_closeseedtks_den')
-                #sim_den = cutZero(sim_den, "sim_den") 
                 
                 dat_num = tm_dat.Get('all_closeseedtks_num')
-                #dat_num = cutZero(dat_num, "dat_num") 
                 sim_num = tm_sim.Get('all_closeseedtks_num')
-                #sim_num = cutZero(sim_num, "sim_num") 
                 sim_curve = sim_num.Clone()
                 sim_den = sim_den.Clone()
                 
                 sig_dist = signal.Get('nocuts_closeseedtks_den')
-                #sig_dist = cutZero(sig_dist, "sig_dist") 
                 sig_jetht_dist = signal_jetht.Get('nocuts_closeseedtks_den')
-                #sig_jetht_dist = cutZero(sig_jetht_dist, "sig_dist") 
-                sim_dist = sig_dist.Clone() # FIXME tm_sim.Get('nocuts_closeseedtks_den')
+                sim_dist = sig_dist.Clone()
                 
                 sig_denom = signal.Get('all_closeseedtks_den') 
-                #sig_denom = cutZero(sig_denom, "sig_denom") 
                 sig_aaaaa = signal.Get('all_closeseedtks_num')
-                #sig_aaaaa = cutZero(sig_aaaaa, "sig_aaaaa") 
                 sig_curve = sig_aaaaa.Clone()
                 temp_sig_num = sig_curve.Clone()
                 temp_sig_den = sig_denom.Clone()
                 psd_dist = ROOT.TH1D("psd_dist", "M"+mass+"ctau"+ctau+"um", 80, 0, 80)
 
                 sig_jetht_denom = signal_jetht.Get('all_closeseedtks_den') 
-                #sig_jetht_denom = cutZero(sig_jetht_denom, "sig_denom") 
                 sig_jetht_aaaaa = signal_jetht.Get('all_closeseedtks_num')
-                #sig_jetht_aaaaa = cutZero(sig_jetht_aaaaa, "sig_aaaaa") 
                 sig_jetht_curve = sig_jetht_aaaaa.Clone()
 
 
-                sig_non_dvv_denom = signal_non.Get('all_dvv_den') 
-                sig_non_dvv_curve = signal_non.Get('all_dvv_num')
+                sig_non_dvv_denom = signal_non.Get('all_lspdist3_den') 
+                sig_non_dvv_curve = signal_non.Get('all_lspdist3_num')
                 sig_non_dvv_curve.Divide(sig_non_dvv_denom)
                 sig_non_dvv_curve_tm = sig_non_dvv_curve.Clone()
                 sig_non_dvv_denom_tm = sig_non_dvv_denom.Clone()
@@ -209,8 +179,8 @@ for mass in masses:
                 sig_non_m3d_curve_tm = sig_non_m3d_curve.Clone()
                 sig_non_m3d_denom_tm = sig_non_m3d_denom.Clone()
                 
-                sig_dvv_denom = signal.Get('all_dvv_den') 
-                sig_dvv_curve = signal.Get('all_dvv_num')
+                sig_dvv_denom = signal.Get('all_lspdist3_den') 
+                sig_dvv_curve = signal.Get('all_lspdist3_num')
                 sig_dvv_curve.Divide(sig_dvv_denom)
                 sig_dvv_curve_tm = sig_dvv_curve.Clone()
                 sig_dvv_denom_tm = sig_dvv_denom.Clone()
@@ -235,7 +205,7 @@ for mass in masses:
                 sig_non_m3d_denom.Multiply(sig_non_m3d_curve_ideal)
                 eff_non_ideal = sig_non_m3d_denom.Integral()/sig_non_m3d_denom_copy.Integral()
 
-                sig_non_m3d_curve_shift = shiftDIST(sig_non_m3d_curve_tm, 0, -0.16)
+                sig_non_m3d_curve_shift = shiftDIST(sig_non_m3d_curve_tm, 0, -0.01)
                 fout_non1 = ROOT.TFile("nonm3dcurve1.root", "recreate")
                 sig_non_m3d_curve_shift.Write()
                 fout_non1.Close()
@@ -256,7 +226,7 @@ for mass in masses:
                 sig_m3d_denom.Multiply(sig_m3d_curve_ideal)
                 eff_ideal = sig_m3d_denom.Integral()/sig_m3d_denom_copy.Integral()
                 
-                sig_m3d_curve_shift = shiftDIST(sig_m3d_curve_tm, 0, -0.16)
+                sig_m3d_curve_shift = shiftDIST(sig_m3d_curve_tm, 0, -0.01)
                 fout_1 = ROOT.TFile("m3dcurve1.root", "recreate")
                 sig_m3d_curve_shift.Write()
                 fout_1.Close()
@@ -276,14 +246,14 @@ for mass in masses:
                 sig_dvv_denom.Multiply(sig_dvv_curve_ideal)
                 eff = sig_dvv_denom.Integral()/sig_dvv_denom_copy.Integral()
                 
-                sig_dvv_curve_lefttm = shiftDIST(sig_dvv_curve_tm, 0, 0.16) #FIXME
+                sig_dvv_curve_lefttm = shiftDIST(sig_dvv_curve_tm, 3, 0.0) #FIXME
                 fout_dvvl = ROOT.TFile("dvvcurvel.root", "recreate")
                 sig_dvv_curve_lefttm.Write()
                 fout_dvvl.Close()
                 sig_dvv_denom_tm.Multiply(sig_dvv_curve_lefttm)
                 eff_tm = sig_dvv_denom_tm.Integral()/sig_dvv_denom_copy.Integral()
               
-                sig_dvv_curve_righttm = shiftDIST(sig_dvv_curve_tm2, 0, -0.16)
+                sig_dvv_curve_righttm = shiftDIST(sig_dvv_curve_tm2, -3, 0.0)
                 fout_dvvr = ROOT.TFile("dvvcurver.root", "recreate")
                 sig_dvv_curve_righttm.Write()
                 fout_dvvr.Close()
@@ -294,8 +264,6 @@ for mass in masses:
                 overlap_left_unc = abs((1.0 - (eff_tm/eff)))
                 tm_unc = 100*(1 - (eff_shift/eff_non_shift)*(eff_non_ideal/eff_ideal)) 
                 
-                #print("right", overlap_right_unc*100)
-                #print("left", overlap_left_unc*100)
                 
                 # Calculate the scale factors
                 scale_factors = dat_den.Clone()
@@ -306,13 +274,12 @@ for mass in masses:
 
                 # Fill pseudodata distribution
                 psd_dist = sig_dist.Clone()
+
                 if psd_method == 'slide_distr':
-                    dat_den_cutzero = dat_den.Clone() #cutZero(dat_den, "dat_den") 
-                    sim_den_cutzero = sim_den.Clone() #cutZero(sim_den, "sim_den") 
-                    shift_val = int(sim_den_cutzero.GetMean()-dat_den_cutzero.GetMean())
-                    shift_fr = round(sim_den_cutzero.GetMean()-dat_den_cutzero.GetMean(),3) - int(sim_den_cutzero.GetMean()-dat_den_cutzero.GetMean())
-                    #print("shift", sim_den_cutzero.GetMean()-dat_den_cutzero.GetMean())
-                    psd_dist = shiftDIST(sig_dist, shift_val, shift_fr)
+                    shift_val = int(sim_den.GetMean()-dat_den.GetMean())
+                    shift_fr = round(sim_den.GetMean()-dat_den.GetMean(),3) - int(sim_den.GetMean()-dat_den.GetMean())
+                    #print(" shift : ", shift_val + shift_fr)
+                    psd_dist = shiftDIST(psd_dist, shift_val, shift_fr) # psd_dist to sig_dist
                 if psd_method == 'scale_distr':
                     psd_dist = sig_dist.Clone()
                     psd_dist.Multiply(scale_factors)
@@ -320,7 +287,9 @@ for mass in masses:
                     psd_dist = sig_jetht_dist.Clone()
                 
                 fout = ROOT.TFile(psd_method+"_dist.root", "recreate")
-        
+                psd_dist.Write()
+                fout.Close()
+
                 # Make the TM data and TM sim turn-on curves
 
                 dat_num.Divide(dat_den)
@@ -338,13 +307,12 @@ for mass in masses:
                 psd_curve = sig_curve
                 if psd_method == 'scale_toc':
                     psd_curve = scaledTOC(sig_curve, dat_num, sim_num)
-                    #psd_curve = cutZero(psd_curve, "psd_curve") #FIXME 
                 if psd_method == 'trackrescl':
                     psd_curve = sig_jetht_curve.Clone()
                
-                #fout2 = ROOT.TFile(psd_method+"_curve.root", "recreate")
-                #psd_curve.Write()
-                #fout2.Close()
+                fout2 = ROOT.TFile(psd_method+"_curve.root", "recreate")
+                psd_curve.Write()
+                fout2.Close()
                 
                 possible_sim = sig_dist.Integral()
                 possible_simtm = sim_dist.Integral()
@@ -357,16 +325,13 @@ for mass in masses:
                 else:
                     psd_dist.Multiply(sig_curve)
 
-                #fout3 = ROOT.TFile(psd_method+"_distcurve.root", "recreate")
-                #psd_dist.Write()
-                #fout3.Close()
+                fout3 = ROOT.TFile(psd_method+"_"+mass+"_"+ctau+"_distcurve.root", "recreate")
+                psd_dist.Write()
+                fout3.Close()
 
                 pass_sim = sig_dist.Integral()
                 pass_simtm = sim_dist.Integral()
                 pass_psd = psd_dist.Integral()
-
-                print("pass sim ", pass_sim)
-                print("pass dat ", pass_psd)
 
                 psd_dist.Scale(pass_sim/pass_psd)
                 
@@ -384,7 +349,7 @@ for mass in masses:
       
                 if psd_method == 'none':
                      stat_uncerts = round (100*np.hypot(tot_err_one, tot_err_two), 3)  
-                overlap_uncerts = round (100*(max(overlap_right_unc, overlap_left_unc)), 3)  
+                overlap_uncerts = round (100*overlap_right_unc,3)  
                 mc_unc = round(100*(1-eff_sim/eff_simtm), 3) 
         print("Mass: %s   Ctau: %s  1-vtx Eff: %.3f " % (mass, ctau, 100*eff_sim))
         datsim_unc = assessMCToDataUncerts( effArray[1], effArray[2], effArray[3], effArray[4], mc_unc, stat_uncerts)

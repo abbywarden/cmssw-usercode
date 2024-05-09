@@ -7,21 +7,21 @@ void MakeWeightPlots(bool Is_bkg, const char* boson, int mg, int ctau, int year)
   TString fns;
   //This is for the previous signal samples
   //This is for the new signal samples
-  fns.Form("~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijets_NoPreSelRelaxBSPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/%sHToSSTodddd_tau%imm_M%02i_%i.root",boson,ctau/1000,mg,year);
+  fns.Form("~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijets_NoPreSelRelaxBSPVetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/%sHToSSTodddd_tau%imm_M%02i_%i.root",boson,ctau/1000,mg,year);
   TString fnb;
   // This is for 10mm->1mm ntuple
   if (Is_bkg)
-     fnb.Form("~/nobackup/crabdirs/TrackMoverNoPreSelRelaxBSPJetByJetHistsOnnormdzulv30lepmumv6_20_tau%06ium_noCorrection/wjetstolnu_2j_%i.root", ctau, year);
+     fnb.Form("~/nobackup/crabdirs/TrackMoverNoPreSelRelaxBSPNotwJetByJetHistsOnnormdzulv30lepmumv7_20_tau%06ium_noCorrection/background_leptonpresel_%i.root", ctau, year);
   else
-     fnb.Form("~/nobackup/crabdirs/TrackMoverNoPreSelRelaxBSPJetByJetHistsOnnormdzulv30lepmumv6_20_tau%06ium_noCorrection/SingleMuon%i.root", ctau, year);
+     fnb.Form("~/nobackup/crabdirs/TrackMoverNoPreSelRelaxBSPNotwJetByJetHistsOnnormdzulv30lepmumv7_20_tau%06ium_noCorrection/SingleMuon%i.root", ctau, year);
   TFile* fs = TFile::Open(fns, "read");
   TFile* fb = TFile::Open(fnb, "read");
   // This is for 10mm->1mm ntuple after sump weighting
   TString fnout;
   if (Is_bkg)
-     fnout.Form("~/nobackup/crabdirs/TM_1D_weight_sim_lepton_histos/reweight_nopreselrelaxbsp_tau%imm_M%02i_%i_1D.root", ctau/1000, mg, year);
+     fnout.Form("~/nobackup/crabdirs/TM_1D_weight_sim_lepton_histos/reweightnopreselrelaxbspnotwvetomllp_tau%imm_M%02i_%i_1D.root", ctau/1000, mg, year);
   else
-     fnout.Form("~/nobackup/crabdirs/TM_1D_weight_dat_lepton_histos/reweight_nopreselrelaxbsp_tau%imm_M%02i_%i_1D.root", ctau/1000, mg, year);
+     fnout.Form("~/nobackup/crabdirs/TM_1D_weight_dat_lepton_histos/reweightnopreselrelaxbspnotwvetomllp_tau%imm_M%02i_%i_1D.root", ctau/1000, mg, year);
   std::cout << "Getting weights from: " << std::endl;
   std::cout << fns << std::endl;
   std::cout << fnb << std::endl;
@@ -52,7 +52,7 @@ void WeightFiles1D()
 {
   const char* bosons[1]
           = { "Wplus" };
-  std::vector<int> taus = {30000};//,300};
+  std::vector<int> taus = {1000};//,300};
   std::vector<int> mgs = {55};
   //std::vector<int> years = {20161, 20162, 2017, 2018};
   std::vector<int> years = {2017};

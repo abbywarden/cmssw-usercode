@@ -2,6 +2,7 @@
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandExponential.h"
 #include "CLHEP/Random/RandGauss.h"
+#include "CLHEP/Random/RandBinomial.h"
 #include "DataFormats/Math/interface/deltaR.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
@@ -118,6 +119,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
 
     CLHEP::RandExponential rexp(rng_engine);
     CLHEP::RandGauss rgau(rng_engine);
+    CLHEP::RandBinomial rint(rng_engine);
 
     std::vector<const pat::Jet*> presel_jets;
     std::vector<const pat::Jet*> presel_bjets;
@@ -223,7 +225,9 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
            }
         }
         if (!(pt > 1.0 && npxlayers >= 2 && nstlayers >= 6 && (min_r <= 1.0 || (min_r == 2.0 && trackLostInnerHits == 0) ))) continue;
-        
+       
+        if (rint.fire(1,0.5) == 0) continue; //FIXME : To toss out a track randomly 
+
         reco::TrackBase::Point new_point(tk->vx() + move.x(),
                                          tk->vy() + move.y(),
                                          tk->vz() + move.z());

@@ -232,7 +232,8 @@ def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=20
             if ok:
                 print ("{0} {1} merged!".format(year, bkg_tag)) 
          
-        cmd = 'hadd.py background_leptonpresel_2017.root wjetstolnu_leptonpresel_2017.root dyjets_leptonpresel_2017.root qcdmupt5_leptonpresel_2017.root qcd_leptonpresel_2017.root others_leptonpresel_2017.root'
+        #cmd = 'hadd.py background_leptonpresel_2017.root wjetstolnu_leptonpresel_2017.root dyjets_leptonpresel_2017.root qcdmupt5_leptonpresel_2017.root qcd_leptonpresel_2017.root others_leptonpresel_2017.root'
+        cmd = 'hadd.py background_leptonpresel_2017.root wjetstolnu_leptonpresel_2017.root dyjets_leptonpresel_2017.root others_leptonpresel_2017.root'
         print cmd
         os.system(cmd)
     #only work for 2017 data now

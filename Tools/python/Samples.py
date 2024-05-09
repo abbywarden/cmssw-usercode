@@ -1376,16 +1376,21 @@ for  x in ZHToSSTodddd_tau100um_M15_2017, ZHToSSTodddd_tau300um_M15_2017, ZHToSS
 for x in wjetstolnu_0j_2017, wjetstolnu_1j_2017, dyjetstollM10_2017, dyjetstollM50_2017, ww_2017, zz_2017, wz_2017, SingleMuon2017B, SingleMuon2017C, SingleMuon2017D, SingleMuon2017E, SingleMuon2017F:
     x.add_dataset("trackmover0p3onnormdzulv30lepmumv6")
 """
-
-"""
 for x in ZHToSSTodddd_tau300um_M15_2017, ZHToSSTodddd_tau1mm_M15_2017, ZHToSSTodddd_tau3mm_M15_2017, ZHToSSTodddd_tau10mm_M15_2017, ZHToSSTodddd_tau30mm_M15_2017, ZHToSSTodddd_tau100um_M40_2017, ZHToSSTodddd_tau300um_M40_2017, ZHToSSTodddd_tau1mm_M40_2017, ZHToSSTodddd_tau3mm_M40_2017, ZHToSSTodddd_tau10mm_M40_2017, ZHToSSTodddd_tau30mm_M40_2017, ZHToSSTodddd_tau100um_M55_2017, ZHToSSTodddd_tau300um_M55_2017, ZHToSSTodddd_tau1mm_M55_2017, ZHToSSTodddd_tau3mm_M55_2017, ZHToSSTodddd_tau10mm_M55_2017, ZHToSSTodddd_tau30mm_M55_2017, WplusHToSSTodddd_tau100um_M15_2017, WplusHToSSTodddd_tau300um_M15_2017, WplusHToSSTodddd_tau1mm_M15_2017, WplusHToSSTodddd_tau3mm_M15_2017, WplusHToSSTodddd_tau30mm_M15_2017, WplusHToSSTodddd_tau300um_M40_2017, WplusHToSSTodddd_tau1mm_M40_2017, WplusHToSSTodddd_tau3mm_M40_2017, WplusHToSSTodddd_tau30mm_M40_2017, WplusHToSSTodddd_tau100um_M55_2017, WplusHToSSTodddd_tau300um_M55_2017, WplusHToSSTodddd_tau1mm_M55_2017, WplusHToSSTodddd_tau3mm_M55_2017, WplusHToSSTodddd_tau30mm_M55_2017, WplusHToSSTodddd_tau10mm_M55_2017, WminusHToSSTodddd_tau1mm_M15_2017, WminusHToSSTodddd_tau3mm_M15_2017, WminusHToSSTodddd_tau10mm_M15_2017, WminusHToSSTodddd_tau30mm_M15_2017, WminusHToSSTodddd_tau300um_M40_2017, WminusHToSSTodddd_tau1mm_M40_2017, WminusHToSSTodddd_tau3mm_M40_2017, WminusHToSSTodddd_tau10mm_M40_2017, WminusHToSSTodddd_tau30mm_M40_2017, WminusHToSSTodddd_tau1mm_M55_2017, WminusHToSSTodddd_tau3mm_M55_2017, WminusHToSSTodddd_tau10mm_M55_2017, WminusHToSSTodddd_tau30mm_M55_2017:
     x.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
-"""
+
+
 #WplusHToSSTodddd_tau100um_M15_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
-WplusHToSSTodddd_tau1mm_M55_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
+#WplusHToSSTodddd_tau300um_M15_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
+#WplusHToSSTodddd_tau300um_M40_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
+#WplusHToSSTodddd_tau300um_M55_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
 #WplusHToSSTodddd_tau1mm_M15_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
-WplusHToSSTodddd_tau30mm_M55_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
-WplusHToSSTodddd_tau100um_M55_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
+#WplusHToSSTodddd_tau1mm_M40_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
+#WplusHToSSTodddd_tau1mm_M55_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
+#WplusHToSSTodddd_tau30mm_M15_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
+#WplusHToSSTodddd_tau30mm_M40_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
+#WplusHToSSTodddd_tau30mm_M55_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
+#WplusHToSSTodddd_tau1mm_M15_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
 #WplusHToSSTodddd_tau10mm_M40_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
 #WplusHToSSTodddd_tau30mm_M15_2017.add_dataset("trackmovermctruthonnormdzulv30lepmumv6")
 
@@ -1415,7 +1420,9 @@ SingleMuon2017F.add_dataset('trackmoveronnormdzulv30lepmumv6', '/FakeDataset/fak
 for x in qcdmupt15_2017, qcdpt15mupt5_2017, qcdpt20mupt5_2017, qcdpt30mupt5_2017, qcdpt50mupt5_2017, qcdpt80mupt5_2017, qcdpt120mupt5_2017, qcdpt170mupt5_2017, qcdpt300mupt5_2017, qcdpt470mupt5_2017, qcdpt600mupt5_2017, qcdpt800mupt5_2017, qcdpt1000mupt5_2017, qcdempt015_2017, qcdempt020_2017, qcdempt030_2017, qcdempt050_2017, qcdempt080_2017, qcdempt120_2017, qcdempt170_2017, qcdempt300_2017, qcdbctoept020_2017, qcdbctoept030_2017, qcdbctoept080_2017, qcdbctoept170_2017, qcdbctoept250_2017, wjetstolnu_0j_2017, wjetstolnu_1j_2017, wjetstolnu_2j_2017, dyjetstollM10_2017, dyjetstollM50_2017, ttbar_2017, ww_2017, zz_2017, wz_2017, SingleMuon2017D, SingleMuon2017E:
     x.add_dataset("trackmoveronnormdzulv30lepmumv6")
 """
-wjetstolnu_2j_2017.add_dataset("trackmoveronnormdzulv30lepmumv6")
+
+for x in wjetstolnu_0j_2017, wjetstolnu_1j_2017, wjetstolnu_2j_2017, dyjetstollM10_2017, dyjetstollM50_2017, ttbar_2017, ww_2017, zz_2017, wz_2017, SingleMuon2017B, SingleMuon2017C, SingleMuon2017D, SingleMuon2017E, SingleMuon2017F:
+    x.add_dataset("trackmoveronnormdzulv30lepmumv7")
 
 for x in qcdmupt15_2017, qcdpt15mupt5_2017, qcdpt20mupt5_2017, qcdpt30mupt5_2017, qcdpt50mupt5_2017, qcdpt80mupt5_2017, qcdpt120mupt5_2017, qcdpt170mupt5_2017, qcdpt300mupt5_2017, qcdpt470mupt5_2017, qcdpt600mupt5_2017, qcdpt800mupt5_2017, qcdpt1000mupt5_2017, qcdempt015_2017, qcdempt020_2017, qcdempt030_2017, qcdempt050_2017, qcdempt080_2017, qcdempt120_2017, qcdempt170_2017, qcdempt300_2017, qcdbctoept020_2017, qcdbctoept030_2017, qcdbctoept080_2017, qcdbctoept170_2017, qcdbctoept250_2017, wjetstolnu_0j_2017, wjetstolnu_1j_2017, wjetstolnu_2j_2017, dyjetstollM10_2017, dyjetstollM50_2017, ttbar_2017, ww_2017, zz_2017, wz_2017, WplusHToSSTodddd_tau300um_M55_2017, WplusHToSSTodddd_tau1mm_M55_2017, WplusHToSSTodddd_tau10mm_M55_2017:
     x.add_dataset("ntupleonnorm3p5dzulv30lepmum")

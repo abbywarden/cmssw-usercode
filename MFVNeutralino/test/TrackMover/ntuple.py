@@ -9,7 +9,7 @@ settings.is_miniaod = True
 #settings.event_filter = 'electrons only novtx'
 settings.event_filter = 'muons only novtx'
 
-version = settings.version + 'v6'
+version = settings.version + 'v7'
 
 # for stat extension
 #version = settings.version + 'ext1'
@@ -147,11 +147,7 @@ random_service(process, random_dict)
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
-    samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=False, met=True, diboson=True, Lepton_data=True)
-    #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=True)
-    #samples = [getattr(Samples, 'ttbar_2017')]
-    #samples = [getattr(Samples, 'SingleMuon2017D')]
-    #samples = [getattr(Samples, 'wjetstolnu_1j_2017')]
+    samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, met=True, diboson=True, Lepton_data=True)
     set_splitting(samples, dataset, 'trackmover', data_json=json_path('ana_SingleLept_2017_10pc.json'), limit_ttbar=True)
 
     ms = MetaSubmitter('TrackMover' + version, dataset=dataset)
