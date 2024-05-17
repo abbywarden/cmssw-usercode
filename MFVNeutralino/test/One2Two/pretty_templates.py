@@ -27,8 +27,8 @@ which = [
 def fmt(z, title, color, style, xsec=None, save=[]):
     if type(z) == str: # signal name
         name = z
-        h = f.Get('h_signal_%i_dvv_2017' % name2isample(f, z))
-        g = f.Get('h_signal_%i_dvv_2018' % name2isample(f, z))
+        h = f.Get('h_signal_%i_sumdbv_2017' % name2isample(f, z))
+        g = f.Get('h_signal_%i_sumdbv_2018' % name2isample(f, z))
         h.Add(g)
     else: # background hist
         name = title
@@ -42,7 +42,7 @@ def fmt(z, title, color, style, xsec=None, save=[]):
     h.SetLineStyle(style)
     h.SetLineWidth(4)
     h.SetLineColor(color)
-    h.SetTitle(';d_{VV} (mm);Events/0.1 mm')
+    h.SetTitle(';#Sigma(d_{BV}) (mm);Events/0.1 mm')
     h.GetXaxis().SetTitleSize(0.05)
     h.GetXaxis().SetLabelSize(0.045)
     h.GetYaxis().SetTitleSize(0.05)
@@ -153,8 +153,8 @@ def print_bkg_table(h17,h18) :
 
 
 
-hbkg2017 = fmt(f.Get('h_bkg_dvv_2017'), 'bkg_2017', ROOT.kBlack, ROOT.kSolid)
-hbkg2018 = fmt(f.Get('h_bkg_dvv_2018'), 'bkg_2018', ROOT.kBlack, ROOT.kSolid)
+hbkg2017 = fmt(f.Get('h_bkg_sumdbv_2017'), 'bkg_2017', ROOT.kBlack, ROOT.kSolid)
+hbkg2018 = fmt(f.Get('h_bkg_sumdbv_2018'), 'bkg_2018', ROOT.kBlack, ROOT.kSolid)
 print_bkg_table(hbkg2017, hbkg2018)
 
 hbkg = hbkg2017
@@ -219,15 +219,15 @@ def write(font, size, x, y, text):
     w.DrawLatex(x, y, text)
     return w
 
-write(61, 0.050, 0.280, 0.825, 'CMS')
+#write(61, 0.050, 0.280, 0.825, 'CMS')
 write(42, 0.050, 0.595, 0.913, '101 fb^{-1} (13 TeV)')
 
-dvvlines = [
-        ROOT.TLine(0.4, 0, 0.4, ymax),
-        ROOT.TLine(0.7, 0, 0.7, ymax),
+sumdbvlines = [
+        ROOT.TLine(0.8, 0, 0.8, ymax),
+        ROOT.TLine(1.6, 0, 1.6, ymax),
         ]
 
-for ll in dvvlines:
+for ll in sumdbvlines:
         ll.SetLineColor(ROOT.kMagenta)
         ll.SetLineWidth(2)
         ll.SetLineStyle(3)
