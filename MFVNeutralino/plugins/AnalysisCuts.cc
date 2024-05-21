@@ -573,19 +573,19 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
 
         switch(btagger_choice) {
             case 0:
-                if (mevent->jet_bdisc_csv[j0] > jmt::BTagging::discriminator_min(0, btag_wp)){
+                if (mevent->jet_bdisc_csv[j0] > jmt::BTagging::discriminator_min(btag_wp, 0)){
                     sel_btags++;
                     if (pf_pt > 80.0) sel_btags_hard++;
                 }
                 break;
             case 1:
-                if (mevent->jet_bdisc_deepcsv[j0] > jmt::BTagging::discriminator_min(1, btag_wp)){
+                if (mevent->jet_bdisc_deepcsv[j0] > jmt::BTagging::discriminator_min(btag_wp, 1)){
                     sel_btags++;
                     if (pf_pt > 80.0) sel_btags_hard++;
                 }
                 break;
             case 2:
-                if (mevent->jet_bdisc_deepflav[j0] > jmt::BTagging::discriminator_min(2, btag_wp)){
+                if (mevent->jet_bdisc_deepflav[j0] > jmt::BTagging::discriminator_min(btag_wp, 2)){
                     // If we're applying SFs and this jet gets demoted, skip it
                     if (study_btag_sf and jmt::UncertTools::reject_btag_sf(pf_pt, rand_y, study_btag_sfvar, year)) {
                         break;
@@ -666,6 +666,8 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
 
         case mfv::b_HLT_DoublePFJets116MaxDeta1p6_DoubleCaloBTagDeepCSV_p71 :
             {
+                //std::cout << "\nTesting b_HLT_DoublePFJets116MaxDeta1p6_DoubleCaloBTagDeepCSV_p71" << std::endl;
+                //printf("year: %i   sel_btags_hard: %i   pt0: %f    pt1: %f  \n", year, sel_btags_hard, jet_pt_checks[0], jet_pt_checks[1]);
                 if(year != 2018) return false;
                 if(require_bjet_psel and sel_btags_hard < 2) return false;
 
@@ -680,11 +682,15 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
                         }
                     }
                 }
+                //std::cout << "passed_kinematics: " << passed_kinematics << std::endl;
                 return passed_kinematics;
             }
 
         case mfv::b_HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5 :
             {
+                //std::cout << "\nTesting b_HLT_PFHT330PT30_QuadPFJet_75_60_45_40_TriplePFBTagDeepCSV_4p5" << std::endl;
+                //printf("year: %i   jet_ht_check: %f   njets: %i    sel_btags: %i \n", year, jet_ht_check_30, njets, sel_btags);
+                //printf("pt0: %f   pt1: %f   pt2: %f   pt3: %f  \n", jet_pt_checks[0], jet_pt_checks[1], jet_pt_checks[2], jet_pt_checks[3]);
                 if(year != 2018) return false;
                 if(jet_ht_check_30 < 425 || njets < 4) return false;
                 if(require_bjet_psel and sel_btags < 3) return false;
@@ -706,25 +712,32 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
                         }
                     }
                 }
+                //std::cout << "passed_kinematics: " << passed_kinematics << std::endl;
                 return passed_kinematics;
             }
 
         case mfv::b_HLT_HT430_DisplacedDijet40_DisplacedTrack :
             {
+                //std::cout << "\nTesting b_HLT_HT430_DisplacedDijet40_DisplacedTrack" << std::endl;
+                //printf("year: %i   jet_ht_check: %f   pfjet_ngood[0]: %i  \n", year, jet_ht_check_40, pfjet_ngood[0]);
                 if(year != 2018 and year != 2017) return false;
                 if(jet_ht_check_40 < 557 || pfjet_ngood[0] < 2) return false;
 
                 passed_kinematics = true;
+                //std::cout << "passed_kinematics: " << passed_kinematics << std::endl;
                 return passed_kinematics;
             }
 
         case mfv::b_HLT_HT650_DisplacedDijet60_Inclusive :
             {
+                //std::cout << "\nTesting b_HLT_HT650_DisplacedDijet60_Inclusive" << std::endl;
+                //printf("year: %i   jet_ht_check: %f   pfjet_ngood[1]: %i  \n", year, jet_ht_check_40, pfjet_ngood[1]);
                 if(year != 2018 and year != 2017) return false;
                 if(jet_ht_check_40 < 846 || pfjet_ngood[1] < 2) return false;
                 //if(jet_ht_check_40 < 750 || pfjet_ngood[1] < 2) return false;
 
                 passed_kinematics = true;
+                //std::cout << "passed_kinematics: " << passed_kinematics << std::endl;
                 return passed_kinematics;
             }
 
