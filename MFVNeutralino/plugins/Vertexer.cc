@@ -69,6 +69,7 @@ class MFVVertexer : public edm::EDProducer {
           printf(" %u%s", r.key(), (v.trackWeight(r) < mfv::track_vertex_weight_min ? "!" : ""));
       }
 
+<<<<<<< HEAD
     void print_track_set(const reco::Vertex & v) const {
       for (auto r = v.tracks_begin(), re = v.tracks_end(); r != re; ++r)
         printf(" %lu%s", r->key(), (v.trackWeight(*r) < mfv::track_vertex_weight_min ? "!" : ""));
@@ -78,6 +79,26 @@ class MFVVertexer : public edm::EDProducer {
       bool is_subset = true;
       const track_set& smaller = a.size() <= b.size() ? a : b;
       const track_set& bigger = a.size() <= b.size() ? b : a;
+=======
+    std::pair<bool, std::vector<std::vector<size_t>>> sharedjets(const size_t vtx0idx, const size_t vtx1idx, const std::vector < std::vector<size_t>>& sv_match_jetidx, const std::vector < std::vector<size_t>>& sv_match_trkidx);
+    bool hasCommonElement(std::vector<size_t> vec0, std::vector<size_t> vec1);
+    std::vector<size_t>::iterator getFirstCommonElement(std::vector<size_t>& vec0, std::vector<size_t>& vec1);
+    template <typename T> void eraseElement(std::vector<T>& vec, size_t idx);
+    void createSetofSharedJetTracks(std::vector<std::vector<size_t>>& vec_sharedjet_track_idx, std::vector<size_t>& vec_special_sharedjet_track_idx, std::vector<size_t>& vec_all_track_idx, std::vector<size_t>& vec_sharedjet_idx, size_t sharedjet_idx); 
+    bool match_track_jet(const reco::Track& tk, const pat::Jet& jet, const pat::JetCollection& jets, const size_t& idx);
+
+  void finish(edm::Event&, const std::vector<reco::TransientTrack>&, std::unique_ptr<reco::VertexCollection>, std::unique_ptr<VertexerPairEffs>, const std::vector<std::pair<track_set, track_set>>&);
+  
+  enum stepEnum{beforedzfit, afterdzfit, aftermerge, aftersharedjets, N_STEPS};
+  std::vector<TString> stepStrs = {"beforedzfit", "afterdzfit", "aftermerge", "aftersharedjets", "N_STEPS"};
+  void fillCommonOutputHists(std::unique_ptr<reco::VertexCollection>& vertices, const reco::Vertex& fake_bs_vtx, edm::ESHandle<TransientTrackBuilder>& tt_builder, size_t step);
+  
+  template <typename T>
+  void print_track_set(const T& ts) const {
+    for (auto r : ts)
+      printf(" %u", r.key());
+  }
+>>>>>>> updated vertexer for lepton-triggered analysis
 
       for (auto t : smaller)
         if (bigger.count(t) < 1) {
@@ -100,7 +121,22 @@ class MFVVertexer : public edm::EDProducer {
           result.insert(it->castTo<reco::TrackRef>());
       }
 
+<<<<<<< HEAD
       return result;
+=======
+    return is_subset;
+  }
+  
+  track_set vertex_track_set(const reco::Vertex& v, const double min_weight = mfv::track_vertex_weight_min) const {
+    track_set result;
+    for (auto it = v.tracks_begin(), ite = v.tracks_end(); it != ite; ++it) {
+      const double w = v.trackWeight(*it);
+      const bool use = w >= min_weight;
+      assert(use);
+      // if (verbose) ("trk #%2i pt %6.3f eta %6.3f phi %6.3f dxy %6.3f dz %6.3f w %5.3f  use? %i\n", int(it-v.tracks_begin()), (*it)->pt(), (*it)->eta(), (*it)->phi(), (*it)->dxy(), (*it)->dz(), w, use);
+      if (use)
+        result.insert(it->castTo<reco::TrackRef>());
+>>>>>>> updated vertexer for lepton-triggered analysis
     }
 
     track_vec vertex_track_vec(const reco::Vertex & v, const double min_weight = mfv::track_vertex_weight_min) const {
@@ -122,10 +158,24 @@ class MFVVertexer : public edm::EDProducer {
         return IPTools::absoluteImpactParameter3D(t, v);
     }
 
+<<<<<<< HEAD
 
     std::pair<bool, Measurement1D> track_dist2d(const reco::TransientTrack & t, const reco::Vertex & v) const {
       return IPTools::absoluteTransverseImpactParameter(t, v);
     }
+=======
+  std::pair<bool, Measurement1D> track_dist(const reco::TransientTrack& t, const reco::Vertex& v) const {
+    if (use_2d_track_dist) {
+      return IPTools::absoluteTransverseImpactParameter(t, v);
+    }
+    else
+      return IPTools::absoluteImpactParameter3D(t, v);
+  }
+>>>>>>> updated vertexer for lepton-triggered analysis
+
+  std::pair<bool, Measurement1D> track_dist2d(const reco::TransientTrack & t, const reco::Vertex & v) const {
+    return IPTools::absoluteTransverseImpactParameter(t, v);
+  }
 
   VertexDistanceXY vertex_dist_2d;
   VertexDistance3D vertex_dist_3d;
@@ -179,9 +229,12 @@ class MFVVertexer : public edm::EDProducer {
   const bool remove_one_track_at_a_time;
   const double max_nm1_refit_dist3;
   const double max_nm1_refit_distz;
+<<<<<<< HEAD
   const double max_nm1_refit_distz_sig;
   const bool ignore_lep_in_refit_distz;
   const bool order_seed_vertex;
+=======
+>>>>>>> updated vertexer for lepton-triggered analysis
   const int max_nm1_refit_count;
   const double trackrefine_sigmacut;
   const double trackrefine_trimmax;
@@ -211,8 +264,12 @@ class MFVVertexer : public edm::EDProducer {
   TH1F* h_n_resets;
   TH1F* h_n_onetracks;
 
+<<<<<<< HEAD
   TH1F* h_n_at_least_3trk_noshare_vertices;
   TH1F* h_n_noshare_vertices;
+=======
+  // TH1F* h_n_noshare_vertices;
+>>>>>>> updated vertexer for lepton-triggered analysis
   TH1F* h_noshare_vertex_ntracks;
   TH1F* h_noshare_vertex_mass;
   TH1F* h_noshare_vertex_track_weights;
@@ -246,11 +303,17 @@ class MFVVertexer : public edm::EDProducer {
 
   TH1F* h_n_output_vertices;
   TH1F* h_n_at_least_3trk_output_vertices;
+<<<<<<< HEAD
   TH1F* h_n_at_least_5trk_output_vertices;
 
   TH1F* h_failedseed_vertex_chi2;
   TH1F* h_failedseed_vertex_isvalid;
   
+=======
+  TH1F* h_n_at_least_4trk_output_vertices;
+  TH1F* h_n_at_least_5trk_output_vertices;
+
+>>>>>>> updated vertexer for lepton-triggered analysis
   TH1F* h_dz_vertex_chi2;
   TH1F* h_dz_vertex_tkvtxdistz;
   TH1F* h_dz_vertex_tkvtxdisterrz;
@@ -264,12 +327,22 @@ class MFVVertexer : public edm::EDProducer {
   TH1F* h_dz_vertex_vtx_covzz;
   TH1F* h_dz_vertex_vtxnm1_z;
   TH1F* h_dz_vertex_cov_vtxdistsigz;
+<<<<<<< HEAD
+=======
+
+>>>>>>> updated vertexer for lepton-triggered analysis
 
   TH1F* hs_output_vertex_tkvtxdist[stepEnum::N_STEPS];
   TH1F* hs_output_vertex_tkvtxdisterr[stepEnum::N_STEPS];
   TH1F* hs_output_vertex_tkvtxdistsig[stepEnum::N_STEPS];
   TH1F* hs_n_at_least_3trk_output_vertices[stepEnum::N_STEPS];
+<<<<<<< HEAD
   TH1F* hs_n_at_least_5trk_output_vertices[stepEnum::N_STEPS];
+=======
+  TH1F* hs_n_at_least_4trk_output_vertices[stepEnum::N_STEPS];
+  TH1F* hs_n_at_least_5trk_output_vertices[stepEnum::N_STEPS];
+  TH1F* hs_n_nice_output_vertices[stepEnum::N_STEPS];
+>>>>>>> updated vertexer for lepton-triggered analysis
   TH1F* hs_output_vertex_nm1_bsbs2ddist[stepEnum::N_STEPS];
   TH1F* hs_output_vertex_nm1_bs2derr[stepEnum::N_STEPS];
   TH1F* hs_output_vertex_ntracks[stepEnum::N_STEPS];
@@ -329,6 +402,10 @@ class MFVVertexer : public edm::EDProducer {
   TH2F* h_dzstage_droppedleptk50_missdist3d_vs_missdist2d;
 
   TH2F* h_dzstage_droppedtk_dphi_vs_sigma;
+<<<<<<< HEAD
+=======
+
+>>>>>>> updated vertexer for lepton-triggered analysis
 
 };
 
@@ -359,9 +436,12 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
     remove_one_track_at_a_time(cfg.getParameter<bool>("remove_one_track_at_a_time")),
     max_nm1_refit_dist3(cfg.getParameter<double>("max_nm1_refit_dist3")),
     max_nm1_refit_distz(cfg.getParameter<double>("max_nm1_refit_distz")),
+<<<<<<< HEAD
     max_nm1_refit_distz_sig(cfg.getParameter<double>("max_nm1_refit_distz_sig")), 
     ignore_lep_in_refit_distz(cfg.getParameter<bool>("ignore_lep_in_refit_distz")),
     order_seed_vertex(cfg.getParameter<bool>("order_seed_vertex")),
+=======
+>>>>>>> updated vertexer for lepton-triggered analysis
     max_nm1_refit_count(cfg.getParameter<int>("max_nm1_refit_count")),
     trackrefine_sigmacut(cfg.getParameter<double>("trackrefine_sigmacut")),
     trackrefine_trimmax(cfg.getParameter<double>("trackrefine_trimmax")),
@@ -419,9 +499,12 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
     h_n_resets                       = fs->make<TH1F>("h_n_resets",                       "", 50,   0,   500);
     h_n_onetracks                    = fs->make<TH1F>("h_n_onetracks",                    "",  5,   0,     5);
 
+<<<<<<< HEAD
     h_n_noshare_vertices             = fs->make<TH1F>("h_n_noshare_vertices",             ";# of noshare vertices", 50,   0,    50);
     h_n_at_least_3trk_noshare_vertices = fs->make<TH1F>("h_n_at_least_3trk_noshare_vertices",";# of noshare vertices w/ >=3trk/vtx ", 50,   0,    50);
     
+=======
+>>>>>>> updated vertexer for lepton-triggered analysis
     if (histos_noshare) {
       h_noshare_vertex_ntracks = fs->make<TH1F>("h_noshare_vertex_ntracks", ";ntracks/vtx", 30, 0, 30);
       h_noshare_vertex_mass = fs->make<TH1F>("h_noshare_vertex_mass", ";mass/vtx (GeV)", 20, 0, 1000);
@@ -456,6 +539,7 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
       h_noshare_trackrefine_trimmax_vertex_distr_shift = fs->make<TH1F>("h_noshare_trackrefine_trimmax_vertex_distr_shift", ";vtx after trimmax'r - vtx before trimmax'r (cm)", 20, -0.08, 0.08);
     }
 
+<<<<<<< HEAD
     h_n_output_vertices = fs->make<TH1F>("h_n_output_vertices", ";# of output vertices", 50, 0, 50);
     h_n_at_least_3trk_output_vertices = fs->make<TH1F>("h_n_at_least_3trk_output_vertices", ";# of output vertices w/ >=3trk/vtx", 20, 0, 20);
     h_n_at_least_5trk_output_vertices = fs->make<TH1F>("h_n_at_least_5trk_output_vertices", ";# of output vertices w/ >=5trk/vtx", 20, 0, 20);
@@ -469,12 +553,49 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
 	  if (step == stepEnum::aftertrackattach && !histos_output_aftertrackattach) continue;
       hs_n_at_least_3trk_output_vertices[step] = fs->make<TH1F>("h_n_at_least_3trk_output_"+stepStrs[step]+"_vertices", ";# of >=3trk-vertices", 20, 0, 20);
       hs_n_at_least_5trk_output_vertices[step] = fs->make<TH1F>("h_n_at_least_5trk_output_"+stepStrs[step]+"_vertices", ";# of >=5trk-vertices", 20, 0, 20);
+=======
+    h_dz_vertex_chi2                    = fs->make<TH1F>("h_dz_vertex_chi2",              ";normalized chi2",  40,   0, 40);
+    h_dz_vertex_tkvtxdistz              = fs->make<TH1F>("h_dz_vertex_tkvtxdistz", ";tkvtxdistz (cm.)", 80, -0.1, 0.1);
+    h_dz_vertex_tkvtxdisterrz           = fs->make<TH1F>("h_dz_vertex_tkvtxdisterrz", ";err tkvtxdistz (cm.)", 80, 0, 0.1);
+    h_dz_vertex_tkvtxdistsigz           = fs->make<TH1F>("h_dz_vertex_tkvtxdistsigz", ";n#sigma tkvtxdistz (cm.)", 40, -10, 10);
+    h_dz_vertex_tkvtxdistxy              = fs->make<TH1F>("h_dz_vertex_tkvtxdistxy", ";tkvtxdistxy (cm.)", 80, -0.1, 0.1);
+    h_dz_vertex_tkvtxdisterrxy          = fs->make<TH1F>("h_dz_vertex_tkvtxdisterrxy", ";err tkvtxdistxy (cm.)", 80, 0, 0.1);
+    h_dz_vertex_tkvtxdistsigxy           = fs->make<TH1F>("h_dz_vertex_tkvtxdistsigxy", ";n#sigma tkvtxdistxy (cm.)", 40, -10, 10);
+    h_dz_vertex_vtxdistz              = fs->make<TH1F>("h_dz_vertex_vtxdistz", ";shift vtxdistz (cm.)", 100, -0.025, 0.025);
+    h_dz_vertex_cov_vtxdisterrz       = fs->make<TH1F>("h_dz_vertex_cov_vtxdisterrz", ";sqrt(cov_zz_nm1vtx - cov_zz_vtx) (cm.)", 40, 0, 0.2);
+    h_dz_vertex_vtxnm1_covzz        = fs->make<TH1F>("h_dz_vertex_vtxnm1_covzz", ";sqrt(cov_zz_nm1vtx)(cm.)", 40, 0, 0.1);
+    h_dz_vertex_vtx_covzz           = fs->make<TH1F>("h_dz_vertex_vtx_covzz", ";sqrt(cov_zz_vtx)(cm.)", 40, 0, 0.1);
+    h_dz_vertex_vtxnm1_z               = fs->make<TH1F>("h_dz_vertex_vtxnm1_z", ";vtxnm1's z (cm.)", 200, -10.0, 10.0);
+    h_dz_vertex_cov_vtxdistsigz  = fs->make<TH1F>("h_dz_vertex_cov_vtxdistsigz", "; #frac{shift vtxdistz}{sqrt(cov_zz_nm1vtx - cov_zz_vtx)}", 40, -10, 10);
+
+
+    h_n_output_vertices              = fs->make<TH1F>("h_n_output_vertices",              "", 50, 0, 50);
+    h_n_at_least_5trk_output_vertices = fs->make<TH1F>("h_n_at_least_5trk_output_vertices", ";# of output vertices w/ >=5trk/vtx", 20, 0, 20);
+    h_n_at_least_3trk_output_vertices = fs->make<TH1F>("h_n_at_least_3trk_output_vertices", ";# of output vertices w/ >=3trk/vtx", 20, 0, 20);
+    h_n_at_least_4trk_output_vertices = fs->make<TH1F>("h_n_at_least_4trk_output_vertices", ";# of output vertices w/ >=4trk/vtx", 20, 0, 20);
+
+    for(size_t step = 0; step < stepEnum::N_STEPS; ++step) {
+
+      if (step == stepEnum::beforedzfit      && !histos_output_beforedzfit)      continue; 
+      if ( step == stepEnum::afterdzfit  && !histos_output_afterdzfit)      continue;
+      if (step == stepEnum::aftermerge      && !histos_output_aftermerge)      continue;
+      if (step == stepEnum::aftersharedjets && !histos_output_aftersharedjets) continue;
+      
+      hs_n_at_least_5trk_output_vertices[step] = fs->make<TH1F>("h_n_at_least_5trk_output_"+stepStrs[step]+"_vertices", ";# of >=5trk-vertices", 20, 0, 20);
+      hs_n_at_least_3trk_output_vertices[step] = fs->make<TH1F>("h_n_at_least_3trk_output_"+stepStrs[step]+"_vertices", ";# of >=3trk-vertices", 20, 0, 20);
+      hs_n_at_least_4trk_output_vertices[step] = fs->make<TH1F>("h_n_at_least_4trk_output_"+stepStrs[step]+"_vertices", ";# of >=4trk-vertices", 20, 0, 20);
+      hs_n_nice_output_vertices[step] = fs->make<TH1F>("h_n_nice_output_"+stepStrs[step]+"_vertices", ";# vertices that pass cuts", 20, 0, 20);
+>>>>>>> updated vertexer for lepton-triggered analysis
       hs_output_vertex_nm1_bsbs2ddist[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_nm1_bsbs2ddist", ";dBV (cm.) w/ n-1 cuts applied", 100, 0, 1.0);
       hs_output_vertex_nm1_bs2derr[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_nm1_bs2derr", ";bs2derr (cm.) w/ n-1 cuts applied", 20, 0, 0.05);
       hs_output_vertex_tkvtxdist[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_tkvtxdist", ";tkvtxdist (cm.)", 20, 0, 0.1);
       hs_output_vertex_tkvtxdisterr[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_tkvtxdisterr", ";tkvtxdisterr (cm.)", 20, 0, 0.1);
       hs_output_vertex_tkvtxdistsig[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_tkvtxdistsig", ";tkvtxdistsig", 20, 0, 6);
       hs_output_vertex_ntracks[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_ntracks", ";ntracks/vtx", 30, 0, 30);
+<<<<<<< HEAD
+=======
+
+>>>>>>> updated vertexer for lepton-triggered analysis
       hs_output_vertex_neletracks[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_neletracks", ";neletracks/vtx", 5, 0, 5);
       hs_output_vertex_nmutracks[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_nmutracks", ";nmutracks/vtx", 5, 0, 5);
       hs_output_vertex_nleptracks[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_nleptracks", ";nleptracks/vtx", 10, 0, 10);
@@ -484,6 +605,10 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
       hs_output_vertex_leppt[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_leppt", ";leptrack pt/vtx", 200, 0, 2000);
       hs_output_vertex_elept_vs_nsigma[step] = fs->make<TH2F>("h_output_"+stepStrs[step]+"_vertex_elept_vs_nsigma", "", 100, 0, 1000, 20, 0, 20);
       hs_output_vertex_mupt_vs_nsigma[step] = fs->make<TH2F>("h_output_"+stepStrs[step]+"_vertex_mupt_vs_nsigma", "", 100, 0, 1000, 20, 0, 20);
+<<<<<<< HEAD
+=======
+
+>>>>>>> updated vertexer for lepton-triggered analysis
       hs_output_vertex_mass[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_mass", ";mass/vtx (GeV)", 20, 0, 1000);
       hs_output_vertex_track_weights[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_track_weights", ";vertex track weights", 21, 0, 1.05);
       hs_output_vertex_chi2[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_chi2", ";normalized chi2", 40, 0, 10);
@@ -512,7 +637,11 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
     if (histos_output_aftersharedjets) {
       h_output_aftersharedjets_n_onetracks = fs->make<TH1F>("h_output_aftersharedjets_n_onetracks", "", 5, 0, 5);
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> updated vertexer for lepton-triggered analysis
     h_dzstage_droppedtk_pt_vs_sigma = fs->make<TH2F>("h_dzstage_droppedtk_pt_vs_sigma", "", 500, 0, 500, 50, 0, 10);
     h_dzstage_droppedleptk_pt_vs_sigma = fs->make<TH2F>("h_dzstage_droppedleptk_pt_vs_sigma", "", 500, 0, 500, 50, 0, 10);
     h_dzstage_droppedtk_pt_vs_dz = fs->make<TH2F>("h_dzstage_droppedtk_pt_vs_dz", "", 500, 0, 500, 50, 0, 0.05);
@@ -536,6 +665,10 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
     h_dzstage_droppedleptk_missdist = fs->make<TH1F>("h_dzstage_droppedleptk_missdist", "", 50, 0, 0.05);
 
     h_dzstage_droppedtk_dphi_vs_sigma = fs->make<TH2F>("h_dzstage_droppedtk_dphi_vs_sigma", "", 20, 0, 4, 10, 0, 10);
+<<<<<<< HEAD
+=======
+
+>>>>>>> updated vertexer for lepton-triggered analysis
   }
 }
 
@@ -569,7 +702,10 @@ void MFVVertexer::finish(edm::Event& event, const std::vector<reco::TransientTra
   }
 
   if (verbose) printf("vertices:\n");
+<<<<<<< HEAD
   int count_3trk_vertices = 0;
+=======
+>>>>>>> updated vertexer for lepton-triggered analysis
   int count_5trk_vertices = 0;
   for (const reco::Vertex& v : *vertices) {
     if (verbose) printf("x: %f y %f z %f\n", v.x(), v.y(), v.z());
@@ -578,8 +714,11 @@ void MFVVertexer::finish(edm::Event& event, const std::vector<reco::TransientTra
       if (verbose) printf("id: %i key: %u <%f,%f,%f,%f,%f>\n", tk.id().id(), tk.key(), tk->charge()*tk->pt(), tk->eta(), tk->phi(), tk->dxy(), tk->dz());
       tracks_inVertices->push_back(*tk);
     }
+<<<<<<< HEAD
     if (v.nTracks() >= 3)
       ++count_3trk_vertices;
+=======
+>>>>>>> updated vertexer for lepton-triggered analysis
     if (v.nTracks() >= 5)
       ++count_5trk_vertices;
   }
@@ -588,7 +727,10 @@ void MFVVertexer::finish(edm::Event& event, const std::vector<reco::TransientTra
     printf("n_output_vertices: %lu\n", vertices->size());
   if (histos) {
     h_n_output_vertices->Fill(vertices->size());
+<<<<<<< HEAD
     h_n_at_least_3trk_output_vertices->Fill(count_3trk_vertices);
+=======
+>>>>>>> updated vertexer for lepton-triggered analysis
     h_n_at_least_5trk_output_vertices->Fill(count_5trk_vertices);
   }
   event.put(std::move(vertices));
@@ -613,6 +755,12 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
   edm::ESHandle<TransientTrackBuilder> tt_builder;
   setup.get<TransientTrackRecord>().get("TransientTrackBuilder", tt_builder);
 
+<<<<<<< HEAD
+=======
+  edm::Handle<std::vector<reco::TrackRef>> seed_track_refs;
+  event.getByToken(seed_tracks_token, seed_track_refs);
+
+>>>>>>> updated vertexer for lepton-triggered analysis
   edm::Handle<std::vector<reco::TrackRef>> quality_track_refs;
   if (track_attachment)
     event.getByToken(quality_tracks_token, quality_track_refs);
@@ -622,6 +770,7 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
 
   std::vector<reco::TransientTrack> seed_tracks;
   std::map<reco::TrackRef, size_t> seed_track_ref_map;
+
 
 
   for (const reco::TrackRef& tk : *seed_track_refs) {
@@ -745,11 +894,18 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
     h_n_seed_vertices->Fill(vertices->size());
   }
 
+<<<<<<< HEAD
   if (order_seed_vertex){ //FIXMENOW
     //order vertices by pt 
     std::sort(vertices->begin(), vertices->end(), order_seed_vtx_pt());
   }
   
+=======
+  //order vertices by pt 
+  std::sort(vertices->begin(), vertices->end(), order_seed_vtx_pt());
+
+
+>>>>>>> updated vertexer for lepton-triggered analysis
   //////////////////////////////////////////////////////////////////////
   // Take care of track sharing. If a track is in two vertices, and
   // the vertices are "close", refit the tracks from the two together
@@ -1042,6 +1198,7 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
   if (histos) {
     h_n_resets->Fill(n_resets);
     h_n_onetracks->Fill(n_onetracks);
+<<<<<<< HEAD
     h_n_noshare_vertices->Fill(vertices->size());
     int count_3trk_vertices = 0;
     for (size_t i = 0, ie = vertices->size(); i < ie; ++i) {
@@ -1051,6 +1208,9 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
         count_3trk_vertices++;
     }
     h_n_at_least_3trk_noshare_vertices->Fill(count_3trk_vertices);
+=======
+    // h_n_noshare_vertices->Fill(vertices->size());
+>>>>>>> updated vertexer for lepton-triggered analysis
   }
 
 
@@ -1241,10 +1401,16 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
       h_max_noshare_track_multiplicity->Fill(max_noshare_track_multiplicity);
   }
 
+<<<<<<< HEAD
 
   //////////////////////////////////////////////////////////////////////////////////////////////
   // Merge vertices that are still "close" in 2D, aka "loose" merging (typically off by default)
   //////////////////////////////////////////////////////////////////////////////////////////////
+=======
+  //////////////////////////////////////////////////////////////////////
+  // Merge vertices that are still "close". JMTBAD this doesn't do anything currently, only run in verbose mode
+  //////////////////////////////////////////////////////////////////////
+>>>>>>> updated vertexer for lepton-triggered analysis
   if (verbose)
     printf("fun2! before 'loose' merging loop, # vertices = %lu\n", vertices->size());
 
@@ -1268,6 +1434,7 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
 
           if (verbose)
             printf("close-merge: # vertices = %lu. considering vertices #%lu (ntk = %i) and #%lu (ntk = %i):", vertices->size(), ivtx[0], v[0]->nTracks(), ivtx[1], v[1]->nTracks());
+<<<<<<< HEAD
 
           Measurement1D v_dist = vertex_dist(*v[0], *v[1]);
           if (verbose)
@@ -1342,6 +1509,70 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
 
             Measurement1D nv_dist = vertex_dist(*nv[0], *nv[1]);
             printf("  new vertex dist (2d? %i) %7.3f  sig %7.3f\n", use_2d_vertex_dist, nv_dist.value(), nv_dist.significance());
+=======
+
+          Measurement1D v_dist = vertex_dist(*v[0], *v[1]);
+          if (verbose)
+            printf("   vertex dist (2d? %i) %7.3f  sig %7.3f\n", use_2d_vertex_dist, v_dist.value(), v_dist.significance());
+
+          v0x = v[0]->x() - bsx;
+          v0y = v[0]->y() - bsy;
+          phi0 = atan2(v0y, v0x);
+          v1x = v[1]->x() - bsx;
+          v1y = v[1]->y() - bsy;
+          phi1 = atan2(v1y, v1x);
+
+          if (v_dist.value() < merge_anyway_dist || v_dist.significance() < merge_anyway_sig) {
+            if (verbose)
+              printf("          dist < %7.3f || sig < %7.3f, breaking to merge\n", merge_anyway_dist, merge_anyway_sig);
+
+            std::vector<reco::TransientTrack> ttks;
+
+            for (int i = 0; i < 2; ++i) {
+              for (auto tk : vertex_track_set(*v[i])) {
+                ttks.push_back(tt_builder->build(tk));
+              }
+            }
+
+            reco::VertexCollection merged_vertices;
+            for (const TransientVertex& tv : kv_reco_dropin(ttks)) {
+              merged_vertices.push_back(reco::Vertex(tv));
+
+              for (auto it = merged_vertices[0].tracks_begin(), ite = merged_vertices[0].tracks_end(); it != ite; ++it) {
+                reco::TransientTrack seed_track;
+                seed_track = tt_builder->build(*it.operator*());
+                std::pair<bool, Measurement1D> tk_vtx_dist = track_dist(seed_track, merged_vertices[0]);
+              }
+            }
+
+            if (verbose) {
+              printf("      got %lu new vertices out of the av fit\n", merged_vertices.size());
+              printf("      these track sets:");
+              for (const auto& nv : merged_vertices) {
+                printf(" (");
+                print_track_set(nv);
+                printf(" ),");
+              }
+              printf("\n");
+            }
+
+            if (merged_vertices.size() == 1) {
+              if (verbose) {
+                printf(" sv2ddist between a merging pair is %7.3f \n", v_dist.value());
+                printf(" |dPhi(vtx0,vtx1) between a merging pair is %4.3f \n", fabs(reco::deltaPhi(phi0, phi1)));
+                printf(" # of tracks per vtx0 is %u \n", v[0]->nTracks());
+                printf(" # of tracks per vtx1 is %u \n", v[1]->nTracks());
+                printf(" ---------------- merge the two vertices if chi2/dof < 5 ----------------- \n");
+                printf(" # of tracks per a new merged vertex is %u \n", merged_vertices[0].nTracks());
+              }
+
+              //std::cout << "check no mem out of ranges (before) : " << v[1] - vertices->begin() << std::endl;
+              *v[0] = merged_vertices[0];
+              //std::cout << "check no mem out of ranges (after) : " << v[1] - vertices->begin() << std::endl;
+
+              v[1] = vertices->erase(v[1]) - 1;
+            }
+>>>>>>> updated vertexer for lepton-triggered analysis
           }
         }
       }
@@ -1366,7 +1597,12 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
   //////////////////////////////////////////////////////////////////////
   // Drop tracks that "move" the vertex too much by refitting without each track.
   //////////////////////////////////////////////////////////////////////
+<<<<<<< HEAD
   if (max_nm1_refit_dist3 > 0 || max_nm1_refit_distz > 0 || max_nm1_refit_distz_sig > 0) { 
+=======
+
+  if (max_nm1_refit_dist3 > 0 || max_nm1_refit_distz > 0) { 
+>>>>>>> updated vertexer for lepton-triggered analysis
     /*
     auto& tks = nt.tracks();
     for (int it=0, ite = tks.n(); it < ite; it++){
@@ -1416,7 +1652,11 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
         //          extrapolator.extrapolate(tt_builder->build(tks[i]).impactPointState(), RecoVertex::convertPos(v[0]->position()));
         //GlobalPoint impactPoint = closestOnTransversePlaneState.globalPosition();
         //const double tkv_distz_alt = impactPoint.z() - v[0]->z();
+<<<<<<< HEAD
 	const double tkv_distz = (tks[i]->vz() - v[0]->z()) - ((tks[i]->vx() -  v[0]->x()) * tks[i]->px() + (tks[i]->vy() -  v[0]->y()) * tks[i]->py()) / tks[i]->pt() * tks[i]->pz() / tks[i]->pt();
+=======
+        const double tkv_distz = (tks[i]->vz() - v[0]->z()) - ((tks[i]->vx() -  v[0]->x()) * tks[i]->px() + (tks[i]->vy() -  v[0]->y()) * tks[i]->py()) / tks[i]->pt() * tks[i]->pz() / tks[i]->pt();
+>>>>>>> updated vertexer for lepton-triggered analysis
         const double err_tkv_distz = sqrt(tks[i]->covariance(4,4) * (tks[i]->p()*tks[i]->p())) / tks[i]->pt(); //same as dzErr() 
         std::pair<bool, Measurement1D> tkbs_dist_2d = track_dist2d(tt_builder->build(tks[i]), *v[0]);
         const double vchi2 = v[0]->normalizedChi2();
@@ -1426,8 +1666,12 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
         reco::TrackRef tk = tks[i];
         std::pair<bool, Measurement1D> tk_vtx_dist = track_dist(tt_builder->build(tks[i]), vnm1);
 
+<<<<<<< HEAD
         if (max_nm1_refit_distz_sig > 0) {
            if (ntks >= 3 && vchi2 < 5 && dBV < 2.0 && dBV > 0.01 && bs2derr < 0.005){ 
+=======
+        if (ntks >= 3 && vchi2 < 5 && dBV < 2.0 && dBV > 0.01 && bs2derr < 0.005){ 
+>>>>>>> updated vertexer for lepton-triggered analysis
               h_dz_vertex_tkvtxdistz->Fill(tkv_distz);
               h_dz_vertex_tkvtxdisterrz->Fill(err_tkv_distz);
               h_dz_vertex_tkvtxdistsigz->Fill(tkv_distz/err_tkv_distz);
@@ -1440,6 +1684,7 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
               h_dz_vertex_vtxnm1_z->Fill(vnm1.z()); 
               h_dz_vertex_vtxnm1_covzz->Fill(sqrt(vnm1.covariance(2,2)));
               h_dz_vertex_vtx_covzz->Fill(sqrt(v[0]->covariance(2,2)));
+<<<<<<< HEAD
            }
         }
         
@@ -1496,6 +1741,56 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
              }
           }
           
+=======
+        }
+        const double distz_sig = distz/sqrt(mag(vnm1.covariance(2,2) - v[0]->covariance(2,2)));  
+
+        if (verbose) printf("  refit %lu chi2 %7.4f vtx %7.4f %7.4f %7.4f dist3 %7.4f distz %7.4f\n", i, vnm1.chi2(), vnm1.x(), vnm1.y(), vnm1.z(), sqrt(dist3_2), distz);
+        if (verbose) printf(" distz_sig : %7.4f\n", distz_sig);
+        h_dzstage_droppedtk_pt_vs_sigma->Fill(tkpt_todrop, fabs(distz_sig));  
+        h_dzstage_droppedtk_pt_vs_dz->Fill(tkpt_todrop, fabs(distz)); 
+        h_dzstage_droppedtk_dz_vs_sigma->Fill(fabs(distz), fabs(distz_sig)); 
+
+        h_dzstage_droppedtk_pt->Fill(tkpt_todrop); 
+        h_dzstage_droppedtk_dz->Fill(fabs(distz)); 
+        h_dzstage_droppedtk_sigma->Fill(fabs(distz_sig)); 
+
+        if (leptkpt_todrop > 0) {
+          h_dzstage_droppedleptk_pt_vs_sigma->Fill(leptkpt_todrop, fabs(distz_sig));
+          h_dzstage_droppedleptk_pt_vs_dz->Fill(leptkpt_todrop, fabs(distz)); 
+          h_dzstage_droppedleptk_dz_vs_sigma->Fill(fabs(distz), fabs(distz_sig));
+
+          h_dzstage_droppedleptk_pt_vs_missdist->Fill(leptkpt_todrop, fabs(tk_vtx_dist.second.value()));
+          h_dzstage_droppedleptk_missdist_vs_dz->Fill(fabs(tk_vtx_dist.second.value()), fabs(distz)); 
+          h_dzstage_droppedleptk_missdist_vs_sigma->Fill(fabs(tk_vtx_dist.second.value()), fabs(distz_sig));
+
+          h_dzstage_droppedleptk_missdist3d_vs_missdist2d->Fill(fabs(IPTools::absoluteImpactParameter3D(tt_builder->build(tks[i]), vnm1).second.value()), 
+                                                                fabs(IPTools::absoluteTransverseImpactParameter(tt_builder->build(tks[i]), vnm1).second.value()));
+          if (leptkpt_todrop >= 50) {
+            if (verbose) printf(" POSSIBILITY OF LARGE LEP IN VERTEX...DOES IT DROP?");
+            h_dzstage_droppedleptk50_missdist3d_vs_missdist2d->Fill(fabs(IPTools::absoluteImpactParameter3D(tt_builder->build(tks[i]), vnm1).second.value()), 
+                                                                fabs(IPTools::absoluteTransverseImpactParameter(tt_builder->build(tks[i]), vnm1).second.value()));
+          }                                                                
+          h_dzstage_droppedleptk_pt->Fill(leptkpt_todrop);
+          h_dzstage_droppedleptk_dz->Fill(fabs(distz)); 
+          h_dzstage_droppedleptk_sigma->Fill(fabs(distz_sig));
+          h_dzstage_droppedleptk_missdist->Fill(fabs(tk_vtx_dist.second.value()));
+        }
+
+        if (vnm1.chi2() < 0 ||
+            (max_nm1_refit_dist3 > 0 && mag2(vnm1.x() - v[0]->x(), vnm1.y() - v[0]->y(), vnm1.z() - v[0]->z()) > pow(max_nm1_refit_dist3, 2)) ||
+            (max_nm1_refit_distz > 0 && fabs(distz) > max_nm1_refit_distz)) { 
+        
+          
+          if (abs(tks[i]->pt() >= 40.0 ))
+            h_dzstage_droppedtk_dphi_vs_sigma->Fill(dphi_avg, distz_sig);
+
+          //ignoring lepton tracks 
+          if ((tks[i].id().id() == 155 || tks[i].id().id() == 156) && fabs(tks[i]->pt()) >= 20.0 ) {
+            break;
+          }
+
+>>>>>>> updated vertexer for lepton-triggered analysis
           if (verbose) {
             printf("    replacing");
             if (refit_count[iv] < max_nm1_refit_count - 1)
@@ -2240,6 +2535,9 @@ void MFVVertexer::fillCommonOutputHists(std::unique_ptr<reco::VertexCollection>&
       }
       if (vchi2 < 5 && ntracks >= 5 && dBV > 0.01) {
         hs_output_vertex_nm1_bs2derr[step]->Fill(bs2derr);
+      }
+      if (vchi2 < 5 && ntracks >= 3 && dBV > 0.01 && bs2derr < 0.05) {
+        count_nice_vertices++;
       }
     }
 
