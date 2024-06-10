@@ -9,7 +9,7 @@ ROOT.TH1.AddDirectory(0)
 
 #variables = ['_movedist', 'lsp', '_npv_', '_dvv', '_sump_', 'tks', '_vtx', '_trk_', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
 
-variables = ['_movedist', 'lsp', '_npv_', '_dvv', '_sump_', 'tks', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+variables = ['_movedist', 'lsp', '_npv_', 'half', 'vtx', 'qrk0_dxybs', 'qrk1_dxybs', '_dvv', '_sump_', 'tks', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
 
 def get_em(fn, scale=1., alpha=1-0.6827):
     #f = ROOT.TFile(fn)
@@ -84,18 +84,21 @@ def get_em(fn, scale=1., alpha=1-0.6827):
         if name.endswith('_num'):
             num = d[name]
             den = d[name.replace('_num', '_den')]
-            if 'movedist2' in name:
-              num = num.Rebin(10)
-              den = den.Rebin(10)
+            if 'movedist' in name:
+              num = num.Rebin(2)
+              den = den.Rebin(2)
             if 'lsp' in name:
               num = num.Rebin(4)
               den = den.Rebin(4)
             if 'dvv' in name:
               num = num.Rebin(4)
               den = den.Rebin(4)
-            #if 'movedist' in name:
-              #num = num.Rebin(4)
-              #den = den.Rebin(4)
+            if 'tkunc' in name:
+              num = num.Rebin(4)
+              den = den.Rebin(4)
+            if 'tkdbv' in name:
+              num = num.Rebin(8)
+              den = den.Rebin(8)
             g = histogram_divide(num, den, confint_params=(alpha,), use_effective=use_effective)
             print(name)
             g.SetTitle('')
@@ -169,21 +172,21 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root'):
             
             data.SetName("SingleMuon")
             data.SetMarkerSize(0.8)
-            data.SetMarkerColor(ROOT.kBlack)#Blue)
-            data.SetLineColor(ROOT.kBlack)#lue)
-            data.SetFillColor(ROOT.kBlack)#lue)
+            data.SetMarkerColor(ROOT.kRed)
+            data.SetLineColor(ROOT.kRed)
+            data.SetFillColor(ROOT.kRed)
 
             mc.SetName("MC bkg")
             mc.SetMarkerSize(0.8)
-            mc.SetMarkerColor(ROOT.kRed)#Black)
-            mc.SetLineColor(ROOT.kRed)#Black)
-            mc.SetFillColor(ROOT.kRed)#Black)
+            mc.SetMarkerColor(ROOT.kBlack)
+            mc.SetLineColor(ROOT.kBlack)
+            mc.SetFillColor(ROOT.kBlack)
             
             signal.SetName("MC signal")
             signal.SetMarkerSize(0.8)
-            signal.SetMarkerColor(ROOT.kBlue)#Violet+1)
-            signal.SetLineColor(ROOT.kBlue)#Violet+1)
-            signal.SetFillColor(ROOT.kBlue)#Violet+1)
+            signal.SetMarkerColor(ROOT.kGreen+3)#Blue)
+            signal.SetLineColor(ROOT.kGreen+3)#Blue)
+            signal.SetFillColor(ROOT.kGreen+3)#Blue)
             
             x_range = None
             y_range = None
@@ -193,13 +196,15 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root'):
             if name.endswith('_rat'):
                 for g in both:
                     g.GetYaxis().SetTitle('efficiency')
-                objs = [(signal, 'P'), (mc, 'P'), (data, 'P'),]
+                #objs = [(signal, 'P'), (mc, 'P'), (data, 'P'),]
+                #objs = [(data, 'P'), (mc, 'P'), (signal, 'P'),]
+                objs = [(signal, 'P'), (data, 'P'),]
                 y_range = (0, 1.05)
                 statbox_size = None
             if 'bs2derr' in name:
                 x_range = (0, 0.01)
-            if 'movedist' in name:
-                x_range = (0.0, 0.2)
+            #if 'movedist' in name:
+            #    x_range = (0.0, 0.2)
                 #res_x_range = (0.07,0.12)
             
             ratios_plot(name,

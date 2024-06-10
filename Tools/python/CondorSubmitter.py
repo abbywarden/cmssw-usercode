@@ -13,6 +13,8 @@ if not os.environ.has_key('SCRAM_ARCH') or not os.environ.has_key('CMSSW_VERSION
 class CondorSubmitter:
     sh_template = '''#!/bin/bash
 
+export X509_CERT_DIR=/cvmfs/grid.cern.ch/etc/grid-security/certificates/
+
 workdir=$(pwd)
 realjob=$1
 mapfile -t jobmap < cs_jobmap
@@ -105,6 +107,7 @@ notification = never
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 transfer_input_files = __TARBALL_FN__,cs_jobmap,cs_njobs,cs_pset.py,cs_filelist.py,cs.json,cs_cmsrun_args,cs_primaryds,cs_samplename,cs_timestamp__INPUT_FNS__
++SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el7:x86_64"
 x509userproxy = $ENV(X509_USER_PROXY)
 __EXTRAS__
 Queue __NJOBS__
@@ -159,7 +162,7 @@ def get(i): return _l[i]
             os.mkdir(links_dir)
 
         if submit_host.endswith('fnal.gov'):
-            schedds = ['lpcschedd%i.fnal.gov' % i for i in 1,2,3,4,5,6]
+            schedds = ['lpcschedd%i.fnal.gov' % i for i in 1,2,3,4,6] #FIXME add 5
             for schedd in schedds:
                 schedd_d = os.path.join(links_dir, schedd)
                 if not os.path.isdir(schedd_d):
@@ -441,7 +444,7 @@ def get(i): return _l[i]
         cwd = os.getcwd()
         os.chdir(working_dir)
         try:
-            submit_out, submit_ret = popen('condor_submit < cs_submit.jdl', return_exit_code=True)
+            submit_out, submit_ret = popen('condor_submit cs_submit.jdl', return_exit_code=True)
             ok = False
             cluster = None
             schedd = None
@@ -449,7 +452,7 @@ def get(i): return _l[i]
                 for line in submit_out.split('\n'):
                     if line.startswith('Attempting to submit jobs to '):
                         schedd = line.strip().replace('Attempting to submit jobs to ', '')
-                        assert schedd in cls.schedds
+                        #assert schedd in cls.schedds
             for line in submit_out.split('\n'):
                 if 'job(s) submitted to cluster' in line:
                     ok = True

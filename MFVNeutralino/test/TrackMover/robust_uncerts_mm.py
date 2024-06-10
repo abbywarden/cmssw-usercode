@@ -90,8 +90,8 @@ reweight = True
 #shift_fr  = 0.0   # How much to slide the closeseedtk dist by (decimal part)
 #shift_val = 0     # How much to slide the closeseedtk dist by (integer part)
 
-masses = ['15','40','55']
-ctaus       = ['1000','3000','30000'] 
+masses = ['55'] # ['15','40','55']
+ctaus       = ['1000'] #['1000','3000','30000'] 
 psd_methods = ['none', 'slide_distr', 'scale_distr', 'scale_toc', 'trackrescl']
 
 """
@@ -173,8 +173,8 @@ for mass in masses:
                 sig_non_dvv_curve.Divide(sig_non_dvv_denom)
                 sig_non_dvv_curve_tm = sig_non_dvv_curve.Clone()
                 sig_non_dvv_denom_tm = sig_non_dvv_denom.Clone()
-                sig_non_m3d_denom = signal_non.Get('all_movedist3_den') 
-                sig_non_m3d_curve = signal_non.Get('all_movedist3_num')
+                sig_non_m3d_denom = signal_non.Get('all_vtxunc_den') 
+                sig_non_m3d_curve = signal_non.Get('all_vtxunc_num')
                 sig_non_m3d_curve.Divide(sig_non_m3d_denom)
                 sig_non_m3d_curve_tm = sig_non_m3d_curve.Clone()
                 sig_non_m3d_denom_tm = sig_non_m3d_denom.Clone()
@@ -187,8 +187,8 @@ for mass in masses:
                 sig_dvv_curve_tm2 = sig_dvv_curve.Clone()
                 sig_dvv_denom_tm2 = sig_dvv_denom.Clone()
                 sig_dvv_denom_copy = sig_dvv_denom.Clone()
-                sig_m3d_denom = signal.Get('all_movedist3_den') 
-                sig_m3d_curve = signal.Get('all_movedist3_num')
+                sig_m3d_denom = signal.Get('all_vtxunc_den') 
+                sig_m3d_curve = signal.Get('all_vtxunc_num')
                 sig_m3d_curve.Divide(sig_m3d_denom)
                 sig_m3d_curve_tm = sig_m3d_curve.Clone()
                 sig_m3d_denom_tm = sig_m3d_denom.Clone()
@@ -205,7 +205,7 @@ for mass in masses:
                 sig_non_m3d_denom.Multiply(sig_non_m3d_curve_ideal)
                 eff_non_ideal = sig_non_m3d_denom.Integral()/sig_non_m3d_denom_copy.Integral()
 
-                sig_non_m3d_curve_shift = shiftDIST(sig_non_m3d_curve_tm, 0, -0.01)
+                sig_non_m3d_curve_shift = shiftDIST(sig_non_m3d_curve_tm, 1, 0.0)
                 fout_non1 = ROOT.TFile("nonm3dcurve1.root", "recreate")
                 sig_non_m3d_curve_shift.Write()
                 fout_non1.Close()
@@ -226,7 +226,7 @@ for mass in masses:
                 sig_m3d_denom.Multiply(sig_m3d_curve_ideal)
                 eff_ideal = sig_m3d_denom.Integral()/sig_m3d_denom_copy.Integral()
                 
-                sig_m3d_curve_shift = shiftDIST(sig_m3d_curve_tm, 0, -0.01)
+                sig_m3d_curve_shift = shiftDIST(sig_m3d_curve_tm, 1, 0.0)
                 fout_1 = ROOT.TFile("m3dcurve1.root", "recreate")
                 sig_m3d_curve_shift.Write()
                 fout_1.Close()
