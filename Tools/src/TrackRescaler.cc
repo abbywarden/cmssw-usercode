@@ -238,7 +238,7 @@ namespace jmt {
   }
 
   void TrackRescaler::set_BTagDispJet2017(double x, double eta) {
-    /*
+    //Alec
     if (fabs(eta) < 1.5) {
       const double p_dxy[3] = {1.17509, .771, -1.263};
       const double p_dsz[3] = {1.15733, 1.274, -1.257};
@@ -259,7 +259,8 @@ namespace jmt {
                   p_dxydsz[0]-p_dxydsz[2]*exp(-p_dxydsz[1]*x)
                   );
     }
-    */
+    //Abby
+    /*
     if (fabs(eta) < 1.5) {
         const double p_dxy[7] = {1.03112461560515, 0.027939954186664222, -0.0024777135470085247, 1.1198254046663294, -0.0013579297509143465, 1.0600577441006154, 6.09296042624434e-05};
         const double p_dsz[7] = {1.0800117878149493, 0.013423192619346155, 1.1340111602074219, -0.0013106472963789876, 1.1196923400312397, 3.2650883372812786e-05, -7.481787581617157e-07};
@@ -274,6 +275,7 @@ namespace jmt {
 
         scales_.set((x<=4)*(p_dxy[0]+p_dxy[1]*x)+(x>=4&&x<=15)*(p_dxy[2]+p_dxy[3]*x+p_dxy[4]*pow(x,2))+(x>=15&&x<=200)*(p_dxy[5]+p_dxy[6]*x),(x<=4)*(p_dsz[0]+p_dsz[1]*x)+(x>=4&&x<=15)*(p_dsz[2]+p_dsz[3]*x+p_dsz[4]*pow(x,2))+(x>=15&&x<=200)*(p_dsz[5]+p_dsz[6]*x),(x<=8)*(p_dxydsz[0]+p_dxydsz[1]*x+p_dxydsz[2]*pow(x,2)+p_dxydsz[3]*pow(x,3))+(x>=8&&x<=22)*(p_dxydsz[4]+p_dxydsz[5]*x)+(x>=22&&x<=52)*(p_dxydsz[6]+p_dxydsz[7]*x)+(x>=52&&x<=200)*(p_dxydsz[8]+p_dxydsz[9]*x));
     }
+    */
   }
 
   void TrackRescaler::set_BTagDispJet2018(double x, double eta) {

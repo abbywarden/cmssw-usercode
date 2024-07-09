@@ -422,10 +422,10 @@ def get(i): return _l[i]
                 to_replace = []
             else:
                 to_add, to_replace = ret
-            for a,b,err in to_replace:
-                if pset.find(a) < 0:
-                    raise ValueError(err)
-                pset = pset.replace(a,b)
+            #for a,b,err in to_replace:
+            #    if pset.find(a) < 0:
+            #        raise ValueError(err)
+            #    pset = pset.replace(a,b)
             if to_add:
                 pset += '\n' + '\n'.join(to_add) + '\n'
 

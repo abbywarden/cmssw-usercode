@@ -184,9 +184,9 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root'):
             
             signal.SetName("MC signal")
             signal.SetMarkerSize(0.8)
-            signal.SetMarkerColor(ROOT.kGreen+3)#Blue)
-            signal.SetLineColor(ROOT.kGreen+3)#Blue)
-            signal.SetFillColor(ROOT.kGreen+3)#Blue)
+            signal.SetMarkerColor(ROOT.kBlue)
+            signal.SetLineColor(ROOT.kBlue)
+            signal.SetFillColor(ROOT.kBlue)
             
             x_range = None
             y_range = None

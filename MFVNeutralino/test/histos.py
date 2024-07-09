@@ -7,6 +7,7 @@ from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, d
 #currently : keep histos slim -> do only Loose Vertices & NoCuts, Minntk = 3, 4, 5 
 #update : Selected Loose Vertices are changed to Tight Vertices
 #input_files(process, '/eos/uscms/store/group/lpclonglived/pkotamni/WplusH_HToSSTodddd_WToLNu_MH-125_MS-55_ctauS-1_TuneCP5_13TeV-powheg-pythia8/NtupleOffdzULV30LepMum_2017/240131_215245/0000/ntuple_0.root')
+#max_events(process, 100)
 tfileservice(process, 'histos.root')
 cmssw_from_argv(process)
 
@@ -179,12 +180,13 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = pick_samples(dataset, qcd=True, ttbar=False, all_signal=True, data=False, bjet=True) # no data currently; no sliced ttbar since inclusive is used
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier(), half_mc_modifier())
     elif use_MET_triggers:
-        samples = pick_samples(dataset, qcd=True, ttbar=False, data=False, leptonic=True, splitSUSY=True, Zvv=True, met=True, span_signal=False)
+        #samples = pick_samples(dataset, qcd=True, ttbar=False, data=False, leptonic=True, splitSUSY=True, Zvv=True, met=True, span_signal=False)
+        samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
         pset_modifier = chain_modifiers(is_mc_modifier)
-    elif use_Muon_triggers :
+    #elif use_Muon_triggers :
         #samples = pick_samples(dataset, qcd=True, all_signal=True, qcd_lep = True, leptonic=True, met=True, diboson=True, Lepton_data=False )
         #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, met=True, diboson=True, Lepton_data=False)
-        samples = pick_samples(dataset, all_signal=True)
+        #samples = pick_samples(dataset, all_signal=True)
         #samples = [getattr(Samples, 'WplusHToSSTodddd_tau300um_M55_2017')] 
         pset_modifier = chain_modifiers(is_mc_modifier, half_mc_modifier())
     elif use_Electron_triggers :

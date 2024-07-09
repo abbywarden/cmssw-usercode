@@ -25,7 +25,7 @@ tfileservice(process, 'eff.root')
 global_tag(process, which_global_tag(settings))
 max_events(process, 10000)
 dataset = 'miniaod'
-sample_files(process, 'wjetstolnu_2017', dataset, 1)
+#sample_files(process, 'wjetstolnu_2017', dataset, 1)
 
 process.load('JMTucker.Tools.MCStatProducer_cff')
 process.load('JMTucker.Tools.UpdatedJets_cff')
@@ -129,12 +129,15 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
 
     if year == 2017:
-        samples = Samples.leptonic_samples_2017 + Samples.met_samples_2017
+        #samples = Samples.leptonic_samples_2017 + Samples.met_samples_2017
+        samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
+        """
         if useElectron:
           samples += Samples.singleelectron_data_samples_2017
         else:
           samples += Samples.auxiliary_data_samples_2017
         samples += Samples.mfv_splitSUSY_samples_2017
+        """
     elif year == 2018:
         samples = Samples.leptonic_samples_2018 + Samples.met_samples_2018
         if useElectron:

@@ -4,12 +4,12 @@ from JMTucker.Tools.general import named_product
 from JMTucker.MFVNeutralino.NtupleCommon import *
 
 settings = NtupleSettings()
-settings.is_mc = True
+settings.is_mc = False
 settings.is_miniaod = True
-#settings.event_filter = 'electrons only novtx'
+#settings.event_filter= 'electrons only novtx'
 settings.event_filter = 'muons only novtx'
 
-version = settings.version + 'awdv7'
+version = settings.version + 'v8'
 
 # for stat extension
 #version = settings.version + 'ext1'
@@ -37,12 +37,16 @@ cfgs = named_product(njets = [2], #FIXME
 process = ntuple_process(settings)
 #tfileservice(process, '/uscms/home/pkotamni/nobackup/crabdirs/movedtree.root')
 tfileservice(process, 'movedtree.root')
-#max_events(process, 100)
+max_events(process, 100)
 dataset = 'miniaod' if settings.is_miniaod else 'main'
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/120001/A8C3978F-4BE4-A844-BEE8-8DEE129A02B7.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/100000/177D06A8-D7E8-E14A-8FB8-E638820EDFF3.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/110000/01DA55E6-2A8C-AE48-B2C4-A3DC37E2052D.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/110000/10063082-9BA1-D14B-A04D-EDA3288D079A.root')
+#input_files(process, '/store/data/Run2018A/SingleMuon/MINIAOD/UL2018_MiniAODv2-v3/2530003/8EE66525-2DBF-104B-8E6B-2BCA5B7A5BF0.root')
+#input_files(process, '/store/data/Run2017B/SingleMuon/MINIAOD/09Aug2019_UL2017-v1/50000/D086C8A4-780B-7B49-85FF-AD8892AB2F1F.root')
+#input_files(process, '/store/data/Run2016D/SingleMuon/MINIAOD/HIPM_UL2016_MiniAODv2-v2/120000/A229E024-341D-6243-A3B9-8C1BED78C181.root')
+input_files(process, '/store/data/Run2016C/SingleMuon/MINIAOD/HIPM_UL2016_MiniAODv2-v2/70000/AFDA6102-9B1C-664C-BC97-D644B7A2BD21.root')
 cmssw_from_argv(process)
 
 ####
@@ -118,19 +122,19 @@ for icfg, cfg in enumerate(cfgs):
                             )
 
     modifiedVertexSequence(process, ex, tracks_src = tracks_name,
-                           min_track_sigmadxy = 0,
-                           min_track_rescaled_sigmadxy = cfg.nsigmadxy,
-                           )
+                          min_track_sigmadxy = 0,
+                          min_track_rescaled_sigmadxy = cfg.nsigmadxy,
+                          )
 
     for x in 'mfvVerticesToJets', 'mfvVerticesAuxTmp', 'mfvVerticesAuxPresel':
-        getattr(process, x + ex).track_ref_getter.tracks_maps_srcs.append(cms.InputTag(tracks_name))
+       getattr(process, x + ex).track_ref_getter.tracks_maps_srcs.append(cms.InputTag(tracks_name))
 
     tree = cms.EDAnalyzer('MFVMovedTracksTreer',
                           jmtNtupleFiller_pset(settings.is_miniaod),
                           sel_tracks_src = cms.InputTag('mfvVertexTracks' + ex, 'all'),
                           mover_src = cms.string(tracks_name),
                           vertices_src = cms.InputTag(auxes_name),
-                          max_dist2move = cms.double(0.02),
+                          max_dist2move = cms.double(0.2), #FIXME relate to vtxunc 
                           apply_presel = cms.bool(True), #not a usual preselection cuts -- TM moved-jet cuts
                           njets_req = cms.uint32(cfg.njets),
                           nbjets_req = cms.uint32(cfg.nbjets),
@@ -147,9 +151,10 @@ random_service(process, random_dict)
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
-    #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, met=True, diboson=True, Lepton_data=True)
-    samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
-    set_splitting(samples, dataset, 'trackmover', data_json=json_path('ana_SingleLept_2017_10pc.json'), limit_ttbar=True)
+    #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, met=True, diboson=True, Lepton_data=False)
+    samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=True)
+    #samples = [getattr(Samples, 'wjetstolnu_2j_20162')]
+    set_splitting(samples, dataset, 'trackmover', data_json=json_path('ana_SingleLept_20161_10pc.json'), limit_ttbar=True)
 
     ms = MetaSubmitter('TrackMover' + version, dataset=dataset)
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, per_sample_pileup_weights_modifier())

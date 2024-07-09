@@ -101,32 +101,32 @@ namespace mfv {
  
   //For Lepton Trigger Studies; the following depends on years 
   // 2016
-  //static const std::vector<size_t> ElectronTriggers = {
-  //  //electron triggers
-  //  mfv::b_HLT_Ele27_WPTight_Gsf,
-  //  mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT, mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
-  //}; 
-  //static const std::vector<size_t> MuonTriggers = {
-  //  //muon triggers
-  //   mfv::b_HLT_IsoMu27, mfv::b_HLT_Mu50,
-  // };
-  //2017
   static const std::vector<size_t> ElectronTriggers = {
     //electron triggers
-    mfv::b_HLT_Ele35_WPTight_Gsf,
+    mfv::b_HLT_Ele27_WPTight_Gsf,
     mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT, mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
-  };
+  }; 
   static const std::vector<size_t> MuonTriggers = {
     //muon triggers
-    mfv::b_HLT_IsoMu27, mfv::b_HLT_Mu50,
-  };
+     mfv::b_HLT_IsoMu27, mfv::b_HLT_Mu50,
+   };
+  //2017
+  //static const std::vector<size_t> ElectronTriggers = {
+  //  //electron triggers
+  //  mfv::b_HLT_Ele35_WPTight_Gsf,
+  //  mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT, mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
+  //};
+  //static const std::vector<size_t> MuonTriggers = {
+  //  //muon triggers
+  //  mfv::b_HLT_IsoMu27, mfv::b_HLT_Mu50,
+  //};
   //2018
   //static const std::vector<size_t> ElectronTriggers = {
   //  //electron triggers 
   //  mfv::b_HLT_Ele32_WPTight_Gsf, mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT, mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
-  //}
+  //};
   //static const std::vector<size_t> MuonTriggers = {
-  //  mfv::b_HLT_IsoMu24, mfv::b_HLT_Mu50
+  //  mfv::b_HLT_IsoMu24, mfv::b_HLT_Mu50,
   //};
 
   //displaced lepton triggers 
