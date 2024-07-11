@@ -2,10 +2,10 @@ from JMTucker.Tools.MetaSubmitter import *
 from JMTucker.Tools.BasicAnalyzer_cfg import *
 from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_btag_triggers
 
-version = 'onnormdzulv30lepmumv9'
+version = 'onnormdzulv30lepmumv8'
 dataset = 'trackmover' + version
 apply_correction = False
-year = 2018
+year = 20161
 for nl in 2,: # 3:
     for nb in 0,: # 1, 2:
       for tau in [1000, ] : #[100, 300,1000, 3000, 30000] :
@@ -31,7 +31,7 @@ for nl in 2,: # 3:
               args = '-t mfvMovedTree%i%i --tau %i %s' % (nl, nb, tau, correction_args) 
               NtupleReader_submit(batch, dataset, samples, exe_args=args, input_fns_extra=w_fns)
           else:
-            samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=True)
+            samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, met=True, diboson=True, Lepton_data=True)
             #samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
             batch_tag = "noCorrection"
             correction_args = "--jet-decayweights false "

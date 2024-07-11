@@ -46,7 +46,8 @@ dataset = 'miniaod' if settings.is_miniaod else 'main'
 #input_files(process, '/store/data/Run2018A/SingleMuon/MINIAOD/UL2018_MiniAODv2-v3/2530003/8EE66525-2DBF-104B-8E6B-2BCA5B7A5BF0.root')
 #input_files(process, '/store/data/Run2017B/SingleMuon/MINIAOD/09Aug2019_UL2017-v1/50000/D086C8A4-780B-7B49-85FF-AD8892AB2F1F.root')
 #input_files(process, '/store/data/Run2016D/SingleMuon/MINIAOD/HIPM_UL2016_MiniAODv2-v2/120000/A229E024-341D-6243-A3B9-8C1BED78C181.root')
-input_files(process, '/store/data/Run2016C/SingleMuon/MINIAOD/HIPM_UL2016_MiniAODv2-v2/70000/AFDA6102-9B1C-664C-BC97-D644B7A2BD21.root')
+#input_files(process, '/store/data/Run2016C/SingleMuon/MINIAOD/HIPM_UL2016_MiniAODv2-v2/70000/510A870F-710D-B347-8F4A-E0460D6A5BD8.root')
+#input_files(process, '/store/mc/RunIISummer20UL16MiniAODAPVv2/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/280000/CADD920F-488D-2B47-9E9C-C78699A5F1A6.root')
 cmssw_from_argv(process)
 
 ####
