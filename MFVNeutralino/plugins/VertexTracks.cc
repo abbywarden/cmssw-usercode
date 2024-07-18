@@ -22,6 +22,7 @@
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "JMTucker/Tools/interface/AnalysisEras.h"
 #include "JMTucker/Tools/interface/TrackRescaler.h"
+#include <TRandom3.h>
 
 class MFVVertexTracks : public edm::EDFilter {
 public:
@@ -666,6 +667,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
 
   for (size_t i = 0, ie = all_tracks->size(); i < ie; ++i) {
     const reco::TrackRef& tk = (*all_tracks)[i];
+    TRandom3 *r3 = new TRandom3(); //Alec added
     const auto rs = track_rescaler.scale(*tk);
     const bool is_second_track = i >= second_tracks_start_at;
 
@@ -711,6 +713,8 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         (min_track_hit_r == 999 || min_r <= min_track_hit_r || (min_r == 2.0 && trackLostInnerHits == 0 ));
       
       if (!use_cheap) return false;
+
+      if (r3->Uniform(0,1) > 1-1.11786*dxybs*dxybs) return false; //Alec added
       
       if (primary_vertex && (max_track_dxyipverr > 0 || max_track_d3dipverr > 0)) {
         reco::TransientTrack ttk = tt_builder->build(tk);
@@ -756,6 +760,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
           { 0.04, 0.05, 0.03, 0.03, 0.08, 0.12, 0.09 }  // propagate error bars then add in quad shift and unc
         };
         prob = probs[remove_tracks_frac >= 50][ieta];
+	std::cout << "track with remove_track_frac 1 to 100" << std::endl;
       }
       else if (100 <= remove_tracks_frac) {
         const double N[2][7] = { { 160, 194, 104, 264, 303, 450, 414 },   // mc
@@ -765,6 +770,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         CLHEP::RandBinomial rr(rng_engine);
         const double mc   = rr.shoot(N[0][ieta], p[0][ieta]) / N[0][ieta];
         const double data = rr.shoot(N[1][ieta], p[1][ieta]) / N[1][ieta];
+        std::cout << "mc shoot:" << mc << ", data shoot:" << data << ", ieta:" << ieta << std::endl;
         prob = mc > data ? mc/data - 1 : 0;
       }
 

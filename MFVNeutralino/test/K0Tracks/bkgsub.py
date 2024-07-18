@@ -20,6 +20,7 @@ in_f.Get('massall/h_premass').Draw()
 ps.save('prefit_mass')
 
 h = in_f.Get('massall/h_mass')
+#h = in_f.Get('massall/h_mass_ptgt2lt5_dxygtp02ltp1_pimaxtrack')
 
 # must keep these numbers in sync
 fit_range = 0.420, 0.580
@@ -162,8 +163,10 @@ def integ(h):
 
 scans = False
 variables = [
+    #('h_mass',1, 1, None, -1),
     ('h_chi2dof', 1, 1, None, -1),
     ('h_rho', 1, 1, None, 1),
+    ('h_dbv', 1, 1, None, 1),
     ('h_ct', 1, 1, None, 1),
     ('h_ctau', 1, 1, None, 1),
     ('h_p', 1, 1, None, -1),
@@ -187,6 +190,10 @@ variables = [
     ('h_tracks_npxlayers', 2, 1, None, 0),
     ('h_tracks_nstlayers', 2, 1, None, 0),
     ('h_tracks_dxyerr_v_pt', 2, None, (0, 40), 0),
+    ('h_dbv_v_pt', 1, None, None, 0),
+    ('h_tracks_absdxy_v_pt', 2, 1, None, 1),
+    ('h_tracks_absdxy_v_alphapt', 2, None, None, 1)
+    #('h_ptgt2lt5_dxygtp02ltp1_maxtracks_absdxy_v_alphapt', 2, None, None, 1)
     ]
 
 for hname, integ_factor, rebin, x_range, scan_dir in variables:
@@ -203,8 +210,8 @@ for hname, integ_factor, rebin, x_range, scan_dir in variables:
     hbkg.Add(hbkghi)
     hsig = hon.Clone('hsig')
 
-    if abs(integ(hon) - integ_factor * the_d.n) > 1e-5:
-        raise ValueError('hint %s n %s' % (hint, the_d.n))
+    #if abs(integ(hon) - integ_factor * the_d.n) > 1e-5:
+    #    raise ValueError('hint %s n %s' % (hint, the_d.n))
 
     hbkg.Scale(the_d.b / integ(hbkg))
     hsig.Add(hbkg, -1)

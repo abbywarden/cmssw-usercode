@@ -1656,23 +1656,27 @@ def plot_dir(x='', make=False, temp=False):
     hostname = os.environ['HOSTNAME']
     username = os.environ['USER']
     d = None
-    if 'fnal.gov' in hostname and username == 'tucker':
-        if temp:
-            d = '/publicweb/t/tucker/asdf/tempplots'
-        else:
-            d = '/publicweb/t/tucker/asdf/plots'
-    elif 'fnal.gov' in hostname and username == 'jchu':
-        d = '/publicweb/j/jchu/plots'
-    elif 'fnal.gov' in hostname and username == 'dquach':
-        d = '/publicweb/d/dquach/plots'
-    elif 'fnal.gov' in hostname and username == 'shogan':
-	d = '/publicweb/s/shogan/images'
-    elif 'fnal.gov' in hostname and username == 'joeyr':
-        d = '/publicweb/j/joeyr/plots'
-    elif 'fnal.gov' in hostname and username == 'ali':
-        d = '/publicweb/a/ali/'
-    elif 'fnal.gov' in hostname and username == 'pkotamni':
-        d = '~/nobackup/crabdirs/'
+    #if 'fnal.gov' in hostname and username == 'tucker':
+    #    if temp:
+    #        d = '/publicweb/t/tucker/asdf/tempplots'
+    #    else:
+    #        d = '/publicweb/t/tucker/asdf/plots'
+    #elif 'fnal.gov' in hostname and username == 'jchu':
+    #    d = '/publicweb/j/jchu/plots'
+    #elif 'fnal.gov' in hostname and username == 'dquach':
+    #    d = '/publicweb/d/dquach/plots'
+    #elif 'fnal.gov' in hostname and username == 'shogan':
+    #    d = '/publicweb/s/shogan/images'
+    #elif 'fnal.gov' in hostname and username == 'joeyr':
+    #    d = '/publicweb/j/joeyr/plots'
+    #elif 'fnal.gov' in hostname and username == 'ali':
+    #    d = '/publicweb/a/ali/'
+    #elif 'fnal.gov' in hostname and username == 'pkotamni':
+    #    d = '~/nobackup/crabdirs/'
+    #elif 'fnal.gov' in hostname and username == 'alecduqu':
+    #    d = '~/crab_dirs/'        Alec removed this and added the two lines below
+    if 'fnal.gov' in hostname :
+        d = '~/crab_dirs/'
     if d:
         x = os.path.join(d,x)
     else:
