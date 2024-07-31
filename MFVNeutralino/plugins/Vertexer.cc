@@ -34,6 +34,7 @@
 #include "JMTucker/Tools/interface/Utilities.h"
 #include "JMTucker/Tools/interface/TrackRescaler.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+#include <TRandom3.h>
 
 class MFVVertexer : public edm::EDProducer {
   public:
@@ -549,6 +550,7 @@ void MFVVertexer::finish(edm::Event& event, const std::vector<reco::TransientTra
   
   edm::Handle<reco::BeamSpot> beamspot;
   event.getByToken(beamspot_token, beamspot);
+  TRandom3 *r3 = new TRandom3(); //Alec added
   for (const reco::TransientTrack& ttk : all_tracks) {
 	  tracks_all->push_back(ttk.track());
 	  const reco::TrackBaseRef& tk(ttk.trackBaseRef());
@@ -570,6 +572,8 @@ void MFVVertexer::finish(edm::Event& event, const std::vector<reco::TransientTra
           const int npxhits = ttk.track().hitPattern().numberOfValidPixelHits();
           const int nsthits = ttk.track().hitPattern().numberOfValidStripHits();
           //const int missinghits = ttk.track().missingInnerHits();
+	  const double track_recon_eff = 1-1.11786*fabs(dxybs)*fabs(dxybs); //Alec added
+	  if (r3->Uniform(0,1) > track_recon_eff) continue; //Alec added
           
 		  
 		  const auto trackLostInnerHits = ttk.track().hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS);

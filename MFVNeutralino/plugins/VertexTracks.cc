@@ -84,6 +84,7 @@ private:
   TH1F* h_n_all_tracks;
   TH1F* h_all_track_pars[7];
   TH1F* h_all_track_errs[7];
+  TH1F* h_all_track_absdxybs; //Alec added
   TH1F* h_all_track_p;
   TH1F* h_all_track_pt_barrel;
   TH1F* h_all_track_pt_endcap;
@@ -357,6 +358,7 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
       h_all_mutrack_pars[i] = fs->make<TH1F>(TString::Format("h_all_mutrack_%s",    par_names[i]), "", par_nbins[i], par_lo[i], par_hi[i]);
       h_all_mutrack_errs[i] = fs->make<TH1F>(TString::Format("h_all_mutrack_err%s", par_names[i]), "", par_nbins[i], err_lo[i], err_hi[i]);
     }
+    h_all_track_absdxybs = fs->make<TH1F>("h_all_track_absdxybs", ";all track's |dxybs| (cm)", 500, 0, 1); //Alec added
 
     h_all_track_p = fs->make<TH1F>("h_all_track_p", ";all track's p (GeV)", 50, 0, 10);
     h_all_track_pt_barrel = fs->make<TH1F>("h_all_track_pt_barrel", ";all track's p_{T} in barrel (GeV)", 50, 0, 10);
@@ -665,9 +667,9 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
     std::random_shuffle(all_tracks->begin(), all_tracks->end(), random_converter);
   }
 
+  TRandom3 *r3 = new TRandom3(); //Alec added
   for (size_t i = 0, ie = all_tracks->size(); i < ie; ++i) {
     const reco::TrackRef& tk = (*all_tracks)[i];
-    TRandom3 *r3 = new TRandom3(); //Alec added
     const auto rs = track_rescaler.scale(*tk);
     const bool is_second_track = i >= second_tracks_start_at;
 
@@ -689,6 +691,8 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
     const int npxlayers = tk->hitPattern().pixelLayersWithMeasurement();
     const int nstlayers = tk->hitPattern().stripLayersWithMeasurement();
     const auto trackLostInnerHits = tk->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS);
+    const double track_recon_eff = 1-1.11786*fabs(dxybs)*fabs(dxybs); //Alec added
+    if (r3->Uniform(0,1) > track_recon_eff) continue; //Alec added
     int min_r = 2000000000;
     for (int i = 1; i <= 4; ++i)
       if (tk->hitPattern().hasValidHitInPixelLayer(PixelSubdetector::PixelBarrel,i)) {
@@ -714,7 +718,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
       
       if (!use_cheap) return false;
 
-      if (r3->Uniform(0,1) > 1-1.11786*dxybs*dxybs) return false; //Alec added
+      //if (r3->Uniform(0,1) > 1-1.11786*dxybs*dxybs) return false; //Alec added
       
       if (primary_vertex && (max_track_dxyipverr > 0 || max_track_d3dipverr > 0)) {
         reco::TransientTrack ttk = tt_builder->build(tk);
@@ -835,6 +839,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         h_all_track_pars[i]->Fill(pars[i]);
         h_all_track_errs[i]->Fill(errs[i]);
       }
+      h_all_track_absdxybs->Fill(fabs(dxybs)); //Alec added
 
       h_all_track_p->Fill(p);
       if (abs(tk->eta())<1.4){
