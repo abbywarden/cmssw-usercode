@@ -109,8 +109,8 @@ def get_local_fns(name, ds, num=-1):
     fns = _d[(name, ds)][1]
     if num > 0:
         fns = fns[:num]
-    return [('root://cmseos.fnal.gov/' + fn) if (fn.startswith('/store/user') or fn.startswith('/store/group')) else fn for fn in fns]
-    #return [('root://cmsxrootd.hep.wisc.edu/' + fn) if fn.startswith('/store/user') else fn for fn in fns]
+    #return [('root://cmseos.fnal.gov/' + fn) if fn.startswith('/store/user') else fn for fn in fns]
+    return [('root://cmsxrootd.hep.wisc.edu/' + fn) if fn.startswith('/store/user') else fn for fn in fns]
 
 def set_process(process, name, ds, num=-1):
     process.source.fileNames = get_local_fns(name, ds, num)
@@ -2430,6 +2430,9 @@ _add_ds("ntupleulv11lepm_wgen", {
 'mfv_stopld_tau030000um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_111012", 101),
 })
 """
+
+#TrackingTreer 2018 
+
 
 #TrackingTreer 2018 
 

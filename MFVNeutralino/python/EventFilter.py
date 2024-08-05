@@ -42,6 +42,8 @@ def setup_event_filter(process,
         trigger_filter = 'muons only'
     elif mode == 'trigger electrons only':
         trigger_filter = 'electrons only'
+    elif mode == 'trigger leptons only':
+        trigger_filter = 'leptons only'
     elif mode == 'jets only':
         trigger_filter = event_filter = 'jets only'
     elif mode == 'muons only':

@@ -3,6 +3,7 @@ import FWCore.ParameterSet.Config as cms
 
 mfvVerticesToLeptons = cms.EDProducer('MFVLeptonVertexAssociator',
                                    enable = cms.bool(True),
+                                   beamspot_src = cms.InputTag('offlineBeamSpot'),
                                    muons_src = cms.InputTag('slimmedMuons'),
                                    electrons_src = cms.InputTag('slimmedElectrons'),
                                    muon_seed_tracks_src = cms.InputTag('mfvVertexTracks', 'museed'),
