@@ -86,7 +86,8 @@ private:
   const bool verbose;
   const std::string module_label;
 
-  jmt::TrackRescaler track_rescaler;
+  jmt::TrackRescaler_wLep track_rescaler;
+  // jmt::TrackRescaler track_rescaler;
 
   TH1F* h_n_all_tracks;
   TH1F* h_all_track_pars[7];
@@ -524,7 +525,8 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
 // const int track_rescaler_which = jmt::TrackRescaler::w_JetHT; // JMTBAD which rescaling if ever a different one
   track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
                        jmt::AnalysisEras::pick(event, this),
-                       track_rescaler_which);
+                       track_rescaler_which,
+                       "");
 
   // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
   //                      jmt::AnalysisEras::pick(event, this),

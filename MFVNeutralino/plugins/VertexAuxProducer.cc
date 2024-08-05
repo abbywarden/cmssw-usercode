@@ -38,7 +38,8 @@ class MFVVertexAuxProducer : public edm::EDProducer {
   void produce(edm::Event&, const edm::EventSetup&);
 
  private:
-  jmt::TrackRescaler track_rescaler;
+  jmt::TrackRescaler_wLep track_rescaler;
+  // jmt::TrackRescaler track_rescaler;
   std::unique_ptr<KalmanVertexFitter> kv_reco;
   const edm::EDGetTokenT<reco::BeamSpot> beamspot_token;
   const edm::EDGetTokenT<reco::VertexCollection> primary_vertex_token;
@@ -137,7 +138,8 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
   const int track_rescaler_which = 0; // JMTBAD which rescaling if ever a different one (0 : BTagDisplJet, 1 : SingleLepton, 2 : JetHT, -1 disable)
   track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
                        jmt::AnalysisEras::pick(event, this),
-                       track_rescaler_which);
+                       track_rescaler_which,
+                       "");
 
   // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
   //                      jmt::AnalysisEras::pick(event, this),
