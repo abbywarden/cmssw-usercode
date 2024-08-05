@@ -74,6 +74,7 @@ def _set_signal_stuff(sample):
     sample.mass = _mass(sample)
     sample.latex = _latex(sample)
     sample.xsec = 1e-3
+    #sample.xsec = 0.00615134
     sample.is_private = sample.dataset.startswith('/mfv_') and sample.dataset.endswith('/USER')
     if sample.is_private:
         sample.dbs_inst = 'phys03'
@@ -111,6 +112,12 @@ leptonic_samples_20161 = [
 
 met_samples_20161 = [
     MCSample('ttbar_20161',     '/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM',                    94164991, nice='t#bar{t}',                                  color=4,   syst_frac=0.15, xsec=831.76),
+]
+
+ttbar_samples_20161 = [
+    MCSample('ttbar_lep_20161',     '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM',                    37505000, nice='t#bar{t}',                                  color=4,   syst_frac=0.15, xsec=88.29),
+    MCSample('ttbar_semilep_20161', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM',             132178000, nice='t#bar{t}',                                 color=4,   syst_frac=0.15, xsec=365.34),
+    MCSample('ttbar_had_20161',     '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODAPVv2-106X_mcRun2_asymptotic_preVFP_v11-v1/MINIAODSIM',                 97600000, nice='t#bar{t}',                                 color=4,   syst_frac=0.15, xsec=377.96),
 ]
 
 diboson_samples_20161 = [
@@ -257,6 +264,13 @@ leptonic_samples_20162 = [
 met_samples_20162 = [
     MCSample('ttbar_20162',     '/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM',                    90609841, nice='t#bar{t}',                                  color=4,   syst_frac=0.15, xsec=831.76),
 ]
+
+ttbar_samples_20162 = [
+    MCSample('ttbar_lep_20162',     '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM',                    43630000, nice='t#bar{t}',                                  color=4,   syst_frac=0.15, xsec=88.29),
+    MCSample('ttbar_semilep_20162', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM',             144974000 , nice='t#bar{t}',                                 color=4,   syst_frac=0.15, xsec=365.34),
+    MCSample('ttbar_had_20162',     '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM',                 109380000, nice='t#bar{t}',                                 color=4,   syst_frac=0.15, xsec=377.96),
+]
+
 
 diboson_samples_20162 = [
     MCSample('ww_20162', '/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL16MiniAODv2-106X_mcRun2_asymptotic_v17-v1/MINIAODSIM', 15821000, nice='WW', color = 9, syst_frac=0.10, xsec=75.8),
@@ -408,9 +422,12 @@ qcd_lep_samples_2017 = [
     MCSample('qcdbctoept250_2017', '/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v3/MINIAODSIM',    15557421, nice='QCD, #hat{p}_{T} > 250 GeV, HF electrons',       color=801, syst_frac=0.20, xsec=562.5),
     ]
     
-# ttbar with HT slices not available for UL now
 ttbar_samples_2017 = [
+    MCSample('ttbar_lep_2017',            '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v1/MINIAODSIM',             106724000, nice='t#bar{t}',                                 color=4,   syst_frac=0.15, xsec=88.29),
+    MCSample('ttbar_semilep_2017', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v1/MINIAODSIM',             355332000, nice='t#bar{t}',                                 color=4,   syst_frac=0.15, xsec=365.34),
+    MCSample('ttbar_had_2017',         '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL17MiniAODv2-106X_mc2017_realistic_v9-v2/MINIAODSIM',             235719999, nice='t#bar{t}',                                 color=4,   syst_frac=0.15, xsec=377.96),
 ]
+
 bjet_samples_2017 = [
     ]
 
@@ -664,16 +681,22 @@ qcd_lep_samples_2018 = [
     MCSample('qcdempt080_2018', '/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',    9468372, nice='QCD,  80 < #hat{p}_{T} < 120 GeV, EM enriched', color=801, syst_frac=0.20, xsec=3.675e5),
     MCSample('qcdempt120_2018', '/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',   9677904, nice='QCD, 120 < #hat{p}_{T} < 170 GeV, EM enriched', color=801, syst_frac=0.20, xsec=6.659e4),
     MCSample('qcdempt170_2018', '/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',   3714642, nice='QCD, 170 < #hat{p}_{T} < 300 GeV, EM enriched', color=801, syst_frac=0.20, xsec=1.662e4),
-    MCSample('qcdempt300_2018', '/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',   2215994, nice='QCD, #hat{p}_{T} > 300 GeV, EM enriched',       color=801, syst_frac=0.20, xsec=1104.0),
+    #MCSample('qcdempt300_2018', '/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',   2215994, nice='QCD, #hat{p}_{T} > 300 GeV, EM enriched',       color=801, syst_frac=0.20, xsec=1104.0),
     MCSample('qcdbctoept015_2018', '/QCD_Pt_15to20_bcToE_TuneCP5_13TeV_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',      16549971, nice='QCD,  15 < #hat{p}_{T} <  20 GeV, HF electrons', color=801, syst_frac=0.20, xsec=1.862e5),
     MCSample('qcdbctoept020_2018', '/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',      14061214, nice='QCD,  20 < #hat{p}_{T} <  30 GeV, HF electrons', color=801, syst_frac=0.20, xsec=3.038e5),
     MCSample('qcdbctoept030_2018', '/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',      15358726, nice='QCD,  30 < #hat{p}_{T} <  80 GeV, HF electrons', color=801, syst_frac=0.20, xsec=3.623e5),
     MCSample('qcdbctoept080_2018', '/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',     15186397, nice='QCD,  80 < #hat{p}_{T} < 170 GeV, HF electrons', color=801, syst_frac=0.20, xsec=3.37e4),
     MCSample('qcdbctoept170_2018', '/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v3/MINIAODSIM',    15735786, nice='QCD, 170 < #hat{p}_{T} < 250 GeV, HF electrons', color=801, syst_frac=0.20, xsec=2.125e3),
     MCSample('qcdbctoept250_2018', '/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v3/MINIAODSIM',    15767690, nice='QCD, #hat{p}_{T} > 250 GeV, HF electrons',       color=801, syst_frac=0.20, xsec=562.5),
+    MCSample('qcdempt300_2018', '/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',   2215994, nice='QCD, #hat{p}_{T} > 300 GeV, EM enriched',       color=801, syst_frac=0.20, xsec=1104.0),
+
 ]
 
-ttbar_samples_2018 = []
+ttbar_samples_2018 = [
+    MCSample('ttbar_lep_2018',            '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM',             146010000, nice='t#bar{t}',                                 color=4,   syst_frac=0.15, xsec=88.29),
+    MCSample('ttbar_semilep_2018', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',             478982000, nice='t#bar{t}',                                 color=4,   syst_frac=0.15, xsec=365.34),
+    MCSample('ttbar_had_2018',         '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM',             343248000, nice='t#bar{t}',                                 color=4,   syst_frac=0.15, xsec=377.96),
+]
 
 bjet_samples_2018 = []
 
@@ -685,6 +708,7 @@ bjet_samples_2018 = []
 
 leptonic_samples_2018 = [
     MCSample('wjetstolnu_2018',       '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM',          82442496, nice='$W + jets #rightarrow l#nu$', color=  9, syst_frac=0.10, xsec=5.294e4),
+    MCSample('wjetstolnu_ext_2018',       '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1_ext1-v2/MINIAODSIM',     79648036, nice='$W + jets #rightarrow l#nu$', color=  9, syst_frac=0.10, xsec=5.294e4),
     MCSample('dyjetstollM10_2018',    '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v1/MINIAODSIM', 99288125, nice='$DY + jets #rightarrow ll$, $10 < M < 50$ \\GeV', color= 29, syst_frac=0.10, xsec=1.589e4),
     MCSample('dyjetstollM50_2018',    '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM',     96233328, nice='$DY + jets #rightarrow ll$, $M > 50$ \\GeV', color= 32, syst_frac=0.10, xsec=5.398e3),
 ]
@@ -717,109 +741,111 @@ Zvv_samples_2018 = [
 
 mfv_splitSUSY_samples_2018 = []
 
+#reorder to help with later computations 
 mfv_stoplb_samples_2018 = [
-    MCSample('mfv_stoplb_tau000100um_M1000_2018', '/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202114),
-    MCSample('mfv_stoplb_tau000300um_M1000_2018', '/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196665),
-    MCSample('mfv_stoplb_tau010000um_M1000_2018', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99062),
-    MCSample('mfv_stoplb_tau001000um_M1000_2018', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196748),
-    MCSample('mfv_stoplb_tau030000um_M1000_2018', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199216),
-    MCSample('mfv_stoplb_tau000100um_M1200_2018', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197949),
-    MCSample('mfv_stoplb_tau000300um_M1200_2018', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198241),
-    MCSample('mfv_stoplb_tau010000um_M1200_2018', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 98201),
-    MCSample('mfv_stoplb_tau001000um_M1200_2018', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199473),
-    MCSample('mfv_stoplb_tau030000um_M1200_2018', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199458),
-    MCSample('mfv_stoplb_tau000100um_M1400_2018', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199272),
-    MCSample('mfv_stoplb_tau000300um_M1400_2018', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200098),
-    MCSample('mfv_stoplb_tau010000um_M1400_2018', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99970),
-    MCSample('mfv_stoplb_tau001000um_M1400_2018', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200807),
-    MCSample('mfv_stoplb_tau030000um_M1400_2018', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200816),
-    MCSample('mfv_stoplb_tau000100um_M1600_2018', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199366),
-    MCSample('mfv_stoplb_tau000300um_M1600_2018', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202756),
-    MCSample('mfv_stoplb_tau010000um_M1600_2018', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 101586),
-    MCSample('mfv_stoplb_tau001000um_M1600_2018', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99806),
-    MCSample('mfv_stoplb_tau030000um_M1600_2018', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 100560),
-    MCSample('mfv_stoplb_tau000100um_M1800_2018', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200523),
-    MCSample('mfv_stoplb_tau000300um_M1800_2018', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199868),
-    MCSample('mfv_stoplb_tau010000um_M1800_2018', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 101211),
-    MCSample('mfv_stoplb_tau001000um_M1800_2018', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 100171),
-    MCSample('mfv_stoplb_tau030000um_M1800_2018', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 100346),
     MCSample('mfv_stoplb_tau000100um_M0200_2018', '/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198986),
     MCSample('mfv_stoplb_tau000300um_M0200_2018', '/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199542),
-    MCSample('mfv_stoplb_tau010000um_M0200_2018', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198147),
     MCSample('mfv_stoplb_tau001000um_M0200_2018', '/DisplacedSUSY_stopToLBottom_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198269),
+    MCSample('mfv_stoplb_tau010000um_M0200_2018', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198147),
     MCSample('mfv_stoplb_tau030000um_M0200_2018', '/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197780),
     MCSample('mfv_stoplb_tau000100um_M0300_2018', '/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198372),
     MCSample('mfv_stoplb_tau000300um_M0300_2018', '/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 203023),
-    MCSample('mfv_stoplb_tau010000um_M0300_2018', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196154),
     MCSample('mfv_stoplb_tau001000um_M0300_2018', '/DisplacedSUSY_stopToLBottom_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197602),
+    MCSample('mfv_stoplb_tau010000um_M0300_2018', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196154),
     MCSample('mfv_stoplb_tau030000um_M0300_2018', '/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196763),
     MCSample('mfv_stoplb_tau000100um_M0400_2018', '/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200505),
     MCSample('mfv_stoplb_tau000300um_M0400_2018', '/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200842),
-    MCSample('mfv_stoplb_tau010000um_M0400_2018', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198963),
     MCSample('mfv_stoplb_tau001000um_M0400_2018', '/DisplacedSUSY_stopToLBottom_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199860),
+    MCSample('mfv_stoplb_tau010000um_M0400_2018', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198963),
     MCSample('mfv_stoplb_tau030000um_M0400_2018', '/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198368),
     MCSample('mfv_stoplb_tau000100um_M0600_2018', '/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198211),
     MCSample('mfv_stoplb_tau000300um_M0600_2018', '/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199368),
-    MCSample('mfv_stoplb_tau010000um_M0600_2018', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197845),
     MCSample('mfv_stoplb_tau001000um_M0600_2018', '/DisplacedSUSY_stopToLBottom_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196032),
+    MCSample('mfv_stoplb_tau010000um_M0600_2018', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197845),
     MCSample('mfv_stoplb_tau030000um_M0600_2018', '/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 201533),
     MCSample('mfv_stoplb_tau000100um_M0800_2018', '/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202319),
     MCSample('mfv_stoplb_tau000300um_M0800_2018', '/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200738),
+    MCSample('mfv_stoplb_tau001000um_M0800_2018', '/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202348),    
     MCSample('mfv_stoplb_tau010000um_M0800_2018', '/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99747),
-    MCSample('mfv_stoplb_tau001000um_M0800_2018', '/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202348),
     MCSample('mfv_stoplb_tau030000um_M0800_2018', '/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199087),
+    MCSample('mfv_stoplb_tau000100um_M1000_2018', '/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202114),
+    MCSample('mfv_stoplb_tau000300um_M1000_2018', '/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196665),
+    MCSample('mfv_stoplb_tau001000um_M1000_2018', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196748),    
+    MCSample('mfv_stoplb_tau010000um_M1000_2018', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99062),
+    MCSample('mfv_stoplb_tau030000um_M1000_2018', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199216),
+    MCSample('mfv_stoplb_tau000100um_M1200_2018', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197949),
+    MCSample('mfv_stoplb_tau000300um_M1200_2018', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198241),
+    MCSample('mfv_stoplb_tau001000um_M1200_2018', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199473),   
+    MCSample('mfv_stoplb_tau010000um_M1200_2018', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 98201),
+    MCSample('mfv_stoplb_tau030000um_M1200_2018', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199458),
+    MCSample('mfv_stoplb_tau000100um_M1400_2018', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199272),
+    MCSample('mfv_stoplb_tau000300um_M1400_2018', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200098),
+    MCSample('mfv_stoplb_tau001000um_M1400_2018', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200807),   
+    MCSample('mfv_stoplb_tau010000um_M1400_2018', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99970),
+    MCSample('mfv_stoplb_tau030000um_M1400_2018', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200816),
+    MCSample('mfv_stoplb_tau000100um_M1600_2018', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199366),
+    MCSample('mfv_stoplb_tau000300um_M1600_2018', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202756),
+    MCSample('mfv_stoplb_tau001000um_M1600_2018', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99806),    
+    MCSample('mfv_stoplb_tau010000um_M1600_2018', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 101586),
+    MCSample('mfv_stoplb_tau030000um_M1600_2018', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 100560),
+    MCSample('mfv_stoplb_tau000100um_M1800_2018', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200523),
+    MCSample('mfv_stoplb_tau000300um_M1800_2018', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199868),
+    MCSample('mfv_stoplb_tau001000um_M1800_2018', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 100171),   
+    MCSample('mfv_stoplb_tau010000um_M1800_2018', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 101211),
+    MCSample('mfv_stoplb_tau030000um_M1800_2018', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 100346),
 ]
+
 mfv_stopld_samples_2018 = [
-    MCSample('mfv_stopld_tau000100um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198858),
-    MCSample('mfv_stopld_tau000300um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199006),
-    MCSample('mfv_stopld_tau010000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 98581),
-    MCSample('mfv_stopld_tau001000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196285),
-    MCSample('mfv_stopld_tau030000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199499),
-    MCSample('mfv_stopld_tau000100um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 195354),
-    MCSample('mfv_stopld_tau000300um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 195508,),
-    MCSample('mfv_stopld_tau010000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 98617),
-    MCSample('mfv_stopld_tau001000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200103),
-    MCSample('mfv_stopld_tau030000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200964),
-    MCSample('mfv_stopld_tau000100um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200045),
-    MCSample('mfv_stopld_tau000300um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202529),
-    MCSample('mfv_stopld_tau010000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 100228),
-    MCSample('mfv_stopld_tau001000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196708),
-    MCSample('mfv_stopld_tau030000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 201992),
-    MCSample('mfv_stopld_tau000100um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 201300),
-    MCSample('mfv_stopld_tau000300um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197421),
-    MCSample('mfv_stopld_tau010000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99387),
-    MCSample('mfv_stopld_tau001000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 100838),
-    MCSample('mfv_stopld_tau030000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 97752),
-    MCSample('mfv_stopld_tau000100um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202746),
-    MCSample('mfv_stopld_tau000300um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199924),
-    MCSample('mfv_stopld_tau010000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99400),
-    MCSample('mfv_stopld_tau001000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99515),
-    MCSample('mfv_stopld_tau030000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 98449),
     MCSample('mfv_stopld_tau000100um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197970),
     MCSample('mfv_stopld_tau000300um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198800),
+    MCSample('mfv_stopld_tau001000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200411),   
     MCSample('mfv_stopld_tau010000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199856),
-    MCSample('mfv_stopld_tau001000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200411),
     MCSample('mfv_stopld_tau030000um_M0200_2018', '/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202558),
     MCSample('mfv_stopld_tau000100um_M0300_2018', '/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196635),
     MCSample('mfv_stopld_tau000300um_M0300_2018', '/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198796),
+    MCSample('mfv_stopld_tau001000um_M0300_2018', '/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200543),   
     MCSample('mfv_stopld_tau010000um_M0300_2018', '/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197769),
-    MCSample('mfv_stopld_tau001000um_M0300_2018', '/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200543),
     MCSample('mfv_stopld_tau030000um_M0300_2018', '/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198495),
     MCSample('mfv_stopld_tau000100um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 201643),
     MCSample('mfv_stopld_tau000300um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197079),
+    MCSample('mfv_stopld_tau001000um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200098),   
     MCSample('mfv_stopld_tau010000um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198270),
-    MCSample('mfv_stopld_tau001000um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200098),
     MCSample('mfv_stopld_tau030000um_M0400_2018', '/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 203160),
     MCSample('mfv_stopld_tau000100um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198964),
     MCSample('mfv_stopld_tau000300um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198408),
+    MCSample('mfv_stopld_tau001000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199759),   
     MCSample('mfv_stopld_tau010000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200404),
-    MCSample('mfv_stopld_tau001000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199759),
     MCSample('mfv_stopld_tau030000um_M0600_2018', '/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200030),
     MCSample('mfv_stopld_tau000100um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197872),
     MCSample('mfv_stopld_tau000300um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202036),
+    MCSample('mfv_stopld_tau001000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199217),   
     MCSample('mfv_stopld_tau010000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 100507),
-    MCSample('mfv_stopld_tau001000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199217),
     MCSample('mfv_stopld_tau030000um_M0800_2018', '/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197136),
+    MCSample('mfv_stopld_tau000100um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 198858),
+    MCSample('mfv_stopld_tau000300um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199006),
+    MCSample('mfv_stopld_tau001000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196285),   
+    MCSample('mfv_stopld_tau010000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 98581),
+    MCSample('mfv_stopld_tau030000um_M1000_2018', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199499),
+    MCSample('mfv_stopld_tau000100um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 195354),
+    MCSample('mfv_stopld_tau000300um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 195508,),
+    MCSample('mfv_stopld_tau001000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200103),   
+    MCSample('mfv_stopld_tau010000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 98617),
+    MCSample('mfv_stopld_tau030000um_M1200_2018', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200964),
+    MCSample('mfv_stopld_tau000100um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 200045),
+    MCSample('mfv_stopld_tau000300um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202529),
+    MCSample('mfv_stopld_tau001000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 196708),   
+    MCSample('mfv_stopld_tau010000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 100228),
+    MCSample('mfv_stopld_tau030000um_M1400_2018', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 201992),
+    MCSample('mfv_stopld_tau000100um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 201300),
+    MCSample('mfv_stopld_tau000300um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 197421),
+    MCSample('mfv_stopld_tau001000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 100838),  
+    MCSample('mfv_stopld_tau010000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99387),
+    MCSample('mfv_stopld_tau030000um_M1600_2018', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 97752),
+    MCSample('mfv_stopld_tau000100um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 202746),
+    MCSample('mfv_stopld_tau000300um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 199924),
+    MCSample('mfv_stopld_tau001000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99515),   
+    MCSample('mfv_stopld_tau010000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 99400),
+    MCSample('mfv_stopld_tau030000um_M1800_2018', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/RunIISummer20UL18MiniAODv2-106X_upgrade2018_realistic_v16_L1v1-v2/MINIAODSIM', 98449),
 ]
 # private samples 
 # mfv_stopld_samples_2018 = [
@@ -876,17 +902,31 @@ data_samples_2017 = [                                                       # in
 #FIXME: may need to reorganize how data is loaded for different cases
 JetHT_data_samples_2017 = []
 
+#switching to MiniAODv2 
+# Lepton_data_samples_2017 = [
+#     DataSample('SingleMuon2017B', '/SingleMuon/Run2017B-09Aug2019_UL2017-v1/AOD'),
+#     DataSample('SingleMuon2017C', '/SingleMuon/Run2017C-09Aug2019_UL2017-v1/AOD'),
+#     DataSample('SingleMuon2017D', '/SingleMuon/Run2017D-09Aug2019_UL2017-v1/AOD'),
+#     DataSample('SingleMuon2017E', '/SingleMuon/Run2017E-09Aug2019_UL2017-v1/AOD'),
+#     DataSample('SingleMuon2017F', '/SingleMuon/Run2017F-09Aug2019_UL2017-v1/AOD'),
+#     DataSample('SingleElectron2017B', '/SingleElectron/Run2017B-09Aug2019_UL2017-v1/AOD'),
+#     DataSample('SingleElectron2017C', '/SingleElectron/Run2017C-09Aug2019_UL2017-v1/AOD'),
+#     DataSample('SingleElectron2017D', '/SingleElectron/Run2017D-09Aug2019_UL2017-v1/AOD'),
+#     DataSample('SingleElectron2017E', '/SingleElectron/Run2017E-09Aug2019_UL2017-v1/AOD'),
+#     DataSample('SingleElectron2017F', '/SingleElectron/Run2017F-09Aug2019_UL2017_rsb-v2/AOD'),
+#     ]
+
 Lepton_data_samples_2017 = [
-    DataSample('SingleMuon2017B', '/SingleMuon/Run2017B-09Aug2019_UL2017-v1/AOD'),
-    DataSample('SingleMuon2017C', '/SingleMuon/Run2017C-09Aug2019_UL2017-v1/AOD'),
-    DataSample('SingleMuon2017D', '/SingleMuon/Run2017D-09Aug2019_UL2017-v1/AOD'),
-    DataSample('SingleMuon2017E', '/SingleMuon/Run2017E-09Aug2019_UL2017-v1/AOD'),
-    DataSample('SingleMuon2017F', '/SingleMuon/Run2017F-09Aug2019_UL2017-v1/AOD'),
-    DataSample('SingleElectron2017B', '/SingleElectron/Run2017B-09Aug2019_UL2017-v1/AOD'),
-    DataSample('SingleElectron2017C', '/SingleElectron/Run2017C-09Aug2019_UL2017-v1/AOD'),
-    DataSample('SingleElectron2017D', '/SingleElectron/Run2017D-09Aug2019_UL2017-v1/AOD'),
-    DataSample('SingleElectron2017E', '/SingleElectron/Run2017E-09Aug2019_UL2017-v1/AOD'),
-    DataSample('SingleElectron2017F', '/SingleElectron/Run2017F-09Aug2019_UL2017_rsb-v2/AOD'),
+    DataSample('SingleMuon2017B', '/SingleMuon/Run2017B-UL2017_MiniAODv2-v1/MINIAOD'),
+    DataSample('SingleMuon2017C', '/SingleMuon/Run2017C-UL2017_MiniAODv2-v1/MINIAOD'),
+    DataSample('SingleMuon2017D', '/SingleMuon/Run2017D-UL2017_MiniAODv2-v1/MINIAOD'),
+    DataSample('SingleMuon2017E', '/SingleMuon/Run2017E-UL2017_MiniAODv2-v1/MINIAOD'),
+    DataSample('SingleMuon2017F', '/SingleMuon/Run2017F-UL2017_MiniAODv2-v1/MINIAOD'),
+    DataSample('SingleElectron2017B', '/SingleElectron/Run2017B-UL2017_MiniAODv2-v1/MINIAOD'),
+    DataSample('SingleElectron2017C', '/SingleElectron/Run2017C-UL2017_MiniAODv2-v1/MINIAOD'),
+    DataSample('SingleElectron2017D', '/SingleElectron/Run2017D-UL2017_MiniAODv2-v1/MINIAOD'),
+    DataSample('SingleElectron2017E', '/SingleElectron/Run2017E-UL2017_MiniAODv2-v1/MINIAOD'),
+    DataSample('SingleElectron2017F', '/SingleElectron/Run2017F-UL2017_MiniAODv2-v1/MINIAOD'),
     ]
     
 
@@ -982,6 +1022,8 @@ __all__ = [
     'leptonic_samples_20162',
     'met_samples_20161',
     'met_samples_20162',
+    'ttbar_samples_20161',
+    'ttbar_samples_20162',
     'diboson_samples_20161',
     'diboson_samples_20162',
     'mfv_stoplb_samples_20161',
@@ -1070,11 +1112,14 @@ for x in _alls:
 # miniaod
 ########
 
-for sample in data_samples_2017 + Lepton_data_samples_2017: #auxiliary_data_samples_2017 + singleelectron_data_samples_2017:
+for sample in Lepton_data_samples_20161 + Lepton_data_samples_20162:
+    sample.add_dataset('miniaod', sample.dataset)
+
+for sample in data_samples_2017 : #auxiliary_data_samples_2017 + singleelectron_data_samples_2017:
     sample.add_dataset('miniaod', sample.dataset.replace('AOD', 'MINIAOD'))
 for sample in data_samples_2018 + auxiliary_data_samples_2018 + egamma_data_samples_2018:
     sample.add_dataset('miniaod', sample.dataset.replace('AOD', 'MINIAOD'))
-for sample in Lepton_data_samples_2018:
+for sample in Lepton_data_samples_2018 + Lepton_data_samples_2017:
     sample.add_dataset('miniaod', sample.dataset)
 
 
@@ -1111,7 +1156,7 @@ qcdht2000_2017.add_dataset('miniaod', '/QCD_HT2000toInf_TuneCP5_PSWeights_13TeV-
 # wjetstolnu_2017.add_dataset('miniaod', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM', 81254459)
 # dyjetstollM10_2017.add_dataset('miniaod', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v2/MINIAODSIM', 70530127)
 # dyjetstollM50_2017.add_dataset('miniaod', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM', 103287684)
-#dyjetstollM50ext_2017.add_dataset('miniaod', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM', 49125561)
+# dyjetstollM50ext_2017.add_dataset('miniaod', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIFall17MiniAODv2-PU2017RECOSIMstep_12Apr2018_94X_mc2017_realistic_v14_ext1-v1/MINIAODSIM', 49125561)
 
 zjetstonunuht0100_2017.add_dataset('miniaod', '/ZJetsToNuNu_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM', 19040741)
 zjetstonunuht0200_2017.add_dataset('miniaod', '/ZJetsToNuNu_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8/RunIISummer20UL17MiniAOD-106X_mc2017_realistic_v6-v1/MINIAODSIM', 16547983)
@@ -1150,10 +1195,16 @@ zjetstonunuht2500_2018.add_dataset('miniaod', '/ZJetsToNuNu_HT-2500ToInf_TuneCP5
 #ttbarht1200_2018.add_dataset('miniaod', '/TTJets_HT-1200to2500_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM', 2779427)
 #ttbarht2500_2018.add_dataset('miniaod', '/TTJets_HT-2500toInf_TuneCP5_13TeV-madgraphMLM-pythia8/RunIIAutumn18MiniAOD-102X_upgrade2018_realistic_v15-v1/MINIAODSIM',  1451104)
 
-for sample in qcd_lep_samples_2018 + leptonic_samples_2018 + diboson_samples_2018 + met_samples_2018: 
+for sample in qcd_lep_samples_2018 + leptonic_samples_2018 + diboson_samples_2018 + met_samples_2018 + ttbar_samples_2018: 
     sample.add_dataset('miniaod', sample.dataset)
     
-for sample in met_samples_2017:
+for sample in qcd_lep_samples_2017 + leptonic_samples_2017 + diboson_samples_2017 + met_samples_2017 + ttbar_samples_2017:
+    sample.add_dataset('miniaod', sample.dataset)
+    
+for sample in qcd_lep_samples_20161 + leptonic_samples_20161 + diboson_samples_20161 + met_samples_20161 + ttbar_samples_20161:
+    sample.add_dataset('miniaod', sample.dataset)
+    
+for sample in qcd_lep_samples_20162 + leptonic_samples_20162 + diboson_samples_20162 + met_samples_20162 + ttbar_samples_20162:
     sample.add_dataset('miniaod', sample.dataset)
     
 # ww_2018.add_dataset('miniaod', '/WW_TuneCP5_13TeV-pythia8/RunIISummer20UL18MiniAOD-106X_upgrade2018_realistic_v11_L1v1-v2/MINIAODSIM', 15670000)
@@ -1263,756 +1314,621 @@ for x in qcdempt015_2017, qcdmupt15_2017, qcdempt020_2017, qcdempt030_2017, qcde
 #for tracking tree : cut 1
 for x in wjetstolnu_2017, dyjetstollM10_2017, dyjetstollM50_2017:
     x.add_dataset("trackingtreerulv1_lepm_cut1")
-    
-#bakcground mc vs data (only single lepton triggers used) 
-# qcdmupt15_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-a0e559ed691b9ba065183ce34b4d6106/USER', 985)
-# qcdempt020_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-84408862823d6968fd890862da0d49b2/USER', 0)
-# qcdempt030_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-7db081dba1d39226de5de2eea02e41d3/USER', 1)
-# qcdempt050_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-5dc866fd0d951550e62c26721b796af2/USER', 2)
-# qcdempt080_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-fcc1efe099b4d9a07a1e00baab9762b4/USER', 16)
-# qcdempt120_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-2cea27cdaadd2421bc6a21e5693462f5/USER', 25)
-# qcdempt170_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-46a7c4774f49303236df584aebfd2749/USER', 19)
-# qcdbctoept020_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2017-9766de266b7ac90ce15868ee7c83b90a/USER', 3)
-# qcdbctoept030_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2017-ee19d520c8b663773bb3137a0a593d59/USER', 22)
-# qcdbctoept080_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2017-b258e3358ddb16518aebce917e89f6d0/USER', 127)
-# qcdbctoept170_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2017-45aa456833854841dc220e4781205803/USER', 254)
-# qcdbctoept250_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2017-19ea96c21beccbec48123f2a87f7da56/USER', 225)
-# wjetstolnu_2017.add_dataset('ntupleulv1lepm', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV1Lepm_2017-2a9d14a75057a2560ebdc7a043162c80/USER', 15086)
-# dyjetstollM10_2017.add_dataset('ntupleulv1lepm', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV1Lepm_2017-0258fd3aaebbe51ab595a2958eb34147/USER', 620)
-# dyjetstollM50_2017.add_dataset('ntupleulv1lepm', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV1Lepm_2017-541a5b29e0584826721d00f6a8f1f3ca/USER', 47108)
-# ww_2017.add_dataset('ntupleulv1lepm', '/WW_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-4426673a03f6d0e98154aa4c197eca5d/USER', 5428)
-# zz_2017.add_dataset('ntupleulv1lepm', '/WZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-836ba84ef310ba8aa80d049840b8ab52/USER', 4911)
-# wz_2017.add_dataset('ntupleulv1lepm', '/ZZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-3e09513b56d2b31d08d63c947bfb8a7e/USER', 1800)
-# SingleMuon2017C.add_dataset('ntupleulv1lepm', '/SingleMuon/awarden-NtupleULV1Lepm_2017-ee46985df5e00f16f85663aec6b35211/USER', 21458)
-# SingleMuon2017E.add_dataset('ntupleulv1lepm', '/SingleMuon/awarden-NtupleULV1Lepm_2017-098e227518fc33335cef81109c342887/USER', 23991)
-# SingleMuon2017F.add_dataset('ntupleulv1lepm', '/SingleMuon/awarden-NtupleULV1Lepm_2017-5ac1f06debba0541ff3bb1890f902adc/USER', 24597)
-# SingleElectron2017C.add_dataset('ntupleulv1lepm', '/SingleElectron/awarden-NtupleULV1Lepm_2017-2ccfd2e730c1a6c2e84728d94a6ce605/USER', 8845)
-# SingleElectron2017F.add_dataset('ntupleulv1lepm', '/SingleElectron/awarden-NtupleULV1Lepm_2017-d2f51bcb845d79fddcfab238bb3fc4d2/USER', 7572)
-# for x in ttbar_2017, SingleMuon2017B, SingleMuon2017D, SingleElectron2017B, SingleElectron2017D, SingleElectron2017E:
-#     x.add_dataset("ntupleulv1lepm")
-
-#background mc vs signal (setup for both single and displaced dilepton triggers) 
-#eventfilter used for background : min njets(leptons) = 2, ele/mu pt min 5 GeV => also have required all offline selection (minus pt) uncertain if this is good 
-#also uncertain if it was a good idea to require two leptons now that I think about it... 
-qcdempt015_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-bc0c7352f55efbe738e3d4a1dcb8d840/USER', 0)
-qcdmupt15_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-a9df51e9aee3b5d7fef7efcc0999e971/USER', 73)
-qcdempt020_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-9d22178f36c446a301e53b2787b785b2/USER', 0)
-qcdempt030_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-a178ca314e2a8d25f80f7c5b95e39f14/USER', 0)
-qcdempt050_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-f22757d09fd5b02795235e44005765d7/USER', 0)
-qcdempt080_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-840d6d79c310d64427fa167f69f2aa3a/USER', 2)
-qcdempt120_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-94a583155eac2736d63885634a5c8d42/USER', 0)
-qcdempt170_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-c531f091adfd55c370b3b4c3ba52de2c/USER', 1)
-qcdempt300_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-1f714fabf363f897159cda41f173da6b/USER', 1)
-qcdbctoept020_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2017-58791afffac543748f01e993cd164637/USER', 0)
-qcdbctoept030_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2017-aa50353abbee571899237a2aedac3a9d/USER', 2)
-qcdbctoept080_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2017-f1aaccdbf7b26691391a41ebcfdcff26/USER', 7)
-qcdbctoept170_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2017-4ab0f32366d7f7e3cb9171131b21d0c1/USER', 18)
-qcdbctoept250_2017.add_dataset('ntupleulv1lepm', '/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2017-4d0c0035c1094e1fab4097c7eec38593/USER', 22)
-wjetstolnu_2017.add_dataset('ntupleulv1lepm', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV1Lepm_2017-00b30f18371d0ceaccbb1b156e2fc35f/USER', 282)
-dyjetstollM10_2017.add_dataset('ntupleulv1lepm', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV1Lepm_2017-36cbe68276a547570757ee92cb3d3cd9/USER', 251)
-dyjetstollM50_2017.add_dataset('ntupleulv1lepm', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV1Lepm_2017-947386ff5c048a7bc28a1b95a6542e0c/USER', 29868)
-ww_2017.add_dataset('ntupleulv1lepm', '/WW_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-5f5b98a91a7a4345e74b7dafd0293c08/USER', 437)
-zz_2017.add_dataset('ntupleulv1lepm', '/WZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-496f921dc1a4f8a1fe02d9af648e8200/USER', 498)
-wz_2017.add_dataset('ntupleulv1lepm', '/ZZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2017-480e0d6118ccdb02c77fab10365b72c1/USER', 1085)
-mfv_stoplb_tau000100um_M1000_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-bc68908fb594460711e61657110aa32b/USER', 194928)
-mfv_stoplb_tau000300um_M1000_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-58ba196e7e68aa78bd6f0db3bf9894a2/USER', 200301)
-mfv_stoplb_tau010000um_M1000_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-12e6b0f63350a836117febdcaea62981/USER', 98261)
-mfv_stoplb_tau001000um_M1000_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-6707845d622b89ed22d6ee1306a4b405/USER', 197193)
-mfv_stoplb_tau030000um_M1000_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-f11fd9ac0ead16a026a6f07d93fbcad8/USER', 200668)
-mfv_stoplb_tau000100um_M1200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-d8709c913023e8f420c93365477a1eea/USER', 199921)
-mfv_stoplb_tau000300um_M1200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-5689d8075a1a4ec2ac147aa931e29754/USER', 195189)
-mfv_stoplb_tau010000um_M1200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-4f2a5c7b2309cf28f13e7f8b8c70df56/USER', 100156)
-mfv_stoplb_tau001000um_M1200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-0a4732012850b03498157b14784788b9/USER', 197902)
-mfv_stoplb_tau030000um_M1200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-8e191de4f0eff7b06bfff3c8b556ee55/USER', 200464)
-mfv_stoplb_tau000100um_M1400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-7fa533813934cc9a81f166bea3c32263/USER', 199322)
-mfv_stoplb_tau000300um_M1400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-ba5e9eb7e685b2016276d6584b3e8148/USER', 200304)
-mfv_stoplb_tau010000um_M1400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-2b0d389d036bf346e5f508b31392034f/USER', 98900)
-mfv_stoplb_tau001000um_M1400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-d507ca3ede734bcc7a9e967d67024229/USER', 196297)
-mfv_stoplb_tau030000um_M1400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-86766444475c9a5a463b92c9f37c843e/USER', 198644)
-mfv_stoplb_tau000100um_M1600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-dfc2c40222d67054951e9ab3eb929e42/USER', 202021)
-mfv_stoplb_tau000300um_M1600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-be03acb877fcf5d4445669c066f5f5c4/USER', 199079)
-mfv_stoplb_tau010000um_M1600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-31abc59805c734d664d41205673355ff/USER', 98745)
-mfv_stoplb_tau001000um_M1600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-3a6679e1f1cbfdb19ce7f6cadd04c0e5/USER', 98921)
-mfv_stoplb_tau030000um_M1600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-68791ffd41ebfc7e2b0e5b61e549f150/USER', 100284)
-mfv_stoplb_tau000100um_M1800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-725bbc729a4f8be7d56dbce37c475a95/USER', 199639)
-mfv_stoplb_tau000300um_M1800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-47165f47ddc34eeaab6d519d3919470b/USER', 200792)
-mfv_stoplb_tau010000um_M1800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-6da3c05e966be8a1dcfbbf4739375138/USER', 101386)
-mfv_stoplb_tau001000um_M1800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-c227ffd51172aca322978aaf7c51af74/USER', 98858)
-mfv_stoplb_tau030000um_M1800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-1620b474144b6fbaa417d5ea5ac82e4e/USER', 100172)
-mfv_stoplb_tau000100um_M0200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-23107909e32a7eca3a4a40911b677f61/USER', 198760)
-mfv_stoplb_tau000300um_M0200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-7fe6567fd9d2f3823db83cff8be10381/USER', 198899)
-mfv_stoplb_tau010000um_M0200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-8f4c6d1d33b21bec705f4dc04d7b1781/USER', 199948)
-mfv_stoplb_tau030000um_M0200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-e0a593cc112838f77f9bf2e5a5c46b3a/USER', 199267)
-mfv_stoplb_tau000100um_M0300_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-cf158f0a9312f2bfb1b6bb647ac08fba/USER', 198231)
-mfv_stoplb_tau000300um_M0300_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-70aad128cd852ab533938c0d4e01cada/USER', 198170)
-mfv_stoplb_tau010000um_M0300_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-f4799e4c525b5ec6ae9fb6543f4a226d/USER', 199832)
-mfv_stoplb_tau030000um_M0300_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-6159b6d2c52814656cc62f61f4a16bfe/USER', 200170)
-mfv_stoplb_tau000100um_M0400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-5c6f740efff6863b26177522b4f32512/USER', 197597)
-mfv_stoplb_tau000300um_M0400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-30144e48c8a3b0b1519397f3142d30e2/USER', 200230)
-mfv_stoplb_tau010000um_M0400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-fffd42e1f7f9118e4f877f8c838e76b3/USER', 198737)
-mfv_stoplb_tau030000um_M0400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-a8c201bcddbbc10b5b1c03dbe2bc320e/USER', 198930)
-mfv_stoplb_tau000100um_M0600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-25eda93f3ae7508d116bb661e886ae9b/USER', 201812)
-mfv_stoplb_tau000300um_M0600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-12d54a72f7494c96957b84a6486f9a7a/USER', 201839)
-mfv_stoplb_tau010000um_M0600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-f199b4271f76e662df73f520a74b3e98/USER', 197409)
-mfv_stoplb_tau030000um_M0600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-1ea02d7376db95e4cce2c5afd8f48294/USER', 200005)
-mfv_stoplb_tau000100um_M0800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-d2d9467a5ce1df1438cebf6c46308a30/USER', 198566)
-mfv_stoplb_tau000300um_M0800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-f63c6dcac78c40df19fd02c8b68923f3/USER', 197615)
-mfv_stoplb_tau010000um_M0800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-9a5ec718047240d2186e07e7ee91d89c/USER', 98799)
-mfv_stoplb_tau030000um_M0800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-0b9907119d47b9016061b4eeb65072b8/USER', 201690)
-mfv_stopld_tau000100um_M1000_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-20d50a1ec22d0c149706bae2c6d0e762/USER', 199076)
-mfv_stopld_tau000300um_M1000_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-e818969e65e77d1eb01ddbbc1cc4378f/USER', 198992)
-mfv_stopld_tau010000um_M1000_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-765427a7df0b86dc24613285d2507023/USER', 98679)
-mfv_stopld_tau001000um_M1000_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-0941bde3884742c5e2ef082a223722de/USER', 198608)
-mfv_stopld_tau030000um_M1000_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-426c08069b5cb0dc5c06f5515d1015db/USER', 199499)
-mfv_stopld_tau000100um_M1200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-1f59665289339c12705e9ee4aef6c7cb/USER', 198263)
-mfv_stopld_tau000300um_M1200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-f07aff5e5d36b835e2007795d1d568f6/USER', 195508)
-mfv_stopld_tau010000um_M1200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-65a0d2ba2601e5794b82a698d0ae8df6/USER', 100349)
-mfv_stopld_tau001000um_M1200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-cbb676f82187e34ffd043b24e6a3239c/USER', 201191)
-mfv_stopld_tau030000um_M1200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-758208308a5982381f8f5af59361ba0d/USER', 200851)
-mfv_stopld_tau000100um_M1400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-e39b27e926b6c2b4eb8eee7bc096f93e/USER', 198812)
-mfv_stopld_tau000300um_M1400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-a5aec2e8f0b195e1bd514bdd4a6784dc/USER', 193575)
-mfv_stopld_tau010000um_M1400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-b774aa53c72d77d73ed4575182caa6b9/USER', 98583)
-mfv_stopld_tau001000um_M1400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-c2021848d1503868f83f4942d908a32c/USER', 198538)
-mfv_stopld_tau030000um_M1400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-7dca09e1ee5fdfa2b8e15df026ce2bb5/USER', 199735)
-mfv_stopld_tau000100um_M1600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-0349211eaa5a3074bec311737578f601/USER', 200067)
-mfv_stopld_tau000300um_M1600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-efcbb5fb22d4c4fe82602cc052581bf6/USER', 196540)
-mfv_stopld_tau010000um_M1600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-ed66e2764c8fc48257cd88adc764fb03/USER', 100274)
-mfv_stopld_tau001000um_M1600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-fbff8906fda8f761b2a590f63f672bd7/USER', 99126)
-mfv_stopld_tau030000um_M1600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-707e1e99057e82d7d0eb16a8657824d4/USER', 99333)
-mfv_stopld_tau000100um_M1800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-0405f8942220c60ba0545da2f68db7fb/USER', 200828)
-mfv_stopld_tau000300um_M1800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-05f985017e61182cfb11a4001ec04e21/USER', 198147)
-mfv_stopld_tau010000um_M1800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-707c199a1ed8aab5440eef840173eca2/USER', 99667)
-mfv_stopld_tau001000um_M1800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-2b198b7217f8309a4abab255ebf4b06c/USER', 101005)
-mfv_stopld_tau030000um_M1800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-84273ffbc9e55a7d0b96dfaf3f710ca8/USER', 99787)
-mfv_stopld_tau000100um_M0200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-af622c497502c5e86336d99ce6a0c9a4/USER', 201843)
-mfv_stopld_tau000300um_M0200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-62c18fdc9f067fb9594bb231bf7256d9/USER', 199789)
-mfv_stopld_tau010000um_M0200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-02c58de911aaa88c7ae3e1ed0b54c816/USER', 197403)
-mfv_stopld_tau030000um_M0200_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-d3f7648accb1a29202402f7454aaa639/USER', 198511)
-mfv_stopld_tau000100um_M0300_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-314378fcddb9b5da4a490aa17c2f5fe0/USER', 195420)
-mfv_stopld_tau000300um_M0300_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-7033381f222f238d6629a4db6d6ee640/USER', 195932)
-mfv_stopld_tau010000um_M0300_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-acaa9f6b17c7adc3a0ded8f2748c1460/USER', 197990)
-mfv_stopld_tau030000um_M0300_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-7cd0e7cd2d16b67546c45564e3667589/USER', 199931)
-mfv_stopld_tau000100um_M0400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-ccb7511faf0f9a5334cb3972feb641ba/USER', 202735)
-mfv_stopld_tau000300um_M0400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-fbb34a9d3865f41acbda6ebb892d034f/USER', 199890)
-mfv_stopld_tau010000um_M0400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-a85040158f87ba1e72da703da43605eb/USER', 201845)
-mfv_stopld_tau030000um_M0400_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-8715dcaa4220c2e7bc14f28858041b93/USER', 198731)
-mfv_stopld_tau000100um_M0600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-4502efc7016d1e30bf50c4ab3dbcc8e6/USER', 203406)
-mfv_stopld_tau000300um_M0600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-e521277c2a52a7df74a4a3d66af4aa79/USER', 199321)
-mfv_stopld_tau010000um_M0600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-6392ee8e9ae0c792a66aa961bd1f26ae/USER', 195818)
-mfv_stopld_tau030000um_M0600_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-77271f99cbe39081100ebbe26c9b3ce7/USER', 199944)
-mfv_stopld_tau000100um_M0800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-8421c0a080daf6730d5eba129e4e03d2/USER', 200077)
-mfv_stopld_tau000300um_M0800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-4a5b260041543f62eea95d0749ac8e18/USER', 200814)
-mfv_stopld_tau010000um_M0800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-e65ac315c3e655f1ada2aebe241af5e1/USER', 99313)
-mfv_stopld_tau030000um_M0800_2017.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2017-1d21bce64cd13933963c2420b7770972/USER', 200140)
-# for x in ttbar_2017:
-#     x.add_dataset("ntupleulv1lepm")
-ttbar_2017.add_dataset("ntupleulv1lepm")
-
-#2018 --> now including all missdist info for leptons (both those that are and are not associated to sv) + min r for leptons 
-qcdmupt15_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-ce904f50a96ee1353085f39728ce7c5d/USER', 894)
-qcdempt015_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-cf3d481706cbebd15805ca69a6308eda/USER', 1)
-qcdempt020_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-10e3d87ebc5a5c5887674ecc88973913/USER', 0)
-qcdempt030_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-79f57ad3c45bdb3919bba61faba44785/USER', 1)
-qcdempt050_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-d7c9472666008da228beb559e9e4e994/USER', 6)
-qcdempt080_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-3287403b74ee7e84a483bf34e186b294/USER', 21)
-qcdempt120_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-5117256673ce80fbaf53d855894a6ad8/USER', 38)
-qcdempt170_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-ea35b5de51f77d3d42c8737191577c70/USER', 22)
-qcdempt300_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-9735d238632d1781458fc2d5bdb3255d/USER', 33)
-qcdbctoept015_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt_15to20_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2018-a1c538c630d5cff0381fcc67586a20ce/USER', 0)
-qcdbctoept020_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2018-55f83e3d2d4dbe5217b043435f37c2b1/USER', 1)
-qcdbctoept030_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2018-700831359ac18ae56e1e7b4d6808ee44/USER', 37)
-qcdbctoept080_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2018-a55e7e6cb50b37d2da0da0db65a0dbfb/USER', 147)
-qcdbctoept170_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2018-9390b042af934dbb34ae78eaf808e62b/USER', 323)
-qcdbctoept250_2018.add_dataset('ntupleulv1lepm', '/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV1Lepm_2018-80910997bf034e98e207c7b11330bbff/USER', 413)
-dyjetstollM10_2018.add_dataset('ntupleulv1lepm', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV1Lepm_2018-6258b07ed42ffde5876c3ae92bc22598/USER', 640)
-dyjetstollM50_2018.add_dataset('ntupleulv1lepm', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV1Lepm_2018-7d8f939e90fc98361ac74515ec5f5df0/USER', 21368)
-wjetstolnu_2018.add_dataset('ntupleulv1lepm', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV1Lepm_2018-cc3b5bd7402146471ef3131aa210b622/USER', 6939)
-ww_2018.add_dataset('ntupleulv1lepm', '/WW_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-15f8cb53eee86459b37af5b5e5d76f4b/USER', 4459)
-wz_2018.add_dataset('ntupleulv1lepm', '/WZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-ed85ffbc0a7913ed0e33f5840eaafcd4/USER', 3878)
-zz_2018.add_dataset('ntupleulv1lepm', '/ZZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV1Lepm_2018-f19c75fbeb90a615aa9eec4c7887f144/USER', 2225)
-mfv_stoplb_tau000100um_M1000_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-b977022694a4993a33ebd97c273f2938/USER', 200069)
-mfv_stoplb_tau000300um_M1000_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-1eb4c5be51cab8613a4385308d5107d0/USER', 196665)
-mfv_stoplb_tau010000um_M1000_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-ce0c563bdd400ee1007b31eb85245440/USER', 99062)
-mfv_stoplb_tau001000um_M1000_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-660d12339758fc7b5008656c1da9d86c/USER', 196748)
-mfv_stoplb_tau030000um_M1000_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-b76e6b38c656080f4d9c7ea152adcd01/USER', 199216)
-mfv_stoplb_tau000100um_M1200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-6065524909118e47a104c2c629af67bf/USER', 197949)
-mfv_stoplb_tau000300um_M1200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-07877656a18c65187b1251e718595596/USER', 198241)
-mfv_stoplb_tau010000um_M1200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-e7e64fa50f0397b87e413f1d813b05d6/USER', 98201)
-mfv_stoplb_tau001000um_M1200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-ddcbdd05c150be991146c5dab710b969/USER', 199473)
-mfv_stoplb_tau030000um_M1200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-ce0fc5414d6af29b44bf3e605f3bbfdb/USER', 199458)
-mfv_stoplb_tau000100um_M1400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-b17d7518a4d37a86c2c65edd5fa24fb6/USER', 199272)
-mfv_stoplb_tau000300um_M1400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-8758cc62be52fbcda62d944a36f414b5/USER', 200098)
-mfv_stoplb_tau010000um_M1400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-81c0ba472c76cbf6fbed294369eb0038/USER', 99970)
-mfv_stoplb_tau001000um_M1400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-06fc084b50005ab5587de43bc442a486/USER', 200807)
-mfv_stoplb_tau030000um_M1400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-620306a48831a6d056698bc802f9197b/USER', 200816)
-mfv_stoplb_tau000100um_M1600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-ccd85c79df7fd4137edcb40ce4d9817a/USER', 199366)
-mfv_stoplb_tau000300um_M1600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-36e50bf8d68bfb2cf3d5081bbde0cffe/USER', 202756)
-mfv_stoplb_tau010000um_M1600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-7062209557b1575f30ea21fac07cf908/USER', 101586)
-mfv_stoplb_tau001000um_M1600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-96387629d06392de9d86dc0ec5371c03/USER', 98806)
-mfv_stoplb_tau030000um_M1600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-50ed7ed8730dab3df09ce18e48e2fe87/USER', 100560)
-mfv_stoplb_tau000100um_M1800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-7ccd5baea7c48c828d36a0c024dc5052/USER', 200523)
-mfv_stoplb_tau000300um_M1800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-f31be744870c6d0a6e48e828eb976edd/USER', 197916)
-mfv_stoplb_tau010000um_M1800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-08f74ba9df41605ecb0e6274a9bfcb6e/USER', 101211)
-mfv_stoplb_tau001000um_M1800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-0f3dcf98cbaca83544a42bda49133c5c/USER', 100171)
-mfv_stoplb_tau030000um_M1800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-f46208eb824e851f8f82d3ce756f2b9b/USER', 100346)
-mfv_stoplb_tau000100um_M0200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-a669cdf0a42a8aa2dd48cdee7c7fa4ac/USER', 198986)
-mfv_stoplb_tau000300um_M0200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-5154522e9405ad6212590c3ecb4d9196/USER', 199542)
-mfv_stoplb_tau010000um_M0200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-e30e821d97a7d0496aa5f410600fb78f/USER', 198147)
-mfv_stoplb_tau001000um_M0200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-29d97ccfab6427ade6c71a8434a3fe55/USER', 198269)
-mfv_stoplb_tau030000um_M0200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-1c19b9b4b915af238ae6afeb152db299/USER', 197780)
-mfv_stoplb_tau000100um_M0300_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-2db10d97a8ea37062d90f032ade2b532/USER', 198372)
-mfv_stoplb_tau000300um_M0300_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-50eb5dc30e3ba8ffd3db008ebe4dce9c/USER', 203023)
-mfv_stoplb_tau010000um_M0300_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-4fe5e9c890278f25405f0e68cfccb30e/USER', 196154)
-mfv_stoplb_tau030000um_M0300_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-3ae95909200d294e673ab704ab82ced1/USER', 196763)
-mfv_stoplb_tau000100um_M0400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-c8a44d9f8e6c5853261beb16dded4237/USER', 200505)
-mfv_stoplb_tau000300um_M0400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-fa6ad12d92d0f19af0850b31c58083f7/USER', 200842)
-mfv_stoplb_tau010000um_M0400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-dd69cce642a736c3e98ce2218f0f52ba/USER', 198963)
-mfv_stoplb_tau030000um_M0400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-2786f4441b398d369c623847a43684ca/USER', 198368)
-mfv_stoplb_tau000100um_M0600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-263fc0f91651dd382d03cb5943cd9cf8/USER', 198211)
-mfv_stoplb_tau000300um_M0600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-80160d8bf3a064601cd24fdb2297c136/USER', 199368)
-mfv_stoplb_tau010000um_M0600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-a016282cded9bfde6cd99ea7985f8951/USER', 197845)
-mfv_stoplb_tau001000um_M0600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-3c84e76c971bbd40cbb4a0095d329466/USER', 196032)
-mfv_stoplb_tau030000um_M0600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-b87e998f40c6e8ecc1c5ac6bed61fd2f/USER', 201533)
-mfv_stoplb_tau000100um_M0800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-c6cee29f7713cf2b41cb2088203b28dd/USER', 202319)
-mfv_stoplb_tau000300um_M0800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-536bf10a01b4d2304e86566e42c32e67/USER', 200738)
-mfv_stoplb_tau010000um_M0800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-5d45bce7625224432bf781d57b9b4c8a/USER', 99747)
-mfv_stoplb_tau001000um_M0800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-643144567e3ca7aa12996c21b67b94a6/USER', 202348)
-mfv_stoplb_tau030000um_M0800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-e353f9309848199a186055dd6e9c713c/USER', 199087)
-mfv_stopld_tau000100um_M1000_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-4554c4891d79d8ab021d294a83b7c73a/USER', 197843)
-mfv_stopld_tau000300um_M1000_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-202cce0acdf60ee39809d6b90a47f773/USER', 199006)
-mfv_stopld_tau010000um_M1000_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-65499c407195f91ae6b421784eefd521/USER', 98581)
-mfv_stopld_tau001000um_M1000_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-224d317b80de8a7d719764439e5263a2/USER', 196285)
-mfv_stopld_tau030000um_M1000_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-626c98091d2e7b58e38436a56ceaa7d5/USER', 197592)
-mfv_stopld_tau000100um_M1200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-b9ddb00138dda1cd768aae32855b0dbc/USER', 195354)
-mfv_stopld_tau000300um_M1200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-a0bba25ecffce75348918cd5ffae4fd0/USER', 199435)
-mfv_stopld_tau010000um_M1200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-b04b155c466bf974815931a9d55b273c/USER', 96663)
-mfv_stopld_tau001000um_M1200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-08c612ac7cb0ed25bafb39eccc0fdc19/USER', 200103)
-mfv_stopld_tau030000um_M1200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-d1ad8e1329de31b2cdcba66f554f9220/USER', 200964)
-mfv_stopld_tau000100um_M1400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-eadfd504d2acf9a051da1dd6c7a810ac/USER', 200045)
-mfv_stopld_tau000300um_M1400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-c23e73ede9c7cebcc4ad7e645bc00131/USER', 202529)
-mfv_stopld_tau010000um_M1400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-cb75c84531a728cb7fea4a2131ad327e/USER', 100228)
-mfv_stopld_tau001000um_M1400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-c682b295846396755d7e3d50c7a5c0f1/USER', 196708)
-mfv_stopld_tau030000um_M1400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-c77d0bc5a0c7c085d0844871c9dedd6e/USER', 201992)
-mfv_stopld_tau000100um_M1600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-f51c2e061f25142fce54417b38c50a92/USER', 201300)
-mfv_stopld_tau000300um_M1600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-b59ac4804de384d35833c682d2123f12/USER', 197421)
-mfv_stopld_tau010000um_M1600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-f6280c79140f684777640cddc5eb24af/USER', 99387)
-mfv_stopld_tau001000um_M1600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-dba19137891beeea8d98569b90661103/USER', 100838)
-mfv_stopld_tau030000um_M1600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-fa7cb00fd69229cc5b610f5af9554b3a/USER', 97752)
-mfv_stopld_tau000100um_M1800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-98cb84451421e908516f71f37864b144/USER', 202746)
-mfv_stopld_tau000300um_M1800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-573ca3d15b9cecdfc006fabd552d770a/USER', 199924)
-mfv_stopld_tau010000um_M1800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-f9c6f7e1cf207e873911825ab57ff321/USER', 99400)
-mfv_stopld_tau001000um_M1800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-47afcf801829c27c9d14aa7b1a58579d/USER', 99515)
-mfv_stopld_tau030000um_M1800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-5222357e30d64fc8c4f9237b0faa1c1f/USER', 98449)
-mfv_stopld_tau000100um_M0200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-ca15a89e275b2775aa9c37ca5255fc0a/USER', 197970)
-mfv_stopld_tau000300um_M0200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-266a38928e83ba353b3468aebc26fee7/USER', 198800)
-mfv_stopld_tau010000um_M0200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-db74502d65a7912d219023833ef975a7/USER', 199856)
-mfv_stopld_tau001000um_M0200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-bc448daeea7f80f6d0090716bdc86727/USER', 200411)
-mfv_stopld_tau030000um_M0200_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-6537a8266bfd901fb0bdb8fae3760898/USER', 202558)
-mfv_stopld_tau000100um_M0300_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-b8ad17353bf96783955725a6dd5a1b14/USER', 196635)
-mfv_stopld_tau000300um_M0300_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-114acb539d5a5fa96dde48a19227b12c/USER', 198796)
-mfv_stopld_tau010000um_M0300_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-8556ae82482b2b49fd048bfb48ffa7ad/USER', 197769)
-mfv_stopld_tau001000um_M0300_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-861bbea6d66a82951d33f784c4d38d21/USER', 200543)
-mfv_stopld_tau030000um_M0300_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-eb374045c015a72c2334b555af405c3a/USER', 198495)
-mfv_stopld_tau000100um_M0400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-33caf269d6521ab963e0874368bd8e04/USER', 198574)
-mfv_stopld_tau000300um_M0400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-a6fe2d511cc6086e026e2fb52d7fab4f/USER', 197079)
-mfv_stopld_tau010000um_M0400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-619182765b9b81e8b4b989a937b3e808/USER', 198270)
-mfv_stopld_tau001000um_M0400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-07c77cd6295e9a2c582152442bdb2c59/USER', 200098)
-mfv_stopld_tau030000um_M0400_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-f23e5584ce48587f04e8d8ca5174da9c/USER', 203160)
-mfv_stopld_tau000100um_M0600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-3876a7421ab11510008c8c5f7e1888fb/USER', 198964)
-mfv_stopld_tau000300um_M0600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-8dee928b875b74640f0499ece6bd49f3/USER', 198408)
-mfv_stopld_tau010000um_M0600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-b5abfe5c8d39c543f782dceb02f242b7/USER', 199355)
-mfv_stopld_tau001000um_M0600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-fdd339ef6f03949afbc150e97ffd97f2/USER', 199759)
-mfv_stopld_tau030000um_M0600_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-e937704fa11ed85fd5c0204011f33796/USER', 200030)
-mfv_stopld_tau000100um_M0800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-038de9d140dfb5f7fe1767ea4a7a7f27/USER', 195939)
-mfv_stopld_tau000300um_M0800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-c29704470cd81f43d310a87a9385def0/USER', 202036)
-mfv_stopld_tau010000um_M0800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-0e9f55a24ce53bf3cb5e7b16627b9409/USER', 100507)
-mfv_stopld_tau001000um_M0800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-af53939a3c03291ffa222cf700f275e0/USER', 199217)
-mfv_stopld_tau030000um_M0800_2018.add_dataset('ntupleulv1lepm', '/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV1Lepm_2018-e36bd8d0a47f1a737bd8a78f6d25db54/USER', 196145)
-ttbar_2018.add_dataset("ntupleulv1lepm")
-
-##splitting lepton tracks and have relaxed seed track requirements for leptons >-= 20 GeV 
-qcdmupt15_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-ed138a8761363725585a9afc85b9be9c/USER', 918)
-qcdempt015_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-6c5e87618e2443c64778cee87ef43894/USER', 1)
-qcdempt020_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-ae041029aa89329fb6a421aef3da5de6/USER', 0)
-qcdempt030_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-818eb8cbef5de5785f675e2347928ecd/USER', 1)
-qcdempt050_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-f54858e0d30c4d201ff63e40fb951ca2/USER', 6)
-qcdempt080_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-5cd58a6824b96f263b9b108dabaeb067/USER', 20)
-qcdempt120_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-4f750e42e4b746ad5cab7fb955b1462c/USER', 36)
-qcdempt170_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-fdc46fb79e05587dedf663e92d9046db/USER', 19)
-qcdempt300_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-feb37a8699ff4f1c6cf9648f19673549/USER', 34)
-qcdbctoept015_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt_15to20_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV2Lepm_2018-5cc1d6af2c29b64ce89d4b2a27d95dee/USER', 0)
-qcdbctoept020_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV2Lepm_2018-2bb04987c1e15504317116ddc15462c0/USER', 1)
-qcdbctoept030_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV2Lepm_2018-ca173b30e7e3eb0a938775c424b19d7c/USER', 37)
-qcdbctoept080_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV2Lepm_2018-c33a8662703a7dc62003b9268ca68739/USER', 150)
-qcdbctoept170_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV2Lepm_2018-6486af5b2579d6f4342421679854b361/USER', 330)
-qcdbctoept250_2018.add_dataset('ntupleulv2lepm', '/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV2Lepm_2018-6312b7cfbbbeac63039319c751a002c0/USER', 414)
-wjetstolnu_2018.add_dataset('ntupleulv2lepm', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV2Lepm_2018-ef463b3275b8a927c4855589eb437e0a/USER', 6843)
-dyjetstollM10_2018.add_dataset('ntupleulv2lepm', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV2Lepm_2018-878fe2fa4e90e031942258e672f69fdb/USER', 633)
-dyjetstollM50_2018.add_dataset('ntupleulv2lepm', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV2Lepm_2018-52a772c3f0d338cc327bce6972aeb44b/USER', 24891)
-ww_2018.add_dataset('ntupleulv2lepm', '/WW_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-9612cd8d605cbbf73dda1a017ccb54f3/USER', 4195)
-wz_2018.add_dataset('ntupleulv2lepm', '/WZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-16054619ae0508b20185abd2ee1e0912/USER', 4450)
-zz_2018.add_dataset('ntupleulv2lepm', '/ZZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV2Lepm_2018-47f5d8c80bf27071575129aa4e64090d/USER', 2240)
-mfv_stoplb_tau000100um_M1000_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-2b9eb2e5126a8c21970545d0bc4756ab/USER', 202114)
-mfv_stoplb_tau000300um_M1000_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-82c8f79565dcafc36fc60a542264324c/USER', 196665)
-mfv_stoplb_tau010000um_M1000_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-7ac66b8c625549bd384ef879f7111205/USER', 99062)
-mfv_stoplb_tau001000um_M1000_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-a2c75803c401b47d59113b4177da36fd/USER', 196748)
-mfv_stoplb_tau030000um_M1000_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-b3e06c3ebb0dd619de34a088949947d0/USER', 199216)
-mfv_stoplb_tau000100um_M1200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-1d34ebbe0fb4e7b90583c1a06254bcbd/USER', 197949)
-mfv_stoplb_tau000300um_M1200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-eed03d9e75a96db18b5d1d8f8436357c/USER', 198241)
-mfv_stoplb_tau010000um_M1200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-4fa783920b238fe8941504124ca0c51e/USER', 98201)
-mfv_stoplb_tau001000um_M1200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-f5de2a3539e56ee5d21520d79ecf7cbf/USER', 199473)
-mfv_stoplb_tau030000um_M1200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-07e3f275fc5cb2ee396f615b7c4e278a/USER', 199458)
-mfv_stoplb_tau000100um_M1400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-66757c940a8d29e83280d4c26da3ea7c/USER', 199272)
-mfv_stoplb_tau000300um_M1400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-facceb5b12681d175d2e03845bd5b45c/USER', 198999)
-mfv_stoplb_tau010000um_M1400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-a2b361535124973bd8b76ee2e9b6d5be/USER', 99970)
-mfv_stoplb_tau001000um_M1400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-3d688f95b58732e0473c0c880a4ec488/USER', 200807)
-mfv_stoplb_tau030000um_M1400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-877cc17f835c22dfefbb144909873ae9/USER', 200816)
-mfv_stoplb_tau000100um_M1600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-f27e3416c05a3bb8023a7d15b4a71a57/USER', 199366)
-mfv_stoplb_tau000300um_M1600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-704ac348dc33a8e39cc9fb61269d0f1e/USER', 202756)
-mfv_stoplb_tau010000um_M1600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-8029e14b4096c984ce7174f07b4cbd81/USER', 101586)
-mfv_stoplb_tau001000um_M1600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-888dc8070902d615734ba00d81cac98e/USER', 99806)
-mfv_stoplb_tau030000um_M1600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-1570da7ace44bbcc3e7c5f0381adbb3f/USER', 100560)
-mfv_stoplb_tau000100um_M1800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-8b39c13e2c4ffb61b00675ebe6c50b06/USER', 200523)
-mfv_stoplb_tau000300um_M1800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-5d997a1356b227237d89e957995d3c53/USER', 199868)
-mfv_stoplb_tau010000um_M1800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-2446e9e76b6bf9e30937e6a1b9856ad7/USER', 101211)
-mfv_stoplb_tau001000um_M1800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-046e6921ae9c458dfb091f4222cd194c/USER', 100171)
-mfv_stoplb_tau030000um_M1800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-39ed65047e93769d208360220e23e7c1/USER', 100346)
-mfv_stoplb_tau000100um_M0200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-db5605691e9fb9101c17a8bcfb76a052/USER', 198986)
-mfv_stoplb_tau000300um_M0200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-291b1c956e7e67e31b428c783dcdf8e6/USER', 199542)
-mfv_stoplb_tau010000um_M0200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-f0fde517ce6ebca09d2b2ef5b666614a/USER', 198147)
-mfv_stoplb_tau001000um_M0200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-1f77dda6f4a68aa0ee512931df6dcaac/USER', 198269)
-mfv_stoplb_tau030000um_M0200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-221d3c45722d998600339c2d0f0a86d0/USER', 197780)
-mfv_stoplb_tau000100um_M0300_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-463595ee270040e4d01bf3bde90f9355/USER', 198372)
-mfv_stoplb_tau000300um_M0300_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-1283b60c72361f7e958db0ededb8b1c7/USER', 203023)
-mfv_stoplb_tau010000um_M0300_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-5ca12bbc47dc1e36d94f9ecd347e05aa/USER', 195200)
-mfv_stoplb_tau001000um_M0300_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-1a7f2cc7bd08a8257947d3c968a4dff2/USER', 197602)
-mfv_stoplb_tau030000um_M0300_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-10ce1c408ab5641fb7f448cc49ad5d2b/USER', 196763)
-mfv_stoplb_tau000100um_M0400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-202a77488814641dc02151cd3d78f008/USER', 199520)
-mfv_stoplb_tau000300um_M0400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-f8d3c654657544e47462da9fc877aea0/USER', 200842)
-mfv_stoplb_tau010000um_M0400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-767f52270c0cd6c49a883b8d02cbe4f7/USER', 198963)
-mfv_stoplb_tau001000um_M0400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-39db064f04cd35fea4e3edcc9bdc2eed/USER', 199860)
-mfv_stoplb_tau030000um_M0400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-28d7137947c9e7391091b258dbae0454/USER', 198368)
-mfv_stoplb_tau000100um_M0600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-6aeb41feb877d4c1c47e89f6d3fda30c/USER', 198211)
-mfv_stoplb_tau000300um_M0600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-f0c3fb76a59e583b48d99e3a19278925/USER', 199368)
-mfv_stoplb_tau010000um_M0600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-e1b3be86a7b7297968ceca7e513fb587/USER', 197845)
-mfv_stoplb_tau001000um_M0600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-ab396dded7891ec180c5864bf65d4bda/USER', 196032)
-mfv_stoplb_tau030000um_M0600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-85201b96524768e3f8a77bcc4c1705b1/USER', 201533)
-mfv_stoplb_tau000100um_M0800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-971bbdb9f87d983742309ed3b1e4024a/USER', 202319)
-mfv_stoplb_tau000300um_M0800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-ada949f3534d0f2f4ba8035e9b0b510c/USER', 199758)
-mfv_stoplb_tau010000um_M0800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-47a2e131e17e713054e8cb3c3c97ea13/USER', 99747)
-mfv_stoplb_tau001000um_M0800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-982ebefc9e8d0c63a2c2676376206561/USER', 202348)
-mfv_stoplb_tau030000um_M0800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-7116b86f212dd5bd0e55d9abd022597d/USER', 199087)
-mfv_stopld_tau000100um_M1000_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-07f1f1847a6267417a37bd1b5a28f540/USER', 197890)
-mfv_stopld_tau000300um_M1000_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-e4e108196918d47e93aa0c8ff770af6b/USER', 199006)
-mfv_stopld_tau010000um_M1000_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-72cd9d5b2eed60ed3a37c185d698f05b/USER', 98581)
-mfv_stopld_tau001000um_M1000_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-601b0e86290b743bf0d2b36558b71268/USER', 196285)
-mfv_stopld_tau030000um_M1000_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-aa1e65b7e67ffbd8dc000a9e4a4b7f82/USER', 197592)
-mfv_stopld_tau000100um_M1200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-2995b4b67d7915dde06faba3aef4c1b3/USER', 195354)
-mfv_stopld_tau000300um_M1200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-f7796442ac3da45f16be06b39a97f35e/USER', 199435)
-mfv_stopld_tau010000um_M1200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-c05ccc3c1651c67e5ee15c006543e55b/USER', 98617)
-mfv_stopld_tau001000um_M1200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-8349847fa60c0116cd6abcb68213c49a/USER', 200103)
-mfv_stopld_tau030000um_M1200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-c989e760e85ca1a36d08288dbf4e91f6/USER', 200964)
-mfv_stopld_tau000100um_M1400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-52dcd92872b788f370e3be78149e42e5/USER', 200045)
-mfv_stopld_tau000300um_M1400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-25f691726629600d52ab049acc18e863/USER', 202529)
-mfv_stopld_tau010000um_M1400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-8837278d3c6efe777e19d330ad099cba/USER', 99216)
-mfv_stopld_tau001000um_M1400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-4cb86fb562bc01a13e1cc49c327ae301/USER', 196708)
-mfv_stopld_tau030000um_M1400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-91e16271aa0101b1774840fe6d7e6054/USER', 201992)
-mfv_stopld_tau000100um_M1600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-6c3d04738c03dfb58944b9488f8303c3/USER', 201300)
-mfv_stopld_tau000300um_M1600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-31fad4ceba6e3902a8b53f8fb5ade08e/USER', 197421)
-mfv_stopld_tau010000um_M1600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-3594943174bff0b58fd7bddbf91b8bd5/USER', 99387)
-mfv_stopld_tau001000um_M1600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-731c52ea6caa05bfa47b1bab2e86c45e/USER', 100838)
-mfv_stopld_tau030000um_M1600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-56e816684c1eddab2e17dba622ddefcd/USER', 97752)
-mfv_stopld_tau000100um_M1800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-14aa22c9950f7908ac189c98a4f46891/USER', 202746)
-mfv_stopld_tau000300um_M1800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-546815d79da88db5b0696e72dd87b774/USER', 199924)
-mfv_stopld_tau010000um_M1800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-1ea9059531055dd146c4738d5e9e6696/USER', 99400)
-mfv_stopld_tau001000um_M1800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-5e2656924395edb968427c271bc8d316/USER', 99515)
-mfv_stopld_tau030000um_M1800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-0ac54771e057ab2449de694902cd60e6/USER', 98449)
-mfv_stopld_tau000100um_M0200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-03bd58dc7daeca7d0bb8080b4460fd54/USER', 197970)
-mfv_stopld_tau000300um_M0200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-8357d9858bd2ea5cab4c9763accbae84/USER', 198800)
-mfv_stopld_tau010000um_M0200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-98d7d2041cd76807569e48946811dff5/USER', 199856)
-mfv_stopld_tau001000um_M0200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-420f0711b890940d27c8debdad870a01/USER', 200411)
-mfv_stopld_tau030000um_M0200_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-ef1ee1c8de8fa730ec203d88f77cfc81/USER', 202558)
-mfv_stopld_tau000100um_M0300_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-65d2fbbcdad5fb8c725529d0cfc543a0/USER', 196635)
-mfv_stopld_tau000300um_M0300_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-9ca922e6269b22e0b85fa1784b56bdfa/USER', 198796)
-mfv_stopld_tau010000um_M0300_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-f21de08cdac25a7d593af20d615ced12/USER', 197769)
-mfv_stopld_tau001000um_M0300_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-d8aa7094dfd5fc6ea4c018148d30f1f6/USER', 200543)
-mfv_stopld_tau030000um_M0300_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-c9f8326a3e52e3f38385e8518d24584b/USER', 198495)
-mfv_stopld_tau000100um_M0400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-0252f788ffe154026dbf89eba8dce719/USER', 201643)
-mfv_stopld_tau000300um_M0400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-c900cdbdf0c36eb29ee1cf164a95cfd6/USER', 197079)
-mfv_stopld_tau010000um_M0400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-2d8da977305c24c1f135986e3de4a266/USER', 198270)
-mfv_stopld_tau001000um_M0400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-ae7bdb44843e21e323fc40d9c5baafef/USER', 200098)
-mfv_stopld_tau030000um_M0400_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-984859cb3d16d850c35858a0f7f74b60/USER', 203160)
-mfv_stopld_tau000100um_M0600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-8e883f8e22e5fbc6525c73fb6869114a/USER', 198964)
-mfv_stopld_tau000300um_M0600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-62dcb3814e2f7a047209c30f2b3d02b1/USER', 198408)
-mfv_stopld_tau010000um_M0600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-efdb10c53797563d7f9062c1f704c948/USER', 200404)
-mfv_stopld_tau001000um_M0600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-c29e4c3727b5b08aeed252402b20b51d/USER', 199759)
-mfv_stopld_tau030000um_M0600_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-7a935bfd54f1d811d5cb4b6221f2318a/USER', 200030)
-mfv_stopld_tau000100um_M0800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-dcf1d61b979b9f2da135263bfbb8211c/USER', 197872)
-mfv_stopld_tau000300um_M0800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-e224d149a2ef0d8f40f1805f38c8e7f5/USER', 202036)
-mfv_stopld_tau010000um_M0800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-55d09c73525961d6dd7ea20f3be31172/USER', 100507)
-mfv_stopld_tau001000um_M0800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-40ad64b09fbb5c51645bf5db0d7d6a7e/USER', 199217)
-mfv_stopld_tau030000um_M0800_2018.add_dataset('ntupleulv2lepm', '/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV2Lepm_2018-2e55859909bd0e00d32b8cc8a17d346e/USER', 197136)
-ttbar_2018.add_dataset("ntupleulv2lepm")
-
-qcdmupt15_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-9437843c58fac6a76b5d567bfe15b42a/USER', 1208)
-qcdempt015_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-5b5a27bf4c43dc50709197250a35b8ec/USER', 2)
-qcdempt020_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-a8b00ecee96ebe7a327d88bd995455be/USER', 0)
-qcdempt030_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-93874cf96a55cda5231ca13258fdc0d4/USER', 3)
-qcdempt050_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-4b58060f7f418eccaff78cc79f2033bb/USER', 5)
-qcdempt080_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-c7ee99415fa5dd450e4b9399534525e1/USER', 21)
-qcdempt120_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-0402730cd3a351e404f26fc5977b4899/USER', 41)
-qcdempt170_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-1a53e171d37ffdbe12d5586236049068/USER', 22)
-qcdempt300_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-a9cb0f9f11bf2e1eb26ec90b4fb10cdb/USER', 24)
-qcdbctoept015_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt_15to20_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV5Lepm_2018-a635f2ba3153fbed164df1759a6a1ad7/USER', 0)
-qcdbctoept020_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV5Lepm_2018-b13404d8fc01e817f41506ee29d3c6ec/USER', 1)
-qcdbctoept030_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV5Lepm_2018-bd00b078d1e102b8d2ba5683a144cf44/USER', 65)
-qcdbctoept080_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV5Lepm_2018-baefacbb291ff9946904a587277a302b/USER', 199)
-qcdbctoept170_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV5Lepm_2018-5840f61b79df560908dbf3eff1a2fab1/USER', 372)
-qcdbctoept250_2018.add_dataset('ntupleulv5lepm', '/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV5Lepm_2018-bbabef2fc36eddaad65eeec12586858b/USER', 448)
-wjetstolnu_2018.add_dataset('ntupleulv5lepm', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV5Lepm_2018-54e88eda4946f0cd85914815e67bb986/USER', 12491)
-dyjetstollM10_2018.add_dataset('ntupleulv5lepm', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV5Lepm_2018-f632cccc11343b35ee91aeb84b8c4a49/USER', 873)
-dyjetstollM50_2018.add_dataset('ntupleulv5lepm', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV5Lepm_2018-6f81e07b2a0a8d64d1bc9218d819efae/USER', 42460)
-ww_2018.add_dataset('ntupleulv5lepm', '/WW_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-902c15daa3d056fb63dccca64a6e4c6c/USER', 5076)
-wz_2018.add_dataset('ntupleulv5lepm', '/WZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-1bbb86e3aaa952cfea374f994d806cc9/USER', 5209)
-zz_2018.add_dataset('ntupleulv5lepm', '/ZZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV5Lepm_2018-f5ede7096c1f8e11ada8ba0e5d75fdf8/USER', 2561)
-mfv_stoplb_tau000100um_M1000_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-4e3ffa4a49fecea0650e9343593d7b75/USER', 202114)
-mfv_stoplb_tau000300um_M1000_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-3cff870ad5483c55b3762b0fc4382e30/USER', 196665)
-mfv_stoplb_tau010000um_M1000_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-bd81a5b6c8c746a44d35999bd492f8bc/USER', 83262)
-mfv_stoplb_tau001000um_M1000_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-b9ee7791078d90b2a88cd8c9354028c8/USER', 194766)
-mfv_stoplb_tau030000um_M1000_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-7971ee1f0fdaf2829369faf3507c22c0/USER', 196254)
-mfv_stoplb_tau000100um_M1200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-4a890b671f88e31adec7edcaca512c2b/USER', 197949)
-mfv_stoplb_tau000300um_M1200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-656f2c01c42dba3a57fca47b1645a0ed/USER', 198241)
-mfv_stoplb_tau010000um_M1200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-09b7f2ae9b2b33dff0b26b7df623ddf9/USER', 85269)
-mfv_stoplb_tau001000um_M1200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-24b8f172ecf9b9915f2876b035c131e5/USER', 199473)
-mfv_stoplb_tau030000um_M1200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-77a3478ed75d42c9c63a1e0a8bcd1218/USER', 169466)
-mfv_stoplb_tau000100um_M1400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-c7245f7807dc3055492c44e524b8369a/USER', 190336)
-mfv_stoplb_tau000300um_M1400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-4e3a8b6fa5255f160a1de281cc7a06da/USER', 200098)
-mfv_stoplb_tau010000um_M1400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-09d053fda71b82cbbfd41804ecd465fb/USER', 99970)
-mfv_stoplb_tau001000um_M1400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-2ead623d7f5e06bd795d16d9fd03e5fd/USER', 200807)
-mfv_stoplb_tau030000um_M1400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-0fe3306ddcd92eaef5baf1daa2f47345/USER', 191976)
-mfv_stoplb_tau000100um_M1600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-59e326e3f84cf256595b870f2dfdd2f9/USER', 199366)
-mfv_stoplb_tau000300um_M1600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-b6422be52dff84a3bdd91fee5361a63b/USER', 161012)
-mfv_stoplb_tau010000um_M1600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-b627a1b08db02dc2a5bc27ab6b31dbba/USER', 101586)
-mfv_stoplb_tau001000um_M1600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-2607da266e2be8a221f06600f0078a66/USER', 99806)
-mfv_stoplb_tau030000um_M1600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-72f245b5798c645a7a8fe30bfe1aa0ff/USER', 94498)
-mfv_stoplb_tau000100um_M1800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-ef5adc6be059c82b546f4db1f3cf8810/USER', 200523)
-mfv_stoplb_tau000300um_M1800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-410b406bb87f63c9fa298cb30c8e615a/USER', 199868)
-mfv_stoplb_tau010000um_M1800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-157628c01ed0c3a665f7c8cc96dff65b/USER', 101211)
-mfv_stoplb_tau001000um_M1800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-93ecae1e2bf00b00010d4e4c6926f9d3/USER', 90148)
-mfv_stoplb_tau030000um_M1800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-84b58fe98a1d3f6f7facdc543cf12f65/USER', 94383)
-mfv_stoplb_tau000100um_M0200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-76c056ffa32b68461315b98bc1accea6/USER', 188016)
-mfv_stoplb_tau000300um_M0200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-094a4ff0d75c79111a29240a43c30968/USER', 196529)
-mfv_stoplb_tau010000um_M0200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-249ad14e3e8d93e10c1a6ad5b22b2071/USER', 198147)
-mfv_stoplb_tau001000um_M0200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-5259045ccfcb7a7630f95d40775073e9/USER', 193325)
-mfv_stoplb_tau030000um_M0200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-f5a1abc8c5f71b128e812c00f9bfd133/USER', 197780)
-mfv_stoplb_tau000100um_M0300_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-e98d6df3214ad676f74e1085f8a75591/USER', 182511)
-mfv_stoplb_tau000300um_M0300_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-6e91e578c57f475dcd46a19d2394d24b/USER', 157476)
-mfv_stoplb_tau010000um_M0300_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-735ab0767ad86c612414e7b1619323c8/USER', 189236)
-mfv_stoplb_tau001000um_M0300_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-f925b5c9c038638a986e861deeb24042/USER', 197602)
-mfv_stoplb_tau030000um_M0300_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-d1e723bc84ab95d4bb1d2205c89b6771/USER', 196763)
-mfv_stoplb_tau000100um_M0400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-1c1a12609a5718e40dac68c5726c9c2e/USER', 200505)
-mfv_stoplb_tau000300um_M0400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-c4b4a9aff0670987765bd381fe98a2a7/USER', 200842)
-mfv_stoplb_tau010000um_M0400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-66801825a8c0c49df8f91c773a4abe11/USER', 182081)
-mfv_stoplb_tau001000um_M0400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-35af45bbdbe2ec5be356b81c1e89b1ea/USER', 193835)
-mfv_stoplb_tau030000um_M0400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-1f7f7f8b0e7175c8b990c2be17d28fbf/USER', 185380)
-mfv_stoplb_tau000100um_M0600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-85cb1bba264bbe98b7e1ae0928dd07a5/USER', 195134)
-mfv_stoplb_tau000300um_M0600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-29d0d97ebfd72284ab4fec5204a8eca3/USER', 177329)
-mfv_stoplb_tau010000um_M0600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-570aa29323f076b61ab35c216bbbd5dc/USER', 197845)
-mfv_stoplb_tau001000um_M0600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-6246ea340ca3ef5bc0a2a1ca4b3a8777/USER', 196032)
-mfv_stoplb_tau030000um_M0600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-d020f13fc860717c049c9c86d4fbc454/USER', 201533)
-mfv_stoplb_tau000100um_M0800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-eab8313d2509151221a3c98151a8b140/USER', 186104)
-mfv_stoplb_tau000300um_M0800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-c78f2ad928abbb4048a86ce780063033/USER', 190748)
-mfv_stoplb_tau010000um_M0800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-939b904e017aedae37712a38af4601be/USER', 96623)
-mfv_stoplb_tau001000um_M0800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-a8a3b3e6b4b301d82b82ebd898448e6b/USER', 168137)
-mfv_stoplb_tau030000um_M0800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-5413eca9fd7aa1baeeeee4d56d5fe574/USER', 180997)
-mfv_stopld_tau000100um_M1000_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-b0b20be9d702f9aaef05552c51d1b114/USER', 198858)
-mfv_stopld_tau000300um_M1000_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-8a455592b4bee9e6d547d7d12f3fc95c/USER', 181939)
-mfv_stopld_tau010000um_M1000_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-2d81155dd28ca1c011c0238b57e58fe2/USER', 98581)
-mfv_stopld_tau001000um_M1000_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-84d0ab42ea117b2b978176c7cb1e7137/USER', 196285)
-mfv_stopld_tau030000um_M1000_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-6f80326e715bc7de69371071bfc53465/USER', 174920)
-mfv_stopld_tau000100um_M1200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-8b663df5aaad3dbc0230996a565aa234/USER', 195354)
-mfv_stopld_tau000300um_M1200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-f33b69b7e2e6cfb265371d52912e20fb/USER', 194540)
-mfv_stopld_tau010000um_M1200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-f8b5abf29709e783707c2a6cfcf86779/USER', 96609)
-mfv_stopld_tau001000um_M1200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-72225d230fd146547291c5edab88bcb2/USER', 200103)
-mfv_stopld_tau030000um_M1200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-e4d7983e82b839f0f61376ddd07e2403/USER', 200964)
-mfv_stopld_tau000100um_M1400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-7d9b431dfcfda7771e56e90b8f1340f0/USER', 200045)
-mfv_stopld_tau000300um_M1400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-37e789d349e5753bb46e2db45d51b43a/USER', 202529)
-mfv_stopld_tau010000um_M1400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-eef5ec701bfea08fc188e9d65756f28f/USER', 100228)
-mfv_stopld_tau001000um_M1400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-8e8dc10230fab3c7ef7ab52ea99f320f/USER', 183846)
-mfv_stopld_tau030000um_M1400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-2d9206c0bb8c8b2055e15fc52c3da733/USER', 168530)
-mfv_stopld_tau000100um_M1600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-bc5e0683a48c3fdc5a41127f84e8aba5/USER', 183118)
-mfv_stopld_tau000300um_M1600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-b701fc2a1fd8616ed8fa902b95b943e1/USER', 197421)
-mfv_stopld_tau010000um_M1600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-688daaf85f2df7336428f1c9ef3bf6a1/USER', 99387)
-mfv_stopld_tau001000um_M1600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-55ea519cb170bab12f102b17d8459f8b/USER', 100838)
-mfv_stopld_tau030000um_M1600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-8e6449af9e3c2c12c40e323fa9d0d927/USER', 97752)
-mfv_stopld_tau000100um_M1800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-789a2374813414571a5e4f03143b44f5/USER', 202746)
-mfv_stopld_tau000300um_M1800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-a59480da6bc38414e064ab351a42afb4/USER', 191999)
-mfv_stopld_tau010000um_M1800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-a32f6e61bfa1e5680d7680ddd17f6635/USER', 90384)
-mfv_stopld_tau001000um_M1800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-9ee763cb6a5eb9a2742a224bfeb9bc5a/USER', 97471)
-mfv_stopld_tau030000um_M1800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-f3ded24ee1ae6144fc2d4756a959f967/USER', 88523)
-mfv_stopld_tau000100um_M0200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-da9e961fe8a92bdbbb4a0d373af688cb/USER', 179217)
-mfv_stopld_tau000300um_M0200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-ff1366903622652de7c25e01cfadabb0/USER', 180109)
-mfv_stopld_tau010000um_M0200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-ef62e613ac488663bccff1c8f51af2bf/USER', 178877)
-mfv_stopld_tau001000um_M0200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-78e58fea3018bb76b84a630433111aca/USER', 184419)
-mfv_stopld_tau030000um_M0200_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-e6ffd9584b87943f27ab58b1da3876ca/USER', 202558)
-mfv_stopld_tau000100um_M0300_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-a5eeb706a3867b0c0e1c747719825572/USER', 187851)
-mfv_stopld_tau000300um_M0300_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-6aa9642f86b80522cf0b0c969b2a4789/USER', 198796)
-mfv_stopld_tau010000um_M0300_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-9e1c6fab602bd5871447079ab9b870c2/USER', 176176)
-mfv_stopld_tau001000um_M0300_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-942c4b387866e8b2f8ac573c94985582/USER', 187448)
-mfv_stopld_tau030000um_M0300_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-93c857c99b15b7fe6ecc9571576f98a5/USER', 173801)
-mfv_stopld_tau000100um_M0400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-0d120f5bf2afcfd332f6131257150596/USER', 201643)
-mfv_stopld_tau000300um_M0400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-20891c28a19a8b20e051ef72d328ba02/USER', 192218)
-mfv_stopld_tau010000um_M0400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-815aac4af5fb0398750a4a7083264750/USER', 198270)
-mfv_stopld_tau001000um_M0400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-38b3db90e6106cb7b5b43f148bb53993/USER', 200098)
-mfv_stopld_tau030000um_M0400_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-550a1f1a633e0182efbdf17cb3e95793/USER', 203160)
-mfv_stopld_tau000100um_M0600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-750b6e0dc54dd2ba020a9cc5ff0fa1e1/USER', 178049)
-mfv_stopld_tau000300um_M0600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-b449063c8b60444900974ef93d506e0e/USER', 186643)
-mfv_stopld_tau010000um_M0600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-a3d1a88db6a987fabcfec278b1ed10a5/USER', 180081)
-mfv_stopld_tau001000um_M0600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-f3943aa711efb1bf3e6428060286880e/USER', 192805)
-mfv_stopld_tau030000um_M0600_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-2219204f68a7a9713577c3eed5dc5f28/USER', 200030)
-mfv_stopld_tau000100um_M0800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-5851af286315013493c89720608b82db/USER', 197872)
-mfv_stopld_tau000300um_M0800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-96041090a3b12ce67f280d86ee380550/USER', 189928)
-mfv_stopld_tau010000um_M0800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-575819f49e8593c3d1ddd99e99f8bff8/USER', 99486)
-mfv_stopld_tau001000um_M0800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-a23ea5b82748464d07e39cfd08ad4ba0/USER', 178173)
-mfv_stopld_tau030000um_M0800_2018.add_dataset('ntupleulv5lepm', '/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV5Lepm_2018-54fa62ed33890232aeff323b1b7afd94/USER', 197136)
-ttbar_2018.add_dataset("ntupleulv5lepm")
 
 
-##same as above, however, lepton track collections have cutbasedID ++ iso(for muons) 
-mfv_stoplb_tau010000um_M1000_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-c5720e0bedd8cbff8d85960a98fae274/USER', 99062)
-mfv_stoplb_tau001000um_M1000_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-b2ba8c754e8995be6c3712e7215aaf2e/USER', 196748)
-mfv_stoplb_tau030000um_M1000_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-c64335a1f95d8a4da1af650806e9fcf6/USER', 199216)
-mfv_stoplb_tau000100um_M1200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-1ad27bc9c83675d1fdf560635da49dbe/USER', 197949)
-mfv_stoplb_tau000300um_M1200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-4f95637d85e847a15b5461382275e407/USER', 198241)
-mfv_stoplb_tau010000um_M1200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-6f56639a0fc410c16c071acb2f95160e/USER', 98201)
-mfv_stoplb_tau001000um_M1200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-bcde8cb98abcd14f31bd34ea46379d64/USER', 199473)
-mfv_stoplb_tau030000um_M1200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-d91b03a0f91909c66ae7839ec21b300e/USER', 199458)
-mfv_stoplb_tau000100um_M1400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-1c3586cb52e2bb140f95a648fe8bf2a1/USER', 199272)
-mfv_stoplb_tau000300um_M1400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-a4f38b7e27aaf0b4452f09da8437a9e9/USER', 200098)
-mfv_stoplb_tau010000um_M1400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-8d7ad4bf862582d65d5543f0fad42aff/USER', 99970)
-mfv_stoplb_tau001000um_M1400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-c1155b0855f712c3b4516d30032f7895/USER', 200807)
-mfv_stoplb_tau030000um_M1400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-41dd0eb3845a9cd8878965daf030e8b5/USER', 200816)
-mfv_stoplb_tau000100um_M1600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-92cf23766af262eca6db46470b969381/USER', 199366)
-mfv_stoplb_tau000300um_M1600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-37f9f1cb64ee5a17674a197adec864ae/USER', 183573)
-mfv_stoplb_tau010000um_M1600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-d59f3c22cebaca3fc04a78f3522caeec/USER', 92372)
-mfv_stoplb_tau001000um_M1600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-5a76e7d43526e793ab65f68c658b9664/USER', 99806)
-mfv_stoplb_tau030000um_M1600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-e3470bbf8087d65262f84f4309a1a69e/USER', 100560)
-mfv_stoplb_tau000100um_M1800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-d4cf6999efb249155812c3997a35ef21/USER', 200523)
-mfv_stoplb_tau000300um_M1800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-35207b918770a337943a2ed574d16977/USER', 199868)
-mfv_stoplb_tau010000um_M1800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-f2e6f64d124c5c6608ab6e64b241e802/USER', 101211)
-mfv_stoplb_tau001000um_M1800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-eaee98babe23e294f3bce1cb9f56c082/USER', 100171)
-mfv_stoplb_tau030000um_M1800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-208f78008e75e1fcb9b9ffa8f6dc654e/USER', 100346)
-mfv_stoplb_tau000100um_M0200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-163012d429be847f7ee67d4062686a1b/USER', 198986)
-mfv_stoplb_tau000300um_M0200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-bd6a031414891e790ab8d395186b6eea/USER', 199542)
-mfv_stoplb_tau010000um_M0200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-e908755082f7b52cc102dc38b25db8ff/USER', 166542)
-mfv_stoplb_tau001000um_M0200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-0507d11d638dde293932f9d22bfe5115/USER', 198269)
-mfv_stoplb_tau030000um_M0200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-c64f4a4f5aa00d7f0433065ababdd6bb/USER', 197780)
-mfv_stoplb_tau000100um_M0300_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-3f67d73d605a1db108cc84795f019a1c/USER', 198372)
-mfv_stoplb_tau000300um_M0300_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-98eda3933543f5d37691e05773fd9442/USER', 203023)
-mfv_stoplb_tau010000um_M0300_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-1c16e03cda5ac48d5c24b8988f95c70d/USER', 196154)
-mfv_stoplb_tau001000um_M0300_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-035ffa6dfd0d1bdd14ba3417274979f8/USER', 197602)
-mfv_stoplb_tau030000um_M0300_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-b409c2d0bce75dcf511b9852b6f40b80/USER', 196763)
-mfv_stoplb_tau000100um_M0400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-b52a6fd1fd0157eead25846a5528b091/USER', 200505)
-mfv_stoplb_tau000300um_M0400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-223f36c4252a9035ecddea16d795ac8e/USER', 200842)
-mfv_stoplb_tau010000um_M0400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-d7ae24d866fc9238912a26fad97df9a5/USER', 198963)
-mfv_stoplb_tau001000um_M0400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-e34a8e6630215ab4e7d65e95fad8e8f8/USER', 199860)
-mfv_stoplb_tau030000um_M0400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-f1494597a3f885d2e1babfe6a92b0899/USER', 198368)
-mfv_stoplb_tau000100um_M0600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-077936c47f0a97438f5005b1628afa04/USER', 198211)
-mfv_stoplb_tau000300um_M0600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-c8d770dfda361f78e62ba83445fb98c6/USER', 199368)
-mfv_stoplb_tau010000um_M0600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-897abe8ccee0404f16ee9577e6a116e3/USER', 197845)
-mfv_stoplb_tau001000um_M0600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-4c8b4e0d5f5ae2d59afa0eeb901dcab9/USER', 196032)
-mfv_stoplb_tau030000um_M0600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-7a2ef2b0d8b7a02b343eed110c002cc3/USER', 201533)
-mfv_stoplb_tau000100um_M0800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-c2b0451c8bcecde24c007a747de0dbc0/USER', 202319)
-mfv_stoplb_tau000300um_M0800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-b9e7acd8d9c4710fbf6d9cd78210eee4/USER', 200738)
-mfv_stoplb_tau010000um_M0800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-9c8a7b83247a5a45ca27da73591dee6d/USER', 99747)
-mfv_stoplb_tau001000um_M0800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-549ddc3f8408bcc3ab0ac81d1c5c1f4e/USER', 202348)
-mfv_stoplb_tau030000um_M0800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-214d635e03ab584ad4be7c26305007e2/USER', 199087)
-mfv_stopld_tau000100um_M1000_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-2e3a449ed3bda107954b1db9c8da07e3/USER', 198858)
-mfv_stopld_tau000300um_M1000_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-9d2183f4cda3929c4f62de5ba80f8208/USER', 199006)
-mfv_stopld_tau010000um_M1000_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-40f8b2851d10ff2d61de01c319ec516b/USER', 98581)
-mfv_stopld_tau001000um_M1000_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-064816fbd97e14f780348e4f0942c585/USER', 196285)
-mfv_stopld_tau030000um_M1000_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-7cf674de4943a404bda0a1ec52c6d13c/USER', 197592)
-mfv_stopld_tau000100um_M1200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-dd7bc7450b984285e586f3b850681aea/USER', 195354)
-mfv_stopld_tau000300um_M1200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-d8f7086e8f74c2f15e2bd606be614ee9/USER', 199435)
-mfv_stopld_tau010000um_M1200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-86d06ad1c32f2d83d013c25938f95d7f/USER', 98617)
-mfv_stopld_tau001000um_M1200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-3ba915f4de98c471b1502775c0bda42c/USER', 200103)
-mfv_stopld_tau030000um_M1200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-6420f27cb1a8d1759c8ab4dc58b7c1bc/USER', 200964)
-mfv_stopld_tau000100um_M1400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-43664e7847bcd0bfcb1bd0338af70d78/USER', 200045)
-mfv_stopld_tau000300um_M1400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-b7cd7a9625038d20e2fd4431de2821ea/USER', 202529)
-mfv_stopld_tau010000um_M1400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-1463e5f8218b634258f3583cd450114c/USER', 100228)
-mfv_stopld_tau001000um_M1400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-36b4b6c4533bd9c047fd1cc4682ed9b0/USER', 196708)
-mfv_stopld_tau030000um_M1400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-b401a76739c09432324ff03f24ee9bde/USER', 201992)
-mfv_stopld_tau000100um_M1600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-b27b4a5475188e8425616ac3a6d7758c/USER', 201300)
-mfv_stopld_tau000300um_M1600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-9730ba787a172fb348823216ece55e51/USER', 197421)
-mfv_stopld_tau010000um_M1600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-8ccf148e819978456015bb5083a53f8d/USER', 99387)
-mfv_stopld_tau001000um_M1600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-12414b811ad267aea59820e0813b455b/USER', 100838)
-mfv_stopld_tau030000um_M1600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-640cd3f748ad2c5e679a5102c57289d5/USER', 97752)
-mfv_stopld_tau000100um_M1800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-1c787ce69689bce81fd112596989fb0d/USER', 198595)
-mfv_stopld_tau000300um_M1800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-2ced6ca1e377f6ed8aac2a36ca5e0d5a/USER', 199924)
-mfv_stopld_tau010000um_M1800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-653c7a57fca0b124f4a8cb292cbb1517/USER', 99400)
-mfv_stopld_tau001000um_M1800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-e5e7a36f08540ce557b5f10e6a58a062/USER', 99515)
-mfv_stopld_tau030000um_M1800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-63468e814093f3918d100cf977115fe3/USER', 98449)
-mfv_stopld_tau000100um_M0200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-4725a0ff2811ac11ba878fdc62a820bc/USER', 197970)
-mfv_stopld_tau000300um_M0200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-7544b5798f515eb6188db4051e3e4ab6/USER', 198800)
-mfv_stopld_tau010000um_M0200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-6962833bb1b5da0a5a24ccf2adcc3004/USER', 199856)
-mfv_stopld_tau001000um_M0200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-9246abd5689a8a1f2ef4f9064179d4d5/USER', 200411)
-mfv_stopld_tau030000um_M0200_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-7f1468499347a74dc62eb680d442bfe6/USER', 202558)
-mfv_stopld_tau000100um_M0300_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-687a4dc23d16385fef24a8df38dbb7f0/USER', 196635)
-mfv_stopld_tau000300um_M0300_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-26644f6105cb787225d77ee987ecb5f4/USER', 198796)
-mfv_stopld_tau010000um_M0300_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-4eaaa453ece2169d6e0d906db2379ab6/USER', 197769)
-mfv_stopld_tau001000um_M0300_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-dc1f57746b7596655a7bec325036fae9/USER', 200543)
-mfv_stopld_tau030000um_M0300_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-b73296d7123a1e687761ac6dcf94cc7b/USER', 198495)
-mfv_stopld_tau000100um_M0400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-385d2540bda8069e62a9cd2b875b122b/USER', 201643)
-mfv_stopld_tau000300um_M0400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-3615cf9296530e74d877f761eaff304e/USER', 197079)
-mfv_stopld_tau010000um_M0400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-231117e75bed47f5105398202a581f33/USER', 198270)
-mfv_stopld_tau001000um_M0400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-75c1177d194fdab03ed5b8b204fbcbda/USER', 200098)
-mfv_stopld_tau030000um_M0400_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-3dcf813a3006ae53f4dcf06f4f47ff65/USER', 203160)
-mfv_stopld_tau000100um_M0600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-a501b7583c3829c78ab7e0c53db1b7ca/USER', 198964)
-mfv_stopld_tau000300um_M0600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-1b21784318a6db3330ceb75ca256516d/USER', 198408)
-mfv_stopld_tau010000um_M0600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-e9396aa973c59ac1cd03f3dded37d1ee/USER', 200404)
-mfv_stopld_tau001000um_M0600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-34b8d344d48257477bb26148e19ddab0/USER', 194658)
-mfv_stopld_tau030000um_M0600_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-a9807e8f392d9bcb24abfc54994638f6/USER', 200030)
-mfv_stopld_tau000100um_M0800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-c6552bd052ba43dc980bc5888c7ec2a3/USER', 197872)
-mfv_stopld_tau000300um_M0800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-6feadb8e97ca054db58c2345fed8c1a1/USER', 202036)
-mfv_stopld_tau010000um_M0800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-a4e3f3ed97c08902f60114c74d840d44/USER', 100507)
-mfv_stopld_tau001000um_M0800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-b04e2a27ebd5e4bbcb96ebf5c60398ec/USER', 199217)
-mfv_stopld_tau030000um_M0800_2018.add_dataset('ntupleulv3lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV3Lepm_WGen_2018-80561298d0536e2889617ae43116030b/USER', 197136)
+#brand new vertexer -- did not do anything about the lepton tracks in the dz fit (bad? good?)
+## note that some samples are incomplete -- need to continue resub 
+qcdmupt15_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-68d6fedeb43ac199e0ae232bbb6cf7ec/USER', 2343)
+qcdempt015_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-58b42aaa30a41e3441604491064b13ba/USER', 2)
+qcdempt020_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-4147242f43eb8dd2a11daf87ed93d40a/USER', 3)
+qcdempt030_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-ef1f916dc795562e84f9a6bfc6fd2082/USER', 7)
+qcdempt050_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-7120fdee8977f04120f0d2a67867f5dd/USER', 36)
+qcdempt080_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-0ae68c34e5b783445538bd40ac0bcb58/USER', 93)
+qcdempt120_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-a1469dc38625e19badb71c31c432f5df/USER', 196)
+qcdempt170_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-aa45b020659525475fd6cb8a39e742cc/USER', 146)
+qcdbctoept015_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt_15to20_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV9Lepm_2018-e78e9c2603b214e69565d1decb3efc5f/USER', -1)
+qcdbctoept020_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV9Lepm_2018-2cc51a310cc87dd5d9002711cd1f9100/USER', 0)
+qcdbctoept030_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV9Lepm_2018-175e8f5b816012a1454e7131342a1f25/USER', 328)
+qcdbctoept080_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV9Lepm_2018-14a5045475c4aa0d9279d641d9e909f2/USER', 1187)
+qcdbctoept170_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV9Lepm_2018-4ee74a89462cb7524923658f38bc4dad/USER', 2312)
+qcdbctoept250_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV9Lepm_2018-a3775781c9765b2519fcfd779beb8190/USER', 2612)
+qcdempt300_2018.add_dataset('ntupleulv9lepm', '/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-6e2d5b97e605293f1d4259dae635ea54/USER', 181)
+#ttbar_lep_2018.add_dataset('ntupleulv9lepm', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV9Lepm_2018-2fc48f1c8c128973a3fe730ed10f9592/USER', 4020170)
+#ttbar_semilep_2018.add_dataset('ntupleulv9lepm', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV9Lepm_2018-1b8b79ac74e2b468f71e7fa452fa9a7c/USER', 1112073)
+#ttbar_had_2018.add_dataset('ntupleulv9lepm', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV9Lepm_2018-d6245750e8321d2371af3cb19607efef/USER', 4166)
+#ttbar_lep_2018.add_dataset('ntupleulv9lepm', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV9Lepm_2018-06df96a356c2fe710ebc71bd964744e9/USER', 23971522)
+#ttbar_semilep_2018.add_dataset('ntupleulv9lepm', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV9Lepm_2018-bf891447412321d36949f8c9ada687fd/USER', 47008700)
+#ttbar_had_2018.add_dataset('ntupleulv9lepm', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV9Lepm_2018-a0b0736c0dbc753a3e3d166ec880a1f1/USER', 93981)
 
-#add lost tracks 
-mfv_stoplb_tau000300um_M1000_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-bee4bf2346fa67c1a3d3a42889a0b2a2/USER', 196665)
-mfv_stoplb_tau010000um_M1000_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-6e3aa3527fe74ae3eb2b9566c588a570/USER', 98069)
-mfv_stoplb_tau001000um_M1000_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-5d34740f5f7b03610fd54775cda6cbd2/USER', 195789)
-mfv_stoplb_tau030000um_M1000_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-b0bdf7fd74fae91327c0d39b839ea5b5/USER', 187306)
-mfv_stoplb_tau000100um_M1200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-9da96d8b0e93470bdc859dd2ca30aea4/USER', 197949)
-mfv_stoplb_tau000300um_M1200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-3c1166ad0431f09c23f8454c7ab6c6ee/USER', 196265)
-mfv_stoplb_tau010000um_M1200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-2f846c13a88889d9096fc05f8339ca0e/USER', 94249)
-mfv_stoplb_tau001000um_M1200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-9f92c1d89b0e91e6877a7c1c7f34bc64/USER', 199473)
-mfv_stoplb_tau030000um_M1200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-832128b5d90268ed6c5495b202b43062/USER', 191513)
-mfv_stoplb_tau000100um_M1400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-9b54133e5ade0b9663788b003560a4c7/USER', 190405)
-mfv_stoplb_tau000300um_M1400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-5387b1dce6d9371441626c9efa4efbd0/USER', 200098)
-mfv_stoplb_tau010000um_M1400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-4f888509584ae26da0eca083e0cff6e2/USER', 81935)
-mfv_stoplb_tau001000um_M1400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-c8d094ec604d1383f083aaeb252c8d39/USER', 199809)
-mfv_stoplb_tau030000um_M1400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-3605c526f30e2919af5f146317b84f88/USER', 196806)
-mfv_stoplb_tau000100um_M1600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-5b20abde8547abd74bb7bc2583778bdd/USER', 199366)
-mfv_stoplb_tau000300um_M1600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-104c598637cbbb4df4d0939b1cf86d5a/USER', 202756)
-mfv_stoplb_tau010000um_M1600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-852f84a02fff72084b89b669e297373b/USER', 101586)
-mfv_stoplb_tau001000um_M1600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-39efaeb63ad15e3440c5ea411fb28175/USER', 99806)
-mfv_stoplb_tau030000um_M1600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-50d0800eeacb119fd68f386a721ba433/USER', 99590)
-mfv_stoplb_tau000100um_M1800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-6ebe4ccf4453ca2e6d4519e67cc090fa/USER', 200523)
-mfv_stoplb_tau000300um_M1800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-79184e200b9db30760404007367754e5/USER', 199868)
-mfv_stoplb_tau010000um_M1800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-149d57fc9c50aa874e6346c45f45102e/USER', 100224)
-mfv_stoplb_tau001000um_M1800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-4b547e98a92f1c6e957b34139a762217/USER', 97144)
-mfv_stoplb_tau030000um_M1800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-ed4fbde53463cfd03b18b985c2f1621e/USER', 99376)
-mfv_stoplb_tau000100um_M0200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-3dfc3414fa89a34e374138d420ff09ab/USER', 197015)
-mfv_stoplb_tau000300um_M0200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-b34557126d1d6c946fb6842d74478881/USER', 199542)
-mfv_stoplb_tau010000um_M0200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-1b3e952b7b0d1dbbe29b02323a91b191/USER', 185261)
-mfv_stoplb_tau001000um_M0200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-d145e2e6f5dee37b276282cbb25074de/USER', 198269)
-mfv_stoplb_tau030000um_M0200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-b21e289d5fc33383b088bc11415f904b/USER', 197780)
-mfv_stoplb_tau000100um_M0300_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-bfe0806ecfd951976f912a004bbf276f/USER', 198372)
-mfv_stoplb_tau000300um_M0300_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-101c1ad38a7a8177944b60b468527edf/USER', 203023)
-mfv_stoplb_tau010000um_M0300_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-f25f2ed1f7b5739652a7e7d2f3c7ef7f/USER', 196154)
-mfv_stoplb_tau001000um_M0300_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-7bce18a78fbb7a39f0f1029627bc78e6/USER', 196615)
-mfv_stoplb_tau030000um_M0300_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-1b984ed6b4ee267403b1576adc7fc63e/USER', 196763)
-mfv_stoplb_tau000100um_M0400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-bc5d94260437757ea8027241fbbb1c75/USER', 200505)
-mfv_stoplb_tau000300um_M0400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-e40c7a28d449dcacce45e3e2a1aedf23/USER', 200842)
-mfv_stoplb_tau010000um_M0400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-5d19bc453886a3d53fea90eabd1b2e53/USER', 198963)
-mfv_stoplb_tau001000um_M0400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-ff88a8fe65a2ee9637abb5413298e4a9/USER', 199860)
-mfv_stoplb_tau030000um_M0400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-79bbb7a0c4404029bb569c470b3acab5/USER', 198368)
-mfv_stoplb_tau000100um_M0600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-ec02f36a22f1bed97407bed43c6cc55d/USER', 198211)
-mfv_stoplb_tau000300um_M0600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-d27ec6aeaf6a01cde64c35275eb5c67a/USER', 180286)
-mfv_stoplb_tau010000um_M0600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-fbe0824dff9cd878f6b899872cb48514/USER', 197845)
-mfv_stoplb_tau001000um_M0600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-8e6f474fb10247eb77f11e83dcf1c0a8/USER', 196032)
-mfv_stoplb_tau030000um_M0600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-a2674d4b3f14d095f9f87df1f05e1ea5/USER', 201533)
-mfv_stoplb_tau000100um_M0800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-e980c5b337c476a9fa7c58cde06abe21/USER', 202319)
-mfv_stoplb_tau000300um_M0800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-37fe92690acc18ec8eac3caae6861ecc/USER', 200738)
-mfv_stoplb_tau010000um_M0800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-03ab69e295b62592e791716f82ac5fdc/USER', 99747)
-mfv_stoplb_tau001000um_M0800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-d6ea43b80192d2c92f22e5e710990db1/USER', 202348)
-mfv_stoplb_tau030000um_M0800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-9cc743be3b8c6cea3682c755b9b17564/USER', 199087)
-mfv_stopld_tau000100um_M1000_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-4629054cb66ffd24de67b23c7b8b928a/USER', 186784)
-mfv_stopld_tau000300um_M1000_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-cf1b260e3885989d84743ba7c4d05d63/USER', 199006)
-mfv_stopld_tau010000um_M1000_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-38aa292d037bb1f617cc72c2dd3d0d4b/USER', 98581)
-mfv_stopld_tau001000um_M1000_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-756381468f9adeb574697b4afbe92500/USER', 196285)
-mfv_stopld_tau030000um_M1000_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-ab79328f4804097e9627ed1e72b3d865/USER', 197592)
-mfv_stopld_tau000100um_M1200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-bb09b41755bf08c9f8667cafa4d15f89/USER', 195354)
-mfv_stopld_tau000300um_M1200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-6de6e300ed7a4c867dd65b23b7eb0c9b/USER', 199435)
-mfv_stopld_tau010000um_M1200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-6513492bf5761568c1f5314cfa747bc0/USER', 98617)
-mfv_stopld_tau001000um_M1200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-a0a3ff5b4c9b9c02ab6386c3252de783/USER', 200103)
-mfv_stopld_tau030000um_M1200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-08c561eec8c86d11800d06f466a9aaac/USER', 200964)
-mfv_stopld_tau000100um_M1400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-bb9aaa506005a028bee6928b4931cf16/USER', 200045)
-mfv_stopld_tau000300um_M1400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-a3cc171efe478a7ae14867669364ff1a/USER', 202529)
-mfv_stopld_tau010000um_M1400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-49206a1fb08df5304757dbfe55ce6c29/USER', 100228)
-mfv_stopld_tau001000um_M1400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-ffcae0f5125f585dab2c264c0a0bbd81/USER', 196708)
-mfv_stopld_tau030000um_M1400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-25d72611981f56291ccbac968412e9cd/USER', 201992)
-mfv_stopld_tau000100um_M1600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-7791b76b548405865dca665bc967b798/USER', 201300)
-mfv_stopld_tau000300um_M1600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-43915ec31154e885feec7d76b5812cfa/USER', 197421)
-mfv_stopld_tau010000um_M1600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-a4b7f446d53aef2f048a14cb236d5247/USER', 99387)
-mfv_stopld_tau001000um_M1600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-544adf661a65c0c6ba9caa660feb8ef9/USER', 100838)
-mfv_stopld_tau030000um_M1600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-a60f2cf41ee9270177e92e2228457d5b/USER', 97752)
-mfv_stopld_tau000100um_M1800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-d552bb38e42e173ed63d80299cba4726/USER', 202746)
-mfv_stopld_tau000300um_M1800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-c35a5731503285a09dba5eb4140439a2/USER', 199924)
-mfv_stopld_tau010000um_M1800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-d7ac8ffbccf504dd4a202705ad45dffe/USER', 99400)
-mfv_stopld_tau001000um_M1800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-cf3cb7b8105cd6403fc8f04e450b320a/USER', 99515)
-mfv_stopld_tau030000um_M1800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-feeb8a753e7fce38bc1016250c707998/USER', 98449)
-mfv_stopld_tau000100um_M0200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-46fa1f24e14e945ab93b734bcad6b352/USER', 196979)
-mfv_stopld_tau000300um_M0200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-ac36e6af5e233f758dde1eddb442fbd2/USER', 198800)
-mfv_stopld_tau010000um_M0200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-d2dc65ba8326f8623d79778d4e897f15/USER', 199856)
-mfv_stopld_tau001000um_M0200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-147876c3b5a1a954ba57f0e99283abd7/USER', 200411)
-mfv_stopld_tau030000um_M0200_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-cd93f8c468b0e03af937ac40af9d1098/USER', 202558)
-mfv_stopld_tau000100um_M0300_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-081614e3f0254c4778a395c4337d1a8a/USER', 196635)
-mfv_stopld_tau000300um_M0300_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-96cb864b4f2ab4a1b899fd3ac67d2bf6/USER', 198796)
-mfv_stopld_tau010000um_M0300_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-bc932dc23deb5b894a076f575f4644b9/USER', 197769)
-mfv_stopld_tau001000um_M0300_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-a7f784199fbb87b5df124b10f01b5ae9/USER', 200543)
-mfv_stopld_tau030000um_M0300_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-bbc843eb54abbe1ac519be575a73063f/USER', 198495)
-mfv_stopld_tau000100um_M0400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-e911569e326177ba0104fb408e78d857/USER', 201643)
-mfv_stopld_tau000300um_M0400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-052e28351968c64a7e139346ba65281a/USER', 197079)
-mfv_stopld_tau010000um_M0400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-74c792b16defa033fc260b2544887bb6/USER', 198270)
-mfv_stopld_tau001000um_M0400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-55a9fcb7cf6aaa990e30ddb029badc95/USER', 200098)
-mfv_stopld_tau030000um_M0400_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-92aa1c5c89ce1fb97842c87b87ef0064/USER', 203160)
-mfv_stopld_tau000100um_M0600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-fe13962431bc06c28f6335d429f3cf13/USER', 198964)
-mfv_stopld_tau000300um_M0600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-0f8c0cf3ac5ecabc133d110988c403ff/USER', 198408)
-mfv_stopld_tau010000um_M0600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-b664688ab5bd2b91ef79a02a03f24ff9/USER', 200404)
-mfv_stopld_tau001000um_M0600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-19af270448250f71e8b4285fee37d7be/USER', 199759)
-mfv_stopld_tau030000um_M0600_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-50774ff5e8555eddd6c582fac3237775/USER', 200030)
-mfv_stopld_tau000100um_M0800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-db2f82d554bcfd730e454b0e11e64806/USER', 195881)
-mfv_stopld_tau000300um_M0800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-80cad6f6fc8c3e8b197392ecfff58aaf/USER', 202036)
-mfv_stopld_tau010000um_M0800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-3dba685926b6304bf74f1ae75e602d1c/USER', 100507)
-mfv_stopld_tau001000um_M0800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-02cb21850d7f3314981d6dfa4964b10a/USER', 199217)
-mfv_stopld_tau030000um_M0800_2018.add_dataset('ntupleulv4lepm', '/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV4Lepm_2018-3feacf59d7114dfbe09cab37bd20ade9/USER', 197136)
+wjetstolnu_2018.add_dataset('ntupleulv9lepm', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV9Lepm_2018-0821f8ca1009fd8745a2ee05397979d5/USER', 77257)
+dyjetstollM10_2018.add_dataset('ntupleulv9lepm', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV9Lepm_2018-f69fb0daea531bb34fe7b3b1fbb05f40/USER', 1707)
+dyjetstollM50_2018.add_dataset('ntupleulv9lepm', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV9Lepm_2018-caab6aed847e3a2a3f77c9777139026f/USER', 243774)
+ww_2018.add_dataset('ntupleulv9lepm', '/WW_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-f924a3b2bd27945aeba0f6439bbdc149/USER', 33539)
+wz_2018.add_dataset('ntupleulv9lepm', '/WZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-01ab62e6819417fa51a78100a2b4d238/USER', 30581)
+zz_2018.add_dataset('ntupleulv9lepm', '/ZZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV9Lepm_2018-0b996e2d8f82269f570ca92c32a24840/USER', 14418)
+mfv_stoplb_tau000100um_M0200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-3a84019dd49089a07dbbcc6678fda3ea/USER', 198986)
+mfv_stoplb_tau000300um_M0200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-1f8cef2e0fd2e9396583c43efaeecacd/USER', 199542)
+mfv_stoplb_tau001000um_M0200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-8f65e80bfa6ca6393139204cffdffca0/USER', 198269)
+mfv_stoplb_tau010000um_M0200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-21a7939abc0541f52e633bb963a86565/USER', 198147)
+mfv_stoplb_tau030000um_M0200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-50dd9c2cfb2053fb32eabcfd9ddf9f65/USER', 197780)
+mfv_stoplb_tau000100um_M0300_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-9b7470991ed4ef70b74d13d15948b1c1/USER', 198372)
+mfv_stoplb_tau000300um_M0300_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-c039b50b129ac525897134865bbcdd0e/USER', 203023)
+mfv_stoplb_tau001000um_M0300_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-3b5e4f0495724bde79c862343be2186e/USER', 197602)
+mfv_stoplb_tau010000um_M0300_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-26715ed09b1506cd8f44b4ce7d2d19f7/USER', 196154)
+mfv_stoplb_tau030000um_M0300_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-40f4a49bb75dd958be37be9b826d3ded/USER', 196763)
+mfv_stoplb_tau000100um_M0400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-c621303522b2599815b71742fb21c3eb/USER', 200505)
+mfv_stoplb_tau000300um_M0400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-eeba5a2b3eda89a7a478d40221ed4016/USER', 200842)
+mfv_stoplb_tau001000um_M0400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-3cd334d39721d4bb26422bea692f6591/USER', 199860)
+mfv_stoplb_tau010000um_M0400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-dc75c6e373117e1501ea70d4b3b1b62d/USER', 198963)
+mfv_stoplb_tau030000um_M0400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-be8f4fbf23b0fb469cd89d6646b45658/USER', 198368)
+mfv_stoplb_tau000100um_M0600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-1ac4a6bdc61399723c7ddaa4acb7fb5b/USER', 198211)
+mfv_stoplb_tau000300um_M0600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-13bf23456958593ac629b5e80710315f/USER', 199368)
+mfv_stoplb_tau001000um_M0600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-534b734eb8362b797caa0fff0ecca0aa/USER', 196032)
+mfv_stoplb_tau010000um_M0600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-2b6cd5fd99db40a4632a278feca24fd8/USER', 197845)
+mfv_stoplb_tau030000um_M0600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-d9c83e71a567e8e6a4bbb8c871ebe6d4/USER', 201533)
+mfv_stoplb_tau000100um_M0800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-98b6123e3911ac85072daffea8498f77/USER', 202319)
+mfv_stoplb_tau000300um_M0800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-557b79c1a7d8a0877744a2df27637725/USER', 200738)
+mfv_stoplb_tau001000um_M0800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-080a24100b753a103823882be5c8cdd7/USER', 202348)
+mfv_stoplb_tau010000um_M0800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-816e354efc2b9b4a5d43fe8d15c31a38/USER', 99747)
+mfv_stoplb_tau030000um_M0800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-cd560754c08ff968510ddb173c53f5c6/USER', 199087)
+mfv_stoplb_tau000100um_M1000_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-994b05603c5e3b0ffbe320d335dc2c3a/USER', 202114)
+mfv_stoplb_tau000300um_M1000_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-e21c394dd1135d618d1227239d8a455e/USER', 196665)
+mfv_stoplb_tau001000um_M1000_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-e1f5a855f5c876be06e1fc47758d6ba4/USER', 196748)
+mfv_stoplb_tau010000um_M1000_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-e118adc79abaa03a2e0e359fe506609b/USER', 99062)
+mfv_stoplb_tau030000um_M1000_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-83d7e53a354854d1c8bf66a7a7f75998/USER', 199216)
+mfv_stoplb_tau000100um_M1200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-8621923df4e6df2f833550b10db45114/USER', 197949)
+mfv_stoplb_tau000300um_M1200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-cf3ba95cee0bc1ba4769f2c19df1c221/USER', 198241)
+mfv_stoplb_tau001000um_M1200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-00a0d6ee16912d00ca49f79826803640/USER', 199473)
+mfv_stoplb_tau010000um_M1200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-1c00cf9fbaa91596bacf0fed13361faa/USER', 98201)
+mfv_stoplb_tau030000um_M1200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-f0c457d005127d1a8ffcffb9a73d9987/USER', 197406)
+mfv_stoplb_tau000100um_M1400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-6c4d81c4787658c37e3377560df95b83/USER', 199272)
+mfv_stoplb_tau000300um_M1400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-f035d444852162d5bfa499119b0f070f/USER', 200098)
+mfv_stoplb_tau001000um_M1400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-d405ff60ed1e8b6d9403ebab6feb1806/USER', 200807)
+mfv_stoplb_tau010000um_M1400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-4218d349323a47688295da686ac3497a/USER', 99970)
+mfv_stoplb_tau030000um_M1400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-c6373c51192b66b2282ef5e3bace715e/USER', 200816)
+mfv_stoplb_tau000100um_M1600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-96f5688281cd42bc9619fe0141395d8d/USER', 199366)
+mfv_stoplb_tau000300um_M1600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-ed252f1aa5673337d35d655f051b75e9/USER', 202756)
+mfv_stoplb_tau001000um_M1600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-15e45a64455503071d21524645f3beb7/USER', 99806)
+mfv_stoplb_tau010000um_M1600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-71c40d6c85228512445f9d43242bcedb/USER', 101586)
+mfv_stoplb_tau030000um_M1600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-82a5ae9dddf83c504370afb0dc945853/USER', 99525)
+mfv_stoplb_tau000100um_M1800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-dfcdc022f64ab35cf150cfbb8ee8f51b/USER', 200523)
+mfv_stoplb_tau000300um_M1800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-4d7bd86a3176ce2e201b309ff45412e9/USER', 199868)
+mfv_stoplb_tau001000um_M1800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-dfaeee6e51710396975704992792717c/USER', 100171)
+mfv_stoplb_tau010000um_M1800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-c8d997d607ebaa96bc6d4aca4995294d/USER', 101211)
+mfv_stoplb_tau030000um_M1800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-f9905209ff3aecd8143800189352b30c/USER', 100346)
+mfv_stopld_tau000100um_M0200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-475f952ffaaa647e75d540d8ab50bccd/USER', 197970)
+mfv_stopld_tau000300um_M0200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-2e51e594f8dd45ec8ce5736f7173d781/USER', 198800)
+mfv_stopld_tau001000um_M0200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-94dda374106298324250505e51291196/USER', 198397)
+mfv_stopld_tau010000um_M0200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-d3b7119f46c8bed01f229dd04a3901e4/USER', 199856)
+mfv_stopld_tau030000um_M0200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-10a775cb7d99b698338c88725a9ddc20/USER', 202558)
+mfv_stopld_tau000100um_M0300_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-a528ec9d9a271a80127d30016d3cffd9/USER', 196635)
+mfv_stopld_tau000300um_M0300_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-b8b1c739d24692b9f523d159c3254c5a/USER', 198796)
+mfv_stopld_tau001000um_M0300_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-52c264cc131c71319299ac53ce0e5188/USER', 200543)
+mfv_stopld_tau010000um_M0300_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-9d4851083a728c972649969f6239f3e3/USER', 197769)
+mfv_stopld_tau030000um_M0300_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-91c29dd03883d97edbb191ac905fd05d/USER', 198495)
+mfv_stopld_tau000100um_M0400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-4edd66e977de261ef74afa2d372e0985/USER', 201643)
+mfv_stopld_tau000300um_M0400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-2e5ea9a34f36d189aeda68fb1d777191/USER', 197079)
+mfv_stopld_tau001000um_M0400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-48dbd65f81ead014c0b32fc6fb4c342a/USER', 200098)
+mfv_stopld_tau010000um_M0400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-b9ff767ab3846e9cc4deae0e9229125a/USER', 198270)
+mfv_stopld_tau030000um_M0400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-d1cb2c7a0f22573e36ca274386784797/USER', 203160)
+mfv_stopld_tau000100um_M0600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-186adfb4b6ec5b56a7cc964cab1aa04c/USER', 198964)
+mfv_stopld_tau000300um_M0600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-d5700879bc6c7171c1e6ad8188f57b82/USER', 198408)
+mfv_stopld_tau001000um_M0600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-0f7b0014aaf7d44e516eb35e0a159cae/USER', 199759)
+mfv_stopld_tau010000um_M0600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-acf8782479886c3cefdaed9d87ccad45/USER', 200404)
+mfv_stopld_tau030000um_M0600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-988badbeff18ea821244eade4e104955/USER', 200030)
+mfv_stopld_tau000100um_M0800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-65f7f1e45691165eee0479da2cf7d0b1/USER', 197872)
+mfv_stopld_tau000300um_M0800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-0bb9b3d1293a5d9b77d7f7cc48071b32/USER', 202036)
+mfv_stopld_tau001000um_M0800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-03479b6abe61fa57459d57b8bcafe6e2/USER', 199217)
+mfv_stopld_tau010000um_M0800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-ffe40e08b5c1f98d9eb1c83f29f54cc1/USER', 100507)
+mfv_stopld_tau030000um_M0800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-9a9b47122c2decfc9f35bc34eb48a889/USER', 197136)
+mfv_stopld_tau000100um_M1000_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-0c89f5d26866f41964cbe677675cbf5b/USER', 197829)
+mfv_stopld_tau000300um_M1000_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-270f55b304c5874862d15af9ed799743/USER', 199006)
+mfv_stopld_tau001000um_M1000_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-1fedc8a824b1a8bb0e0f653eed45b86d/USER', 196285)
+mfv_stopld_tau010000um_M1000_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-2bdb3b2dc24a00e8228733520fc9a3de/USER', 98581)
+mfv_stopld_tau030000um_M1000_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-5cfc45e99e0e2ed2af958575fee09dbb/USER', 197592)
+mfv_stopld_tau000100um_M1200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-be023545ce17af44405d66c54093c483/USER', 195354)
+mfv_stopld_tau000300um_M1200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-62e98ce1faa2691f35bd93150642d6a6/USER', 199435)
+mfv_stopld_tau001000um_M1200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-28b2be848618828892382e82cf8c0927/USER', 200103)
+mfv_stopld_tau010000um_M1200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-da0be38ffc8aa18c75ffc90bb88505fb/USER', 98617)
+mfv_stopld_tau030000um_M1200_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-2d166a7b2d311598d83b5f462b270e06/USER', 200964)
+mfv_stopld_tau000100um_M1400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-c037a92165925cd7b2e3329e400d107e/USER', 200045)
+mfv_stopld_tau000300um_M1400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-2ebb2360d902a797a4da3e69df7f439b/USER', 202529)
+mfv_stopld_tau001000um_M1400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-6e24151861dbdadd0944a3df13e5673c/USER', 196708)
+mfv_stopld_tau010000um_M1400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-525759dc2af6a3291945406aafcb3ca4/USER', 100228)
+mfv_stopld_tau030000um_M1400_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-a019f1326af01602b4a02a7c95f43434/USER', 201992)
+mfv_stopld_tau000100um_M1600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-6a3c0cb1502edd6690e0d77e0747d3e0/USER', 201300)
+mfv_stopld_tau000300um_M1600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-136227bab19898ad2548f0b1c0177681/USER', 197421)
+mfv_stopld_tau001000um_M1600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-e957a79897713ec5c89e98dabc924713/USER', 100838)
+mfv_stopld_tau010000um_M1600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-2e495008f2b05825c661008e2d53720f/USER', 99387)
+mfv_stopld_tau030000um_M1600_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-26489bcbb9a46c21acd5fefd8f1ae508/USER', 97752)
+mfv_stopld_tau000100um_M1800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-924b95e9a5968bcf4165353f618a1bc2/USER', 202746)
+mfv_stopld_tau000300um_M1800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-f2f00896773c14a101288fb32fdd4629/USER', 199924)
+mfv_stopld_tau001000um_M1800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-dd7c644e5fd148e5c059f55fa760f2f2/USER', 99515)
+mfv_stopld_tau010000um_M1800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-a4f7123cf81f679aac50f42421c10eb4/USER', 99400)
+mfv_stopld_tau030000um_M1800_2018.add_dataset('ntupleulv9lepm', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV9Lepm_2018-4535a031c94be29f724d8a62d1fd5b5f/USER', 98449)
+
+ttbar_lep_2018.add_dataset('ntupleulv9lepm_wgen', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV9Lepm_WGen_2018-1a1f79d40f6b7126d1571e12d51e9079/USER', 23971511)
+ttbar_semilep_2018.add_dataset('ntupleulv9lepm_wgen', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV9Lepm_WGen_2018-06f4ccf7f9e99c1dac78d05f90f8be5a/USER', 46976261)
+ttbar_had_2018.add_dataset('ntupleulv9lepm_wgen', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV9Lepm_WGen_2018-51733bae56d3b337b429fa4fdf7900e3/USER', 94370)
 
 
-## Tracking Treer (EF in place -- lep pass pt > 5, eta, ID, iso & min 1 jet; Single Lep Trigger)
-qcdmupt15_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdempt015_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdempt020_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdempt030_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdempt050_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdempt080_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdempt120_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdempt170_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdempt300_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdbctoept015_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdbctoept020_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdbctoept030_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdbctoept080_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdbctoept170_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-qcdbctoept250_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-dyjetstollM10_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-dyjetstollM50_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-wjetstolnu_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-ww_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-wz_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-zz_2018.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-SingleMuon2018A.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-SingleMuon2018B.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-SingleMuon2018C.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-SingleMuon2018D.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-EGamma2018A.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-EGamma2018B.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-EGamma2018C.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-EGamma2018D.add_dataset('trackingtreerulv1_lepm', '/FakeDataset/fakefile-FakePublish-5b6a581e4ddd41b130711a045d5fecb9/USER', -1)
-ttbar_2018.add_dataset("trackingtreerulv1_lepm")
+qcdempt015_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-6adf86f355597a8cbd5eedaca0add5ac/USER', 0)
+qcdmupt15_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-e759ad98d0f43d744f979317e3216c20/USER', 1577)
+qcdempt020_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-32777b99a831f30d065fbb741f8bb203/USER', 0)
+qcdempt030_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-45ba33279f3302e43bb2f6bdda73a5d6/USER', 1)
+qcdempt050_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-324311abd707e3d6d3617f762f208000/USER', 5)
+qcdempt080_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-74a6409cbf11a3d14b86fb779737f5a8/USER', 16)
+qcdempt120_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-f90fcd9cbf90b05084d846b238d31e68/USER', 30)
+qcdempt170_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-9e12e5a9ebff9b8f2bb21e4b4d480d1f/USER', 23)
+qcdempt300_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-ff917c63a0e7b573fe888c911faecef5/USER', 33)
+qcdbctoept015_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt_15to20_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV10Lepm_WGen_2017-1b5ddeed8c16444c6c369a611fe44e6c/USER', 1)
+qcdbctoept020_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV10Lepm_WGen_2017-5d0d527312d450948487d854e6dcad31/USER', 3)
+qcdbctoept030_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV10Lepm_WGen_2017-2f30b3e38adb5150ea7452c11a3c5ff0/USER', 33)
+qcdbctoept170_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV10Lepm_WGen_2017-3c2d1c72f32ece4864698f103344109d/USER', 394)
+qcdbctoept250_2017.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV10Lepm_WGen_2017-83bb4850816a7cb34fdeeadd11799176/USER', 457)
+ttbar_lep_2017.add_dataset('ntupleulv10lepm_wgen', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV10Lepm_WGen_2017-44875180c7e0a7e786d0be03ff04c39d/USER', 3392501)
+ttbar_semilep_2017.add_dataset('ntupleulv10lepm_wgen', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV10Lepm_WGen_2017-9d1c1933b9a9786844c1cdb4f077e413/USER', 6744007)
+ttbar_had_2017.add_dataset('ntupleulv10lepm_wgen', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV10Lepm_WGen_2017-b3f3cb9bcbb5be506ef1d05a2eedea09/USER', -1)
+wjetstolnu_2017.add_dataset('ntupleulv10lepm_wgen', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV10Lepm_WGen_2017-cab01ddde62ca73a08de1f75923a7d05/USER', 12251)
+dyjetstollM10_2017.add_dataset('ntupleulv10lepm_wgen', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV10Lepm_WGen_2017-ddf0ea42e4b142c55af59f28d4d08ced/USER', 639)
+dyjetstollM50_2017.add_dataset('ntupleulv10lepm_wgen', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV10Lepm_WGen_2017-ebaf08bb96d68ab7498581396da57d12/USER', 46190)
+ww_2017.add_dataset('ntupleulv10lepm_wgen', '/WW_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-039ae08dd48d974f53d0244f0e18c89f/USER', 5381)
+zz_2017.add_dataset('ntupleulv10lepm_wgen', '/ZZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-a2416a7af05b6a1895122e3bf3cb73cc/USER', 1966)
+wz_2017.add_dataset('ntupleulv10lepm_wgen', '/WZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2017-d5748ad80d3e4149e84f703f20461cd1/USER', 5105)
+mfv_stoplb_tau000100um_M1000_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-10564226111eda5b8bd0b4cb22dbe4a4/USER', 194928)
+mfv_stoplb_tau000300um_M1000_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-62a1448ca11b2004ed681f205cfc79dc/USER', 200301)
+mfv_stoplb_tau010000um_M1000_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-6c81359334eec995f0b84b86b58175c7/USER', 98261)
+mfv_stoplb_tau001000um_M1000_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-1b11950e631292c2cd8accb35da2c320/USER', 197193)
+mfv_stoplb_tau030000um_M1000_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-2b3d757477cb3de3108bc5a161dc3cba/USER', 200668)
+mfv_stoplb_tau000100um_M1200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-493a17e2be7f019d0215d79699ba924c/USER', 199921)
+mfv_stoplb_tau000300um_M1200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-0665867a96728d541aafb58819cc2ce7/USER', 195189)
+mfv_stoplb_tau010000um_M1200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-151fa707f1916312cefb0e96f7cff235/USER', 100156)
+mfv_stoplb_tau001000um_M1200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-a6c00373e81a44f196612db86c1188f7/USER', 197902)
+mfv_stoplb_tau030000um_M1200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-1f00eec6ad919046d8474c4402fb1ba6/USER', 200464)
+mfv_stoplb_tau000100um_M1400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-04cb92fcddcc9c6132efca502de52b95/USER', 199322)
+mfv_stoplb_tau000300um_M1400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-5f469786a00255fdeea5650aae8af086/USER', 200304)
+mfv_stoplb_tau010000um_M1400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-21be329fd428072488de7dac28b2b249/USER', 98900)
+mfv_stoplb_tau001000um_M1400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-61f0461ed0a71f088f8417f2e4cf5fb6/USER', 196297)
+mfv_stoplb_tau030000um_M1400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-ea7c782013072c1fe87f9db5567ed4bb/USER', 198644)
+mfv_stoplb_tau000100um_M1600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-44f4fa941c500d0ed68e67f21fec6926/USER', 202021)
+mfv_stoplb_tau000300um_M1600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-cf8e7a72f68d22df2bb51090b50fecf7/USER', 199079)
+mfv_stoplb_tau010000um_M1600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-ea50561931d1acd07a6c1ddabde30896/USER', 98745)
+mfv_stoplb_tau001000um_M1600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-98d13ad3a80bac024991efb86a292022/USER', 98921)
+mfv_stoplb_tau030000um_M1600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-39a865ce42e627169d5a5bbc5625a77a/USER', 100284)
+mfv_stoplb_tau000100um_M1800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-e8d834d229ec7e6e2055e25b39797c7d/USER', 199639)
+mfv_stoplb_tau000300um_M1800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-d5fc1b0e0b6d2625edcc8898a066d65d/USER', 200792)
+mfv_stoplb_tau010000um_M1800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-b13c0ed8646f13127483621b927bad50/USER', 101386)
+mfv_stoplb_tau001000um_M1800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-728e7e76809f1777ba2bc2a209fa3859/USER', 98858)
+mfv_stoplb_tau030000um_M1800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-e59acbcaa96f8350e427e2d4689a1e32/USER', 100172)
+mfv_stoplb_tau000100um_M0200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-d6dc711b3435053e63edbaa56a901967/USER', 198760)
+mfv_stoplb_tau000300um_M0200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-6f3a89ea89ec220e711a2e90d8e14928/USER', 198899)
+mfv_stoplb_tau010000um_M0200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-41bfc5301f6932beb6b6b8b634873ab6/USER', 199948)
+mfv_stoplb_tau001000um_M0200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-454488d0fad764beeed89faf9948f86a/USER', 196687)
+mfv_stoplb_tau030000um_M0200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-c001a338f5111c3ed52db344cea58b55/USER', 199267)
+mfv_stoplb_tau000100um_M0300_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-2ad593b0cb1c5b103c97ba56ecb5ec0b/USER', 198231)
+mfv_stoplb_tau000300um_M0300_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-3f17232b1953b56338327854fb660d2f/USER', 198170)
+mfv_stoplb_tau010000um_M0300_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-1442ae90d9bc31485e53d11ea984f789/USER', 199832)
+mfv_stoplb_tau001000um_M0300_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-bd51f9acfe909ae0ac7275f0b5d42df3/USER', 200296)
+mfv_stoplb_tau030000um_M0300_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-a8f429251b5ca9ddd3b83c1a045a443f/USER', 200170)
+mfv_stoplb_tau000100um_M0400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-a8966490b6d2ababd318625b9f9d7d8c/USER', 197597)
+mfv_stoplb_tau000300um_M0400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-4854170a33288131dce4d7e21fd3969c/USER', 200230)
+mfv_stoplb_tau010000um_M0400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-44c18f96220ed5f80002c816eb3a2b09/USER', 198737)
+mfv_stoplb_tau001000um_M0400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-46e47fcbc118dae790ae398c385b2801/USER', 197003)
+mfv_stoplb_tau030000um_M0400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-c1f86b7a08cacd5a6b13f65807861c80/USER', 198930)
+mfv_stoplb_tau000100um_M0600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-f390c3eded763a650e1ad879f18fdf35/USER', 201812)
+mfv_stoplb_tau000300um_M0600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-0461e108fac010d0f57beb9e9a73feab/USER', 201839)
+mfv_stoplb_tau010000um_M0600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-ac49931a3f70377af9c16162184a68ac/USER', 197409)
+mfv_stoplb_tau001000um_M0600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-cd78a2bf9ced63f8b2a1f2f35a981472/USER', 195368)
+mfv_stoplb_tau030000um_M0600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-806d99ff654381232678d7969a89d9f6/USER', 200005)
+mfv_stoplb_tau000100um_M0800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-1eef189c43617bb6e4824310e4e0e916/USER', 198566)
+mfv_stoplb_tau000300um_M0800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-d602a002e0f251191a221a1ca49770a0/USER', 197615)
+mfv_stoplb_tau010000um_M0800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-8a42214e7746d393d72ec43d05e057b7/USER', 98799)
+mfv_stoplb_tau001000um_M0800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-4b2e277b7877a032ff6542007150119c/USER', 197479)
+mfv_stoplb_tau030000um_M0800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-3dc7ea79616188c1c2ee6000fdc5e70c/USER', 201690)
+mfv_stopld_tau000100um_M1000_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-2d23bb9de91c74013419f6497cd056d0/USER', 199076)
+mfv_stopld_tau000300um_M1000_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-9bb34a47dca9a0059449b65eb3363937/USER', 198992)
+mfv_stopld_tau010000um_M1000_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-26876345911a578728b7de58d3053eb2/USER', 98679)
+mfv_stopld_tau001000um_M1000_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-0536e7a21901c9b8acffa23803a98413/USER', 198608)
+mfv_stopld_tau030000um_M1000_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-6925948c94be0e702b951a1e68d007bc/USER', 199499)
+mfv_stopld_tau000100um_M1200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-bc0bcc1cf0a42f57417547e4616894b5/USER', 198263)
+mfv_stopld_tau000300um_M1200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-ea554d6d3108deb3dfc742bc75418851/USER', 195508)
+mfv_stopld_tau010000um_M1200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-bbd31092203cb1a1d4e3bebb65aacd37/USER', 100349)
+mfv_stopld_tau001000um_M1200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-4ffbae23acb1ec8604af75a91d4f924d/USER', 201191)
+mfv_stopld_tau030000um_M1200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-84f62a190e9f268f6ff8eb02ed06bdaf/USER', 200851)
+mfv_stopld_tau000100um_M1400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-de2e2c7b2c8e213de4ae83a53311da77/USER', 198812)
+mfv_stopld_tau000300um_M1400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-8146bf540ee8c435c745fbe7608b371d/USER', 194591)
+mfv_stopld_tau010000um_M1400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-498fa19aacb4691b938937f95ca78c1a/USER', 98583)
+mfv_stopld_tau001000um_M1400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-095a8d6285fac9e2fbaabdb61ec9a805/USER', 198538)
+mfv_stopld_tau030000um_M1400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-d74195bd8a0381bfe02c165b1bcdef0a/USER', 200714)
+mfv_stopld_tau000100um_M1600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-7802b90fe36ca36732860c5850886c92/USER', 201051)
+mfv_stopld_tau000300um_M1600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-28fddaae0fd0e85d5f00dd10b934f203/USER', 196540)
+mfv_stopld_tau010000um_M1600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-6f1ca8d6b77cd4ac026c26dab5b3563e/USER', 100274)
+mfv_stopld_tau001000um_M1600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-0c5bcdab50914c907ca8e1447c5925d6/USER', 99126)
+mfv_stopld_tau030000um_M1600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-9b06c9d9b70f998d788c056cc353091a/USER', 100345)
+mfv_stopld_tau000100um_M1800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-98187f008119a7506d61b53223c44609/USER', 200828)
+mfv_stopld_tau000300um_M1800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-38c7eb2ba84997658dd92a29e3fc9d91/USER', 198147)
+mfv_stopld_tau010000um_M1800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-809696663b27c781cd56247d4fcd9d9b/USER', 99667)
+mfv_stopld_tau001000um_M1800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-7426b814bac416b79ba1bd19cf731dfd/USER', 101005)
+mfv_stopld_tau030000um_M1800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-94bcbc035aa15b33ee10d597997c7f7d/USER', 99787)
+mfv_stopld_tau000100um_M0200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-07a0d642e872cb2da200cebfe4cc0216/USER', 201843)
+mfv_stopld_tau000300um_M0200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-a0046dd2013253000bebfa0470500547/USER', 199789)
+mfv_stopld_tau010000um_M0200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-353b410052f0c056498f9523fcb92389/USER', 197403)
+mfv_stopld_tau001000um_M0200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-b30664739c8d6636b3b0114f00b97339/USER', 198275)
+mfv_stopld_tau030000um_M0200_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-932ec33779eef4bb898d8591aec49f45/USER', 198511)
+mfv_stopld_tau000100um_M0300_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-63e09e3efa1bdaf69989f8085e12ee74/USER', 197379)
+mfv_stopld_tau000300um_M0300_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-2484446757d01caa715413b6ce2883b1/USER', 197934)
+mfv_stopld_tau010000um_M0300_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-0e7df70312eee62fe463ca0402e0433f/USER', 197990)
+mfv_stopld_tau001000um_M0300_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-c4afa7ef63cb71374cc8ccd0de47fda1/USER', 199705)
+mfv_stopld_tau030000um_M0300_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-3e026ff8dca25ec47d207d6787f6430d/USER', 199931)
+mfv_stopld_tau000100um_M0400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-d7161a744e178b3556973d002c2e7bf5/USER', 202735)
+mfv_stopld_tau000300um_M0400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-3609daabff77213139e446fca3c37fdb/USER', 199890)
+mfv_stopld_tau010000um_M0400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-32c5d0dbeeab9ce3b8fc6edd115db26b/USER', 201845)
+mfv_stopld_tau001000um_M0400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-57ff6678c4e4a05c74fa91b5c6a7666d/USER', 197130)
+mfv_stopld_tau030000um_M0400_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-cae73051d8ce162bb090ae67b8b844fe/USER', 198731)
+mfv_stopld_tau000100um_M0600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-e182d193d21e79012b6df6f7950660cd/USER', 203406)
+mfv_stopld_tau000300um_M0600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-d437dda8d96c39bfcf7494d07dc05053/USER', 199321)
+mfv_stopld_tau010000um_M0600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-f691a9a83e1663896a149498909b32d0/USER', 9103)
+mfv_stopld_tau001000um_M0600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-13ef0b12865cc214f538a86333266a43/USER', 203302)
+mfv_stopld_tau030000um_M0600_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-6b0c1598fc448bccf2ed4020a60f6e70/USER', 199944)
+mfv_stopld_tau000100um_M0800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-28b5f83f93f0d8fe38d433b8e953ccd6/USER', 200077)
+mfv_stopld_tau000300um_M0800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-10200a42e6092672dee7d83f51a31e40/USER', 200814)
+mfv_stopld_tau010000um_M0800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-dae8e12ceb72c2aa2a587961fabfb623/USER', 99313)
+mfv_stopld_tau001000um_M0800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-fafd17e10dcca6d88af5f87abd864f57/USER', 200829)
+mfv_stopld_tau030000um_M0800_2017.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2017-08a05382a58e45abd3c6a081d1f3d1bc/USER', 200140)
 
-ttbar_2018.add_dataset("trackingtreerulv2_lepm")
+qcdmupt15_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-27b9ab289cca8ca38b9d327087a28258/USER', 2516)
+qcdempt015_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-59be9dd00c204f67eecf7ddfe58ef742/USER', 2)
+qcdempt020_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-557b7f4299649f24381bbe49fb6d03f6/USER', 0)
+qcdempt030_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-effee8529027ff380fc2aafd2b8015b7/USER', 3)
+qcdempt050_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-613ea0e4c40fa65808a033a3659c8f19/USER', 8)
+qcdempt080_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-9192ecd8c8b5e7504e652407c72c8b2e/USER', 22)
+qcdempt120_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-b9afc6670103c587ce44a0a01370a25b/USER', 51)
+qcdempt170_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-d63f89af35d39ead9181e8f1a0ba5c7d/USER', 27)
+qcdbctoept015_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt_15to20_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV10Lepm_WGen_2018-f746d6ae72d6db9537bbde289f35bbb9/USER', 0)
+qcdbctoept020_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV10Lepm_WGen_2018-72b53b05e44d322ba366e5ffae755df8/USER', 3)
+qcdbctoept030_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV10Lepm_WGen_2018-54dad8897e891fbe6d63abc695de33d7/USER', 77)
+qcdbctoept080_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV10Lepm_WGen_2018-91bccc63bf2d39652452a68ee7ee2637/USER', 240)
+qcdbctoept170_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV10Lepm_WGen_2018-08e766210c756cd2f697de87e77e7098/USER', 459)
+qcdbctoept250_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV10Lepm_WGen_2018-0aab1d9158c673e1aa3876c07e4aff8e/USER', 516)
+qcdempt300_2018.add_dataset('ntupleulv10lepm_wgen', '/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-a33b436af2d8bfeca9352100db4d5ee1/USER', 37)
+ttbar_lep_2018.add_dataset('ntupleulv10lepm_wgen', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV10Lepm_WGen_2018-b1f588cbac5e905ba5cf417dfd0d2a35/USER', 5344185)
+ttbar_semilep_2018.add_dataset('ntupleulv10lepm_wgen', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV10Lepm_WGen_2018-bd2160b6f2bf031424f844eb16332ec4/USER', 10655075)
+ttbar_had_2018.add_dataset('ntupleulv10lepm_wgen', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV10Lepm_WGen_2018-8a587e26ecc8fa3e672eefdf17ce89ad/USER', 20455)
+wjetstolnu_2018.add_dataset('ntupleulv10lepm_wgen', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV10Lepm_WGen_2018-8d1d0e41b6052d5727c7f6571d0cfbc2/USER', 15365)
+wjetstolnu_ext_2018.add_dataset('ntupleulv10lepm_wgen', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV10Lepm_WGen_2018-4d2ff0e0a0c7201da5516dcd6193e9b8/USER', 14741)
+dyjetstollM10_2018.add_dataset('ntupleulv10lepm_wgen', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV10Lepm_WGen_2018-c1e96c5ddfa0c9a5a980983e452aa15d/USER', 1308)
+dyjetstollM50_2018.add_dataset('ntupleulv10lepm_wgen', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV10Lepm_WGen_2018-5a6c962c0a4950e690513bff4faef011/USER', 50318)
+ww_2018.add_dataset('ntupleulv10lepm_wgen', '/WW_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-411e74744422c54f39a3ccbd367af000/USER', 6468)
+wz_2018.add_dataset('ntupleulv10lepm_wgen', '/WZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-00b976bfd971507532052a53197205d3/USER', 6144)
+zz_2018.add_dataset('ntupleulv10lepm_wgen', '/ZZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV10Lepm_WGen_2018-74b858adc5ff9a1f60429f9fd943bdd4/USER', 2968)
+mfv_stoplb_tau000100um_M0200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-e13bcd2da8f19338bb6dbbcb2ea4f266/USER', 198986)
+mfv_stoplb_tau000300um_M0200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-5470a3730bd2e2f5008f5f417a3ea446/USER', 199542)
+mfv_stoplb_tau001000um_M0200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-80795b1c9dff349540fe7a26ca6f21d6/USER', 198269)
+mfv_stoplb_tau010000um_M0200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-1f971155aa43c44bf6beb12680a1984f/USER', 198147)
+mfv_stoplb_tau030000um_M0200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-fa763de07d8d85f2a6514c64a3856207/USER', 197780)
+mfv_stoplb_tau000100um_M0300_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-4d9ac9424f4c47b0f12a498825a34458/USER', 198372)
+mfv_stoplb_tau000300um_M0300_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-3033574ff62668257bf20ff2ad6ae99c/USER', 203023)
+mfv_stoplb_tau001000um_M0300_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-2f46120d79ff704a2ada251ad46b5086/USER', 197602)
+mfv_stoplb_tau010000um_M0300_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-4caf689fed5b7e0258169bf162dcefa1/USER', 196154)
+mfv_stoplb_tau030000um_M0300_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-2c834fd628b2f3cb56900bc2d8df6f1a/USER', 196763)
+mfv_stoplb_tau000100um_M0400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-675889cf02ebe69b555496146e211ce7/USER', 200505)
+mfv_stoplb_tau000300um_M0400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-cf63fba8dae81a0af3285de9e854b10c/USER', 200842)
+mfv_stoplb_tau001000um_M0400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-bd4fb02c9b7e73d9d628ea864c6ca8f1/USER', 199860)
+mfv_stoplb_tau010000um_M0400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-bdec33f9f93ec1d43f7ba1a451ba2bc9/USER', 198963)
+mfv_stoplb_tau030000um_M0400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-ceb2c5996ed6088acf3763765bbc5477/USER', 198368)
+mfv_stoplb_tau000100um_M0600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-cce303f2e6b2ca50056a4ccf0113d2ff/USER', 198211)
+mfv_stoplb_tau000300um_M0600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-e428f3b7f4b6b177caa64771311b2ee4/USER', 199368)
+mfv_stoplb_tau001000um_M0600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-474e8f31895827432637a545b470decb/USER', 196032)
+mfv_stoplb_tau010000um_M0600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-cd821fcf6fdf747a055aa3957912d06f/USER', 197845)
+mfv_stoplb_tau030000um_M0600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-47a6e2ff981c823288be0032b18acbaf/USER', 201533)
+mfv_stoplb_tau000100um_M0800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-80c6925ae3c558fb2712193e688d2304/USER', 202319)
+mfv_stoplb_tau000300um_M0800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-ac97e56ea476cedaae5a27fba139a1cc/USER', 200738)
+mfv_stoplb_tau001000um_M0800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-01d197bfe17bc9bf1880629c8c61ce8b/USER', 202348)
+mfv_stoplb_tau010000um_M0800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-624caa6b90e88d28568ec260474b1137/USER', 99747)
+mfv_stoplb_tau030000um_M0800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-0f8cfd55acddfe062dbce51381db42e6/USER', 199087)
+mfv_stoplb_tau000100um_M1000_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-8540196bdb2d28d1999903c202505779/USER', 202114)
+mfv_stoplb_tau000300um_M1000_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-fce8eb8ae946e11a7ea9dbbfb20d885e/USER', 196665)
+mfv_stoplb_tau001000um_M1000_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-5bfa39cc9c474cae97dbf4031c833950/USER', 196748)
+mfv_stoplb_tau010000um_M1000_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-d5af327e892b333abca0df76d131bb14/USER', 99062)
+mfv_stoplb_tau030000um_M1000_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-82bd35f30af91c8471ca7f518895dd81/USER', 199216)
+mfv_stoplb_tau000100um_M1200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-0df826a67103c5e5295d9a48b89e32ff/USER', 197949)
+mfv_stoplb_tau000300um_M1200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-341b616369651588a94ccf5a27d12880/USER', 198241)
+mfv_stoplb_tau001000um_M1200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-e5f88616922add1c546105f2fd072444/USER', 199473)
+mfv_stoplb_tau010000um_M1200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-2405c4c1683556107c0f4f653c03d220/USER', 98201)
+mfv_stoplb_tau030000um_M1200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-2c161b2441c01f2a4e480234cf7fd9ca/USER', 199458)
+mfv_stoplb_tau000100um_M1400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-5a4809895749c12b6583488babf4f416/USER', 199272)
+mfv_stoplb_tau000300um_M1400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-3e7da20461b7e17b9949ef03031b5ff5/USER', 200098)
+mfv_stoplb_tau001000um_M1400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-4c5f47731b2f8801017d5fd8eabd166c/USER', 200807)
+mfv_stoplb_tau010000um_M1400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-cdb41ab6e48b69aa85e5aaf35958382c/USER', 99970)
+mfv_stoplb_tau030000um_M1400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-8a4822cf5527df20623344f597656cdb/USER', 200816)
+mfv_stoplb_tau000100um_M1600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-da64a39daa6f8c4417e29b858173b437/USER', 199366)
+mfv_stoplb_tau000300um_M1600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-0ba82d938ce311c044116269e70f20f5/USER', 202756)
+mfv_stoplb_tau001000um_M1600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-92330c94d799ba67a446a9a22ca90444/USER', 99806)
+mfv_stoplb_tau010000um_M1600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-ed7e7e3c4da80ce7ce0db854ef09606f/USER', 101586)
+mfv_stoplb_tau030000um_M1600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-8cc1b183441f286a0562a555194a9d92/USER', 100560)
+mfv_stoplb_tau000100um_M1800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-53c1864867a8934c01a4d65feb2422fc/USER', 200523)
+mfv_stoplb_tau000300um_M1800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-ce5774fff337618dcfb6158d7e3228eb/USER', 199868)
+mfv_stoplb_tau001000um_M1800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-fa3f79188ed0bf9b8474eced49bf54c2/USER', 100171)
+mfv_stoplb_tau010000um_M1800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-fc7790a335a7cb860220ab0e46936b62/USER', 101211)
+mfv_stoplb_tau030000um_M1800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-1762b62fbaa26568702a1317d73047bd/USER', 100346)
+mfv_stopld_tau000100um_M0200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-812a643a57313815652478c7206b7e93/USER', 197970)
+mfv_stopld_tau000300um_M0200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-7e28daf6f0f7073b163191ba6d070f60/USER', 198800)
+mfv_stopld_tau001000um_M0200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-056bb612e8c051562692aa4cf8e1f45e/USER', 200411)
+mfv_stopld_tau010000um_M0200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-c08ed17c6c526b529400e92a18868144/USER', 199856)
+mfv_stopld_tau030000um_M0200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-beefb0cf6c1671195b80bf05f5d86743/USER', 202558)
+mfv_stopld_tau000100um_M0300_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-93fc89dac85d1cd40cca17c07a1f703b/USER', 196635)
+mfv_stopld_tau000300um_M0300_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-5136905aa5bdd58821d10b0f660618c3/USER', 198796)
+mfv_stopld_tau001000um_M0300_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-b5d12beb5971f6f5f21b57449082efa4/USER', 200543)
+mfv_stopld_tau010000um_M0300_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-e7c163bd66728ad9bf3fdaf90b36bd7e/USER', 197769)
+mfv_stopld_tau030000um_M0300_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-31185a8533a9c7b3481a82c3ed46a155/USER', 198495)
+mfv_stopld_tau000100um_M0400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-bf2af0da36a38fcc63a4e465e7774f46/USER', 201643)
+mfv_stopld_tau000300um_M0400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-607b37c5b8e715623e4f115316d93303/USER', 197079)
+mfv_stopld_tau001000um_M0400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-4365ec6147d724960deaf885d9fcd3aa/USER', 200098)
+mfv_stopld_tau010000um_M0400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-07208a53f23178d5be6578e7a530cf14/USER', 198270)
+mfv_stopld_tau030000um_M0400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-c69c735f630eee24750d4dca80e9b8cd/USER', 203160)
+mfv_stopld_tau000100um_M0600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-483f4711b39ca9095d0b871c6bfed707/USER', 198964)
+mfv_stopld_tau000300um_M0600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-21abefc02282ad70102ba8343fb48b80/USER', 198408)
+mfv_stopld_tau001000um_M0600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-36985a9451374efbaece2e7c27a849b5/USER', 199759)
+mfv_stopld_tau010000um_M0600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-77409a68145e0a2b389d06c80671b946/USER', 200404)
+mfv_stopld_tau030000um_M0600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-70be16734ce582a40d830e35cc2e6599/USER', 200030)
+mfv_stopld_tau000100um_M0800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-80f733af650e384c521fa7b20aaf65bc/USER', 197872)
+mfv_stopld_tau000300um_M0800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-2ec60e862ea274e30bd0466f017c1c4e/USER', 202036)
+mfv_stopld_tau001000um_M0800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-bde1556d12c95b8cca801bb9a89c6c25/USER', 199217)
+mfv_stopld_tau010000um_M0800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-3b6f4c56d15024f533e512cf9e051329/USER', 100507)
+mfv_stopld_tau030000um_M0800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-c8af84285a46251563f634997dadbe8d/USER', 197136)
+mfv_stopld_tau000100um_M1000_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-a9c060eb70d46be61ff052522e08fdd1/USER', 198858)
+mfv_stopld_tau000300um_M1000_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-1ea8595b47b53a7c7a32109c4f144027/USER', 199006)
+mfv_stopld_tau001000um_M1000_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-c1063df5076ddbd47e155a2718f1a6fd/USER', 196285)
+mfv_stopld_tau010000um_M1000_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-2667f62a1e53cfe0a4fe7f065de7e098/USER', 98581)
+mfv_stopld_tau030000um_M1000_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-35a47c4e0839de367f012f90e52f0cd0/USER', 197592)
+mfv_stopld_tau000100um_M1200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-8ade4640ae00595f3f508764eed5dd17/USER', 195354)
+mfv_stopld_tau000300um_M1200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-19b0a50b1cdd61ae6e021aa2a7cd16a9/USER', 199435)
+mfv_stopld_tau001000um_M1200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-4aebe6b7d8f101a4cee0890c2c217407/USER', 200103)
+mfv_stopld_tau010000um_M1200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-d696099b38745dd651eb76df31ced651/USER', 98617)
+mfv_stopld_tau030000um_M1200_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-d05f2451cbb34ff9ffc0656eddb8e492/USER', 200964)
+mfv_stopld_tau000100um_M1400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-298d226a17f4379dec11a6f567a4d205/USER', 200045)
+mfv_stopld_tau000300um_M1400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-065a29c8082e0e5f352a95cd13bd59d5/USER', 202529)
+mfv_stopld_tau001000um_M1400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-3f387f94c27deebb9b4148b3be621f13/USER', 196708)
+mfv_stopld_tau010000um_M1400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-f2338d8646e44d24b70ee5f8fd019df1/USER', 100228)
+mfv_stopld_tau030000um_M1400_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-3f711e704a0996820555e6f1e35428bc/USER', 201992)
+mfv_stopld_tau000100um_M1600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-68727bdeb58b6900fb11f9c2e205a8ad/USER', 201300)
+mfv_stopld_tau000300um_M1600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-7d15d6bf9202b69a41b329525dd94ef8/USER', 197421)
+mfv_stopld_tau001000um_M1600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-e2d7a0a04c51bab4d185694e6a63a8f9/USER', 100838)
+mfv_stopld_tau010000um_M1600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-ae7902a27240ada5228ab0645b692b5e/USER', 99387)
+mfv_stopld_tau030000um_M1600_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-8ebaee4ba09439fd827bbfcd8ee38d48/USER', 97752)
+mfv_stopld_tau000100um_M1800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-645a09a3e859106bab87b4bc392ac6c8/USER', 202746)
+mfv_stopld_tau000300um_M1800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-8e869066c6cec4b6b2bb1528b6ba8278/USER', 199924)
+mfv_stopld_tau001000um_M1800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-f9fa6e8672fffe82b97e52293a0e0a89/USER', 99515)
+mfv_stopld_tau010000um_M1800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-c67fa6ffea6327d1cfd9d70e1ce6afa7/USER', 99400)
+mfv_stopld_tau030000um_M1800_2018.add_dataset('ntupleulv10lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV10Lepm_WGen_2018-3a492504849b30bc5436181606cf347c/USER', 98449)
+
+##rescaled applied for 2018
+qcdmupt15_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-01dbe37f0428f82dc0ff633f12635df3/USER', 2348)
+qcdempt015_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-2b14f5f2bc30ad7138142e1ebfa015cb/USER', 2)
+qcdempt020_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-cd21bd70b61a87db8ce1dcd07b43f02c/USER', 0)
+qcdempt030_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-e736bbde135f0b31353aa5f40d00f5b7/USER', 2)
+qcdempt050_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-66e6da1654b8db95138d4fe740280ffb/USER', 6)
+qcdempt080_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-54fe1c721e04c6ad2d02dac0173c2208/USER', 22)
+qcdempt120_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-e2ddcbb485aaf31382c75e094eae9513/USER', 43)
+qcdempt170_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-e63883287f7a68fc524fa75549a590ae/USER', 27)
+qcdbctoept015_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt_15to20_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV11Lepm_WGen_2018-d0686305ed5b303202ad5931c5f8b06c/USER', 0)
+qcdbctoept020_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV11Lepm_WGen_2018-f924c6e57715ca6fd42dcc0256af23d4/USER', 2)
+qcdbctoept030_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV11Lepm_WGen_2018-84d830d10255f23a8ce0eabbe6ccd21c/USER', 68)
+qcdbctoept080_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV11Lepm_WGen_2018-5318f7e64f9b413b1f0b2a4b247051f0/USER', 219)
+qcdbctoept170_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV11Lepm_WGen_2018-33db88c1d08b091fb9a3759573ed8097/USER', 426)
+qcdbctoept250_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/awarden-NtupleULV11Lepm_WGen_2018-53b9279816bc480d36767cea7f107f86/USER', 468)
+qcdempt300_2018.add_dataset('ntupleulv11lepm_wgen', '/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-72a7bb591a76a7acc8f1d6a96c212321/USER', 35)
+ttbar_lep_2018.add_dataset('ntupleulv11lepm_wgen', '/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV11Lepm_WGen_2018-368894d6df77bd72e6069f8bbd9878b1/USER', 4950352)
+ttbar_semilep_2018.add_dataset('ntupleulv11lepm_wgen', '/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV11Lepm_WGen_2018-2bcf268631be7c56a61554df42a3379f/USER', 9828694)
+ttbar_had_2018.add_dataset('ntupleulv11lepm_wgen', '/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/awarden-NtupleULV11Lepm_WGen_2018-2ea000149053cc355113943de0b039ab/USER', 18749)
+wjetstolnu_2018.add_dataset('ntupleulv11lepm_wgen', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV11Lepm_WGen_2018-85617d746c7fd561d6e94c637a6e8f2a/USER', 13696)
+wjetstolnu_ext_2018.add_dataset('ntupleulv11lepm_wgen', '/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV11Lepm_WGen_2018-9d1b462a9f502086b20c1023b078537e/USER', 13249)
+dyjetstollM10_2018.add_dataset('ntupleulv11lepm_wgen', '/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV11Lepm_WGen_2018-15d0a04347fac5a39a5011eedd31a25d/USER', 1161)
+dyjetstollM50_2018.add_dataset('ntupleulv11lepm_wgen', '/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/awarden-NtupleULV11Lepm_WGen_2018-d0edd7e2aa6308880f3b9da109ecc600/USER', 45063)
+ww_2018.add_dataset('ntupleulv11lepm_wgen', '/WW_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-4bf2420e1b2a690f828b26fe1ce33ee5/USER', 5782)
+wz_2018.add_dataset('ntupleulv11lepm_wgen', '/WZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-19406ef4a6cded5b601ebcee08d2a592/USER', 5602)
+zz_2018.add_dataset('ntupleulv11lepm_wgen', '/ZZ_TuneCP5_13TeV-pythia8/awarden-NtupleULV11Lepm_WGen_2018-b0ea2e58eb5b546878bd7113b7303350/USER', 2757)
+mfv_stoplb_tau000100um_M0200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-bd332dc19425ce17325fed9ae2806678/USER', 198986)
+mfv_stoplb_tau000300um_M0200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-64211cdba612952e99e382f37d1985c8/USER', 199542)
+mfv_stoplb_tau001000um_M0200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-f44f122ebb4e378238d74aba6a8017b3/USER', 198269)
+mfv_stoplb_tau010000um_M0200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-d995716b94b47bc2d39f44a5e1decb6c/USER', 198147)
+mfv_stoplb_tau030000um_M0200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-a70adaf82446bc467470cb1c91e6e381/USER', 197780)
+mfv_stoplb_tau000100um_M0300_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-8de525a0472e55c0339fae91d0222913/USER', 198372)
+mfv_stoplb_tau000300um_M0300_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-044a96b15ecb23e7506c040f13c29fb1/USER', 203023)
+mfv_stoplb_tau001000um_M0300_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-ee7893a4cb394dd0c65cedf279ed91c3/USER', 197602)
+mfv_stoplb_tau010000um_M0300_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-8efee5c81b87c8ee1a371378642186c0/USER', 196154)
+mfv_stoplb_tau030000um_M0300_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-753f482c725fa66d3e39c1b1981e09b0/USER', 196763)
+mfv_stoplb_tau000100um_M0400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-8e1ead53fe88c851c9d1cb66246c9b01/USER', 200505)
+mfv_stoplb_tau000300um_M0400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-d54c630412912ab9afb95b8d1121477e/USER', 200842)
+mfv_stoplb_tau001000um_M0400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-f1908997fd8d2c224f23f9f9a6e30a56/USER', 199860)
+mfv_stoplb_tau010000um_M0400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-30ea2750e8ad204188df6e039a46e5ce/USER', 198963)
+mfv_stoplb_tau030000um_M0400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-e44493941f7f27702543c854ac48696f/USER', 198368)
+mfv_stoplb_tau000100um_M0600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-1aab6081266499701866e3c57396f734/USER', 198211)
+mfv_stoplb_tau000300um_M0600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-8ba1df574d8ed11ee34378b04e3c8bfc/USER', 199368)
+mfv_stoplb_tau001000um_M0600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-9645b92005f2f09f39dfe3d6f14a2f19/USER', 196032)
+mfv_stoplb_tau010000um_M0600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-82a9fe93a6f31fe0cd3ee163489d2c2d/USER', 197845)
+mfv_stoplb_tau030000um_M0600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-52e734044b6c789218b2b1a0bb429d02/USER', 201533)
+mfv_stoplb_tau000100um_M0800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-b9afe0476fa6969c848a1031096cd370/USER', 202319)
+mfv_stoplb_tau000300um_M0800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-e5f64e32219f35531b0c68646790d8c4/USER', 200738)
+mfv_stoplb_tau001000um_M0800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-69a515ad1550b9f0cfbe89f5b2a2b2b7/USER', 202348)
+mfv_stoplb_tau010000um_M0800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-0bfe3bb8123e4a09dd0c34d462ff12cb/USER', 99747)
+mfv_stoplb_tau030000um_M0800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-00a941c23d5bf66266365341fcfecfa5/USER', 199087)
+mfv_stoplb_tau000100um_M1000_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-c144fc55cd17e15453f0bac703c3f98b/USER', 202114)
+mfv_stoplb_tau000300um_M1000_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-4f2debe1007bf039e58df7420060981c/USER', 196665)
+mfv_stoplb_tau001000um_M1000_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-a231ac8f26891fd3fae3e676bcac8903/USER', 196748)
+mfv_stoplb_tau010000um_M1000_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-126485d34034671c3e0016549376bb22/USER', 99062)
+mfv_stoplb_tau030000um_M1000_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-842ffc76c985c790fc312141924cc4ef/USER', 199216)
+mfv_stoplb_tau000100um_M1200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-de16a0abcc50ad4390292352ed192fff/USER', 197949)
+mfv_stoplb_tau000300um_M1200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-def277645e64c87b49a0e8c68dfa568d/USER', 198241)
+mfv_stoplb_tau001000um_M1200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-18c01528450f7e44a10757cb8b6024a3/USER', 199473)
+mfv_stoplb_tau010000um_M1200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-cc12bdee206621a2469a9a817b6d3be5/USER', 98201)
+mfv_stoplb_tau030000um_M1200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-5b02efc36dcc2f58a0e83c6e703f296a/USER', 199458)
+mfv_stoplb_tau000100um_M1400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-e59560cfa9c6e6da93b2ac930ddcac7c/USER', 199272)
+mfv_stoplb_tau000300um_M1400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-7cea4ace6e9fb8562f17e4f2a124e187/USER', 200098)
+mfv_stoplb_tau001000um_M1400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-4b585aedeea5a8200ade7596479037c0/USER', 200807)
+mfv_stoplb_tau010000um_M1400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-deca824298b894652a798880ef75f090/USER', 99970)
+mfv_stoplb_tau030000um_M1400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-28504a602f8d7a19eb857d28a6493125/USER', 200816)
+mfv_stoplb_tau000100um_M1600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-48cf3ed932cb8fe6c4046a8106ec74c5/USER', 199366)
+mfv_stoplb_tau000300um_M1600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-dfc1955574c22c3f6b453e99dec569e4/USER', 202756)
+mfv_stoplb_tau001000um_M1600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-1cae4ebc1b87961bf414383f88a50b62/USER', 99806)
+mfv_stoplb_tau010000um_M1600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-6edc8a1e7e66a201840c4edd2db3e2c7/USER', 101586)
+mfv_stoplb_tau030000um_M1600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-f4bac6cac64b7471eb4a28ef8b2ca148/USER', 100560)
+mfv_stoplb_tau000100um_M1800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-0847a7463926e51599d1f61439e51ee0/USER', 200523)
+mfv_stoplb_tau000300um_M1800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-d945f739f1a7bf2b1c85171c755270d4/USER', 199868)
+mfv_stoplb_tau001000um_M1800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-e4e62dbfd16d2c899f4446c842d4f15e/USER', 100171)
+mfv_stoplb_tau010000um_M1800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-2ba1cad8da4cf6116a329206089ca026/USER', 101211)
+mfv_stoplb_tau030000um_M1800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-6491f3fa9c2316089f3f89746e5c4e58/USER', 100346)
+mfv_stopld_tau000100um_M0200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-df372a5dfa00c4b50bd1c8e248b3f7f8/USER', 197970)
+mfv_stopld_tau000300um_M0200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-7bd56e0cd2fd373641523be88152cd7f/USER', 198800)
+mfv_stopld_tau001000um_M0200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-b4e5382631ffc90fb21c897756105aa7/USER', 200411)
+mfv_stopld_tau010000um_M0200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-dcde152519fe912b9b8a3924f19a2864/USER', 199856)
+mfv_stopld_tau030000um_M0200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-d4b5e0bcdc9aa006585533233ad6b9bc/USER', 202558)
+mfv_stopld_tau000100um_M0300_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-4899c1265d2104c5674099fe6f293409/USER', 196635)
+mfv_stopld_tau000300um_M0300_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-a42c43c2dec7ba66ab28e703d26fd48f/USER', 198796)
+mfv_stopld_tau001000um_M0300_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-444e715f60efbd6586d73cb5f32b170f/USER', 200543)
+mfv_stopld_tau010000um_M0300_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-51ade41a6bee2e0b2db1366164ba816e/USER', 197769)
+mfv_stopld_tau030000um_M0300_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-8264e6c172d485f867f5b5dc0253212b/USER', 198495)
+mfv_stopld_tau000100um_M0400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-cdf470f0f72445ec5067ad9688c72463/USER', 201643)
+mfv_stopld_tau000300um_M0400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-d6c9cc246f89a9c883178d01abb3a455/USER', 197079)
+mfv_stopld_tau001000um_M0400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-93030e05d691aaa1c693f8b1ea40ee3e/USER', 200098)
+mfv_stopld_tau010000um_M0400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-d3513fd1e8c71fb29e39cc486d4a7483/USER', 198270)
+mfv_stopld_tau030000um_M0400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-d5f80d1b6d712f0bc43f60caeb95dd1d/USER', 203160)
+mfv_stopld_tau000100um_M0600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-dbddb4158178fd6321a27951e33d07d1/USER', 198964)
+mfv_stopld_tau000300um_M0600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-954ee112a7da8cae62c8351f88ca29d8/USER', 198408)
+mfv_stopld_tau001000um_M0600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-d93f7b36e25d1d7d327490c7cbc3af92/USER', 199759)
+mfv_stopld_tau010000um_M0600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-55050b104aee587f8106b6317af72792/USER', 200404)
+mfv_stopld_tau030000um_M0600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-0a1abfc1e7b99904d66741e12e4cb67c/USER', 200030)
+mfv_stopld_tau000100um_M0800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-da1240b1baa1a85ed95f2c96181561a3/USER', 197872)
+mfv_stopld_tau000300um_M0800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-d9040cb36f801add050b95210ef4d9ef/USER', 202036)
+mfv_stopld_tau001000um_M0800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-2b6f9944d2c8317b9561104395ce4e6b/USER', 199217)
+mfv_stopld_tau010000um_M0800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-1c8b4086a197dc962bc5242d1c3d0366/USER', 100507)
+mfv_stopld_tau030000um_M0800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-52e6eb00ef2485961fc89be78dacf3f0/USER', 197136)
+mfv_stopld_tau000100um_M1000_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-ef852e943aea5d701f62ffcd94b8b79e/USER', 198858)
+mfv_stopld_tau000300um_M1000_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-14fcd369a83abf145d81188120ae21ca/USER', 199006)
+mfv_stopld_tau001000um_M1000_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-08069757697b6a6b59d2b59efe5d713d/USER', 196285)
+mfv_stopld_tau010000um_M1000_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-f2f32395f801d40c9680e65ef5d58259/USER', 98581)
+mfv_stopld_tau030000um_M1000_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-2ed2b88afa994d6c80e1f96907dbad86/USER', 197592)
+mfv_stopld_tau000100um_M1200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-7ec1e853a590e503b12e5dcc8f82e8fa/USER', 195354)
+mfv_stopld_tau000300um_M1200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-7b8bdf1fca6b54e5c06f6a5ae2b5cae8/USER', 199435)
+mfv_stopld_tau001000um_M1200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-0384fce770c057800ca9d5f3f0ec5fa6/USER', 200103)
+mfv_stopld_tau010000um_M1200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-66b32369e5c5861ce2460dfb9bdcddc5/USER', 98617)
+mfv_stopld_tau030000um_M1200_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-c52c389237da7a0ef8157d05cc9c41d4/USER', 200964)
+mfv_stopld_tau000100um_M1400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-86f8fa6135815925b480c06e13ca833d/USER', 200045)
+mfv_stopld_tau000300um_M1400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-09c69983b043f4ce6340b6db3fab384a/USER', 202529)
+mfv_stopld_tau001000um_M1400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-0c0d78c987df38cc4ccc410130ad72f2/USER', 196708)
+mfv_stopld_tau010000um_M1400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-5b8ed3e00c268faaad5d1fff402c792d/USER', 100228)
+mfv_stopld_tau030000um_M1400_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-a12841b727b2577d9d8aa3179f52fe01/USER', 201992)
+mfv_stopld_tau000100um_M1600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-1b54c087c5775628419b1fa2ead8c3dd/USER', 201300)
+mfv_stopld_tau000300um_M1600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-6eb8035a189d3c89dad73db4e17e37d8/USER', 197421)
+mfv_stopld_tau001000um_M1600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-afbcbf74537b1f30362b0eeab0a435f3/USER', 100838)
+mfv_stopld_tau010000um_M1600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-a7daed77bbfa04ac5514c945059b4e6c/USER', 99387)
+mfv_stopld_tau030000um_M1600_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-900670092204a2262ef6b78a80f79f85/USER', 97752)
+mfv_stopld_tau000100um_M1800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-101e7928e50cee3d4c4270d5382b476d/USER', 202746)
+mfv_stopld_tau000300um_M1800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-3de568a9df6ccb4a2de8fa07cbdf5143/USER', 199924)
+mfv_stopld_tau001000um_M1800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-e27850b5f9b463ae3e6a7876ceaec5d5/USER', 99515)
+mfv_stopld_tau010000um_M1800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-9b0b465b3e1e2234731cebb6ba8ecb57/USER', 99400)
+mfv_stopld_tau030000um_M1800_2018.add_dataset('ntupleulv11lepm_wgen', '/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/awarden-NtupleULV11Lepm_WGen_2018-ebcfbb8a7549044c1f5e9ac3a76824d7/USER', 98449)
+
+
+
+
+
+
+
+#new updated way of dealing with lepton tracks (getting their track collections from unpackedtrackcandidates)
+#the event filter used was : 
+# qcdempt015_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-81080072e10b8bb32ad7c8b9efd53317/USER', -1)
+# qcdmupt15_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-5cb5b97e8fa839cb22d64e0d8e270e1c/USER', -1)
+# qcdempt020_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-8ab42841555dcf8b7f38fa082702293d/USER', -1)
+# qcdempt030_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-cf789909cddb195d07ba3b8b8e8d4654/USER', -1)
+# qcdempt050_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-f4d53e05393e67e4eaf57ea7dff563c4/USER', -1)
+# qcdempt080_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-a080851cd5a4bd0135edd6591ca3929c/USER', -1)
+# qcdempt120_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-b65b1cd0280bc5d9d5bb4bbdc20fe2c3/USER', -1)
+# qcdempt170_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-906c7107dfb2a55f0f0ce74977c470e3/USER', -1)
+# qcdempt300_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-12e2eeb4b020e7c9d05240730ab948b8/USER', -1)
+# qcdbctoept020_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-d10a36e7ab048c37fa4c71f60c1d2e52/USER', -1)
+# qcdbctoept030_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-9474da6810b6b72f917c152e90ddeb61/USER', -1)
+# qcdbctoept080_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-3db69f237c5237dfb54c348c37479d99/USER', -1)
+# qcdbctoept170_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-a2d0cd8e4fc186f20bc08a92fc13fc05/USER', -1)
+# qcdbctoept250_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-612671dd991387b5a342e588eb6b7ff3/USER', -1)
+# wjetstolnu_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-fc25882ec8d35249401850b30766542d/USER', -1)
+# dyjetstollM10_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-eea13692dc1480e298536830551fffe2/USER', -1)
+# dyjetstollM50_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-a94d220ce3f9844723fc7e8ca4f60aa8/USER', -1)
+# ttbar_lep_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-23ef285c723793319ffaad73e2b64fcc/USER', -1)
+# ttbar_semilep_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-77cda344640b4075635c4098e34a94b4/USER', -1)
+# ttbar_had_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-f4e798988109e538ba8491c310971011/USER', -1)
+# ww_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-594dfe545746512e2b19fefaa214bc8a/USER', -1)
+# zz_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-5897b65d7cd5b0d543b6d9b4f5ba4314/USER', -1)
+# wz_20161.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-e2beab25eba0259e41f6e438b19290c2/USER', -1)
+qcdempt015_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-e145a1cc4ca70274b4d8930e9f266e93/USER', -1)
+qcdmupt15_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-e101359b576879b5beb90d7be4f142de/USER', -1)
+qcdempt020_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-f0c2ede40768223131b030df8244dd65/USER', -1)
+qcdempt030_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-cea7d094f59f97b50cb5470f82267c65/USER', -1)
+qcdempt050_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-a33a8c2c4b8c68fd878f042a8d62592f/USER', -1)
+qcdempt080_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-d313e54189fb5396c7ee879653abfff9/USER', -1)
+qcdempt120_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-ff45ae1fecce27ba2185b107e33b862c/USER', -1)
+qcdempt170_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-8bdb3a04f9c826b3d07a4853df3e711a/USER', -1)
+qcdempt300_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-99630c71736746952f42dfe860d134d8/USER', -1)
+qcdbctoept015_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-e81797f0296fc599cb725a72db74a5f0/USER', -1)
+qcdbctoept020_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-cc769fb6979b3ac77a2cc7d6c8616e27/USER', -1)
+qcdbctoept030_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-d4445c686cf228b1b51bb077fd19f033/USER', -1)
+qcdbctoept080_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-cd52bd6558bd47a45d46285f6fd5d7a1/USER', -1)
+qcdbctoept170_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-f4c27dc20b03200ee1cd5e5823d98318/USER', -1)
+qcdbctoept250_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-3a3121947e3383803e96d61c41e8f077/USER', -1)
+ttbar_lep_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-6d1022a79198e857833e04736d5a3608/USER', -1)
+ttbar_semilep_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-fb5da08188b1526fa412a48b29c96205/USER', -1)
+ttbar_had_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-0d97fa28c07a26dabbf1b0468fe5dd54/USER', -1)
+wjetstolnu_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-b7c9637ef3610c24dea4766ba4184da4/USER', -1)
+dyjetstollM10_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-74a1db7a4b1344e022db79e0596c5d95/USER', -1)
+dyjetstollM50_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-e5f3943dea755e2b0d94443e76e726fd/USER', -1)
+ww_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-679c61a92d2cae61c640be0370fb922f/USER', -1)
+zz_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-590cb40d8679d5bdd18ca414a59745a2/USER', -1)
+wz_2017.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-3a8183d92bdc03afaba1df0bbd960568/USER', -1)
+SingleMuon2017B.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-36ccc3f3144aa11e7f0e4f3068ae20f7/USER', -1)
+SingleMuon2017C.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-09659d9c77a7051504a98251b4019eda/USER', -1)
+SingleMuon2017D.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-fdebebf2f0e9b1fa8f13130bb2a4a359/USER', -1)
+SingleMuon2017E.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-5f3feb8e0113d386964de1cb7034487e/USER', -1)
+SingleMuon2017F.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-e55d462e2f7bedf9348fc1713fa473e7/USER', -1)
+SingleElectron2017B.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-69f6c2f167071290adb202145627e5d5/USER', -1)
+SingleElectron2017C.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-8e4411c433d348698ce900fd72927d84/USER', -1)
+SingleElectron2017D.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-b0c27ba4627941ef110f1a17ffd7a9d6/USER', -1)
+SingleElectron2017E.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-17b7725f8e394f69b06b64970f376147/USER', -1)
+SingleElectron2017F.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-ea5b141e2a8c9d0dca0bcdd8156923c8/USER', -1)
+
+# qcdmupt15_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-57e6f8178a34b8e2e5c621fbd6f632a3/USER', -1)
+# qcdempt015_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-8d0bb2893ae771ed72a13a93f0ff28c9/USER', -1)
+# qcdempt020_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-3d5eb0fadebcc1e3493f805129f7a0c9/USER', -1)
+# qcdempt030_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-2e37f609aa2ca796fd82e59b14d5597f/USER', -1)
+# qcdempt050_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-774dc24c8b779a18a30de7e1373d2943/USER', -1)
+# qcdempt080_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-3d3a9bb4bae29d526c8902418c85effc/USER', -1)
+# qcdempt120_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-42d777d6cf8930145836f2245cf9a66a/USER', -1)
+# qcdempt170_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-1d67c3a23c63bd7d507a4f12d07afbdd/USER', -1)
+# qcdbctoept015_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-d0b90ad6b566c62184a5342be4b52fd5/USER', -1)
+# qcdbctoept020_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-e83480d57efdb7820616e38d6fdb5536/USER', -1)
+# qcdbctoept030_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-8feae7e63c27ba32363c890f5e318a7a/USER', -1)
+# qcdbctoept080_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-fa2c4b842370424aa2272aede7372883/USER', -1)
+# qcdbctoept170_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-4a1300618c09400df4596982254631dc/USER', -1)
+# qcdbctoept250_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-87b1041012c880954aca39539f537372/USER', -1)
+# qcdempt300_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-e97fd92089c87691908ca0ccda10c593/USER', -1)
+# ttbar_lep_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-15731f77f2342e215e6314a5992dba63/USER', -1)
+# ttbar_semilep_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-959dc482742f6915a50e02ee819e91c1/USER', -1)
+# ttbar_had_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-10d2d93e1b70fd8d058971094817c0e7/USER', -1)
+# wjetstolnu_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-2aceabd1a29ff059c229de694ded997a/USER', -1)
+# dyjetstollM10_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-fc205b4664299ead9ec4837f83ee46dd/USER', -1)
+# dyjetstollM50_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-058831422f259436c7e1079dc96a60f5/USER', -1)
+# ww_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-7b69e4b5d4b6c7c0451b0870a5b53687/USER', -1)
+# wz_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-d468d63484c4ae53ade806c07dc4ccf9/USER', -1)
+# zz_2018.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-530a12543d526e20cd45f01c47b9a3a5/USER', -1)
+# SingleMuon2018A.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-39d6987329e28fc64a913f399c5eb39c/USER', -1)
+# SingleMuon2018B.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-b3f78812642aa21ba1d7ed4f7957c085/USER', -1)
+# SingleMuon2018C.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-cc25a26af93e8e8c3b64519f437ce73f/USER', -1)
+# SingleMuon2018D.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-15c92c5279452db5950e2a0f745e0b44/USER', -1)
+# EGamma2018A.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-f2aec5a6f0dfa043e401aad925467bbd/USER', -1)
+# EGamma2018B.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-208c5af72da89ca85d487e585df0bea4/USER', -1)
+# EGamma2018C.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-df9aa619a845826dc9595de34ffba110/USER', -1)
+# EGamma2018D.add_dataset('trackingtreerulv2_lepm', '/FakeDataset/fakefile-FakePublish-337bc985c82a89c5d68cff2e51677389/USER', -1)
+
+
 ########
 # automatic condor declarations for ntuples
 ########
@@ -2038,7 +1954,7 @@ condorable = {
         "miniaod": mfv_splitSUSY_samples_2017 + mfv_signal_samples_2017 + mfv_stopdbardbar_samples_2017 + mfv_stopbbarbbar_samples_2017
         },
     "T1_US_FNAL_Disk": {
-        "miniaod": [SingleMuon2017B, SingleMuon2017D, SingleMuon2017E, SingleElectron2017B, SingleElectron2017D, SingleElectron2017E, MET2018D, qcdht0300_2018, qcdht0700_2018, qcdht1000_2018, qcdht1500_2018, zjetstonunuht2500_2018, qcdht0200_2017, qcdht0500_2017, qcdht0700_2017, qcdht0300_2017, ttbar_2017, ttbar_2018],
+        "miniaod": [MET2018D, qcdht0300_2018, qcdht0700_2018, qcdht1000_2018, qcdht1500_2018, zjetstonunuht2500_2018, qcdht0200_2017, qcdht0500_2017, qcdht0700_2017, qcdht0300_2017, ttbar_2017], #, ttbar_2018],
 
                     #mfv_stoplb_tau010000um_M1000_2017, mfv_stoplb_tau000300um_M1200_2017, mfv_stoplb_tau010000um_M1200_2017, mfv_stoplb_tau001000um_M1200_2017, mfv_stoplb_tau000300um_M1600_2017, mfv_stoplb_tau001000um_M1600_2017, mfv_stoplb_tau000100um_M0300_2017, mfv_stoplb_tau000300um_M0300_2017, mfv_stoplb_tau001000um_M0300_2017, mfv_stoplb_tau001000um_M0400_2017, mfv_stoplb_tau010000um_M0600_2017, mfv_stopld_tau000300um_M1000_2017, mfv_stopld_tau010000um_M1000_2017, mfv_stopld_tau010000um_M1200_2017, mfv_stopld_tau001000um_M1400_2017, mfv_stopld_tau000300um_M1600_2017, mfv_stopld_tau010000um_M0200_2017, mfv_stopld_tau000300um_M0300_2017, mfv_stopld_tau001000um_M0400_2017, mfv_stopld_tau000300um_M0600_2017, mfv_stopld_tau010000um_M0600_2017, mfv_stopld_tau001000um_M0600_2017, mfv_stopld_tau010000um_M0800_2017, mfv_stoplb_tau010000um_M1200_2018, mfv_stoplb_tau001000um_M1200_2018, mfv_stoplb_tau010000um_M1400_2018, mfv_stoplb_tau001000um_M1400_2018, mfv_stoplb_tau010000um_M1600_2018, mfv_stoplb_tau001000um_M1600_2018, mfv_stoplb_tau001000um_M0200_2018, mfv_stoplb_tau010000um_M0300_2018, mfv_stoplb_tau010000um_M0400_2018, mfv_stoplb_tau001000um_M0400_2018, mfv_stoplb_tau001000um_M0600_2018, mfv_stoplb_tau000300um_M0800_2018, mfv_stoplb_tau001000um_M0800_2018, mfv_stopld_tau000300um_M1000_2018, mfv_stopld_tau000300um_M1200_2018, mfv_stopld_tau000100um_M1400_2018, mfv_stopld_tau000100um_M1600_2018, mfv_stopld_tau010000um_M1600_2018, mfv_stopld_tau000300um_M0200_2018, mfv_stopld_tau001000um_M0200_2018, mfv_stopld_tau001000um_M0300_2018, mfv_stopld_tau000300um_M0400_2018, mfv_stopld_tau001000um_M0600_2018],
         },
@@ -2047,7 +1963,6 @@ condorable = {
        # "miniaod": [mfv_stopld_tau010000um_M0400_2018],
         },
     "T2_US_Purdue": {
-        "miniaod" : [SingleElectron2017C],
         },
     "T2_US_UCSD": {
        # "miniaod" : [mfv_stoplb_tau000300um_M1000_2017, mfv_stoplb_tau000100um_M1200_2017, mfv_stoplb_tau030000um_M1200_2017, mfv_stoplb_tau030000um_M1400_2017, mfv_stoplb_tau000300um_M1800_2017, mfv_stoplb_tau000100um_M0200_2017, mfv_stoplb_tau000300um_M0200_2017, mfv_stoplb_tau001000um_M0200_2017, mfv_stoplb_tau030000um_M0200_2017, mfv_stoplb_tau010000um_M0300_2017, mfv_stoplb_tau030000um_M0300_2017, mfv_stoplb_tau000100um_M0400_2017, mfv_stoplb_tau000300um_M0400_2017, mfv_stoplb_tau030000um_M0400_2017, mfv_stoplb_tau000100um_M0800_2017, mfv_stoplb_tau000300um_M0800_2017, mfv_stoplb_tau001000um_M0800_2017, mfv_stoplb_tau030000um_M0800_2017, mfv_stopld_tau030000um_M1000_2017, mfv_stopld_tau030000um_M1200_2017, mfv_stopld_tau000100um_M1400_2017, mfv_stopld_tau030000um_M1600_2017, mfv_stopld_tau000300um_M1800_2017, mfv_stopld_tau030000um_M1800_2017, mfv_stopld_tau001000um_M0200_2017, mfv_stopld_tau000100um_M0300_2017, mfv_stopld_tau030000um_M0300_2017, mfv_stopld_tau000100um_M0400_2017, mfv_stopld_tau000300um_M0400_2017, mfv_stopld_tau010000um_M0400_2017, mfv_stopld_tau030000um_M0400_2017, mfv_stopld_tau030000um_M0600_2017, mfv_stopld_tau001000um_M0800_2017, mfv_stopld_tau030000um_M0800_2017, mfv_stoplb_tau000100um_M1000_2018, mfv_stoplb_tau001000um_M1000_2018, mfv_stoplb_tau000100um_M1200_2018, mfv_stoplb_tau030000um_M1600_2018, mfv_stoplb_tau010000um_M1800_2018, mfv_stoplb_tau000300um_M0200_2018, mfv_stoplb_tau010000um_M0200_2018, mfv_stoplb_tau000300um_M0300_2018, mfv_stoplb_tau030000um_M0400_2018, mfv_stoplb_tau000300um_M0600_2018, mfv_stoplb_tau000100um_M0800_2018, mfv_stopld_tau000100um_M1200_2018, mfv_stopld_tau010000um_M1200_2018, mfv_stopld_tau030000um_M1200_2018, mfv_stopld_tau030000um_M1400_2018, mfv_stopld_tau010000um_M1800_2018, mfv_stopld_tau001000um_M1800_2018, mfv_stopld_tau000100um_M0200_2018, mfv_stopld_tau010000um_M0200_2018, mfv_stopld_tau000100um_M0300_2018, mfv_stopld_tau001000um_M0400_2018, mfv_stopld_tau001000um_M0800_2018, mfv_stopld_tau030000um_M0800_2018],

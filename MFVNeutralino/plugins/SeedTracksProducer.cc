@@ -20,7 +20,6 @@
 #include "JMTucker/Tools/interface/ExtValue.h"
 #include "JMTucker/Tools/interface/Math.h"
 #include "JMTucker/Tools/interface/TrackRefGetter.h"
-#include "JMTucker/Tools/interface/TrackRescaler.h"
 #include "JMTucker/Tools/interface/StatCalculator.h"
 #include "JMTucker/Tools/interface/Utilities.h"
 
@@ -33,7 +32,6 @@ public:
     void produce(edm::Event&, const edm::EventSetup&);
 
 private:
-    jmt::TrackRescaler track_rescaler;
     const edm::EDGetTokenT<reco::BeamSpot> beamspot_token;
     const edm::EDGetTokenT<mfv::MCInteraction> mci_token;
     const edm::EDGetTokenT<std::vector<reco::TrackRef>> seed_tracks_token;

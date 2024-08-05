@@ -194,7 +194,7 @@ class secondary_files_modifier:
 
 ####
 
-def set_splitting(samples, dataset, jobtype='default', data_json=None, default_files_per=20, limit_ttbar=False):
+def set_splitting(samples, dataset, jobtype='default', data_json=None, default_files_per=10, limit_ttbar=False):
     if jobtype == 'histos' or jobtype == 'minitree':
         d = {
             'qcdht1000_2017': 11,
@@ -213,6 +213,9 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
             'ttbarht0800_2018': 8,
             'ttbarht1200_2018': 8,
             'ttbarht2500_2018': 8,
+            'ttbar_semilep_2018': 10,
+            'ttbar_had_2018': 10,
+            'ttbar_lep_2018': 10
             }
         for sample in samples:
             sample.set_curr_dataset(dataset)

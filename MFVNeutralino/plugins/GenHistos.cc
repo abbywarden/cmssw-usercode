@@ -684,7 +684,7 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
     }
        
 
-    if (mci->type() == mfv::mci_MFVtbs) { // || mci->type() == mci_Ttbar) {
+    if (mci->type() == mfv::mci_MFVtbs || mci->type() == mfv::mci_Ttbar) {
       for (int i = 0; i < 2; ++i) {
         fill(Lsps           [i], &*mci->lsp(i));
         fill(Stranges       [i], &*mci->strange(i));
