@@ -26,7 +26,7 @@ namespace mfv {
     b_HLT_IsoMu27, 
     b_HLT_Mu50,
     
-    // displaced lepton triggers 
+    // displaced dilepton triggers 
     b_HLT_Mu43NoFiltersNoVtx_Photon43_CaloIdL, 
     b_HLT_Diphoton30_22_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90, 
     b_HLT_DoublePhoton70, 
@@ -107,7 +107,7 @@ namespace mfv {
   //   mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT, mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
   // };
   // //2017
-  //   static const std::vector<size_t> LeptonTriggers = {
+  // static const std::vector<size_t> LeptonTriggers = {
   //   //lepton triggers
   //   mfv::b_HLT_Ele35_WPTight_Gsf, mfv::b_HLT_IsoMu27, mfv::b_HLT_Mu50,
   //   mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT, mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
@@ -118,9 +118,8 @@ namespace mfv {
     mfv::b_HLT_IsoMu24, mfv::b_HLT_Mu50
   };
 
-  //displaced lepton triggers 
+  //displaced dilepton triggers 
   static const std::vector<size_t> DisplacedLeptonTriggers = {
-    //displaced dilepton triggers
     mfv::b_HLT_Mu43NoFiltersNoVtx_Photon43_CaloIdL, mfv::b_HLT_Diphoton30_22_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90,
     mfv::b_HLT_DoublePhoton70, mfv::b_HLT_DoubleMu43NoFiltersNoVtx
   };		

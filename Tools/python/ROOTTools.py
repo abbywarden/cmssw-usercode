@@ -463,6 +463,7 @@ def compare_hists(ps, samples, **kwargs):
     sort_names     = kwargs.get('sort_names',     False)
     show_progress  = kwargs.get('show_progress',  10)
     only_n_first   = kwargs.get('only_n_first',   -1)
+    only_select    = kwargs.get('only_select',    [])
     raise_on_incompatibility = kwargs.get('raise_on_incompatibility', False)
 
     def _get(arg, default):
@@ -496,8 +497,15 @@ def compare_hists(ps, samples, **kwargs):
 
     if sort_names:
         names.sort()
+    #have to do this above only_n_first to overwrite only_n_first
+    if len(only_select) != 0:
+        only_n_first = 0
+        names = [i for i in only_select]
     if only_n_first > 0:
         names = names[:only_n_first]
+
+            
+            
 
     def all_same(l, msg):
         if len(set(l)) != 1:
@@ -686,8 +694,8 @@ def data_mc_comparison(name,
                        canvas_left_margin = 0.12,
                        canvas_right_margin = 0.08,
                        join_info_override = None,
-                       #stack_draw_cmd = 'hist',
-                       stack_draw_cmd = 'pfc plc hist',
+                       stack_draw_cmd = 'hist',
+                       #stack_draw_cmd = 'pfc plc hist',
                        move_overflows = 'under over',
                        rebin = None,
                        bin_width_to = None,
@@ -728,8 +736,8 @@ def data_mc_comparison(name,
                        cut_line = None,
                        background_uncertainty = None,
                        preliminary = False,
-                       simulation = False,
-                       palette = 55,
+                       simulation = False
+                       #palette = 55,
                        ):
     """
     Put the histograms for the background samples into a THStack, with
@@ -920,7 +928,7 @@ def data_mc_comparison(name,
     legend_entries = []
     stack = ROOT.THStack('s_datamc_' + name, '')
     sum_background = None
-    ROOT.gStyle.SetPalette(palette)
+    ## ROOT.gStyle.SetPalette(palette)
     for sample in background_samples:
         join, nice_name, color = sample.join_info if join_info_override is None else join_info_override(sample)
         #join, nice_name = sample.join_info if join_info_override is None else join_info_override(sample)

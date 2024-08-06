@@ -4,10 +4,11 @@ from JMTucker.MFVNeutralino.UtilitiesBase import *
 
 ####
 
+_qcdlepenrich = bool_from_argv('qcdlepenrich')
 _leptonpresel = bool_from_argv('leptonpresel')
 _btagpresel = bool_from_argv('btagpresel')
 _metpresel = bool_from_argv('metpresel')
-_presel_s = '_leptonpresel' if _leptonpresel else '_metpresel' if _metpresel else '_btagpresel' if _btagpresel else ''
+_presel_s = '_qcdlepenrich' if _qcdlepenrich else '_leptonpresel' if _leptonpresel else '_metpresel' if _metpresel else '_btagpresel' if _btagpresel else ''
 
 ####
 
@@ -65,7 +66,7 @@ def cmd_report_data():
 
 def cmd_hadd_data():
     permissive = bool_from_argv('permissive')
-    for ds in 'SingleMuon', 'JetHT', 'ZeroBias', 'SingleElectron', 'MET':
+    for ds in 'SingleMuon', 'JetHT', 'ZeroBias', 'SingleElectron', 'MET', 'EGamma':
         print ds
         files = set(glob(ds + '*.root'))
         if not files:
@@ -123,10 +124,14 @@ def cmd_rm_mc_parts():
                     print y
                     os.remove(y)
 
-def _background_samples(trigeff=False, year=2018):
-    if _leptonpresel:
-        x = ['ttbar', 'wjetstolnu', 'dyjetstollM10', 'dyjetstollM50', 'qcdmupt15', 'ww', 'wz', 'zz']
-        #x += ['qcdempt%03i' % x for x in [15,20,30,50,80,120,170,300]]
+def _background_samples(trigeff=False, year=2017):
+    if _qcdlepenrich:
+        x = ['qcdmupt15']
+        x += ['qcdempt%03i' % x for x in [15,20,30,50,80,120,170]]
+        x += ['qcdbctoept%03i' % x for x in [15,20,30,80,170,250]]
+    elif _leptonpresel:
+        #x = ['ttbar', 'wjetstolnu', 'dyjetstollM10', 'dyjetstollM50', 'qcdmupt15', 'ww', 'wz', 'zz']
+        x = ['ttbar_had', 'ttbar_lep', 'ttbar_semilep', 'wjetstolnu', 'dyjetstollM10', 'dyjetstollM50', 'qcdmupt15', 'ww', 'wz', 'zz']
         x += ['qcdempt%03i' % x for x in [15,20,30,50,80,120,170]]
         x += ['qcdbctoept%03i' % x for x in [15,20,30,80,170,250]]
     elif _btagpresel:
@@ -145,7 +150,7 @@ def _background_samples(trigeff=False, year=2018):
         x += ['ttbarht%04i' % x for x in [600, 800, 1200, 2500]]
     return x
 
-def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=2018):
+def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=2017):
     cwd = os.getcwd()
     ok = True
     if year_to_use==-1:

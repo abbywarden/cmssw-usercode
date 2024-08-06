@@ -246,15 +246,14 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup&) {
 
       bool displaced_success = false;
       for(int ie=0; ie < nelectrons; ++ie){
-        if (abs(mevent->electron_dxybs[ie]) > 0.01) {
+        if (fabs(mevent->electron_dxybs[ie])/(mevent->electron_dxyerr[ie]) > 3) {
           displaced_success = true;
           break; 
         }
       } 
-      //to keep things short, only consider looping through muons if havent found a displaced electron
       if (!displaced_success) { 
         for(int im=0; im < nmuons; ++im){
-          if (abs(mevent->muon_dxybs[im] > 0.01)) {
+          if (fabs(mevent->muon_dxybs[im])/(mevent->muon_dxyerr[im]) > 3) {
             displaced_success = true;
             break;
           }
@@ -356,7 +355,7 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup&) {
     const int nsv = int(vertices->size());
     if (nsv < min_nvertex || nsv > max_nvertex) 
       return false;
-
+      
     const bool two_vertex_cuts_on =
       ntracks01_0 > 0 ||
       ntracks01_1 > 0 ||
@@ -475,12 +474,15 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
   bool passed_kinematics = false;
 
   switch(trig){
-  //case mfv::b_HLT_Ele35_WPTight_Gsf :
+  //27 is for 2016. 35 is for 2017; 32 is for 2018. 
+  // case mfv::b_HLT_Ele27_WPTight_Gsf :
+  // case mfv::b_HLT_Ele35_WPTight_Gsf :
   case mfv::b_HLT_Ele32_WPTight_Gsf :
     {
       for(int ie =0; ie < nelectrons; ++ie){
+        // if (mevent->electron_pt[ie] < 30) continue;
+	      // if (mevent->electron_pt[ie] < 38) continue;
         if (mevent->electron_pt[ie] < 35) continue;
-	      //if (mevent->electron_pt[ie] < 38) continue;
 	      if (mevent->electron_ID[ie][3] == 1) {
 	        if (abs(mevent->electron_eta[ie]) < 2.4) { 
 	          if (mevent->electron_iso[ie] < 0.10) {
@@ -491,12 +493,14 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
       }
       return passed_kinematics;
     }
-  //case mfv::b_HLT_IsoMu27 :
+
+  //isomu24 is for : 2018 
+  // case mfv::b_HLT_IsoMu27 : 
   case mfv::b_HLT_IsoMu24 :
     {
       for(int im =0; im < nmuons; ++im) {
-		    if (mevent->muon_pt[im] < 27) continue;
-        //if (mevent->muon_pt[im] < 30) continue;
+        // if (mevent->muon_pt[im] < 30) continue;
+        if (mevent->muon_pt[im] < 27) continue;
 	      if (mevent->muon_ID[im][1] == 1) {
 	        if (abs(mevent->muon_eta[im]) < 2.4) {
 	          if (mevent->muon_iso[im] < 0.15) {
@@ -568,34 +572,32 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
 //displaced lepton trigger & per trigger preselection 
 bool MFVAnalysisCuts::satisfiesDispLepTrigger(edm::Handle<MFVEvent> mevent, size_t trig) const { 
   if(!mevent->pass_hlt(trig)) return false;
-
   int nmuons     = mevent->nmuons();
   int nelectrons = mevent->nelectrons();
- 
-  // since each lepton trigger has different pts need to be careful to match the resulting lepton(s) + jets (when applicable)
+
   bool passed_kinematics = false;
 
   switch(trig){
   case mfv::b_HLT_Mu43NoFiltersNoVtx_Photon43_CaloIdL :
     {
       for(int ie =0; ie < nelectrons; ++ie){
-  	if (mevent->electron_pt[ie] < 45) continue;
-  	if (mevent->electron_ID[ie][3] == 1) {
-  	  if (abs(mevent->electron_eta[ie]) < 2.4) { 
-  	    if (mevent->electron_iso[ie] < 0.10) {
-  	      for(int im=0; im < nmuons; ++im){
-  		if (mevent->muon_pt[im] < 45) continue;
-  		if (mevent->muon_ID[im][1] == 1) {
-  		  if (abs(mevent->muon_eta[im]) < 2.4) {
-  		    if (mevent->muon_iso[im] < 0.15) {
-  		      passed_kinematics = true;
-  		    }
-  		  }
-  		}
-  	      }
+      if (mevent->electron_pt[ie] < 45) continue;
+      if (mevent->electron_ID[ie][3] == 1) {
+        if (abs(mevent->electron_eta[ie]) < 2.4) { 
+          if (mevent->electron_iso[ie] < 0.10) {
+            for(int im=0; im < nmuons; ++im){
+              if (mevent->muon_pt[im] < 45) continue;
+                if (mevent->muon_ID[im][1] == 1) {
+                  if (abs(mevent->muon_eta[im]) < 2.4) {
+                    if (mevent->muon_iso[im] < 0.15) {
+                      passed_kinematics = true;
+                    }
+                  }
+                }
+              }
+            }
+          }
   	    }
-  	  }
-  	}
       }
       return passed_kinematics;
     }
@@ -603,14 +605,14 @@ bool MFVAnalysisCuts::satisfiesDispLepTrigger(edm::Handle<MFVEvent> mevent, size
     {
       int pass_ele = 0;
       for(int ie=0; ie < nelectrons; ++ie){
-  	if (mevent->electron_pt[ie] < 75) continue;
-  	if (mevent->electron_ID[ie][3] == 1) {
-  	  if (abs(mevent->electron_eta[ie]) < 2.4) { 
-  	    if (mevent->electron_iso[ie] < 0.10) {
-  	      pass_ele +=1;
-  	    }
-  	  }
-  	}
+  	    if (mevent->electron_pt[ie] < 75) continue;
+        if (mevent->electron_ID[ie][3] == 1) {
+          if (abs(mevent->electron_eta[ie]) < 2.4) { 
+            if (mevent->electron_iso[ie] < 0.10) {
+              pass_ele +=1;
+            }
+          }
+        }
       }
       if (pass_ele > 1) passed_kinematics = true;
       return passed_kinematics;
@@ -619,14 +621,14 @@ bool MFVAnalysisCuts::satisfiesDispLepTrigger(edm::Handle<MFVEvent> mevent, size
     {
       int pass_ele = 0;
       for(int ie=0; ie < nelectrons; ++ie){
-  	if (mevent->electron_pt[ie] < 75) continue;
-  	if (mevent->electron_ID[ie][3] == 1) {
-  	  if (abs(mevent->electron_eta[ie]) < 2.4) { 
-  	    if (mevent->electron_iso[ie] < 0.10) {
-  	      pass_ele +=1;
-  	    }
-  	  }
-  	}
+  	    if (mevent->electron_pt[ie] < 75) continue;
+        if (mevent->electron_ID[ie][3] == 1) {
+          if (abs(mevent->electron_eta[ie]) < 2.4) { 
+            if (mevent->electron_iso[ie] < 0.10) {
+              pass_ele +=1;
+            }
+          }
+        }
       }
       if (pass_ele > 1) passed_kinematics = true;
       return passed_kinematics;
@@ -635,14 +637,14 @@ bool MFVAnalysisCuts::satisfiesDispLepTrigger(edm::Handle<MFVEvent> mevent, size
     {
       int pass_mu = 0;
       for(int im=0; im < nmuons; ++im){
-  	if (mevent->muon_pt[im] < 45) continue;
-  	if (mevent->muon_ID[im][1] == 1) {
-  	  if (abs(mevent->muon_eta[im]) < 2.4) {
-  	    if (mevent->muon_iso[im] < 0.15) {
-  	      pass_mu +=1;
-  	    }
-  	  }
-  	}
+  	    if (mevent->muon_pt[im] < 45) continue;
+  	      if (mevent->muon_ID[im][1] == 1) {
+  	        if (abs(mevent->muon_eta[im]) < 2.4) {
+  	          if (mevent->muon_iso[im] < 0.15) {
+  	            pass_mu +=1;
+  	          }
+  	        }
+  	      }
       }
      if (pass_mu > 1) passed_kinematics = true;
      return passed_kinematics;

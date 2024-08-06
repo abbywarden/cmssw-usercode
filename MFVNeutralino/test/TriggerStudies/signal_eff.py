@@ -10,9 +10,6 @@ ps = plot_saver(plot_dir('sigeff_trig'), size=(600,600), log=False, pdf=True)
 study_new_triggers = True
 
 if study_new_triggers :
-    #root_file_dir = '/uscms/home/ali/nobackup/LLP/crabdir/TrigFiltCheckV3/'
-    #trigs = ['Trigger','TriggerBjets','TriggerDispDijet','TriggerMET']
-    #nice = ['HT1050','Bjet','DisplacedDijet','MET']
     root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrigFiltCheckV3/'
     trigs = ['TriggerLeptons', 'TriggerEMu_35_27', 'TriggerEMu_35_50', 'TriggerEMu_50_27', 'TriggerEMu_50_50']
     nice = ['SingleLep', 'EMu_35_27', 'EMu_35_50', 'EMu_50_27', 'EMu_50_50']
@@ -46,15 +43,11 @@ def mvpave(pave, x1, y1, x2, y2):
     pave.SetY1(y1)
     pave.SetY2(y2)
 
-#for sample in multijet + dijet:
-#for sample in splitSUSY:
 for sample in DisplacedSUSY: 
     fn = os.path.join(root_file_dir, sample.name + '.root')
     if not os.path.exists(fn):
-       # print sample.name + '; not finding it'
         continue
     f = ROOT.TFile(fn)
-    #sample.mass = 1900 if sample.name.find('1900')>=0 else 1800
     sample.ys = {n: getit(f,'p'+n) for n in trigs}
 
 if len(trigs) > 1:
@@ -68,7 +61,6 @@ if len(trigs) > 1:
         for sample in samples:
             fn = os.path.join(root_file_dir, sample.name + '.root')
             if not os.path.exists(fn) :
-                #print sample.name + '; not finding it'
                 continue 
             sample.y, sample.yl, sample.yh = sample.ys[trig]
         per.add(samples, title=nice[itrig], color=colors[itrig])
@@ -92,9 +84,7 @@ if len(trigs) > 1:
     elif kind == 'dijet' :
         tlatex.DrawLatex(0.725, 1.05, '#tilde{t} #rightarrow #bar{d}#bar{d}')
     elif kind == 'semilept_lb':
-        #used for emu: 0.45, 0.55; ee: 0.15, 0.18
         tlatex.DrawLatex(0.725, 1.05, '#tilde{t} #rightarrow lb')
-        #tlatex.DrawLatex(0.15, 0.18, '#tilde{t} #rightarrow lb')
     elif kind == 'semilept_ld':
         tlatex.DrawLatex(0.725, 1.05, '#tilde{t} #rightarrow ld')
     else:
