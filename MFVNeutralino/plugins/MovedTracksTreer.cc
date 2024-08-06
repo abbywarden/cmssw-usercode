@@ -266,8 +266,9 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
                       v.rescale_chi2, v.rescale_x - nt_filler.bs().x(v.rescale_z), v.rescale_y - nt_filler.bs().y(v.rescale_z), v.rescale_z, v.rescale_cxx, v.rescale_cxy, v.rescale_cxz, v.rescale_cyy, v.rescale_cyz, v.rescale_czz, // JMTBAD get rid of beamspot subtraction everywhere (then just use NtupleAdd here)
                       v.ntracks(), v.njets[0], v.bs2derr, v.rescale_bs2derr, false,
                       v.pt[mfv::PTracksPlusJetsByNtracks], v.eta[mfv::PTracksPlusJetsByNtracks], v.phi[mfv::PTracksPlusJetsByNtracks], v.mass[mfv::PTracksPlusJetsByNtracks]);
-    
+     
     for (size_t i = 0, ie = v.ntracks(); i < ie; ++i) {
+      /*
       jmt::MinValue m(0.1);
       for (size_t j = 0, je = nt.tracks().n(); j < je; ++j){
         m(j, mag2(v.track_qpt(i) - nt.tracks().qpt(j),
@@ -276,6 +277,7 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
         }
 
       assert(m.i() != -1);
+      std::cout << " m.i() " << m.i() << std::endl;
       if (nt.tracks().which_sv(m.i()) != 255) {
         const int w = nt.tracks().which_sv(m.i());
         cms::Exception ce("BadAssumption");
@@ -289,9 +291,10 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
           ce << "--this isn't a valid vertex number (max " << nt.vertices().n() << ")\n";
         throw ce;
       }
+      */
       const size_t iv = nt.vertices().n() - 1;
       assert(iv < 255);
-      nt.tracks().set_which_sv(m.i(), iv);
+      nt.tracks().set_which_sv(99, iv); //FIXME
     }
   }
 

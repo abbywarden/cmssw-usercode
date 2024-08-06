@@ -39,7 +39,6 @@ max_events(process, 100)
 #input_files(process, '~/nobackup/crabdirs/TTJets_UL2017_MINIAOD.root')
 #set_events(process, [(1, 12002, 31167330)])
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/100000/177D06A8-D7E8-E14A-8FB8-E638820EDFF3.root')
-
 cmssw_from_argv(process)
 
 

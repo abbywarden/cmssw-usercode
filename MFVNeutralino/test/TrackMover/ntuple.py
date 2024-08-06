@@ -4,7 +4,7 @@ from JMTucker.Tools.general import named_product
 from JMTucker.MFVNeutralino.NtupleCommon import *
 
 settings = NtupleSettings()
-settings.is_mc = False
+settings.is_mc = True
 settings.is_miniaod = True
 #settings.event_filter= 'electrons only novtx'
 settings.event_filter = 'muons only novtx'
@@ -37,7 +37,7 @@ cfgs = named_product(njets = [2], #FIXME
 process = ntuple_process(settings)
 #tfileservice(process, '/uscms/home/pkotamni/nobackup/crabdirs/movedtree.root')
 tfileservice(process, 'movedtree.root')
-max_events(process, 100)
+#max_events(process, 100)
 dataset = 'miniaod' if settings.is_miniaod else 'main'
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/120001/A8C3978F-4BE4-A844-BEE8-8DEE129A02B7.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/100000/177D06A8-D7E8-E14A-8FB8-E638820EDFF3.root')
@@ -152,9 +152,8 @@ random_service(process, random_dict)
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
-    #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, met=True, diboson=True, Lepton_data=False)
-    samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=True)
-    #samples = [getattr(Samples, 'wjetstolnu_2j_20162')]
+    samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, met=True, diboson=True, Lepton_data=False)
+    #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=True)
     set_splitting(samples, dataset, 'trackmover', data_json=json_path('ana_SingleLept_20161_10pc.json'), limit_ttbar=True)
 
     ms = MetaSubmitter('TrackMover' + version, dataset=dataset)

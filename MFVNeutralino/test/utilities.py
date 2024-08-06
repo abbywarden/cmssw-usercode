@@ -76,8 +76,10 @@ def cmd_hadd_data():
 
         have = []
         year_eras = [
-            ('2017', 'BCDFE'),  
-            ('2018', 'ABCD'),
+            #('20161', 'BCDEF'), #FIXME B2->B 
+            #('20162', 'FGH'),  
+            ('2017', 'BCDFE'), #HERE 
+            #('2018', 'ABCD'),
             ]
 
         for year, eras in year_eras:
@@ -147,7 +149,7 @@ def _background_samples(trigeff=False, year=2017, bkg_tag='others'):
                 #x += ['qcdpt%03imupt5' % x for x in [120,170,300,470,600,800]]  #800 
                 #x += ['qcdpt1000mupt5']
         else:
-            x = ['ww', 'wz', 'zz', 'ttbar'] 
+            x = ['ww', 'wz', 'zz',] # 'ttbar'] 
     elif _btagpresel:
         x = ['qcdht%04i' % x for x in [300, 500, 700, 1000, 1500, 2000]]
         x += ['ttbar']
@@ -164,7 +166,7 @@ def _background_samples(trigeff=False, year=2017, bkg_tag='others'):
         x += ['ttbarht%04i' % x for x in [600, 800, 1200, 2500]]
     return x
 
-def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=2017):
+def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=2017): #HERE
     cwd = os.getcwd()
     ok = True
     if year_to_use==-1:
@@ -193,7 +195,7 @@ def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=20
               if os.system(cmd) != 0:
                   ok = False
       if ok:
-          cmd = 'hadd.py background_2017p8.root background_2017.root background_2018.root'
+          cmd = 'hadd.py background_2017p8.root background%s2017.root background%s2018.root' %(_presel_s)
           print cmd
           os.system(cmd)
 
@@ -204,6 +206,12 @@ def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=20
         elif year_to_use==2018:
             year_s = '_2018'
             scale = -AnalysisConstants.int_lumi_2018 * AnalysisConstants.scale_factor_2018
+        elif year_to_use==20162:
+            year_s = '_20162'
+            scale = -AnalysisConstants.int_lumi_20162 * AnalysisConstants.scale_factor_20162
+        elif year_to_use==20161:
+            year_s = '_20161'
+            scale = -AnalysisConstants.int_lumi_20161 * AnalysisConstants.scale_factor_20161
         else:
             raise RuntimeError("Year {0} not available!".format(year_to_use))
   
@@ -233,7 +241,10 @@ def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=20
                 print ("{0} {1} merged!".format(year, bkg_tag)) 
          
         #cmd = 'hadd.py background_leptonpresel_2017.root wjetstolnu_leptonpresel_2017.root dyjets_leptonpresel_2017.root qcdmupt5_leptonpresel_2017.root qcd_leptonpresel_2017.root others_leptonpresel_2017.root'
-        cmd = 'hadd.py background_leptonpresel_2017.root wjetstolnu_leptonpresel_2017.root dyjets_leptonpresel_2017.root others_leptonpresel_2017.root'
+        #cmd = 'hadd.py background_leptonpresel_20161.root wjetstolnu_leptonpresel_20161.root dyjets_leptonpresel_20161.root others_leptonpresel_20161.root'
+        #cmd = 'hadd.py background_leptonpresel_20162.root wjetstolnu_leptonpresel_20162.root dyjets_leptonpresel_20162.root others_leptonpresel_20162.root'
+        #cmd = 'hadd.py background_leptonpresel_2017.root wjetstolnu_leptonpresel_2017.root dyjets_leptonpresel_2017.root others_leptonpresel_2017.root'
+        cmd = 'hadd.py background_leptonpresel_%s.root wjetstolnu_leptonpresel_%s.root dyjets_leptonpresel_%s.root others_leptonpresel_%s.root' % (year, year, year, year)
         print cmd
         os.system(cmd)
     #only work for 2017 data now

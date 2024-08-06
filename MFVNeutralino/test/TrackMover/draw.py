@@ -9,7 +9,7 @@ ROOT.TH1.AddDirectory(0)
 
 #variables = ['_movedist', 'lsp', '_npv_', '_dvv', '_sump_', 'tks', '_vtx', '_trk_', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
 
-variables = ['_movedist', 'lsp', '_npv_', 'half', 'vtx', 'qrk0_dxybs', 'qrk1_dxybs', '_dvv', '_sump_', 'tks', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+variables = ['_movedist', 'lsp', '_npv_', 'half', 'qrk0_dxybs', 'qrk1_dxybs', '_dvv', '_misccloseseedtracks_', '_sump_', '_tks_', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
 
 def get_em(fn, scale=1., alpha=1-0.6827):
     #f = ROOT.TFile(fn)
@@ -170,23 +170,23 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root'):
 
         if name.endswith('_rat') or (not name.endswith('_num') and not name.endswith('_den')):
             
-            data.SetName("SingleMuon")
+            data.SetName("TM MC bkg")
             data.SetMarkerSize(0.8)
             data.SetMarkerColor(ROOT.kRed)
             data.SetLineColor(ROOT.kRed)
             data.SetFillColor(ROOT.kRed)
 
-            mc.SetName("MC bkg")
+            mc.SetName("MC signal")
             mc.SetMarkerSize(0.8)
-            mc.SetMarkerColor(ROOT.kBlack)
-            mc.SetLineColor(ROOT.kBlack)
-            mc.SetFillColor(ROOT.kBlack)
+            mc.SetMarkerColor(ROOT.kBlue)
+            mc.SetLineColor(ROOT.kBlue)
+            mc.SetFillColor(ROOT.kBlue)
             
-            signal.SetName("MC signal")
+            signal.SetName("TM data")
             signal.SetMarkerSize(0.8)
-            signal.SetMarkerColor(ROOT.kBlue)
-            signal.SetLineColor(ROOT.kBlue)
-            signal.SetFillColor(ROOT.kBlue)
+            signal.SetMarkerColor(ROOT.kAzure+8)
+            signal.SetLineColor(ROOT.kAzure+8)
+            signal.SetFillColor(ROOT.kAzure+8)
             
             x_range = None
             y_range = None
@@ -197,8 +197,7 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root'):
                 for g in both:
                     g.GetYaxis().SetTitle('efficiency')
                 #objs = [(signal, 'P'), (mc, 'P'), (data, 'P'),]
-                #objs = [(data, 'P'), (mc, 'P'), (signal, 'P'),]
-                objs = [(signal, 'P'), (data, 'P'),]
+                objs = [(mc, 'P'), (data, 'P'), (signal, 'P'),]
                 y_range = (0, 1.05)
                 statbox_size = None
             if 'bs2derr' in name:
