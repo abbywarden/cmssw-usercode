@@ -530,8 +530,6 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
 
   edm::Handle<MFVVertexAuxCollection> auxes;
   event.getByToken(vertex_token, auxes);
-
-
   const int nsv = int(auxes->size());
 
   edm::Handle<double> weight;
