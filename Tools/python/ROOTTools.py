@@ -665,6 +665,7 @@ def data_mc_comparison(name,
                        output_fn = None,
                        plot_saver = None,
                        histogram_path = None,
+                       signal_hist_path = None,
                        file_path = None,
                        fcn_for_nevents_check = None,
                        int_lumi = None,
@@ -813,7 +814,11 @@ def data_mc_comparison(name,
 
             # Get the histogram, normalize, rebin, and move the
             # overflow to the last bin.
-            sample.hist = sample._datamccomp_file.Get(histogram_path)
+
+            if (sample in signal_samples) and (signal_hist_path is not None):
+                sample.hist = sample._datamccomp_file.Get(signal_hist_path)
+            else:
+                sample.hist = sample._datamccomp_file.Get(histogram_path)
             if not issubclass(type(sample.hist), ROOT.TH1):
                 raise RuntimeError('histogram %s not found in %s' % (histogram_path, sample._datamccomp_filename))
 
@@ -1576,22 +1581,7 @@ def plot_dir(x='', make=False, temp=False):
     hostname = os.environ['HOSTNAME']
     username = os.environ['USER']
     d = None
-    if 'fnal.gov' in hostname and username == 'tucker':
-        if temp:
-            d = '/publicweb/t/tucker/asdf/tempplots'
-        else:
-            d = '/publicweb/t/tucker/asdf/plots'
-    elif 'fnal.gov' in hostname and username == 'jchu':
-        d = '/publicweb/j/jchu/plots'
-    elif 'fnal.gov' in hostname and username == 'dquach':
-        d = '/publicweb/d/dquach/plots'
-    elif 'fnal.gov' in hostname and username == 'shogan':
-	d = '/publicweb/s/shogan/images'
-    elif 'fnal.gov' in hostname and username == 'joeyr':
-        d = '/publicweb/j/joeyr/plots'
-    elif 'fnal.gov' in hostname and username == 'ali':
-        d = '/publicweb/a/ali/'
-    elif 'fnal.gov' in hostname :
+    if 'fnal.gov' in hostname :
         d = os.environ['HOME']+'/nobackup/DVplots/'
     if d:
         x = os.path.join(d,x)
