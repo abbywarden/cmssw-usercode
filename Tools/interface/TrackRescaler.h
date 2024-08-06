@@ -34,11 +34,11 @@ namespace jmt {
       double dxydszcov_;
     };
 
-    TrackRescaler() : enable_(false), era_(0), which_(w_JetHT) {}
+    TrackRescaler() : enable_(false), era_(0), which_(w_BTagDispJet) {}
     void setup(bool enable, int era, int which) { enable_ = enable; era_ = era; which_ = which; }
     void enable(bool enable) { enable_ = enable; }
 
-    enum { w_JetHT, w_max };
+    enum { w_BTagDispJet, w_max };
 
     void set_JetHT2017B(double pt, double eta);
     void set_JetHT2017C(double pt, double eta);
@@ -48,6 +48,10 @@ namespace jmt {
     void set_JetHT2018B(double pt, double eta);
     void set_JetHT2018C(double pt, double eta);
     void set_JetHT2018D(double pt, double eta);
+    void set_BTagDispJet20161(double pt, double eta);
+    void set_BTagDispJet20162(double pt, double eta);
+    void set_BTagDispJet2017(double pt, double eta);
+    void set_BTagDispJet2018(double pt, double eta);
 
     void set(double era, int which, double pt, double eta);
     void set(double pt, double eta) { set(era_, which_, pt, eta); }

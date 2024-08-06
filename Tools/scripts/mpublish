@@ -7,7 +7,7 @@ from JMTucker.Tools.CRAB3ToolsBase import crab_dirs_from_argv
 from JMTucker.Tools.CRAB3ToolsSh import crab_get_njobs_from_log, crab_get_output_dataset_from_log, crab_get_output_dir
 from JMTucker.Tools.CondorTools import cs_dirs_from_argv, cs_njobs, cs_primaryds, cs_eventswritten
 from JMTucker.Tools.DBS import files_in_dataset, numevents_in_dataset
-from JMTucker.Tools.general import coderep_files, wisc_popen, popen
+from JMTucker.Tools.general import coderep_files, popen
 from JMTucker.Tools import Samples, colors
 from JMTucker.Tools.SampleFiles import _enc
 
@@ -95,6 +95,7 @@ for wd in wds:
 
     if is_crab:
         njobs = crab_get_njobs_from_log(wd)
+
         ds = crab_get_output_dataset_from_log(wd)
         if ds is None and not options.partial:
             raise ValueError('no dataset in log for ' + wd)
@@ -109,28 +110,15 @@ for wd in wds:
         files = []
         if options.lpc_shortcut:
             path = crab_get_output_dir(wd)
-            print path
-            #working on wisc machine... cannot use eos command
-            #zero_dirs = [x.strip() for x in popen('eos root://cmseos.fnal.gov ls /eos/uscms%s' % path).split('\n') if x.strip()]
-           
-            # zero_dirs = [x.strip() for x in wisc_popen('xrdfs root://cmseos.fnal.gov ls /eos/uscms%s' % path).split('\n') if x.strip()]
-            # for zd in zero_dirs:
-            #     #these are the 0000 directories 
-            #     print zd
-            #     d = os.path.join(path, zd) + '/'
-            #     #files += [d + x.strip() for x in popen('eos root://cmseos.fnal.gov ls /eos/uscms%s/%s' % (path, zd)).split() if x.strip() and fn_ok(x.strip())]
-            #     files += [d + x.strip() for x in wisc_popen('xrdfs root://cmseos.fnal.gov ls %s' % (zd)).split() if x.strip() and fn_ok(x.strip())]
-                
-            #this is used when jobs are saved in wisc /hdfs 
-            #either below or : davs://cmsxrootd.hep.wisc.edu:1094/%s
-            zero_dirs = [x.strip() for x in wisc_popen('gfal-ls davs://cmsxrootd.hep.wisc.edu:1094/%s' % path).split('\n') if x.strip()]
+            #print 'path: %s' % (path)
+            zero_dirs = [x.strip() for x in popen('eos root://cmseos.fnal.gov ls /eos/uscms%s' % path).split('\n') if x.strip()]
+            #print 'zero_dirs: %s' % (zero_dirs)
             for zd in zero_dirs:
-                print zd
                 d = os.path.join(path, zd) + '/'
-                #files += [d + x.strip() for x in wisc_popen('gfal-ls root://cmseos.fnal.gov/%s/%s' % (path,zd)).split() if x.strip() and fn_ok(x.strip())]
-                files += [d + x.strip() for x in wisc_popen('gfal-ls davs://cmsxrootd.hep.wisc.edu:1094/%s/%s' % (path,zd)).split() if x.strip() and fn_ok(x.strip())]
-            
-              
+                #print 'd: %s' % (d)
+                files += [d + x.strip() for x in popen('eos root://cmseos.fnal.gov ls /eos/uscms%s/%s' % (path, zd)).split() if x.strip() and fn_ok(x.strip())]
+                #print 'files: %s' % (files)
+
             if options.dbs and set(files) != set(dbs_files):
                 msg = '%i files from lpc shortcut != %i files from dbs' % (len(files), len(dbs_files))
                 if options.partial:

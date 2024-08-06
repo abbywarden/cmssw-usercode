@@ -7,8 +7,13 @@ from JMTucker.Tools.ROOTTools import *
 set_style()
 ROOT.TH1.AddDirectory(0)
 
+#variables = ['_movedist', 'lsp', '_npv_', '_dvv', '_sump_', 'tks', '_vtx', '_trk_', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+
+variables = ['_movedist', 'lsp', '_npv_', 'half', 'qrk0_dxybs', 'qrk1_dxybs', '_dvv', '_misccloseseedtracks_', '_sump_', '_tks_', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+
 def get_em(fn, scale=1., alpha=1-0.6827):
-    f = ROOT.TFile(fn)
+    #f = ROOT.TFile(fn)
+    f = ROOT.TFile.Open(fn)
     d = {}
     integ = None
     l = []
@@ -16,7 +21,7 @@ def get_em(fn, scale=1., alpha=1-0.6827):
 
     def skip(name, obj):
         return not obj.Class().GetName().startswith('TH1') or obj.GetName() in ('h_norm', 'h_weight', 'h_npu') #or name in ('nlep')
-
+    
     def rebin(name, obj):
         return obj
         if 'jetdravg' == name or \
@@ -34,10 +39,11 @@ def get_em(fn, scale=1., alpha=1-0.6827):
              'pvscore' == name or \
              'pvx' == name or \
              'pvy' == name or \
+             'lsp' == name or \
              'pvz' == name:
             obj.Rebin(4)
         return obj
-
+    
     hdummy = f.Get('h_weight')
     integ = hdummy.Integral(0,hdummy.GetNbinsX()+2)
     print 'integral:', integ
@@ -55,6 +61,14 @@ def get_em(fn, scale=1., alpha=1-0.6827):
         obj.Scale(scale)
         obj = rebin(sub, obj)
 
+        Isnametoplot = False
+        for var in variables:
+           if var in name:
+             Isnametoplot = True
+             break
+        if not Isnametoplot or name.startswith('h_') or 'which' in name or 'invtx' in name or 'outvtx' in name:
+           continue
+        
         if name.startswith('h_'):
             l.append(name)
         else:
@@ -70,7 +84,23 @@ def get_em(fn, scale=1., alpha=1-0.6827):
         if name.endswith('_num'):
             num = d[name]
             den = d[name.replace('_num', '_den')]
+            if 'movedist' in name:
+              num = num.Rebin(2)
+              den = den.Rebin(2)
+            if 'lsp' in name:
+              num = num.Rebin(4)
+              den = den.Rebin(4)
+            if 'dvv' in name:
+              num = num.Rebin(4)
+              den = den.Rebin(4)
+            if 'tkunc' in name:
+              num = num.Rebin(4)
+              den = den.Rebin(4)
+            if 'tkdbv' in name:
+              num = num.Rebin(8)
+              den = den.Rebin(8)
             g = histogram_divide(num, den, confint_params=(alpha,), use_effective=use_effective)
+            print(name)
             g.SetTitle('')
             g.GetXaxis().SetTitle(num.GetXaxis().GetTitle())
             g.GetYaxis().SetTitle('efficiency')
@@ -78,9 +108,9 @@ def get_em(fn, scale=1., alpha=1-0.6827):
 
             d[rat_name] = g
             l.append(rat_name)
-
-            if '_nvtx_' in name: # nvtx is just a convenient one to take the integral of, can be any
-                cutset = name.split('_nvtx_')[0]
+            print(name) 
+            if '_npv_' in name: # nvtx is just a convenient one to take the integral of, can be any
+                cutset = name.split('_npv_')[0]
                 print name, cutset
                 num_err, den_err = ROOT.Double(), ROOT.Double()
                 num_int = num.IntegralAndError(0, 100, num_err)
@@ -109,7 +139,7 @@ def get_em(fn, scale=1., alpha=1-0.6827):
 
     return f, l, d, c, integ
 
-def comp(ex, fn1='data.root', fn2='mc.root'):
+def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root'):
     assert ex
     ps = plot_saver(plot_dir('TrackMover_' + ex), size=(600,600), log=False)
 
@@ -118,8 +148,10 @@ def comp(ex, fn1='data.root', fn2='mc.root'):
     f_1, l_1, d_1, c_1, integ_1 = get_em(fn1)
     print 'fn2:', fn2
     f_2, l_2, d_2, c_2, integ_2 = get_em(fn2, scale=mc_scale_factor)
-    assert l_1 == l_2
-    assert len(d_1) == len(d_2)
+    print 'fn3:', fn3
+    f_3, l_3, d_3, c_3, integ_3 = get_em(fn3)
+    #assert l_1 == l_2
+    #assert len(d_1) == len(d_2)
     l = l_1
 
     scale = integ_1 / integ_2
@@ -133,40 +165,54 @@ def comp(ex, fn1='data.root', fn2='mc.root'):
     for name in l:
         data = d_1[name]
         mc   = d_2[name]
+        signal   = d_3[name]
         both = (data, mc)
 
         if name.endswith('_rat') or (not name.endswith('_num') and not name.endswith('_den')):
-            data.SetLineWidth(2)
-            data.SetMarkerStyle(20)
+            
+            data.SetName("TM MC bkg")
             data.SetMarkerSize(0.8)
-            data.SetLineColor(ROOT.kBlack)
+            data.SetMarkerColor(ROOT.kRed)
+            data.SetLineColor(ROOT.kRed)
+            data.SetFillColor(ROOT.kRed)
 
-            mc.SetFillStyle(3001)
-            mc.SetMarkerStyle(24)
+            mc.SetName("MC signal")
             mc.SetMarkerSize(0.8)
-            mc.SetMarkerColor(2)
-            mc.SetLineColor(2)
-            mc.SetFillColor(2)
-
+            mc.SetMarkerColor(ROOT.kBlue)
+            mc.SetLineColor(ROOT.kBlue)
+            mc.SetFillColor(ROOT.kBlue)
+            
+            signal.SetName("TM data")
+            signal.SetMarkerSize(0.8)
+            signal.SetMarkerColor(ROOT.kAzure+8)
+            signal.SetLineColor(ROOT.kAzure+8)
+            signal.SetFillColor(ROOT.kAzure+8)
+            
             x_range = None
             y_range = None
-            objs = [mc, data]
+            res_x_range = None
+            objs = [signal, mc]
             statbox_size = (0.2,0.2)
             if name.endswith('_rat'):
                 for g in both:
                     g.GetYaxis().SetTitle('efficiency')
-                objs = [(mc, 'PE2'), (data, 'P')]
+                #objs = [(signal, 'P'), (mc, 'P'), (data, 'P'),]
+                objs = [(mc, 'P'), (data, 'P'), (signal, 'P'),]
                 y_range = (0, 1.05)
                 statbox_size = None
             if 'bs2derr' in name:
                 x_range = (0, 0.01)
-
+            #if 'movedist' in name:
+            #    x_range = (0.0, 0.2)
+                #res_x_range = (0.07,0.12)
+            
             ratios_plot(name,
                         objs,
                         plot_saver=ps,
                         x_range=x_range,
                         y_range=y_range,
-                        res_y_range=0.10,
+                        #res_y_range=0.10,
+                        res_y_range=(0.4,1.5),
                         res_y_title='data/MC',
                         res_fit=False,
                         res_divide_opt={'confint': propagate_ratio, 'force_le_1': False, 'allow_subset': True}, #name in ('all_jetsumntracks_rat', )},
@@ -176,12 +222,13 @@ def comp(ex, fn1='data.root', fn2='mc.root'):
 
 if __name__ == '__main__':
     import sys
-    if len(sys.argv) < 4:
-        sys.exit('usage: python draw.py tag_for_plots fn1 fn2 [fn2 scale factor]')
+    if len(sys.argv) < 5:
+        sys.exit('usage: python draw.py tag_for_plots fn1 fn2 f3 [fn2 scale factor]')
 
     ex = sys.argv[1]
     fn1 = sys.argv[2]
     fn2 = sys.argv[3]
-    if len(sys.argv) > 4:
-        mc_scale_factor = float(sys.argv[4])
-    comp(ex, fn1, fn2)
+    fn3 = sys.argv[4]
+    if len(sys.argv) > 5:
+        mc_scale_factor = float(sys.argv[5])
+    comp(ex, fn1, fn2, fn3)
