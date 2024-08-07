@@ -48,7 +48,7 @@ cd CMSSW_10_2_13/src
 eval `scram runtime -sh`
 
 cd ..
-xrdcp -s root://cmseos.fnal.gov//store/user/tucker/combine_sl7_801_patchSetHint.tgz combine.tgz
+xrdcp -s root://cmseos.fnal.gov//store/user/shogan/combine.tgz combine.tgz
 if [[ ! -f combine.tgz ]]; then
     >&2 echo could not copy combine tarball
     exit 1
@@ -68,7 +68,7 @@ cd $WD
 
     hint=$(awk '/hint/ { print $NF }' datacard.txt)
     # don't use -H AsymptoticLimits, at least don't do it for low-efficiency signals, it can lead to way too low limits
-    cmd="combine --setTheHint $hint -M MarkovChainMC --noDefaultPrior=0 --tries 20 -b 200 --iteration 100000 datacard.txt"
+    cmd="combine -M MarkovChainMC --noDefaultPrior=0 --tries 20 -b 200 --iteration 100000 datacard.txt"
 
     if [[ $JOB == 0 ]]; then
         echo "========================================================================="
@@ -162,13 +162,14 @@ assert len(bkg_correlation) <= 1
 if bkg_correlation:
     datacard_args.append(bkg_correlation[0])
 
-include_2016 = 'include_2016' in sys.argv
+include_2016 = True
+#include_2016 = 'include_2016' in sys.argv
 if include_2016:
     datacard_args.append('include_2016')
 
 script_template = script_template.replace('__DATACARDARGS__', ' '.join(datacard_args))
 
-njobs = 50
+njobs = 20
 
 jdl_template = '''universe = vanilla
 Executable = run.sh

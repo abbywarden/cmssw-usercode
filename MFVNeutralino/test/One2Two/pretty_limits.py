@@ -6,8 +6,8 @@ draw_pm1sigma_excl = True
 swap_axes = True
 
 which = '2017p8' if '2017p8' in sys.argv else 'run2'
-intlumi = 140 if which == 'run2' else 101
-path = plot_dir('pretty_limits_%s_June2021' % which, make=True)
+intlumi = 120 if which == 'run2' else 101
+path = plot_dir('pretty_limits_2d_%s_May2024' % which, make=True)
 
 ts = tdr_style()
 ROOT.gStyle.SetPalette(ROOT.kBird)

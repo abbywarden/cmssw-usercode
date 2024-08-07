@@ -30,12 +30,12 @@
  *
  * How statmodel.cc works:
  *  - Model the dBV distribution with a function depending on ntracks
- *  - Generate the true dVV distribution using the dBV function (and the deltaphi function and efficiency curve).
+ *  - Generate the true sumdBV distribution using the dBV function (and the deltaphi function and efficiency curve).
  *  - Throw ntoys.  For each toy:
  *     - Randomly sample i1v from Poisson(n1v)
  *     - Make a histogram of dBV by randomly sampling from the dBV function i1v times
- *     - Construct dVVC
- *  - Calculate the RMS of the dVVC yields in each bin.
+ *     - Construct sumdbvC
+ *  - Calculate the RMS of the sumdbvC yields in each bin.
  *
  * These configurables can be set on the command line (e.g. env sm_ntracks=5 ./statmodel.exe):
  *   inst, seed, ntoys, out_fn, samples_index, year_index, ntracks, n1v, n2v, true_fn, true_from_file,
@@ -298,8 +298,8 @@ int main(int, char**) {
   const long ntrue_2v = env.get_long("ntrue_2v", 1000000L);
   const double oversample = env.get_double("oversample", 20);
   const std::string year_str[3] = {"2017","2018","2017p8"};
-  const std::string ntuple_version = "V27m";
-  const std::string rho_compare_fn = env.get_string("rho_compare_fn", env.get_string("rho_compare_path", "/uscms_data/d2/tucker/crab_dirs/Histos" + ntuple_version) + "/" + std::string(sample_is_mc ? "background_" : "JetHT") + year_str[year_index] + ".root");
+  const std::string ntuple_version = "ULV11Bm";
+  const std::string rho_compare_fn = env.get_string("rho_compare_fn", env.get_string("rho_compare_path", "/uscms_data/d3/shogan/crab_dirs/HistosULV11Bm_Run2_Bkg_May02") + "/" + std::string(sample_is_mc ? "background_" : "JetHT") + year_str[year_index] + ".root");
   const double rho_compare_xmax = env.get_double("rho_compare_xmax", 2);
   const bool rho_compare_only = env.get_bool("rho_compare_only", false);
   phi_c = env.get_double("phi_c", 1.31);
@@ -450,7 +450,7 @@ int main(int, char**) {
   uptr<TH1D> h_true_2v_rho(book_1v("h_true_2v_rho"));
   uptr<TH1D> h_true_2v_phi(new TH1D("h_true_2v_phi", "", 20, -M_PI, M_PI));
 
-  uptr<TH1D> h_true_2v_dvv(book_2v("h_true_2v_dvv"));
+  uptr<TH1D> h_true_2v_sumdbv(book_2v("h_true_2v_sumdbv"));
   uptr<TH1D> h_true_2v_dphi(new TH1D("h_true_2v_dphi", "", 10, 0, M_PI));
 
   if (true_from_file) {
@@ -463,7 +463,7 @@ int main(int, char**) {
       return 1;
     }
 
-    for (auto* h : {h_true_1v_rho.get(), h_true_1v_phi.get(), h_true_2v_rho.get(), h_true_2v_phi.get(), h_true_2v_dvv.get(), h_true_2v_dphi.get()})
+    for (auto* h : {h_true_1v_rho.get(), h_true_1v_phi.get(), h_true_2v_rho.get(), h_true_2v_phi.get(), h_true_2v_sumdbv.get(), h_true_2v_dphi.get()})
       h->Add((TH1D*)true_f->Get(h->GetName()));
   }
   else {
@@ -490,7 +490,7 @@ int main(int, char**) {
       h_true_2v_rho->Fill(vp.second.rho());
       h_true_2v_phi->Fill(vp.first .phi());
       h_true_2v_phi->Fill(vp.second.phi());
-      h_true_2v_dvv->Fill(vp.rho());
+      h_true_2v_sumdbv->Fill(vp.rho());
       h_true_2v_dphi->Fill(fabs(vp.phi()));
     }
     printf(" %li\n", ntrue_2v);
@@ -501,7 +501,7 @@ int main(int, char**) {
 
   assert(h_true_1v_rho->GetBinContent(h_true_1v_rho->GetNbinsX()+1) < 1e-12);
   //jmt::deoverflow(h_true_1v_rho.get());
-  jmt::deoverflow(h_true_2v_dvv.get());
+  jmt::deoverflow(h_true_2v_sumdbv.get());
 
   // 3rd-8th pages of output: the true_1v histogram + comparison to
   // fcn (for debugging),
@@ -605,22 +605,22 @@ int main(int, char**) {
   p();
   c->Clear();
 
-  uptr<TH1D> h_true_2v_dvv_norm((TH1D*)h_true_2v_dvv->Clone("h_true_2v_dvv_norm"));
-  h_true_2v_dvv_norm->Scale(n2v/h_true_2v_dvv->Integral());
+  uptr<TH1D> h_true_2v_sumdbv_norm((TH1D*)h_true_2v_sumdbv->Clone("h_true_2v_sumdbv_norm"));
+  h_true_2v_sumdbv_norm->Scale(n2v/h_true_2v_sumdbv->Integral());
   uptr<TH1D> h_true_2v_dphi_norm((TH1D*)h_true_2v_dphi->Clone("h_true_2v_dphi_norm"));
   h_true_2v_dphi_norm->Scale(n2v/h_true_2v_dphi->Integral());
   
   printf("2v err/bin check:\n");
-  for (auto* h : {h_true_2v_dvv.get(), h_true_2v_dvv_norm.get()})
+  for (auto* h : {h_true_2v_sumdbv.get(), h_true_2v_sumdbv_norm.get()})
     printf("%40s: %10.4f/%10.4f = %0.3f\n", h->GetName(), h->GetBinError(nbins_2v), h->GetBinContent(nbins_2v), h->GetBinError(nbins_2v)/h->GetBinContent(nbins_2v));
 
   c->Divide(2,1);
   c->cd(1)->SetLogy();
-  h_true_2v_dvv->SetTitle("true, raw counts;d_{VV} (cm);counts");
-  h_true_2v_dvv->Draw("histe");
+  h_true_2v_sumdbv->SetTitle("true, raw counts;#Sigma(d_{BV}) (cm);counts");
+  h_true_2v_sumdbv->Draw("histe");
   c->cd(2)->SetLogy();
-  h_true_2v_dvv_norm->SetTitle(TString::Format("true, scaled to %.1f events;d_{VV} (cm);events", n2v));
-  h_true_2v_dvv_norm->Draw("histe");
+  h_true_2v_sumdbv_norm->SetTitle(TString::Format("true, scaled to %.1f events;#Sigma(d_{BV}) (cm);events", n2v));
+  h_true_2v_sumdbv_norm->Draw("histe");
   p();
   c->Clear();
 
@@ -643,12 +643,12 @@ int main(int, char**) {
   /////////////////////////////////////////////
 
   // Output pg 9-XX: distribution in toys of total n1v, n1v in each
-  // dbv bin, and n2v in each dvv bin, each compared to truth from
+  // dbv bin, and n2v in each sumdbv bin, each compared to truth from
   // fcn.
 
   uptr<TH1D> h_n1v(new TH1D("h_n1v", "", 20, n1v - 5*sqrt(n1v), n1v + 5*sqrt(n1v)));
   std::vector<uptr<TH1D>> h_1v_rho_bins;
-  std::vector<uptr<TH1D>> h_2v_dvvc_bins;
+  std::vector<uptr<TH1D>> h_2v_sumdbvc_bins;
 
   for (int ibin = 1; ibin <= nbins_1v; ++ibin) {
     const double tru = h_true_1v_rho_norm->GetBinContent(ibin);
@@ -660,13 +660,13 @@ int main(int, char**) {
 
   printf("2v bins truth fractions:");
   for (int ibin = 1; ibin <= nbins_2v; ++ibin) {
-    const double tru = h_true_2v_dvv_norm->GetBinContent(ibin);
+    const double tru = h_true_2v_sumdbv_norm->GetBinContent(ibin);
     const double pb = 1.35e-3;
     jmt::interval iv = jmt::garwood_poisson(tru, pb, pb);
     if (iv.lower < 1) iv.lower = 0;
-    h_2v_dvvc_bins.emplace_back(new TH1D(TString::Format("h_2v_dvvc_bins_%i", ibin), TString::Format("d_{VV}^{C} bin %i", ibin), 200, iv.lower, iv.upper));
+    h_2v_sumdbvc_bins.emplace_back(new TH1D(TString::Format("h_2v_sumdbvc_bins_%i", ibin), TString::Format("#Sigma(d_{BV})^{C} bin %i", ibin), 200, iv.lower, iv.upper));
     if (ibin > 1 && ibin % 4 == 1) printf("\n                        ");
-    printf("    %12.4g +-f %7.2g", tru/n2v, h_true_2v_dvv_norm->GetBinError(ibin)/tru);
+    printf("    %12.4g +-f %7.2g", tru/n2v, h_true_2v_sumdbv_norm->GetBinError(ibin)/tru);
   }
   printf("\n");
 
@@ -676,7 +676,7 @@ int main(int, char**) {
   }
 
   // Throw the toys and fill the above hists.
-  // First throw the one vertex sample, then construct dvvc from it.
+  // First throw the one vertex sample, then construct sumdbvc from it.
   // The toy is saved in the h_1v/2v*bins vectors.
 
   printf("toys:%s", print_toys ? "\n" : " ");
@@ -695,24 +695,24 @@ int main(int, char**) {
       h_1v_rho_bins[ibin-1]->Fill(h_1v_rho->GetBinContent(ibin));
 
     // The construction
-    uptr<TH1D> h_2v_dvvc(book_2v("h_2v_dvvc"));
+    uptr<TH1D> h_2v_sumdbvc(book_2v("h_2v_sumdbvc"));
 
     for (int i = 0, ie = int(i1v * oversample); i < ie; ++i) {
       const double rho0 = h_1v_rho->GetRandom();
       const double rho1 = h_1v_rho->GetRandom();
       const double dphi = throw_dphi();
-      const double dvvc = sqrt(rho0*rho0 + rho1*rho1 - 2*rho0*rho1*cos(dphi));
-      const double w = get_eff(dvvc);
-      h_2v_dvvc->Fill(dvvc, w);
+      const double sumdbvc = sqrt(rho0*rho0 + rho1*rho1 - 2*rho0*rho1*cos(dphi));
+      const double w = get_eff(sumdbvc);
+      h_2v_sumdbvc->Fill(sumdbvc, w);
     }
 
-    jmt::deoverflow(h_2v_dvvc.get());
-    h_2v_dvvc->Scale(n2v/h_2v_dvvc->Integral());
+    jmt::deoverflow(h_2v_sumdbvc.get());
+    h_2v_sumdbvc->Scale(n2v/h_2v_sumdbvc->Integral());
     
     if (print_toys) printf("toy %i:", itoy);
     for (int ibin = 1; ibin <= nbins_2v; ++ibin) {
-      const double c = h_2v_dvvc->GetBinContent(ibin);
-      h_2v_dvvc_bins[ibin-1]->Fill(c);
+      const double c = h_2v_sumdbvc->GetBinContent(ibin);
+      h_2v_sumdbvc_bins[ibin-1]->Fill(c);
       if (print_toys) printf(" %.4f", c/n2v);
     }
     if (print_toys) printf("\n");
@@ -745,11 +745,11 @@ int main(int, char**) {
   uptr<TH1D> h_1v_rho_bins_diffs      (book_1v("h_1v_rho_bins_diffs"));
   uptr<TH1D> h_1v_rho_bins_diffs_norm (book_1v("h_1v_rho_bins_diffs_norm"));
 
-  uptr<TH1D> h_2v_dvvc_bins_means     (book_2v("h_2v_dvvc_bins_means"));
-  uptr<TH1D> h_2v_dvvc_bins_rmses     (book_2v("h_2v_dvvc_bins_rmses"));
-  uptr<TH1D> h_2v_dvvc_bins_rmses_norm(book_2v("h_2v_dvvc_bins_rmses_norm"));
-  uptr<TH1D> h_2v_dvvc_bins_diffs     (book_2v("h_2v_dvvc_bins_diffs"));
-  uptr<TH1D> h_2v_dvvc_bins_diffs_norm(book_2v("h_2v_dvvc_bins_diffs_norm"));
+  uptr<TH1D> h_2v_sumdbvc_bins_means     (book_2v("h_2v_sumdbvc_bins_means"));
+  uptr<TH1D> h_2v_sumdbvc_bins_rmses     (book_2v("h_2v_sumdbvc_bins_rmses"));
+  uptr<TH1D> h_2v_sumdbvc_bins_rmses_norm(book_2v("h_2v_sumdbvc_bins_rmses_norm"));
+  uptr<TH1D> h_2v_sumdbvc_bins_diffs     (book_2v("h_2v_sumdbvc_bins_diffs"));
+  uptr<TH1D> h_2v_sumdbvc_bins_diffs_norm(book_2v("h_2v_sumdbvc_bins_diffs_norm"));
 
   printf("1v bins means:\n");
   printf("%3s %28s  %28s  %28s\n", "bin", "bin mean", "scaled true", "diff");
@@ -808,13 +808,13 @@ int main(int, char**) {
     c->Divide(2,2);
     for (int i = i_base; i < std::min(i_base + 4, nbins_2v); ++i) {
       c->cd(i%4+1);
-      h_2v_dvvc_bins[i]->Draw("hist");
-      const double b  = h_2v_dvvc_bins[i]->GetMean();
-      const double be = h_2v_dvvc_bins[i]->GetMeanError();
-      const double r  = h_2v_dvvc_bins[i]->GetRMS();
-      const double re = h_2v_dvvc_bins[i]->GetRMSError();
-      const double t  = h_true_2v_dvv_norm->GetBinContent(i+1);
-      const double te = h_true_2v_dvv_norm->GetBinError  (i+1);
+      h_2v_sumdbvc_bins[i]->Draw("hist");
+      const double b  = h_2v_sumdbvc_bins[i]->GetMean();
+      const double be = h_2v_sumdbvc_bins[i]->GetMeanError();
+      const double r  = h_2v_sumdbvc_bins[i]->GetRMS();
+      const double re = h_2v_sumdbvc_bins[i]->GetRMSError();
+      const double t  = h_true_2v_sumdbv_norm->GetBinContent(i+1);
+      const double te = h_true_2v_sumdbv_norm->GetBinError  (i+1);
       const double d  = b - t;
       const double de = sqrt(be*be + te*te);
       const double statuncert = r / t;
@@ -827,23 +827,23 @@ int main(int, char**) {
         tl.SetTextColor(kBlack);
       tl.DrawLatexNDC(0.6, 0.4, TString::Format("#splitline{true: %.3f #pm %.3f}{diff: %.3f #pm %.3f}", t, te, d, de));
 
-      h_2v_dvvc_bins_means->SetBinContent(i+1, b);
-      h_2v_dvvc_bins_means->SetBinError  (i+1, be);
+      h_2v_sumdbvc_bins_means->SetBinContent(i+1, b);
+      h_2v_sumdbvc_bins_means->SetBinError  (i+1, be);
 
-      h_2v_dvvc_bins_rmses->SetBinContent(i+1, r);
-      h_2v_dvvc_bins_rmses->SetBinError  (i+1, re);
+      h_2v_sumdbvc_bins_rmses->SetBinContent(i+1, r);
+      h_2v_sumdbvc_bins_rmses->SetBinError  (i+1, re);
 
-      h_2v_dvvc_bins_rmses_norm->SetBinContent(i+1, r/t);
-      h_2v_dvvc_bins_rmses_norm->SetBinError  (i+1, sqrt(re*re/r/r + te*te/t/t)); // JMTBAD
+      h_2v_sumdbvc_bins_rmses_norm->SetBinContent(i+1, r/t);
+      h_2v_sumdbvc_bins_rmses_norm->SetBinError  (i+1, sqrt(re*re/r/r + te*te/t/t)); // JMTBAD
 
-      h_2v_dvvc_bins_diffs->SetBinContent(i+1, d);
-      h_2v_dvvc_bins_diffs->SetBinError  (i+1, de);
+      h_2v_sumdbvc_bins_diffs->SetBinContent(i+1, d);
+      h_2v_sumdbvc_bins_diffs->SetBinError  (i+1, de);
 
-      h_2v_dvvc_bins_diffs_norm->SetBinContent(i+1, d/t);
-      h_2v_dvvc_bins_diffs_norm->SetBinError  (i+1, sqrt(be*be/b/b + te*te/t/t)); // JMTBAD
+      h_2v_sumdbvc_bins_diffs_norm->SetBinContent(i+1, d/t);
+      h_2v_sumdbvc_bins_diffs_norm->SetBinError  (i+1, sqrt(be*be/b/b + te*te/t/t)); // JMTBAD
     }
     p();
-    //if (getenv("asdf")) c->SaveAs("$asdf/sm_dvvc_bins.png");
+    //if (getenv("asdf")) c->SaveAs("$asdf/sm_sumdbvc_bins.png");
     c->Clear();
   }
 
@@ -865,45 +865,45 @@ int main(int, char**) {
 
   c->Divide(2,1);
   c->cd(1)->SetLogy();
-  h_2v_dvvc_bins_means->SetStats(0);
-  h_2v_dvvc_bins_means->SetTitle("2v bin-by-bin mean;d_{VV}^{C} (cm)");
-  h_2v_dvvc_bins_means->Draw("histe");
+  h_2v_sumdbvc_bins_means->SetStats(0);
+  h_2v_sumdbvc_bins_means->SetTitle("2v bin-by-bin mean;#Sigma(d_{BV})^{C} (cm)");
+  h_2v_sumdbvc_bins_means->Draw("histe");
   c->cd(2);
-  //h_2v_dvvc_bins_rmses->GetYaxis()->SetRangeUser(0,0.6);
-  h_2v_dvvc_bins_rmses->SetStats(0);
-  h_2v_dvvc_bins_rmses->SetTitle("2v bin-by-bin rms;d_{VV}^{C} (cm)");
-  h_2v_dvvc_bins_rmses->Draw("histe");
+  //h_2v_sumdbvc_bins_rmses->GetYaxis()->SetRangeUser(0,0.6);
+  h_2v_sumdbvc_bins_rmses->SetStats(0);
+  h_2v_sumdbvc_bins_rmses->SetTitle("2v bin-by-bin rms;#Sigma(d_{BV})^{C} (cm)");
+  h_2v_sumdbvc_bins_rmses->Draw("histe");
   p();
   c->Clear();
 
   c->Divide(2,1);
   c->cd(1);
-  h_2v_dvvc_bins_rmses->SetStats(0);
-  h_2v_dvvc_bins_rmses->SetTitle("2v bin-by-bin rms;d_{VV}^{C} (cm)");
-  h_2v_dvvc_bins_rmses->Draw("histe");
+  h_2v_sumdbvc_bins_rmses->SetStats(0);
+  h_2v_sumdbvc_bins_rmses->SetTitle("2v bin-by-bin rms;#Sigma(d_{BV})^{C} (cm)");
+  h_2v_sumdbvc_bins_rmses->Draw("histe");
   c->cd(2);
-  h_2v_dvvc_bins_rmses_norm->SetStats(0);
-  h_2v_dvvc_bins_rmses_norm->SetTitle("2v bin-by-bin rms/true;d_{VV}^{C} (cm)");
-  h_2v_dvvc_bins_rmses_norm->Draw("histe");
+  h_2v_sumdbvc_bins_rmses_norm->SetStats(0);
+  h_2v_sumdbvc_bins_rmses_norm->SetTitle("2v bin-by-bin rms/true;#Sigma(d_{BV})^{C} (cm)");
+  h_2v_sumdbvc_bins_rmses_norm->Draw("histe");
   p();
   c->Clear();
 
   c->Divide(2,1);
   c->cd(1);
-  h_2v_dvvc_bins_diffs->SetStats(0);
-  h_2v_dvvc_bins_diffs->SetTitle("2v bin-by-bin mean - true;d_{VV} (cm)");
-  h_2v_dvvc_bins_diffs->Draw("e");
+  h_2v_sumdbvc_bins_diffs->SetStats(0);
+  h_2v_sumdbvc_bins_diffs->SetTitle("2v bin-by-bin mean - true;#Sigma(d_{BV}) (cm)");
+  h_2v_sumdbvc_bins_diffs->Draw("e");
   l1.DrawLine(0,0,0.2,0);
   c->cd(2);
-  h_2v_dvvc_bins_diffs_norm->SetStats(0);
-  h_2v_dvvc_bins_diffs_norm->SetTitle("2v bin-by-bin mean/true - 1;d_{VV} (cm)");
-  h_2v_dvvc_bins_diffs_norm->Draw("e");
+  h_2v_sumdbvc_bins_diffs_norm->SetStats(0);
+  h_2v_sumdbvc_bins_diffs_norm->SetTitle("2v bin-by-bin mean/true - 1;#Sigma(d_{BV}) (cm)");
+  h_2v_sumdbvc_bins_diffs_norm->Draw("e");
   l1.DrawLine(0,0,0.2,0);
   p();
   c->Clear();
 
   out_f->cd();
-  for (auto* h : {h_true_1v_rho.get(), h_true_1v_phi.get(), h_true_2v_rho.get(), h_true_2v_phi.get(), h_true_2v_dvv.get(), h_true_2v_dvv_norm.get(), h_true_2v_dphi.get(), h_2v_dvvc_bins_means.get(), h_2v_dvvc_bins_rmses.get()})
+  for (auto* h : {h_true_1v_rho.get(), h_true_1v_phi.get(), h_true_2v_rho.get(), h_true_2v_phi.get(), h_true_2v_sumdbv.get(), h_true_2v_sumdbv_norm.get(), h_true_2v_dphi.get(), h_2v_sumdbvc_bins_means.get(), h_2v_sumdbvc_bins_rmses.get()})
     h->Write();
 
   finish();

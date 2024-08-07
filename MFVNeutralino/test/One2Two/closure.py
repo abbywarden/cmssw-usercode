@@ -3,24 +3,24 @@ from statmodel import ebins
 ROOT.TH1.AddDirectory(0)
 
 do_bquark = False
-is_mc = False
+is_mc = True
 only_10pc = False
-year = '2017p8'
-version = 'V27m'
+year = 'run2'
+version = 'ULV11'
 set_style()
 ps = plot_saver(plot_dir('closure_%s%s%s_%s' % (version.capitalize(), '' if is_mc else '_data', '_10pc' if only_10pc else '', year)), size=(700,700), root=True, log=False)
 
-fns = ['2v_from_jets%s_%s_3track_default_%s.root' % ('' if is_mc else '_data', year, version), 
-       '2v_from_jets%s_%s_7track_default_%s.root' % ('' if is_mc else '_data', year, version), 
-       '2v_from_jets%s_%s_4track_default_%s.root' % ('' if is_mc else '_data', year, version), 
-       '2v_from_jets%s_%s_5track_default_%s.root' % ('' if is_mc else '_data', year, version)
+fns = ['/uscms/homes/s/shogan/public/2v_from_jets/2v_from_jets%s_%s_3track_default_%s.root' % ('' if is_mc else '_data', year, version), 
+       '/uscms/homes/s/shogan/public/2v_from_jets/2v_from_jets%s_%s_7track_default_%s.root' % ('' if is_mc else '_data', year, version), 
+       '/uscms/homes/s/shogan/public/2v_from_jets/2v_from_jets%s_%s_4track_default_%s.root' % ('' if is_mc else '_data', year, version), 
+       '/uscms/homes/s/shogan/public/2v_from_jets/2v_from_jets%s_%s_5track_default_%s.root' % ('' if is_mc else '_data', year, version)
        ]
 
 # for overlaying the btag-based template
-fns_btag = ['2v_from_jets%s_%s_3track_btag_corrected_nom_%s.root' % ('' if is_mc else '_data', year, version), 
-            '2v_from_jets%s_%s_7track_btag_corrected_nom_%s.root' % ('' if is_mc else '_data', year, version), 
-            '2v_from_jets%s_%s_4track_btag_corrected_nom_%s.root' % ('' if is_mc else '_data', year, version), 
-            '2v_from_jets%s_%s_5track_btag_corrected_nom_%s.root' % ('' if is_mc else '_data', year, version)
+fns_btag = ['/uscms/homes/s/shogan/public/2v_from_jets/2v_from_jets%s_%s_3track_btag_corrected_nom_%s.root' % ('' if is_mc else '_data', year, version), 
+            '/uscms/homes/s/shogan/public/2v_from_jets/2v_from_jets%s_%s_7track_btag_corrected_nom_%s.root' % ('' if is_mc else '_data', year, version), 
+            '/uscms/homes/s/shogan/public/2v_from_jets/2v_from_jets%s_%s_4track_btag_corrected_nom_%s.root' % ('' if is_mc else '_data', year, version), 
+            '/uscms/homes/s/shogan/public/2v_from_jets/2v_from_jets%s_%s_5track_btag_corrected_nom_%s.root' % ('' if is_mc else '_data', year, version)
             ]
 
 ntk = []
@@ -39,7 +39,7 @@ def errprop(val0, val1, err0, err1):
     else:
         return ((err0 / val0)**2 + (err1 / val1)**2)**0.5
 
-def scale_and_draw_template(template, twovtxhist, dvvc, color) :
+def scale_and_draw_template(template, twovtxhist, sumdbvc, color) :
     template.SetStats(0)
     template.SetLineColor(color)
     template.SetLineWidth(2)
@@ -53,13 +53,16 @@ def scale_and_draw_template(template, twovtxhist, dvvc, color) :
         template.Scale(1./template.Integral())
         twovtxerr = 1.
 
-    template_bins = get_bin_integral_and_stat_uncert(dvvc)
+    template_bins = get_bin_integral_and_stat_uncert(sumdbvc)
 
     if 'dphi' not in template.GetName():
         for bin in range(1, template.GetNbinsX() + 1):
             stat = 0.
             if bin <= 4:
-                stat = template_bins[0][1] * (template.GetBinContent(bin) / template_bins[0][0])**0.5
+                try:
+                    stat = template_bins[0][1] * (template.GetBinContent(bin) / template_bins[0][0])**0.5
+                except:
+                    stat = 0.0
             elif bin <= 7:
                 stat = template_bins[1][1] * (template.GetBinContent(bin) / template_bins[1][0])**0.5
             else:
@@ -75,21 +78,21 @@ def scale_and_draw_template(template, twovtxhist, dvvc, color) :
     template.Draw('hist sames')
 
 def make_closure_plots(i):
-    dvv_closure = ('h_2v_dvv', 'h_c1v_dvv')
+    sumdbv_closure = ('h_2v_sumdbv', 'h_c1v_sumdbv')
     dphi_closure = ('h_2v_absdphivv', 'h_c1v_absdphivv')
 
-    for closure in (dvv_closure, dphi_closure):
+    for closure in (sumdbv_closure, dphi_closure):
         twovtxhist = ROOT.TFile(fns[i]).Get(closure[0])
-        twovtxhist.SetTitle(';|#Delta#phi_{VV}|;Events' if 'phi' in closure[0] else ';d_{VV} (cm);Events')
+        twovtxhist.SetTitle(';|#Delta#phi_{VV}|;Events' if 'phi' in closure[0] else ';#Sigmad_{BV} (cm);Events')
         twovtxhist.SetStats(0)
         twovtxhist.SetLineColor(ROOT.kBlue)
         twovtxhist.SetLineWidth(2)
         twovtxhist.SetMinimum(0)
         twovtxhist.Draw()
 
-        template_btag = ROOT.TFile(fns_btag[i]).Get(closure[1])
-        dvvc = ROOT.TFile(fns_btag[i]).Get('h_c1v_dvv')
-        scale_and_draw_template(template_btag, twovtxhist, dvvc, ROOT.kRed)
+        template_btag = ROOT.TFile(fns[i]).Get(closure[1])
+        sumdbvc = ROOT.TFile(fns[i]).Get('h_c1v_sumdbv')
+        scale_and_draw_template(template_btag, twovtxhist, sumdbvc, ROOT.kRed)
 
         uncertband_btag = template_btag.Clone('uncertband_btag')
         uncertband_btag.SetFillColor(ROOT.kRed-3)
@@ -102,7 +105,7 @@ def make_closure_plots(i):
 
         if do_bquark:
             template = ROOT.TFile(fns[i]).Get(closure[1])
-            scale_and_draw_template(template, twovtxhist, dvvc, ROOT.kGreen+2)
+            scale_and_draw_template(template, twovtxhist, sumdbvc, ROOT.kGreen+2)
 
             uncertband = template.Clone('uncertband')
             uncertband.SetFillColor(ROOT.kGreen-3)
@@ -173,8 +176,8 @@ def get_ratios(nums, dens):
 for i, ntracks in enumerate(ntk):
     make_closure_plots(i)
 
-    twovtx = ROOT.TFile(fns[i]).Get('h_2v_dvv')
-    constructed = ROOT.TFile(fns_btag[i]).Get('h_c1v_dvv')
+    twovtx = ROOT.TFile(fns[i]).Get('h_2v_sumdbv')
+    constructed = ROOT.TFile(fns[i]).Get('h_c1v_sumdbv')
 
     if twovtx.Integral() > 0:
         constructed.Scale(twovtx.Integral()/constructed.Integral())
@@ -204,7 +207,7 @@ for i, ntracks in enumerate(ntk):
     print '%s-track' % ntk[i]
     print '  two-vertex events: %7.2f +/- %5.2f, 0-400 um: %7.2f +/- %5.2f, 400-700 um: %6.2f +/- %5.2f, 700-40000 um: %6.2f +/- %5.2f' % twovtx
     print ' constructed events: %7.2f +/- %5.2f, 0-400 um: %7.2f +/- %5.2f, 400-700 um: %6.2f +/- %5.2f, 700-40000 um: %6.2f +/- %5.2f' % con
-    print '     dVV normalized:                    0-400 um: %7.3f +/- %5.3f, 400-700 um: %6.3f +/- %5.3f, 700-40000 um: %6.3f +/- %5.3f' % twovtx_norm
-    print '    dVVC normalized:                    0-400 um: %7.3f +/- %5.3f, 400-700 um: %6.3f +/- %5.3f, 700-40000 um: %6.3f +/- %5.3f' % con_norm
-    print '   ratio dVV / dVVC:                    0-400 um: %7.2f +/- %5.2f, 400-700 um: %6.2f +/- %5.2f, 700-40000 um: %6.2f +/- %5.2f' % rat
+    print '  sumdBV normalized:                    0-400 um: %7.3f +/- %5.3f, 400-700 um: %6.3f +/- %5.3f, 700-40000 um: %6.3f +/- %5.3f' % twovtx_norm
+    print ' sumdBVC normalized:                    0-400 um: %7.3f +/- %5.3f, 400-700 um: %6.3f +/- %5.3f, 700-40000 um: %6.3f +/- %5.3f' % con_norm
+    print ' . sumdBV / sumdBVC:                    0-400 um: %7.2f +/- %5.2f, 400-700 um: %6.2f +/- %5.2f, 700-40000 um: %6.2f +/- %5.2f' % rat
     print '            p-value:                                                                               700-40000 um: %6.4f' % pval

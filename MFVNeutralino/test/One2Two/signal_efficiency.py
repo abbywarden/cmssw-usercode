@@ -43,7 +43,7 @@ class SignalEfficiencyCombiner:
                     r[y] = h
             return r
                 
-    def __init__(self, years=['2016','2017','2018']):
+    def __init__(self, years=['2016APV','2016','2017','2018']):
         self.years = sorted(str(y) for y in years)
         self.nyears = len(self.years)
 
@@ -108,7 +108,7 @@ class SignalEfficiencyCombiner:
                 hs_uncert = inp.get('uncert', isample)
 
         rates = [tuple(h.GetBinContent(ib) for ib in xrange(1,h.GetNbinsX()+1)) for h in hs_sumdbv_rebin]
-        rate = [sum(r) for r in zip(*rates)]
+        rate  = [sum(r) for r in zip(*rates)]
 
         uncerts = [tuple(h.GetBinContent(ib) for ib in xrange(1,h.GetNbinsX()+1)) for h in hs_uncert]
 

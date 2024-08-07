@@ -15,11 +15,12 @@ mode = 'vary_dphi'
 
 set_style()
 ROOT.gStyle.SetOptFit(0)
-ps = plot_saver(plot_dir('compare_dvvc_%s_%s%s%s_%s' % (version.capitalize(), mode, '' if is_mc else '_data', '_10pc' if only_10pc else '', year)), size=(700,700), root=False, log=False)
+ps = plot_saver(plot_dir('compare_sumdbvc_%s_%s%s%s_%s' % (version.capitalize(), mode, '' if is_mc else '_data', '_10pc' if only_10pc else '', year)), size=(700,700), root=False, log=False)
+pfix = '/uscms/homes/s/shogan/public/2v_from_jets/old/'
 
-fn1 = ['2v_from_jets%s_%s_3track_default_%s.root' % ('' if is_mc else '_data', year, version), '2v_from_jets%s_%s_3track_%s_%s.root' % ('' if is_mc else '_data', year, mode, version)]
-fn2 = ['2v_from_jets%s_%s_4track_default_%s.root' % ('' if is_mc else '_data', year, version), '2v_from_jets%s_%s_4track_%s_%s.root' % ('' if is_mc else '_data', year, mode, version)]
-fn3 = ['2v_from_jets%s_%s_5track_default_%s.root' % ('' if is_mc else '_data', year, version), '2v_from_jets%s_%s_5track_%s_%s.root' % ('' if is_mc else '_data', year, mode, version)]
+fn1 = ['%s2v_from_jets%s_%s_3track_btags_%s.root' % (pfix, '' if is_mc else '_data', year, version), '%s2v_from_jets%s_%s_3track_%s_btags_%s.root' % (pfix, '' if is_mc else '_data', year, mode, version)]
+fn2 = ['%s2v_from_jets%s_%s_4track_btags_%s.root' % (pfix, '' if is_mc else '_data', year, version), '%s2v_from_jets%s_%s_4track_%s_btags_%s.root' % (pfix, '' if is_mc else '_data', year, mode, version)]
+fn3 = ['%s2v_from_jets%s_%s_5track_btags_%s.root' % (pfix, '' if is_mc else '_data', year, version), '%s2v_from_jets%s_%s_5track_%s_btags_%s.root' % (pfix, '' if is_mc else '_data', year, mode, version)]
 
 if mode == 'vary_eff':
     ls = ['vertexer efficiency', 'ntkseeds efficiency']
@@ -75,13 +76,13 @@ for i in range(3):
         hs = []
         l1 = ROOT.TLegend(0.50,0.75,0.85,0.85)
         for j in range(len(ls)):
-            h = ROOT.TFile(fns[i][j]).Get('h_c1v_dvv')
+            h = ROOT.TFile(fns[i][j]).Get('h_c1v_sumdbv')
             h.SetStats(0)
             h.SetLineColor(colors[j])
             h.SetLineWidth(2)
             h.Scale(n2v[i]/h.Integral())
             if j == 0:
-                h.SetTitle(';d_{VV}^{C} (cm);Events')
+                h.SetTitle(';#Sigma d_{BV}^{C} (cm);Events')
                 h.Draw('hist e')
             elif j == 1:
                 h.Draw('hist e sames')
@@ -91,7 +92,7 @@ for i in range(3):
             l1.AddEntry(h, ls[j])
         l1.SetFillColor(0)
         l1.Draw()
-        ps.save('compare_dvvc_%s_%s' % (mode, ntk[i]))
+        ps.save('compare_sumdbvc_%s_%s' % (mode, ntk[i]))
 
         h2s = []
         l2 = ROOT.TLegend(0.15,0.75,0.50,0.85)
@@ -122,18 +123,20 @@ for i in range(3):
 
         ebin = ebins['data%s_%s_%strack' % ('10pc' if only_10pc else '100pc', year, ntk[i][0])]
 
-        c1 = hs[0].Integral(1,4)
+        # These will need to change!
+        c1 = hs[0].Integral(1,2)
         ec1 = ebin[0] * c1
-        c2 = hs[0].Integral(5,7)
+        c2 = hs[0].Integral(3,4)
         ec2 = ebin[1] * c2
-        c3 = hs[0].Integral(8,40)
+        c3 = hs[0].Integral(5,40)
         ec3 = ebin[2] * c3
 
-        v1 = hs[1].Integral(1,4)
+        # These will need to change!
+        v1 = hs[1].Integral(1,2)
         ev1 = ebin[0] * v1
-        v2 = hs[1].Integral(5,7)
+        v2 = hs[1].Integral(3,4)
         ev2 = ebin[1] * v2
-        v3 = hs[1].Integral(8,40)
+        v3 = hs[1].Integral(5,40)
         ev3 = ebin[2] * v3
 
         r1 = v1/c1
@@ -148,9 +151,9 @@ for i in range(3):
         er3 *= (abs(r3-1))**0.5 / (1+r3)**0.5
 
         print
-        print 'default construction: 0-400 um: %6.2f +/- %5.2f, 400-700 um: %6.2f +/- %5.2f, 700-40000 um: %6.2f +/- %5.2f' % (c1, ec1, c2, ec2, c3, ec3)
-        print '           variation: 0-400 um: %6.2f +/- %5.2f, 400-700 um: %6.2f +/- %5.2f, 700-40000 um: %6.2f +/- %5.2f' % (v1, ev1, v2, ev2, v3, ev3)
-        print ' variation / default: 0-400 um: %6.2f +/- %5.2f, 400-700 um: %6.2f +/- %5.2f, 700-40000 um: %6.2f +/- %5.2f' % (r1, er1, r2, er2, r3, er3)
+        print 'default construction: 0-800 um: %6.2f +/- %5.2f, 800-1600 um: %6.2f +/- %5.2f, 1600-40000 um: %6.2f +/- %5.2f' % (c1, ec1, c2, ec2, c3, ec3)
+        print '           variation: 0-800 um: %6.2f +/- %5.2f, 800-1600 um: %6.2f +/- %5.2f, 1600-40000 um: %6.2f +/- %5.2f' % (v1, ev1, v2, ev2, v3, ev3)
+        print ' variation / default: 0-800 um: %6.2f +/- %5.2f, 800-1600 um: %6.2f +/- %5.2f, 1600-40000 um: %6.2f +/- %5.2f' % (r1, er1, r2, er2, r3, er3)
         print
         print
 
@@ -165,8 +168,8 @@ for i in range(3):
 
     else:
         l1 = ROOT.TLegend(0.50,0.70,0.85,0.85)
-        hh = ROOT.TFile(fns[i][0]).Get('h_2v_dvv')
-        hh.SetTitle('%s;d_{VV} (cm);events' % ntk[i])
+        hh = ROOT.TFile(fns[i][0]).Get('h_2v_sumdbv')
+        hh.SetTitle('%s;#Sigma d_{BV} (cm);events' % ntk[i])
         hh.SetStats(0)
         hh.SetLineColor(ROOT.kBlack)
         hh.SetLineWidth(5)
@@ -177,7 +180,7 @@ for i in range(3):
 
         hs = []
         for j in range(len(ls)):
-            h = ROOT.TFile(fns[i][j]).Get('h_c1v_dvv')
+            h = ROOT.TFile(fns[i][j]).Get('h_c1v_sumdbv')
             h.SetStats(0)
             h.SetLineColor(colors[j])
             h.SetLineWidth(2)
@@ -194,13 +197,13 @@ for i in range(3):
             hs = []
             l1 = ROOT.TLegend(0.50,0.75,0.85,0.85)
             for j in range(len(ls)):
-                h = ROOT.TFile(fns[i][j]).Get('h_c1v_dvv')
+                h = ROOT.TFile(fns[i][j]).Get('h_c1v_sumdbv')
                 h.SetStats(0)
                 h.SetLineColor(colors[j])
                 h.SetLineWidth(2)
                 h.Scale(n2v[i]/h.Integral())
                 if j == 0:
-                    h.SetTitle(';d_{VV}^{C} (cm);Events')
+                    h.SetTitle(';#Sigma d_{BV}^{C} (cm);Events')
                     h.Draw('hist e')
                 elif j == 1:
                     h.Draw('hist e sames')
@@ -210,7 +213,7 @@ for i in range(3):
                 l1.AddEntry(h, ls[j])
             l1.SetFillColor(0)
             l1.Draw()
-            ps.save('compare_dvvc_%s' % mode)
+            ps.save('compare_sumdbvc_%s' % mode)
 
         l2 = ROOT.TLegend(0.15,0.70,0.50,0.85)
         h2 = ROOT.TFile(fns[i][0]).Get('h_2v_absdphivv')
@@ -269,26 +272,26 @@ for i in range(3):
             ps.save('compare_dphi_%s' % mode)
 
         es1 = ROOT.Double(0)
-        s1 = hh.IntegralAndError(1,4,es1)
+        s1 = hh.IntegralAndError(1,2,es1)
         es2 = ROOT.Double(0)
-        s2 = hh.IntegralAndError(5,7,es2)
+        s2 = hh.IntegralAndError(3,4,es2)
         es3 = ROOT.Double(0)
-        s3 = hh.IntegralAndError(8,40,es3)
+        s3 = hh.IntegralAndError(5,40,es3)
 
         ebin = ebins['MCeffective_%s_%strack' % (year, ntk[i][0])]
 
-        c1 = hs[0].Integral(1,4)
+        c1 = hs[0].Integral(1,2)
         ec1 = ebin[0] * c1
-        c2 = hs[0].Integral(5,7)
+        c2 = hs[0].Integral(3,4)
         ec2 = ebin[1] * c2
-        c3 = hs[0].Integral(8,40)
+        c3 = hs[0].Integral(5,40)
         ec3 = ebin[2] * c3
 
-        v1 = hs[1].Integral(1,4)
+        v1 = hs[1].Integral(1,2)
         ev1 = ebin[0] * v1
-        v2 = hs[1].Integral(5,7)
+        v2 = hs[1].Integral(3,4)
         ev2 = ebin[1] * v2
-        v3 = hs[1].Integral(8,40)
+        v3 = hs[1].Integral(5,40)
         ev3 = ebin[2] * v3
 
         r1 = v1/c1
@@ -303,10 +306,10 @@ for i in range(3):
         er3 *= (abs(r3-1))**0.5 / (1+r3)**0.5
 
         print
-        print '    simulated events: 0-400 um: %6.2f +/- %5.2f, 400-700 um: %6.2f +/- %5.2f, 700-40000 um: %6.2f +/- %5.2f' % (s1, es1, s2, es2, s3, es3)
-        print 'default construction: 0-400 um: %6.2f +/- %5.2f, 400-700 um: %6.2f +/- %5.2f, 700-40000 um: %6.2f +/- %5.2f' % (c1, ec1, c2, ec2, c3, ec3)
-        print '           variation: 0-400 um: %6.2f +/- %5.2f, 400-700 um: %6.2f +/- %5.2f, 700-40000 um: %6.2f +/- %5.2f' % (v1, ev1, v2, ev2, v3, ev3)
-        print ' variation / default: 0-400 um: %6.2f +/- %5.2f, 400-700 um: %6.2f +/- %5.2f, 700-40000 um: %6.2f +/- %5.2f' % (r1, er1, r2, er2, r3, er3)
+        print '    simulated events: 0-800 um: %6.2f +/- %5.2f, 800-1600 um: %6.2f +/- %5.2f, 1600-40000 um: %6.2f +/- %5.2f' % (s1, es1, s2, es2, s3, es3)
+        print 'default construction: 0-800 um: %6.2f +/- %5.2f, 800-1600 um: %6.2f +/- %5.2f, 1600-40000 um: %6.2f +/- %5.2f' % (c1, ec1, c2, ec2, c3, ec3)
+        print '           variation: 0-800 um: %6.2f +/- %5.2f, 800-1600 um: %6.2f +/- %5.2f, 1600-40000 um: %6.2f +/- %5.2f' % (v1, ev1, v2, ev2, v3, ev3)
+        print ' variation / default: 0-800 um: %6.2f +/- %5.2f, 800-1600 um: %6.2f +/- %5.2f, 1600-40000 um: %6.2f +/- %5.2f' % (r1, er1, r2, er2, r3, er3)
         print
         print
 
@@ -320,13 +323,13 @@ for i in range(3):
         ey3.append(er3)
 
 bins = ['bin1', 'bin2', 'bin3']
-dvvc = ['d_{VV}^{C} < 400 #mum', '400 #mum < d_{VV}^{C} < 700 #mum', 'd_{VV}^{C} > 700 #mum']
+sumdbvc = ['#Sigma d_{BV}^{C} < 800 #mum', '800 #mum < #Sigma d_{BV}^{C} < 1600 #mum', '#Sigma d_{BV}^{C} > 1600 #mum']
 ys = [y1, y2, y3]
 eys = [ey1, ey2, ey3]
 for i in range(3):
     g = ROOT.TGraphErrors(len(x), array('d',x), array('d',ys[i]), array('d',ex), array('d',eys[i]))
     g.SetMarkerStyle(21)
-    g.SetTitle('variation / default (%s);3-track%12s4-track%12s5-or-more-track%2s' % (dvvc[i], '','',''))
+    g.SetTitle('variation / default (%s);3-track%12s4-track%12s5-or-more-track%2s' % (sumdbvc[i], '','',''))
     g.GetXaxis().SetLimits(-3,1)
     g.GetXaxis().SetLabelSize(0)
     g.GetXaxis().SetTitleOffset(0.5)
