@@ -161,8 +161,8 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   // final studies, we'll need to make sure ALL ntuples/minitrees finish, and then
   // update some of the weights
   if (use_20161) {
-    //samples.push_back("qcdht0300_2016APV");    weights.push_back(140.4);
-    //samples.push_back("qcdht0500_2016APV");    weights.push_back(10.5);
+    samples.push_back("qcdht0300_2016APV");    weights.push_back(140.4);
+    samples.push_back("qcdht0500_2016APV");    weights.push_back(10.5);
     samples.push_back("qcdht0700_2016APV");    weights.push_back(3.13);
     samples.push_back("qcdht1000_2016APV");    weights.push_back(1.59);
     samples.push_back("qcdht1500_2016APV");    weights.push_back(0.21);
@@ -171,8 +171,8 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   }
 
   if (use_20162) {
-    //samples.push_back("qcdht0300_2016");       weights.push_back(117.7);
-    //samples.push_back("qcdht0500_2016");       weights.push_back(9.74);
+    samples.push_back("qcdht0300_2016");       weights.push_back(117.7);
+    samples.push_back("qcdht0500_2016");       weights.push_back(9.74);
     samples.push_back("qcdht0700_2016");       weights.push_back(2.52);
     samples.push_back("qcdht1000_2016");       weights.push_back(1.50);
     samples.push_back("qcdht1500_2016");       weights.push_back(0.20);
@@ -181,8 +181,8 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   }
 
   if (use_2017) {  
-    //samples.push_back("qcdht0300_2017");    weights.push_back(242.0);
-    //samples.push_back("qcdht0500_2017");    weights.push_back(20.2);
+    samples.push_back("qcdht0300_2017");    weights.push_back(242.0);
+    samples.push_back("qcdht0500_2017");    weights.push_back(20.2);
     samples.push_back("qcdht0700_2017");    weights.push_back(5.46);
     samples.push_back("qcdht1000_2017");    weights.push_back(3.21);
     samples.push_back("qcdht1500_2017");    weights.push_back(0.35);
@@ -190,8 +190,8 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
   }
 
   if (use_2018) {  
-    //samples.push_back("qcdht0300_2018");    weights.push_back(335.0);
-    //samples.push_back("qcdht0500_2018");    weights.push_back(29.3);
+    samples.push_back("qcdht0300_2018");    weights.push_back(335.0);
+    samples.push_back("qcdht0500_2018");    weights.push_back(29.3);
     samples.push_back("qcdht0700_2018");    weights.push_back(8.01);
     samples.push_back("qcdht1000_2018");    weights.push_back(4.40);
     samples.push_back("qcdht1500_2018");    weights.push_back(0.54);
@@ -256,10 +256,7 @@ void construct_dvvc(ConstructDvvcParameters p, const char* out_fn) {
     vpeffs_version = "ULV11Bm";
   }
   TString eff_file_name_2d = TString::Format("/uscms/homes/s/shogan/public/vpeffs/vpeffs%s_%s_%s%s.root", p.is_mc() ? "" : "_data", p.year().c_str(), vpeffs_version, p.vary_eff() ? "_ntkseeds" : "");
-  //TString eff_file_name_2d = TString::Format("vpeffs_2d%s.root", p.vary_eff() ? "_ntkseeds" : "");
   TString jet_angle_fname = TString::Format("background_lw_2017.root");
-  //TString jet_angle_hname = TString::Format("h_jet_pairdalpha");
-  //TString angle_dir_name  = TString::Format("mfvEventHistosNoCuts");
 
   const char* eff_hist = "maxtk3";
   if (p.vary_eff()) {
@@ -696,10 +693,11 @@ int main(int argc, const char* argv[]) {
 
   // production version
   const char* version = "ULV11";
-  
-  //for (const char* year : {"20161"}) {
+
+
+ 
+  // This for loop runs over simulated background 
   for (const char* year : {"2016", "2017", "2018", "2017p8", "run2"}) {
-  //for (const char* year : {"2017","2018","2017p8"}) {
     for (int ntracks : {3, 4, 5, 7}) {
       ConstructDvvcParameters pars2 = pars.year(year).ntracks(ntracks);
 
@@ -723,6 +721,7 @@ int main(int argc, const char* argv[]) {
     }
   }
   
+    // This for loop runs over real data
 //  for (const char* year : {"2017", "2018", "2017p8"}) {
 //    for (int ntracks : {3, 4, 5, 7, 8, 9}) {
 //      ConstructDvvcParameters pars2 = pars.year(year).ntracks(ntracks).is_mc(false);
