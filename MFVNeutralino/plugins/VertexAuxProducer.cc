@@ -27,8 +27,7 @@
 #include "JMTucker/Tools/interface/ExtValue.h"
 #include "JMTucker/Tools/interface/Math.h"
 #include "JMTucker/Tools/interface/TrackRefGetter.h"
-#include "JMTucker/Tools/interface/TrackRescaler_wLep.h"
-// #include "JMTucker/Tools/interface/TrackRescaler.h"
+#include "JMTucker/Tools/interface/TrackRescaler.h"
 
 #include "JMTucker/Tools/interface/StatCalculator.h"
 #include "JMTucker/Tools/interface/Utilities.h"
@@ -39,8 +38,7 @@ class MFVVertexAuxProducer : public edm::EDProducer {
   void produce(edm::Event&, const edm::EventSetup&);
 
  private:
-  jmt::TrackRescaler_wLep track_rescaler;
-  // jmt::TrackRescaler track_rescaler;
+  jmt::TrackRescaler track_rescaler;
   std::unique_ptr<KalmanVertexFitter> kv_reco;
   const edm::EDGetTokenT<reco::BeamSpot> beamspot_token;
   const edm::EDGetTokenT<reco::VertexCollection> primary_vertex_token;
@@ -135,15 +133,15 @@ Measurement1D MFVVertexAuxProducer::miss_dist(const reco::Vertex& v0, const reco
 void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
   if (verbose) std::cout << "MFVVertexAuxProducer " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
 
-  const int track_rescaler_which = 0; // JMTBAD which rescaling if ever a different one
-  // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
-  //                      jmt::AnalysisEras::pick(event, this),
-  //                      track_rescaler_which);
-
+  const int track_rescaler_which = 1; // JMTBAD which rescaling if ever a different one (0 : JetHT, 1 : SingleLepton, -1 disable)
   track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
                        jmt::AnalysisEras::pick(event, this),
-                       track_rescaler_which,
-                       "");
+                       track_rescaler_which);
+
+  // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
+  //                      jmt::AnalysisEras::pick(event, this),
+  //                      track_rescaler_which,
+  //                      "");
 
   edm::ESHandle<TransientTrackBuilder> tt_builder;
   setup.get<TransientTrackRecord>().get("TransientTrackBuilder", tt_builder);
@@ -234,23 +232,25 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
     aux.ndof_ = int2uchar_clamp(int(sv.ndof()));
     aux.ntracks_ = sv.tracksSize(); //get the ntracks using cmssw -- to use for minitrees
 
-    //need to split into : general tracks, muon candidate tracks, electron candidate tracks
     std::vector<reco::TransientTrack> ttks, rs_ttks;
     for (auto it = sv.tracks_begin(), ite = sv.tracks_end(); it != ite; ++it)
       if (sv.trackWeight(*it) >= mfv::track_vertex_weight_min) {
         ttks.push_back(tt_builder->build(**it));
         //need to double check track ids w/ types
         reco::TrackRef tk = it->castTo<reco::TrackRef>();
-        if ((tk.id().id() == 155) & (tk->pt() >= 20.0)) {
-          rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "electron").rescaled_tk));
+        // if using Lep scaling, want to separate into track types
+        if (track_rescaler_which == 1){
+          if ((tk.id().id() == 155) & (tk->pt() >= 20.0)) {
+            rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "electron").rescaled_tk));
+          }
+          else if ((tk.id().id() == 156) & (tk->pt() >= 20.0))  {
+            rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "muon").rescaled_tk));
+          }
+          else {
+            rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "").rescaled_tk));
+          }
         }
-        else if ((tk.id().id() == 156) & (tk->pt() >= 20.0))  {
-          rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "muon").rescaled_tk));
-        }
-        else {
-          rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "").rescaled_tk));
-        }
-        // rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "").rescaled_tk));
+        else rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "").rescaled_tk));
 
 
       }

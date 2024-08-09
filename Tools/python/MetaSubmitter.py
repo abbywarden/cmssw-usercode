@@ -26,14 +26,43 @@ def zerobias_modifier(sample):
 
 def era_modifier(sample):
     if not sample.is_mc:
-        mo = re.search(r'(201\d)([A-Z])', sample.name)
-        assert mo
-        yr, era = mo.groups()
+
+        my_sample_name = sample.name
+        is2016APV = False
+        
+        if 'APV' in my_sample_name : 
+            my_sample_name.replace('APV','')
+            is2016APV = True
+
+        if not is2016APV:
+            mo = re.search(r'(201\d)([A-Z])', my_sample_name)
+            assert mo
+            yr, era = mo.groups()
+
+        else:
+            mo = re.search(r'(2016APV)([A-Z])', my_sample_name)
+            assert mo
+            yr = 2016
+            garbage, era = mo.groups()
+
+        if int(yr) == 2016 :
+            if is2016APV : yr = 20161
+            else         : yr = 20162
+
         assert year == int(yr)
         magic = '\nsettings.is_mc ='
         return [], [(magic, ('\nsettings.era = "%s"' % era) + magic, 'trying to submit on data and no magic string %r' % magic)]
     else:
         return [], []
+    # if not sample.is_mc:
+    #     mo = re.search(r'(201\d)([A-Z])', sample.name)
+    #     assert mo
+    #     yr, era = mo.groups()
+    #     assert year == int(yr)
+    #     magic = '\nsettings.is_mc ='
+    #     return [], [(magic, ('\nsettings.era = "%s"' % era) + magic, 'trying to submit on data and no magic string %r' % magic)]
+    # else:
+    #     return [], []
 
 def repro_modifier(sample):
     if sample.name.startswith('Repro'):
@@ -346,7 +375,9 @@ def pick_samples(dataset, both_years=False,
         if args[a]:
             print a
             for yr in years:
-                samples += getattr(Samples, '%s_samples_%i' % (a, yr))
+                if   yr == 20161 : yr = "2016APV"
+                elif yr == 20162 : yr = "2016"
+                samples += getattr(Samples, '%s_samples_%s' % (a, yr))
     return [s for s in samples if s.has_dataset(dataset)]
 
 ####

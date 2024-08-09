@@ -58,12 +58,11 @@ struct MFVVertexAux {
     nmuptgt20 = neleptgt20 = nlepptgt20 = 0;
     ntracks_ = 0;
     sumpt2_ = 0;
-    sumpt2_new = 0;
   }
+  
   uchar which;
   int ntracks_;
   float sumpt2_;
-  float sumpt2_new = 0;
 
   float x;
   float y;
@@ -699,19 +698,6 @@ struct MFVVertexAux {
   float trackpairdphimax() const { return stats(this, trackpairdphis()).max; }
   float trackpairdphiavg() const { return stats(this, trackpairdphis()).avg; }
   float trackpairdphirms() const { return stats(this, trackpairdphis()).rms; }
-
-
-  // std::vector<float> sv_tracks_phi() const {
-  //   std::vector<float> v;
-  //   size_t n = ntracks();
-  //   if (n >= 2)
-  //     for (size_t i = 0, ie = n-1; i < ie; ++i)
-  //       if (use_track(i))
-  //         v.push_back(track_phi[i]);
-  //   return v;
-  // }
-
-  // float sv_tracks_phiavg() const { return stats(this, sv_tracks_phi()).avg; }
 
   std::vector<float> trackpairdrs() const {
     std::vector<float> v;

@@ -20,8 +20,7 @@
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrackBuilder.h"
 #include "JMTucker/Tools/interface/AnalysisEras.h"
-#include "JMTucker/Tools/interface/TrackRescaler_wLep.h"
-// #include "JMTucker/Tools/interface/TrackRescaler.h"
+#include "JMTucker/Tools/interface/TrackRescaler.h"
 
 class MFVVertexTracks : public edm::EDFilter {
 public:
@@ -85,8 +84,7 @@ private:
   const bool verbose;
   const std::string module_label;
 
-  jmt::TrackRescaler_wLep track_rescaler;
-  // jmt::TrackRescaler track_rescaler;
+  jmt::TrackRescaler track_rescaler;
 
   TH1F* h_n_all_tracks;
   TH1F* h_all_track_pars[7];
@@ -517,17 +515,17 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
 bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
   if (verbose)
     std::cout << "MFVVertexTracks " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
-
+  
+  const int track_rescaler_which = jmt::TrackRescaler::w_SingleLep;
   // const int track_rescaler_which = jmt::TrackRescaler::w_JetHT; // JMTBAD which rescaling if ever a different one
-  // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
-  //                      jmt::AnalysisEras::pick(event, this),
-  //                      track_rescaler_which);
-
-  const int track_rescaler_which = jmt::TrackRescaler_wLep::w_SingleLep;
   track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
                        jmt::AnalysisEras::pick(event, this),
-                       track_rescaler_which,
-                       "");
+                       track_rescaler_which);
+
+  // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
+  //                      jmt::AnalysisEras::pick(event, this),
+  //                      track_rescaler_which,
+  //                      "");
 
   edm::Handle<reco::BeamSpot> beamspot;
   event.getByToken(beamspot_token, beamspot);
@@ -661,8 +659,8 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
 
   for (size_t i = 0, ie = all_tracks->size(); i < ie; ++i) {
     const reco::TrackRef& tk = (*all_tracks)[i];
-    // const auto rs = track_rescaler.scale(*tk);
-    const auto rs = track_rescaler.scale(*tk, "");
+    const auto rs = (track_rescaler_which == 1) ? track_rescaler.scale(*tk, "")
+                  :  track_rescaler.scale(*tk);
     const bool is_second_track = i >= second_tracks_start_at;
 
     // copy/calculate cheap things, which may be used later in histos
@@ -930,8 +928,8 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
   if (use_separated_leptons) {
     for (size_t i = 0, im = all_muon_tracks->size(); i < im; ++i) {
       const reco::TrackRef& mtk = (*all_muon_tracks)[i];
-      const auto rs = track_rescaler.scale(*mtk, "muon");
-      // const auto rs = track_rescaler.scale(*mtk);
+      const auto rs = (track_rescaler_which == 1) ? track_rescaler.scale(*mtk, "muon")
+                  :  track_rescaler.scale(*mtk);
       const double p = mtk->p();
       const double pt = mtk->pt();
       const double dxybs = mtk->dxy(*beamspot);
@@ -1096,9 +1094,9 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
     }
     for (size_t i = 0, ie = all_electron_tracks->size(); i < ie; ++i) {
       const reco::TrackRef& etk = (*all_electron_tracks)[i];
-      const auto rs = track_rescaler.scale(*etk, "electron");
-      // const auto rs = track_rescaler.scale(*etk);
 
+      const auto rs = (track_rescaler_which == 1) ? track_rescaler.scale(*etk, "electron")
+                  :  track_rescaler.scale(*etk);
       //copy/calculate the cheap things but now for electrons ... 
       const double p = etk->p();
       const double pt = etk->pt();
