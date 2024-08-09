@@ -385,6 +385,15 @@ namespace jmt {
     else
       scales_.reset();
   }
+  void TrackRescaler::set(double era, int /*which*/, double pt, double eta, std::string type) {
+    if (enable()) {
+        if (era == jmt::AnalysisEras::e_2018A || era == jmt::AnalysisEras::e_2018B || 
+            era == jmt::AnalysisEras::e_2018C || era == jmt::AnalysisEras::e_2018D) set_SingleLep2018(pt, eta, type);
+      else throw std::out_of_range("bad era");
+    }
+    else
+      scales_.reset();
+  }
 
   int counter = 0;
 

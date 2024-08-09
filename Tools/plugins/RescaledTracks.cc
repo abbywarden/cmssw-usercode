@@ -12,8 +12,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "JMTucker/Formats/interface/TracksMap.h"
 #include "JMTucker/Tools/interface/AnalysisEras.h"
-#include "JMTucker/Tools/interface/TrackRescaler_wLep.h"
-// #include "JMTucker/Tools/interface/TrackRescaler.h"
+#include "JMTucker/Tools/interface/TrackRescaler.h"
 
 class JMTRescaledTracks : public edm::EDProducer {
 public:
@@ -39,8 +38,7 @@ JMTRescaledTracks::JMTRescaledTracks(const edm::ParameterSet& cfg)
     add_separated_leptons(cfg.getParameter<bool>("add_separated_leptons")),
     which(cfg.getParameter<int>("which"))
 {
-  if (which < -1 || which >= jmt::TrackRescaler_wLep::w_max) throw cms::Exception("Configuration", "bad which ") << which;
-  // if (which < -1 || which >= jmt::TrackRescaler::w_max) throw cms::Exception("Configuration", "bad which ") << which;
+  if (which < -1 || which >= jmt::TrackRescaler::w_max) throw cms::Exception("Configuration", "bad which ") << which;
 
   produces<reco::TrackCollection>();
   produces<reco::TrackCollection>("electrons");
@@ -75,20 +73,11 @@ void JMTRescaledTracks::produce(edm::Event& event, const edm::EventSetup&) {
   reco::TrackRefProd h_output_ele_tracks = event.getRefBeforePut<reco::TrackCollection>();
 
   //problem : to switch would need to include/exclude the extra argument -- but idk if this is necessary 
-  // rescaler.setup(!event.isRealData() && which != -1,
-  //                jmt::AnalysisEras::pick(event, this),
-  //                which,
-  //                "");
-
    rescaler.setup(!event.isRealData() && which != -1,
                  jmt::AnalysisEras::pick(event, this),
                  which,
                  "");
-
-  //  rescaler.setup(!event.isRealData() && which != -1,
-  //                jmt::AnalysisEras::pick(event, this),
-  //                which);
-
+                 
   //  rescaler.setup(!event.isRealData() && which != -1,
   //                jmt::AnalysisEras::pick(event, this),
   //                which);

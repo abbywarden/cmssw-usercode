@@ -38,8 +38,7 @@ class MFVVertexAuxProducer : public edm::EDProducer {
   void produce(edm::Event&, const edm::EventSetup&);
 
  private:
-  jmt::TrackRescaler_wLep track_rescaler;
-  // jmt::TrackRescaler track_rescaler;
+  jmt::TrackRescaler track_rescaler;
   std::unique_ptr<KalmanVertexFitter> kv_reco;
   const edm::EDGetTokenT<reco::BeamSpot> beamspot_token;
   const edm::EDGetTokenT<reco::VertexCollection> primary_vertex_token;
@@ -135,11 +134,15 @@ std::pair<bool, Measurement1D> MFVVertexAuxProducer::track_dist(const reco::Tran
 void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
   if (verbose) std::cout << "MFVVertexAuxProducer " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
 
-  const int track_rescaler_which = 0; // JMTBAD which rescaling if ever a different one (0 : BTagDisplJet, 1 : SingleLepton, 2 : JetHT, -1 disable)
+  const int track_rescaler_which = 1; // JMTBAD which rescaling if ever a different one (0 : JetHT, 1 : SingleLepton, -1 disable)
   track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
                        jmt::AnalysisEras::pick(event, this),
-                       track_rescaler_which,
-                       "");
+                       track_rescaler_which);
+
+  // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
+  //                      jmt::AnalysisEras::pick(event, this),
+  //                      track_rescaler_which,
+  //                      "");
 
   // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
   //                      jmt::AnalysisEras::pick(event, this),
@@ -266,7 +269,6 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
     aux.ndof_ = int2uchar_clamp(int(sv.ndof()));
     aux.ntracks_ = sv.tracksSize(); //get the ntracks using cmssw -- to use for minitrees
 
-    //need to split into : general tracks, muon candidate tracks, electron candidate tracks
     std::vector<reco::TransientTrack> ttks, rs_ttks;
     for (auto it = sv.tracks_begin(), ite = sv.tracks_end(); it != ite; ++it){
       reco::TrackRef tk = it->castTo<reco::TrackRef>();
