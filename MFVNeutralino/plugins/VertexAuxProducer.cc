@@ -134,10 +134,15 @@ std::pair<bool, Measurement1D> MFVVertexAuxProducer::track_dist(const reco::Tran
 void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
   if (verbose) std::cout << "MFVVertexAuxProducer " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
 
-  const int track_rescaler_which = 0; // JMTBAD which rescaling if ever a different one
+  const int track_rescaler_which = 1; // JMTBAD which rescaling if ever a different one (0 : JetHT, 1 : SingleLepton, -1 disable)
   track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
                        jmt::AnalysisEras::pick(event, this),
                        track_rescaler_which);
+
+  // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
+  //                      jmt::AnalysisEras::pick(event, this),
+  //                      track_rescaler_which,
+  //                      "");
 
   edm::ESHandle<TransientTrackBuilder> tt_builder;
   setup.get<TransientTrackRecord>().get("TransientTrackBuilder", tt_builder);
@@ -267,17 +272,20 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
         ttks.push_back(tt_builder->build(**it));
         //need to double check track ids w/ types
         reco::TrackRef tk = it->castTo<reco::TrackRef>();
-        if ((tk.id().id() == 155) & (tk->pt() >= 20.0)) {
-          rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it).rescaled_tk));
-        }
-        else if ((tk.id().id() == 156) & (tk->pt() >= 20.0))  {
-          rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it).rescaled_tk));
-        }
-        else {
-          rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it).rescaled_tk));
-        }
-        // rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "").rescaled_tk));
 
+        // using generalized function to separate into track types
+        if (track_rescaler_which == 1){
+          if ((tk.id().id() == 155) & (tk->pt() >= 20.0)) {
+            rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "electron").rescaled_tk));
+          }
+          else if ((tk.id().id() == 156) & (tk->pt() >= 20.0))  {
+            rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "muon").rescaled_tk));
+          }
+          else {
+            rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "").rescaled_tk));
+          }
+        }
+        else rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "").rescaled_tk));
 
       }
       //get seed tracks outside all vertices

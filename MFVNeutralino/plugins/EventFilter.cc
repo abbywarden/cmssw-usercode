@@ -170,7 +170,6 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
     }
   }
     
-
   if (debug) printf("MFVEventFilter: nmuons: %i nelectrons: %i pass? %i\n", nmuons, nelectrons, leptons_pass);
 
 

@@ -518,11 +518,18 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
 bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
   if (verbose)
     std::cout << "MFVVertexTracks " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
-
-  const int track_rescaler_which = jmt::TrackRescaler::w_BTagDispJet; // JMTBAD which rescaling if ever a different one
+  
+//  const int track_rescaler_which = jmt::TrackRescaler::w_SingleLep; //FIXME Abby
+  const int track_rescaler_which = jmt::TrackRescaler::w_BTagDispJet; //FIXME Alec
+// const int track_rescaler_which = jmt::TrackRescaler::w_JetHT; // JMTBAD which rescaling if ever a different one
   track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
                        jmt::AnalysisEras::pick(event, this),
                        track_rescaler_which);
+
+  // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
+  //                      jmt::AnalysisEras::pick(event, this),
+  //                      track_rescaler_which,
+  //                      "");
 
   edm::Handle<reco::BeamSpot> beamspot;
   event.getByToken(beamspot_token, beamspot);
@@ -657,7 +664,8 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
   TRandom3 *r3 = new TRandom3(); //Alec added
   for (size_t i = 0, ie = all_tracks->size(); i < ie; ++i) {
     const reco::TrackRef& tk = (*all_tracks)[i];
-    const auto rs = track_rescaler.scale(*tk);
+    const auto rs = (track_rescaler_which == 1) ? track_rescaler.scale(*tk, "")
+                  :  track_rescaler.scale(*tk);
     const bool is_second_track = i >= second_tracks_start_at;
 
     // copy/calculate cheap things, which may be used later in histos
@@ -675,7 +683,6 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
     const int nsthits = tk->hitPattern().numberOfValidStripHits();
     const int npxlayers = tk->hitPattern().pixelLayersWithMeasurement();
     const int nstlayers = tk->hitPattern().stripLayersWithMeasurement();
-    const auto trackLostInnerHits = tk->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS);
     const double track_recon_eff = 1-1.11786*fabs(dxybs)*fabs(dxybs); //Alec added
     if (r3->Uniform(0,1) > track_recon_eff) continue; //Alec added
     int min_r = 2000000000;
@@ -684,7 +691,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         min_r = i;
         break;
       }
-
+    int losthits = tk->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS);
     bool use = no_track_cuts || is_second_track || [&]() {
 
       //this is for low pt leptons & general tracks 
@@ -699,7 +706,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         npxhits >= min_track_npxhits &&
         npxlayers >= min_track_npxlayers &&
         nstlayers >= min_track_nstlayers &&
-        (min_track_hit_r == 999 || min_r <= min_track_hit_r || (min_r == 2.0 && trackLostInnerHits == 0 ));
+        (min_track_hit_r == 999 || min_r <= min_track_hit_r || (min_r == 2.0 && losthits == 0 ));
       
       if (!use_cheap) return false;
 
@@ -785,7 +792,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         npxhits >= min_track_npxhits &&
         npxlayers >= min_track_npxlayers &&
         nstlayers >= min_track_nstlayers &&
-        (min_track_hit_r == 999 || min_r <= min_track_hit_r || (min_r == 2.0 && trackLostInnerHits == 0));
+        (min_track_hit_r == 999 || min_r <= min_track_hit_r || (min_r == 2.0 && losthits == 0));
       if (use_loose){
         seed_track_loose.push_back(tk);
       }
@@ -802,7 +809,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         npxhits >= min_track_npxhits &&
         npxlayers >= min_track_npxlayers &&
         nstlayers >= min_track_nstlayers &&
-        (min_track_hit_r == 999 || min_r <= min_track_hit_r || (min_r == 2.0 && trackLostInnerHits == 0));
+        (min_track_hit_r == 999 || min_r <= min_track_hit_r || (min_r == 2.0 && losthits == 0));
       if (use_loose){
         quality_tracks->push_back(tk);
         quality_tracks_copy->push_back(*tk);
@@ -849,7 +856,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         nstlayers >= min_track_nstlayers,
         fabs(rescaled_sigmadxybs) > min_track_rescaled_sigmadxy, // JMTBAD rescaled_sigmadxybs
       };
-      if (min_track_hit_r == 999 || min_r <= min_track_hit_r || (min_r == 2.0 && trackLostInnerHits == 0)){
+      if (min_track_hit_r == 999 || min_r <= min_track_hit_r || (min_r == 2.0 && losthits == 0)){
           if (nm1[1] && nm1[2] && nm1[3]) h_seed_nm1_pt->Fill(pt);
           if (nm1[0] && nm1[2] && nm1[3]) h_seed_nm1_npxlayers->Fill(npxlayers);
           if (nm1[0] && nm1[1] && nm1[3]) h_seed_nm1_nstlayers->Fill(nstlayers);
@@ -932,7 +939,8 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
   if (use_separated_leptons) {
     for (size_t i = 0, im = all_muon_tracks->size(); i < im; ++i) {
       const reco::TrackRef& mtk = (*all_muon_tracks)[i];
-      const auto rs = track_rescaler.scale(*mtk);
+      const auto rs = (track_rescaler_which == 1) ? track_rescaler.scale(*mtk, "muon")
+                  :  track_rescaler.scale(*mtk);
       const double p = mtk->p();
       const double pt = mtk->pt();
       const double dxybs = mtk->dxy(*beamspot);
@@ -1097,8 +1105,8 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
     }
     for (size_t i = 0, ie = all_electron_tracks->size(); i < ie; ++i) {
       const reco::TrackRef& etk = (*all_electron_tracks)[i];
-      const auto rs = track_rescaler.scale(*etk);
-
+      const auto rs = (track_rescaler_which == 1) ? track_rescaler.scale(*etk, "electron")
+                  :  track_rescaler.scale(*etk);
       //copy/calculate the cheap things but now for electrons ... 
       const double p = etk->p();
       const double pt = etk->pt();

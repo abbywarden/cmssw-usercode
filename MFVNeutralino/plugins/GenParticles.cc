@@ -875,7 +875,7 @@ void MFVGenParticles::produce(edm::Event& event, const edm::EventSetup&) {
     if (debug) printf("MFVGenParticles::analyze: lsp_id %i\n", lsp_id);
     
     // the order of these tries is important, at least that MFVtbses come before Ttbar
-    try_MFV_stoplq   (*mc, gen_particles);
+    try_MFV_stoplq   (*mc, gen_particles) ||
     // try_splitSUSY(*mc,gen_particles) || //splitSUSY gluino  -> qqbar neu
     // try_MFVtbs  (*mc, gen_particles, 5, 3) || // tbs
     // try_MFVtbs  (*mc, gen_particles, 1, 3) || // tds
