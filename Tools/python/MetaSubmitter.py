@@ -26,29 +26,14 @@ def zerobias_modifier(sample):
 
 def era_modifier(sample):
     if not sample.is_mc:
-
-        my_sample_name = sample.name
-        is2016APV = False
-        
-        if 'APV' in my_sample_name : 
-            my_sample_name.replace('APV','')
-            is2016APV = True
-
-        if not is2016APV:
-            mo = re.search(r'(201\d)([A-Z])', my_sample_name)
-            assert mo
-            yr, era = mo.groups()
-
-        else:
-            mo = re.search(r'(2016APV)([A-Z])', my_sample_name)
-            assert mo
-            yr = 2016
-            garbage, era = mo.groups()
-
-        if int(yr) == 2016 :
-            if is2016APV : yr = 20161
-            else         : yr = 20162
-
+        if year==2017 or year==2018 :
+            mo = re.search(r'(201\d)([A-Z])', sample.name)
+        elif year==20161 :
+            mo = re.search(r'(201\d1)([A-Z])', sample.name)
+        else :
+            mo = re.search(r'(201\d2)([A-Z])', sample.name)
+        assert mo
+        yr, era = mo.groups()
         assert year == int(yr)
         magic = '\nsettings.is_mc ='
         return [], [(magic, ('\nsettings.era = "%s"' % era) + magic, 'trying to submit on data and no magic string %r' % magic)]

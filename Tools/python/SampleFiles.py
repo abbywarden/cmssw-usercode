@@ -148,28 +148,7 @@ _add_ds("miniaod", {
     'qcdmupt15_2017': (1, ['/store/mc/RunIISummer20UL17MiniAOD/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v1/100000/034AE4F2-7180-7F40-81D6-740D15738CBA.root'])
 })
 
-_add_ds("miniaod",{
-    'qcdmupt15_20161': (1, ['/store/mc/RunIISummer20UL16MiniAODAPVv2/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/2430000/07BCE353-B2FE-7A4A-B700-CB56348CBE18.root'])
-})
-
-
-_add_ds("miniaod", {
-    'mfv_stoplb_tau000300um_M0800_2018' : (1, ['/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/30000/1140EC5A-A7C4-794C-9557-D64D8D5AFFC1.root'])
-})
-
-_add_ds("miniaod", {
-    'mfv_stoplb_tau000300um_M0300_2018' : (1, ['/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/0EB41A7B-C4C5-8840-9C29-10249902A9DB.root'])
-})
-
-# _add_ds("miniaod", {
-#     'mfv_stopld_tau010000um_M0800_2018' : (3, ['/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/181536B9-11E5-2344-9E8E-BACCD7482A0A.root', '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/21602664-E4E1-3E48-A244-2D131F063685.root', '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/27A92C07-345E-1B48-98D9-F1C966151362.root'])
-# })
-
-_add_ds("miniaod", {
-    'mfv_stopld_tau010000um_M0800_2018' : (2, ['/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/21602664-E4E1-3E48-A244-2D131F063685.root', '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/27A92C07-345E-1B48-98D9-F1C966151362.root'])
-})
-
-
+"""
 _add_ds("miniaod", {
   'mfv_splitSUSY_tau000001000um_M1200_1100_2017':_fromnum1("/store/user/ali/splitSUSY_M1200_1100_ctau1p0_TuneCP2_13TeV_pythia8/RunIISummer20UL17_MiniAOD/210813_015111/0000/", 50, fnbase="MiniAOD", numbereddirs=False),
   'mfv_splitSUSY_tau000010000um_M1200_1100_2017':_fromnum1("/store/user/ali/splitSUSY_M1200_1100_ctau10p0_TuneCP2_13TeV_pythia8/RunIISummer20UL17_MiniAOD/210813_015035/0000/", 50, fnbase="MiniAOD", numbereddirs=False),
@@ -212,6 +191,7 @@ _add_ds("miniaod", {
   'mfv_stopbbarbbar_tau001000um_M0800_2017':_fromnum1("/store/user/shogan/StopStopbarTo2Bbar2B_M-800_CTau-1mm_TuneCP5_13TeV-pythia8/RunIISummer20UL17_MiniAOD/211207_195357/0000", 4, fnbase="MiniAOD", numbereddirs=False),
 
 })
+"""
 
 _add_ds("miniaod", {
     'mfv_stopld_tau000100um_M0200_2018':_fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-pythia8/RunIISummer20UL18_MiniAOD/220518_074408/0000", 5, fnbase="MiniAOD", numbereddirs=False),

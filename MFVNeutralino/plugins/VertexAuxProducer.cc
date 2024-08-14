@@ -285,7 +285,7 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
             rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "").rescaled_tk));
           }
         }
-        else rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "").rescaled_tk));
+        else rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it).rescaled_tk));
 
       }
       //get seed tracks outside all vertices
