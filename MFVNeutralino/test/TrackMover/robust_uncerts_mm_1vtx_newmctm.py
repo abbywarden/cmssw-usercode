@@ -128,7 +128,7 @@ def calcTocShiftUncert(low, cent, hi):
 
 # Initialize stuff:
 
-year = '2017p8'
+year = '20161p2'
 doShift  = True
 reweight = True
 #toc_shift = 0.0   # How much to move the turn-on curve by
@@ -174,11 +174,11 @@ for mass in masses:
                 sig_non_str = ''
 
                 if not reweight:
-                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_MixEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/background_leptonpresel_%s.root" % (int(ctau), year)
-                    dat_str = "~/nobackup/crabdirs/TrackMover_SrudyV2p4_MixEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/SingleMuon%s.root" % (int(ctau), year)
+                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/background_leptonpresel_%s.root" % (int(ctau), year)
+                    dat_str = "~/nobackup/crabdirs/TrackMover_SrudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/SingleMuon%s.root" % (int(ctau), year)
                 else:
-                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_MixEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/background_leptonpresel_%s.root" % (int(ctau), int(mass), year)
-                    dat_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_MixEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/SingleMuon%s.root" % (int(ctau), int(mass), year)
+                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/background_leptonpresel_%s.root" % (int(ctau), int(mass), year)
+                    dat_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/SingleMuon%s.root" % (int(ctau), int(mass), year)
                 tm_sim  = ROOT.TFile(sim_str)
                 tm_dat  = ROOT.TFile(dat_str)
                 
@@ -187,14 +187,14 @@ for mass in masses:
                 elif mass == '40':
                     sig_non_str  = '~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root'
                 else :
-                    sig_non_str  = '~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_MixEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root'
+                    sig_non_str  = '~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root'
 
 
                 signal_non = ROOT.TFile(sig_non_str)
 
-                signal  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_MixEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                signal  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
 
-                signal_ht  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_MixEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                signal_ht  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
                 
                 dat_den = tm_dat.Get('all_closeseedtks_den')
                 #dat_den = cutZero(dat_den, 5)
