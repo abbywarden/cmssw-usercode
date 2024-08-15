@@ -34,9 +34,11 @@ private:
 
   TH1F* h_valid;
 
-  //TH1F* NumLeptons;
-  // TH1F* NumDowns;
-  TH1F* DaughterID;
+  TH1F* h_gen_vtx_x;
+  TH1F* h_gen_vtx_y;
+  TH1F* h_gen_vtx_z;
+
+  TH1F* NumLeptons;
   TH2F* DecayType;
 
   BasicKinematicHistsFactory* bkh_factory;
@@ -77,6 +79,7 @@ private:
   TH1F* h_ctau;
   TH1F* h_ctaubig;
   TH2F* h_r3d_bhadron_v_bquark;
+  TH1F* h_lspmass;
   TH1F* h_lspbeta;
   TH1F* h_lspbetagamma;
   TH1F* h_lspbetagammactau;
@@ -136,7 +139,8 @@ private:
   TH1F* h_njets_40;
   TH1F* h_njets_30;
   TH1F* h_njets_20;
-  TH1F* h_ht;
+  TH1F* h_ht20;
+  TH1F* h_ht30;
   TH1F* h_ht40;
 
   TH1F* NJets;
@@ -175,10 +179,12 @@ MFVGenHistos::MFVGenHistos(const edm::ParameterSet& cfg)
   edm::Service<TFileService> fs;
 
   h_valid = fs->make<TH1F>("h_valid", "", 2, 0, 2);
+  h_gen_vtx_x = fs->make<TH1F>("h_gen_vtx_x", ";h_gen_vtx_x;nentries", 400, -0.3, 0.3);
+  h_gen_vtx_y = fs->make<TH1F>("h_gen_vtx_y", ";h_gen_vtx_y;nentries", 400, -0.3, 0.3);
+  h_gen_vtx_z = fs->make<TH1F>("h_gen_vtx_z", ";h_gen_vtx_z;nentries", 500, -5, 5);
 
   //  NumLeptons = fs->make<TH1F>("NumLeptons", ";number of leptons;Events", 5, 0, 5);
   //  NumDowns = fs->make<TH1F>("NumDowns", ";number of down quarks;Events", 5, 0, 5);
-  DaughterID = fs->make<TH1F>("DaughterID", ";daughter genpdgID;Events", 40, -20, 20);
   
   //NumLeptons->SetTitle(";number of leptons from top decays;events");
   DecayType = fs->make<TH2F>("DecayType", "", 6, 0, 6, 6, 0, 6);
@@ -387,17 +393,14 @@ MFVGenHistos::MFVGenHistos(const edm::ParameterSet& cfg)
   const char* names[9] = {"lsp", "strange", "bottom", "bhadron", "from21", "from22", "fromq", "from21only", "from22only"};
   for (int i = 0; i < 5; ++i) {
     h_vtx[i] = fs->make<TH2F>(TString::Format("h_vtx_%s", names[i]), TString::Format(";%s vx (cm); %s vy (cm)", names[i], names[i]), 200, -1, 1, 200, -1, 1);
-    // h_vtx_vy[i] = fs->make<TH1F>(TString::Format("h_vtx_vy%s", names[i]), TString::Format("; %s vy (cm);Events/0.01 cm", names[i]), 200, -1, 1);
-    // h_vtx_vx[i] = fs->make<TH1F>(TString::Format("h_vtx_vx%s", names[i]), TString::Format(";%s vx (cm);Events/0.01 cm", names[i]), 200, -1, 1);
-    // h_vtx_dy[i] = fs->make<TH1F>(TString::Format("h_vtx_dy%s", names[i]), TString::Format("; %s vy - y0 (cm);Events/0.01 cm", names[i]), 200, -1, 1);
-    // h_vtx_dx[i] = fs->make<TH1F>(TString::Format("h_vtx_dx%s", names[i]), TString::Format(";%s vx - x0 (cm);Events/0.01 cm", names[i]), 200, -1, 1);
-    h_r2d[i] = fs->make<TH1F>(TString::Format("h_r2d_%s", names[i]), TString::Format(";%s 2D distance (cm);Events/0.01 cm", names[i]), 500, 0, 5);
-    h_r3d[i] = fs->make<TH1F>(TString::Format("h_r3d_%s", names[i]), TString::Format(";%s 3D distance (cm);Events/0.01 cm", names[i]), 500, 0, 5);
+    h_r2d[i] = fs->make<TH1F>(TString::Format("h_r2d_%s", names[i]), TString::Format(";%s 2D distance (cm);Events/0.01 cm", names[i]), 1000, 0, 5);
+    h_r3d[i] = fs->make<TH1F>(TString::Format("h_r3d_%s", names[i]), TString::Format(";%s 3D distance (cm);Events/0.01 cm", names[i]), 1000, 0, 5);
   }
 
-  h_ctau = fs->make<TH1F>("h_ctau", ";c#tau to LSP decay (cm);Events/50 #mum", 200, 0, 1);
+  h_ctau = fs->make<TH1F>("h_ctau", ";c#tau to LSP decay (cm);Events/50 #mum", 500, 0, 1);
   h_ctaubig = fs->make<TH1F>("h_ctaubig", ";c#tau to LSP decay (cm);Events/500 #mum", 200, 0, 10);
   h_r3d_bhadron_v_bquark = fs->make<TH2F>("h_r3d_bhadron_v_bquark", ";b quark 3D distance (cm);b hadron 3D distance (cm)", 100, 0, 2, 100, 0, 2);
+  h_lspmass = fs->make<TH1F>("h_lspmass", ";LSP mass;Events/bin", 500, 0, 500);
   h_lspbeta = fs->make<TH1F>("h_lspbeta", ";LSP #beta;Events/0.01", 100, 0, 1);
   h_lspbetagamma = fs->make<TH1F>("h_lspbetagamma", ";LSP #beta#gamma;Events/0.1", 100, 0, 10);
   h_lspbetagammactau = fs->make<TH1F>("h_lspbetagammactau", ";LSP #beta#gamma c#tau;Events/0.001", 1000, 0, 1);
@@ -466,8 +469,9 @@ MFVGenHistos::MFVGenHistos(const edm::ParameterSet& cfg)
   h_njets_40 = fs->make<TH1F>("h_njets_40", ";number of jets with E_{T} > 40 GeV;Events", 20, 0, 20); 
   h_njets_30 = fs->make<TH1F>("h_njets_30", ";number of jets with E_{T} > 30 GeV;Events", 20, 0, 20);
   h_njets_20 = fs->make<TH1F>("h_njets_20", ";number of jets with E_{T} > 20 GeV;Events", 20, 0, 20);
-  h_ht = fs->make<TH1F>("h_ht", ";#SigmaH_{T} of jets with E_{T} > 20 GeV;Events/100 GeV", 100, 0, 10000);
-  h_ht40 = fs->make<TH1F>("h_ht40", ";#SigmaH_{T} of jets with E_{T} > 40 GeV;Events/100 GeV", 100, 0, 10000);
+  h_ht20 = fs->make<TH1F>("h_ht20", ";#SigmaH_{T} of jets with E_{T} > 20 GeV;Events/100 GeV", 100, 0, 2000);
+  h_ht30 = fs->make<TH1F>("h_ht30", ";#SigmaH_{T} of jets with E_{T} > 30 GeV;Events/100 GeV", 100, 0, 2000);
+  h_ht40 = fs->make<TH1F>("h_ht40", ";#SigmaH_{T} of jets with E_{T} > 40 GeV;Events/100 GeV", 100, 0, 2000);
 
   NJets = fs->make<TH1F>("NJets", ";number of jets;Events", 20, 0, 20);
   Jets = bkh_factory->make("Jets", "gen jets");
@@ -513,6 +517,8 @@ MFVGenHistos::MFVGenHistos(const edm::ParameterSet& cfg)
 }
 
 void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup) {
+
+//  std::cout << "Here 0!" << std::endl;
   setup.getData(pdt);
 
   edm::Handle<reco::GenParticleCollection> gen_particles;
@@ -536,7 +542,11 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
   };
 
   h_valid->Fill(mci->valid());
+  h_gen_vtx_x->Fill(x0);
+  h_gen_vtx_y->Fill(y0);
+  h_gen_vtx_z->Fill(z0);
 
+//  std::cout << "Here 1!" << std::endl;
   if (!mci->valid()) {
     if (!mci_warned)
       edm::LogWarning("GenHistos") << "MCInteraction invalid; no further warnings!";
@@ -552,6 +562,7 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
       reco::GenParticleRef lsp = mci->primaries()[i];
       const double lspbeta  = lsp->p()/lsp->energy();
       const double lspbetagamma = lspbeta/sqrt(1-lspbeta*lspbeta);
+      h_lspmass->Fill(lsp->mass());
       h_lspbeta->Fill(lspbeta);
       h_lspbetagamma->Fill(lspbetagamma);
       h_lsp_vx->Fill(lsp->vx());
@@ -559,9 +570,6 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
 
       const std::vector<reco::GenParticleRef> daughter  = mci->secondaries(i);
       // const int dauID = daughter->pdgID();
-      for (int j = 0; j < 2; ++j) {
-      	DaughterID->Fill(daughter[j]->pdgId());
-      }
 
       
    
@@ -785,6 +793,7 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
           fill(Qs[i][j], &*mci->secondaries()[i*2+j]);
       }
     }
+//  std::cout << "Here 2!" << std::endl;
   }
 
   // Now look at b quarks separately. Count the number of status-3 b
@@ -801,6 +810,7 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
   std::vector<int> bquarks_ids;
   std::vector<double> bquarks_eta;
   std::vector<double> bquarks_phi;
+//  std::cout << "Here 3!" << std::endl;
   for (const reco::GenParticle& gen : *gen_particles) {
     if (abs(gen.pdgId()) == 5) {
       bool has_b_dau = false;
@@ -845,6 +855,7 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
   h_nbhadronsvsbquarks->Fill(nbquarks, nbhadrons);
   h_nbhadronsvsbquarks_wcuts->Fill(nbquarks_wcuts, nbhadrons_wcuts);
   h_nbquarks->Fill(nbquarks);
+//  std::cout << "Here 4!" << std::endl;
   if (bquarks_ids.size() == 2) {
     double dphi = reco::deltaPhi(bquarks_phi[0], bquarks_phi[1]);
     double deta = bquarks_eta[0] - bquarks_eta[1];
@@ -866,27 +877,37 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
   int njets40 = 0;
   int njets30 = 0;
   int njets20 = 0; 
-  float ht = 0, ht40 = 0;
+  float ht = 0, ht30 = 0, ht40 = 0;
+//  std::cout << "Here 5!" << std::endl;
   for (const reco::GenJet& jet : *gen_jets) {
     if (jet.pt() < 20 || fabs(jet.eta()) > 2.5)
       continue;
 
+//    std::cout << "Here 5.0!" << std::endl;
     ++njets;
     ht += jet.pt();
+//    std::cout << "Here 5.1!" << std::endl;
     if (jet.pt() > 20)
       ++njets20;
-    if (jet.pt() > 30)
+//    std::cout << "Here 5.2!" << std::endl;
+    if (jet.pt() > 30){
+      ht30 += jet.pt();
       ++njets30;
+    }
+//    std::cout << "Here 5.3!" << std::endl;
     if (jet.pt() > 40){
       ht40 += jet.pt();
       ++njets40;
     }
+//    std::cout << "Here 5.4!" << std::endl;
     if (jet.pt() > 60)
       ++njets60;
 
     int nchg = 0;
+//    std::cout << "Here 5.5!" << std::endl;
     int id = gen_jet_id(jet);
     int ntracksptgt3 = 0;
+//    std::cout << "Here 5.6!" << std::endl;
     for (unsigned int idx = 0; idx < jet.numberOfDaughters(); ++idx) {
       const pat::PackedGenParticle* g = dynamic_cast<const pat::PackedGenParticle*>(jet.daughter(idx));
       if (g && g->charge())
@@ -897,6 +918,7 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
 
     float fchg = float(nchg)/jet.nConstituents();
 
+//    std::cout << "Here 5.7!" << std::endl;
     Jets->Fill(&jet);
     JetAuxE->Fill(jet.auxiliaryEnergy());
     JetEmE->Fill(jet.emEnergy());
@@ -907,8 +929,10 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
     JetFChargedConst->Fill(fchg);
     JetNtracksPt->Fill(jet.pt(), nchg);
     JetNtracksptgt3Pt->Fill(jet.pt(), ntracksptgt3);
+//    std::cout << "Here 5.8!" << std::endl;
 
     fill_by_label(JetIds, id != 0 ? pdt->particle(id)->name() : "N/A");
+//    std::cout << "Here 5.9!" << std::endl;
 
     if (id == 5) {
       ++nbjets;
@@ -922,15 +946,19 @@ void MFVGenHistos::analyze(const edm::Event& event, const edm::EventSetup& setup
       BJetNChargedConst->Fill(nchg);
       BJetFChargedConst->Fill(fchg);
     }      
+//    std::cout << "Here 5.10!" << std::endl;
   }
+//  std::cout << "Here 6!" << std::endl;
   NJets->Fill(njets);
   NBJets->Fill(nbjets);
   h_njets_60->Fill(njets60);
   h_njets_40->Fill(njets40); 
   h_njets_30->Fill(njets30);
   h_njets_20->Fill(njets20); 
-  h_ht->Fill(ht);
+  h_ht20->Fill(ht);
+  h_ht30->Fill(ht30);
   h_ht40->Fill(ht40);
+//  std::cout << "Here 7!" << std::endl;
 }
 
 DEFINE_FWK_MODULE(MFVGenHistos);

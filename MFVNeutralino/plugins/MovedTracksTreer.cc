@@ -170,7 +170,6 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
         which = nt.tracks().n();
         tks_push_back(tk);
       }
-
       nt.set_tk_moved(which);
     }
 

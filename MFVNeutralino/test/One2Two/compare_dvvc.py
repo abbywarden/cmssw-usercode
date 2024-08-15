@@ -5,12 +5,13 @@ ROOT.TH1.AddDirectory(0)
 
 is_mc = True
 only_10pc = False
-year = '2017p8'
-version = 'V25m'
+year = 'run2'
+version = 'ULV11'
 
 #mode = 'vary_eff'
-#mode = 'vary_dphi'
-mode = 'vary_bquarks'
+mode = 'vary_dphi'
+#mode = 'vary_bquarks'
+#mode = ''
 
 set_style()
 ROOT.gStyle.SetOptFit(0)
@@ -42,6 +43,8 @@ if year == '2017' :
 elif year == '2018' :
     n2v = n2v_2018
 elif year == '2017p8' :
+    n2v = [sum(n2v_val) for n2v_val in zip(n2v_2017, n2v_2018)]
+elif year == 'run2' :
     n2v = [sum(n2v_val) for n2v_val in zip(n2v_2017, n2v_2018)]
 else :
     print("Unsupported year %s! Exiting." % year)

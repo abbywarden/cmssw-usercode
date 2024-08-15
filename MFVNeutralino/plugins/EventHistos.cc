@@ -150,8 +150,10 @@ class MFVEventHistos : public edm::EDAnalyzer {
 
   TH1F* h_nbtags[3];
   TH2F* h_nbtags_v_bquark_code[3];
-  TH1F* h_jet_bdisc;
-  TH2F* h_jet_bdisc_v_bquark_code;
+  TH1F* h_jet_bdisc_csv;
+  TH1F* h_jet_bdisc_deepcsv;
+  TH1F* h_jet_bdisc_deepflav;
+  TH2F* h_jet_bdisc_deepflav_v_bquark_code;
   TH1F* h_bjet_pt;
   TH1F* h_bjet_eta;
   TH1F* h_bjet_phi;
@@ -428,8 +430,10 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
     h_nbtags[i] = fs->make<TH1F>(TString::Format("h_nbtags_%i", i), TString::Format(";# of %s b tags;events", lmt_ex[i]), 10, 0, 10);
     h_nbtags_v_bquark_code[i] = fs->make<TH2F>(TString::Format("h_nbtags_v_bquark_code_%i", i), TString::Format(";bquark code;# of %s b tags", lmt_ex[i]), 3, 0, 3, 3, 0, 3);
   }
-  h_jet_bdisc = fs->make<TH1F>("h_jet_bdisc", ";jets' b discriminator;jets/0.02", 51, 0, 1.02);
-  h_jet_bdisc_v_bquark_code = fs->make<TH2F>("h_jet_bdisc_v_bquark_code", ";b quark code;jets' b discriminator", 3, 0, 3, 51, 0, 1.02);
+  h_jet_bdisc_csv = fs->make<TH1F>("h_jet_bdisc_csv", ";jets' csv score;jets/0.02", 51, 0, 1.02);
+  h_jet_bdisc_deepcsv = fs->make<TH1F>("h_jet_bdisc_deepcsv", ";jets' deepcsv score;jets/0.02", 51, 0, 1.02);
+  h_jet_bdisc_deepflav = fs->make<TH1F>("h_jet_bdisc_deepflav", ";jets' deepflavour score;jets/0.02", 51, 0, 1.02);
+  h_jet_bdisc_deepflav_v_bquark_code = fs->make<TH2F>("h_jet_bdisc_deepflav_v_bquark_code", ";b quark code;jets' b discriminator", 3, 0, 3, 51, 0, 1.02);
   h_bjet_pt = fs->make<TH1F>("h_bjet_pt", ";bjets p_{T} (GeV);bjets/10 GeV", 150, 0, 1500);
   h_bjet_eta = fs->make<TH1F>("h_bjet_eta", ";bjets #eta (rad);bjets/.05", 120, -3, 3);
   h_bjet_phi = fs->make<TH1F>("h_bjet_phi", ";bjets #phi (rad);bjets/.063", 100, -3.1416, 3.1416);
@@ -1156,8 +1160,10 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   for (size_t ijet = 0; ijet < mevent->jet_id.size(); ++ijet) {
     if (mevent->jet_pt[ijet] < mfv::min_jet_pt)
       continue;
-    h_jet_bdisc->Fill(mevent->jet_bdisc[ijet], w);
-    h_jet_bdisc_v_bquark_code->Fill(mevent->gen_flavor_code, mevent->jet_bdisc[ijet], w);
+    h_jet_bdisc_csv->Fill(mevent->jet_bdisc_csv[ijet], w);
+    h_jet_bdisc_deepcsv->Fill(mevent->jet_bdisc_deepcsv[ijet], w);
+    h_jet_bdisc_deepflav->Fill(mevent->jet_bdisc_deepflav[ijet], w);
+    h_jet_bdisc_deepflav_v_bquark_code->Fill(mevent->gen_flavor_code, mevent->jet_bdisc_deepflav[ijet], w);
     if (mevent->is_btagged(ijet, ibtag)) {
       h_bjet_pt->Fill(mevent->jet_pt[ijet], w);
       h_bjet_eta->Fill(mevent->jet_eta[ijet], w);

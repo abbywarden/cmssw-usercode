@@ -1,0 +1,14 @@
+python datacard.py -37 include_2016 > 37.txt
+python datacard.py -98 include_2016 > 98.txt
+python datacard.py -14 include_2016 > 14.txt
+python datacard.py -101 include_2016 > 101.txt
+python datacard.py -49 include_2016 > 49.txt
+python datacard.py -21 include_2016 > 21.txt
+python datacard.py -9 include_2016 > 9.txt
+python datacard.py -91 include_2016 > 91.txt
+python datacard.py -81 include_2016 > 81.txt
+python datacard.py -103 include_2016 > 103.txt
+python datacard.py -38 include_2016 > 38.txt
+python datacard.py -42 include_2016 > 42.txt
+python datacard.py -56 include_2016 > 56.txt
+python datacard.py -94 include_2016 > 94.txt

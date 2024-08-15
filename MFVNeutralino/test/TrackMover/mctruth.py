@@ -1,6 +1,5 @@
 #!/usr/bin/env python 
 
-
 from JMTucker.MFVNeutralino.NtupleCommon import *
 
 settings = NtupleSettings()
@@ -8,6 +7,7 @@ settings.is_mc = True
 settings.is_miniaod = True
 #settings.event_filter = 'electrons only novtx'
 settings.event_filter = 'muons only novtx' #FIXME miss leading because there is no process.mfvEventFilterSequence applied nor signals_no_event_filter_modifier  
+#settings.event_filter = 'bjets OR displaced dijet novtx'
 version = settings.version + 'v6'
 
 process = ntuple_process(settings)
@@ -15,6 +15,8 @@ tfileservice(process, 'mctruth.root')
 dataset = 'miniaod' if settings.is_miniaod else 'main'
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WplusH_HToSSTodddd_WToLNu_MH-125_MS-55_ctauS-1_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/40000/0BD790C6-883F-0147-A66E-8EC9DC53750F.root')
 #max_events(process, 1000)
+#input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/StopStopbarTo2Dbar2D_M-800_CTau-1mm_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/50000/B5C839E5-8F24-C344-B539-9915B1A6F90C.root')
+#input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/ggH_HToSSTo4l_lowctau_MH-800_MS-350_ctauS-1_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/2550000/36A34C5C-7F31-7E4F-A8C7-43A72226A91D.root')
 cmssw_from_argv(process)
 
 
@@ -55,6 +57,8 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     #samples = pick_samples(dataset, all_signal='only')
     
     samples = [getattr(Samples, 'ZHToSSTodddd_tau1mm_M55_2017')] 
+    #samples = [getattr(Samples, 'mfv_stopdbardbar_tau001000um_M0800_2017')] 
+    #samples = [getattr(Samples, 'ggHToSSTo4l_tau1mm_M350_2017')]
     set_splitting(samples, dataset, 'ntuple')
     ms = MetaSubmitter('TrackMoverMCTruth' + version, dataset=dataset)
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, per_sample_pileup_weights_modifier())

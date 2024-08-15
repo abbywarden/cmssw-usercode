@@ -168,8 +168,7 @@ def get(i): return _l[i]
             os.mkdir(links_dir)
 
         if submit_host.endswith('fnal.gov'):
-            #schedds = ['lpcschedd%i.fnal.gov' % i for i in 1,2,3,4,5]
-            schedds = ['lpcschedd%i.fnal.gov' % i for i in 3,4,5,6]
+            schedds = ['lpcschedd%i.fnal.gov' % i for i in 1,2,3,4,5,6]
             for schedd in schedds:
                 schedd_d = os.path.join(links_dir, schedd)
                 if not os.path.isdir(schedd_d):
@@ -373,7 +372,6 @@ def get(i): return _l[i]
         filenames = sample.filenames
         if not self.is_cmsRun:
             filenames = self.normalize_fns(filenames)
-
         if sample.split_by == 'events':
             per = sample.events_per
             assert sample.nevents_orig > 0 or sample.total_events > 0
@@ -381,7 +379,7 @@ def get(i): return _l[i]
             njobs = int_ceil(nevents, per)
             fn_groups = [filenames]
         else:
-            use_njobs = sample.files_per < 0
+            use_njobs = sample.files_per < 0 
             per = abs(sample.files_per)
             if sample.total_files > 0:
                 filenames = filenames[:sample.total_files]
@@ -389,12 +387,12 @@ def get(i): return _l[i]
             fn_groups = [x for x in (filenames[i*per:(i+1)*per] for i in xrange(njobs)) if x]
             if not use_njobs:
                 njobs = len(fn_groups) # let it fail downward
+        
         if self._njobs is not None:
             assert self._njobs <= njobs
             njobs = self._njobs
 
         encoded_filelist = base64.b64encode(zlib.compress(pickle.dumps(fn_groups, -1)))
-
         files_to_write = [
             ('cs_outputfiles',   self.output_files),
             ('cs_stageoutfiles', self.stageout_files),

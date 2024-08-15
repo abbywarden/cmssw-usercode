@@ -2,19 +2,22 @@
 
 from JMTucker.Tools.ROOTTools import *
 
-is_mc = False
-year = '2017p8'
-version = 'V27m'
+is_mc = True
+year = '20161'
+version = 'ULV11'
 
 set_style()
 ps = plot_saver(plot_dir('fit_jetpairdphi%s%s_%s' % (version.capitalize(), '' if is_mc else '_data', year)), size=(700,700), log=False, root=False)
 
-fn = '/uscms_data/d2/tucker/crab_dirs/Histos%s/background_%s.root' % (version.capitalize(), year)
+#fn = '/uscms_data/d2/tucker/crab_dirs/HistosV27m/background_%s.root' % (year)
+fn = '/uscms_data/d3/shogan/crab_dirs/HistosULV11Bm_Run2_Bkg_May02/background_%s.root' % (year)
 if not is_mc:
   fn = '/uscms_data/d2/tucker/crab_dirs/Histos%s/100pc/JetHT%s.root' % (version.capitalize(), year)
 
-ntk = ['Ntk3', 'Ntk3or4', 'Ntk4', '']
-ntracks = ['3-track', '3-or-4-track', '4-track', '5-or-more-track']
+#ntk = ['Ntk3', 'Ntk3or4', 'Ntk4', '']
+#ntracks = ['3-track', '3-or-4-track', '4-track', '5-or-more-track']
+ntk = ['Ntk3', 'Ntk4', '']
+ntracks = ['3-track', '4-track', '5-or-more-track']
 if not is_mc:
   ntk = ['Ntk3']
   ntracks = ['3-track']
@@ -22,10 +25,15 @@ if not is_mc:
 f = ROOT.TFile(fn)
 for i,n in enumerate(ntk):
   h = f.Get('%smfvEventHistosOnlyOneVtx/h_jet_pairdphi' % n)
+  print('%smfvEventHistosOnlyOneVtx/h_jet_pairdphi' % n)
   h.SetStats(0)
   h.SetLineColor(ROOT.kBlue)
   h.SetLineWidth(3)
-  h.Scale(1./h.Integral())
+  try:
+    h.Scale(1./h.Integral())
+  except:
+    print "Returning on: %s_jetpairdphi" % ntracks[i]
+    continue
   h.GetYaxis().SetRangeUser(0,0.02)
   f_dphi = ROOT.TF1("f_dphi", "[1]*((abs(x)-[0])**2 + [2])", 0.8, 3.15)
   f_dphi.SetParameters(0,0,0)
@@ -44,15 +52,21 @@ if is_mc:
   f = ROOT.TFile(fn)
   ROOT.TH1.AddDirectory(0)
   for n in ['mfvEventHistosOnlyOneVtx/h_jet_pairdphi', 'mfvVertexHistosOnlyOneVtx/h_sv_all_jets_deltaphi']:
-    colors = [ROOT.kRed, 1, ROOT.kBlue, ROOT.kGreen+2]
+    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen+2]
+    #colors = [ROOT.kRed, 1, ROOT.kBlue, ROOT.kGreen+2]
     l = ROOT.TLegend(0.15,0.75,0.85,0.85)
     h2s = []
-    for i in [0,2,3]:
+    #for i in [0,2,3]:
+    for i in [0,1,2]: # changed because I got commented 3x4 out around L20
       h = f.Get('%s%s' % (ntk[i], n))
       h.SetStats(0)
       h.SetLineColor(colors[i])
       h.SetLineWidth(3)
-      h.Scale(1./h.Integral())
+      try:
+        h.Scale(1./h.Integral())
+      except:
+        print "returning on: %s" % ntracks[i]
+        continue
       if 'sv_all' in n:
         h.Rebin(5)
       h.GetYaxis().SetRangeUser(0,2./h.GetNbinsX())
@@ -86,15 +100,21 @@ if is_mc:
     ps.save('abs_%s'%n.split('/')[1])
 
   for n in ['mfvVertexHistosOnlyOneVtx/h_sv_all_jet0_deltaphi0']:
-    colors = [ROOT.kRed, 1, ROOT.kBlue, ROOT.kGreen+2]
+    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen+2]
+    #colors = [ROOT.kRed, 1, ROOT.kBlue, ROOT.kGreen+2]
     l = ROOT.TLegend(0.15,0.75,0.85,0.85)
     h2s = []
-    for i in [0,2,3]:
+    #for i in [0,2,3]:
+    for i in [0,1,2]: # changed because I got commented 3x4 out around L20
       h = f.Get('%s%s' % (ntk[i], n))
       h.SetStats(0)
       h.SetLineColor(colors[i])
       h.SetLineWidth(3)
-      h.Scale(1./h.Integral())
+      try:
+        h.Scale(1./h.Integral())
+      except:
+        print "Returning on: %s" % ntracks[i]
+        continue
       h.Rebin(5)
       h.GetYaxis().SetRangeUser(0,1)
       h.SetTitle(';#Delta#phi_{JV}^{min};')

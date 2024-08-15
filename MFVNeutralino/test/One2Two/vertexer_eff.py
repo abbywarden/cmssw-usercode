@@ -1,8 +1,8 @@
 import os
 from JMTucker.Tools.ROOTTools import *
 
-version = 'V27m'
-path = '/uscms_data/d2/tucker/crab_dirs/VertexerPairEffs' + version.capitalize()
+version = 'ULV11Bm'
+path = '/uscms_data/d3/shogan/crab_dirs/VertexerPairEffsULV11_3d_Bm_May06'  # Has btag/disp dijet triggers. New vertexer
 
 set_style()
 
@@ -14,8 +14,9 @@ def write(font, size, x, y, text):
     w.DrawLatex(x, y, text)
     return w
 
-for is_mc in False, True:
-    for year in 2017, 2018, '2017p8':
+for is_mc in True,: #False:
+    #for year in '2017',:
+    for year in '2017p8',:
         in_fn = os.path.join(path, ('background_%s.root' if is_mc else 'JetHT%s.root') % year)
         in_f = ROOT.TFile(in_fn)
 
@@ -24,14 +25,23 @@ for is_mc in False, True:
             fh = ROOT.TFile('vpeffs%s_%s_%s%s.root' % ('' if is_mc else '_data', year, version, '_ntkseeds' if ntkseeds else ''), 'recreate')
             h_merges, h_adds = {}, {}
 
+            var_dict = {'d2d': {'xlabel': '2D d_{VV} (cm)',      'ubound': 2.0, 'rebin': 20},
+                        'd3d': {'xlabel': '3D d_{VV} (cm)',      'ubound': 2.0, 'rebin': 20},
+                        's2d': {'xlabel': '#Sigma(d_{BV}) (cm)', 'ubound': 0.8, 'rebin': 40}}
+            var = 'd2d'
+
+            ubound = var_dict[var]['ubound']
+            rebin  = var_dict[var]['rebin'] 
+            xlabel = var_dict[var]['xlabel']
+
             for itk in 3,4,5:
                 d = in_f.Get('mfvVertexerPairEffs%iTkSeed' % itk if ntkseeds else 'mfvVertexerPairEffs')
-                h_merge = d.Get('h_merge_d2d_mintk0_maxtk%i' % itk)
-                h_erase = d.Get('h_erase_d2d_mintk0_maxtk%i' % itk)
-                h_pairs = d.Get('h_pairs_d2d_mintk0_maxtk%i' % itk)
+                h_merge = d.Get('h_merge_%s_mintk0_maxtk%i' % (var, itk))
+                h_erase = d.Get('h_erase_%s_mintk0_maxtk%i' % (var, itk))
+                h_pairs = d.Get('h_pairs_%s_mintk0_maxtk%i' % (var, itk))
 
                 for h in h_merge, h_erase, h_pairs:
-                    h.Rebin(10)
+                    h.Rebin(rebin)
 
                 h_merges[itk] = h_merge.Clone('maxtk%i_merge' % itk)
                 h_adds[itk] = h_merge.Clone('maxtk%i' % itk)
@@ -43,14 +53,14 @@ for is_mc in False, True:
                     for i in xrange(1, h.GetNbinsX()+2):
                         h.SetBinContent(i, 1-h.GetBinContent(i))
 #                    h.Scale(1./h.GetBinContent(h.GetNbinsX()))
-                    h.SetTitle('maxtk%i%s;d_{VV} (cm);efficiency' % (itk, ' merge' if is_merge else ''))
+                    h.SetTitle('maxtk%i%s;%s;efficiency' % (itk, ' merge' if is_merge else '', xlabel))
                     h.GetYaxis().SetRangeUser(0,1.05)
                     h.SetLineColor(ROOT.kBlue if is_merge else ROOT.kGreen+2)
                     h.SetStats(0)
                     if ih == 0: 
                         h.Draw()
                     else:
-                        h.Draw('sames')
+                        h.Draw('same')
 
                 l = ROOT.TLegend(0.50,0.55,0.85,0.70)
                 l.AddEntry(h_merges[itk], '1 - merge / pairs')
@@ -68,12 +78,25 @@ for is_mc in False, True:
                 h = h_adds[itk]
                 h.SetLineColor(color)
                 h.SetLineWidth(3)
-                h.SetTitle(';d_{VV} (cm);Efficiency')
-                h.GetXaxis().SetRangeUser(0,0.4)
+                h.SetTitle(';%s;Efficiency' % xlabel)
+                h.GetXaxis().SetRangeUser(0, ubound)
+                if year == '2017p8' and ntkseeds == False:
+                    xvals = []
+                    yvals = []
+                    for ib in range(h.GetNbinsX()):
+                        if h.GetBinCenter(ib) > ubound:
+                            break
+                        xvals.append(round(h.GetBinCenter(ib), 4))
+                        yvals.append(round(h.GetBinContent(ib), 4))
+
+                    print "xvals (itk%i) " % itk, xvals
+                    print "yvals (itk%i) " % itk, yvals
                 if ih == 0:
-                    h.Draw('hist')
+                    h.Draw()
+                    #h.Draw('hist')
                 else:
-                    h.Draw('hist sames')
+                    h.Draw('sames')
+                    #h.Draw('hist sames')
                 l.AddEntry(h, '%i-track' % itk)
             l.SetFillColor(0)
             l.Draw()
@@ -81,8 +104,9 @@ for is_mc in False, True:
 
             if not ntkseeds:
                 h = h_adds[3]
-                h.GetXaxis().SetRangeUser(0,0.4)
-                h.Draw('hist')
+                h.GetXaxis().SetRangeUser(0, ubound)
+                h.Draw()
+                #h.Draw('hist')
                 if not is_mc and year == '2015p6':
                     write(61, 0.050, 0.098, 0.913, 'CMS')
                     write(52, 0.035, 0.200, 0.913, 'Preliminary')
@@ -96,9 +120,11 @@ for is_mc in False, True:
                     if not is_mc and year == '2015p6':
                         h2.Scale(1./h2.GetMaximum())
                     h2.SetLineWidth(3)
-                    h.GetXaxis().SetRangeUser(0,0.4)
-                    h.Draw('hist')
-                    h2.Draw('hist sames')
+                    h.GetXaxis().SetRangeUser(0, ubound)
+                    #h.Draw('hist')
+                    #h2.Draw('hist sames')
+                    h.Draw()
+                    h2.Draw('sames')
                     l = ROOT.TLegend(0.50,0.15,0.85,0.30)
                     l.AddEntry(h, 'default')
                     l.AddEntry(h2, '%s-track variation' % ntk)
@@ -112,6 +138,6 @@ for is_mc in False, True:
                     ratio = h2.Clone('ratio')
                     ratio.Divide(h)
                     ratio.GetYaxis().SetRangeUser(0.5, 6)
-                    ratio.GetXaxis().SetRangeUser(0,0.4)
+                    ratio.GetXaxis().SetRangeUser(0, ubound)
                     ratio.Draw('hist')
                     ps.save('variation_ratio_%s-track' % ntk)

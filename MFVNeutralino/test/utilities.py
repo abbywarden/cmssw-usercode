@@ -68,7 +68,7 @@ def cmd_report_data():
 
 def cmd_hadd_data():
     permissive = bool_from_argv('permissive')
-    for ds in 'SingleMuon', 'JetHT', 'ZeroBias', 'SingleElectron', 'MET', 'EGamma':
+    for ds in 'SingleMuon', 'JetHT', 'ZeroBias', 'SingleElectron', 'MET', 'BTagCSV', 'DisplacedJet', 'EGamma':
         print ds
         files = set(glob(ds + '*.root'))
         if not files:
@@ -156,7 +156,8 @@ def _background_samples(trigeff=False, year=2017, bkg_tag='others'):
         else:
             x = ['ww', 'wz', 'zz',] # 'ttbar'] 
     elif _btagpresel:
-        x = ['qcdht%04i' % x for x in [300, 500, 700, 1000, 1500, 2000]]
+        #x = ['qcdht%04i' % x for x in [100, 200, 300, 500, 700, 1000, 1500, 2000]]
+        x = ['qcdht%04i' % x for x in [500, 700, 1000, 1500, 2000]]
         x += ['ttbar']
     elif _metpresel:
         x = ['ttbar', 'wjetstolnu']

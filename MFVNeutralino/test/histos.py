@@ -196,8 +196,8 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = pick_samples(dataset)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
 
-    set_splitting(samples, dataset, 'histos', data_json=json_path('ana_SingleLept_2017_10pc.json'))
-
+    #set_splitting(samples, dataset, 'histos', data_json=json_path('ana_SingleLept_2017_10pc.json'))
+    set_splitting(samples, dataset, 'histos', data_json=json_path('ana_2016.json' if year in [20161, 20162] else 'ana_2017p8.json'))
     cs = CondorSubmitter('Histos' + version + '_SingleLep',
                          ex = year,
                          dataset = dataset,

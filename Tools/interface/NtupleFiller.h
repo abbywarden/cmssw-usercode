@@ -146,7 +146,7 @@ namespace jmt {
         triggerfloats_token_( triggerfloats_available_ ? cc.consumes<mfv::TriggerFloats>(triggerfloats_tag_) : edm::EDGetTokenT<mfv::TriggerFloats>() )
     {}
     void operator()(const edm::Event&);
-    const pat::METCollection& mets() const { return *mets_; }
+    //const pat::METCollection& mets() const { return *mets_; }
   };
 
   void NtupleAdd(MuonsSubNtuple&, const pat::Muon&);

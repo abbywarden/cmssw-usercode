@@ -11,6 +11,7 @@ use_DisplacedLepton_triggers = False
 if use_btag_triggers : 
     ntuple_version_ += "B" # for "Btag triggers"; also includes DisplacedDijet triggers
 elif use_MET_triggers :
+    lsp_id = 1000021 # should do that in a smarter way would be -1 if not MET
     ntuple_version_ += "MET"
 elif use_Muon_triggers :
     ntuple_version_ += "LepMu"

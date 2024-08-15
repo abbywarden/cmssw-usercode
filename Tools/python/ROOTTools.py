@@ -683,6 +683,10 @@ def data_mc_comparison(name,
                        sig_partial_weights = [],
                        output_fn = None,
                        plot_saver = None,
+                       histogram_path = None,
+                       signal_hist_path = None,
+                       file_path = None,
+                       fcn_for_nevents_check = None,
                        int_lumi = None,
                        int_lumi_bkg_scale = None,
                        int_lumi_nice = None,
@@ -799,34 +803,48 @@ def data_mc_comparison(name,
     elif output_fn is not None and plot_saver is not None:
         raise ValueError('only one of output_fn and plot_saver may be supplied')
 
-    first_binning = None
-    bin_width_to_scales = None
-    bkg_ct = 0
-    for sample in all_samples:
-        # Get the histogram, normalize, rebin, and move the
-        # overflow to the last bin.
-        sample.hist = sample
-        xax = sample.hist.GetXaxis()
-        if not first_binning:
-            first_binning = [None] # ibin starts at 1
-            for ibin in xrange(1, xax.GetNbins()+2):
-                first_binning.append(xax.GetBinLowEdge(ibin))
-        else:
-            for ibin in xrange(1, xax.GetNbins()+2):
-                if abs(first_binning[ibin] - xax.GetBinLowEdge(ibin)) > 1e-6:
-                    raise ValueError('inconsistent binning')
-        xax = None
-        move_overflows_into_visible_bins(sample.hist, move_overflows)
+    check_params = (file_path is None, histogram_path is None, int_lumi is None)
+    if any(check_params) and not all(check_params):
+        raise ValueError('must supply all of file_path, histogram_path, int_lumi or none of them')
 
-        if rebin is not None:
-            sample.hist_before_rebin = sample.hist
-            rebin_name = sample.hist.GetName() + '_rebinned'
-            if type(rebin) in (list, tuple):
-                rebin = array('d', rebin)
-            if type(rebin) == array:
-                if rebin[-1] > sample.hist.GetXaxis().GetXmax():
-                    raise ValueError('rebin_last %f greater than axis max (ROOT will handle this arbitrarily)' % (rebin[-1], sample.hist.GetXaxis().GetXmax()))
-                sample.hist = sample.hist.Rebin(len(rebin)-1, rebin_name, rebin)
+    if file_path is None:
+        # Sanity check that all the samples have the hist preloaded.
+        for sample in all_samples:
+            if not hasattr(sample, 'hist') or not issubclass(type(sample.hist), ROOT.TH1):
+                raise ValueError('all sample objects must have hist preloaded if file_path is not supplied')
+    else:
+        # Sanity check needed for the TFile caching below.
+        previous_file_paths = list(set(vars(sample).get('file_path', None) for sample in all_samples))
+        previous_file_paths_ok = len(previous_file_paths) == 1 and previous_file_paths[0] is not None
+        first_binning = None
+        bin_width_to_scales = None
+        for sample in all_samples:
+            if not previous_file_paths_ok:
+                # Cache the TFile and do basic check on the sample
+                # that the number of events is correct (if
+                # fcn_for_nevents_check specified).
+                sample._datamccomp_file_path = file_path
+                sample._datamccomp_filename = file_path % sample
+                sample._datamccomp_file = ROOT.TFile(sample._datamccomp_filename)
+                if sample not in data_samples and fcn_for_nevents_check is not None:
+                    if fcn_for_nevents_check(sample, sample._datamccomp_file) != sample.nevents:
+                        raise ValueError('wrong number of events for %s' % sample.name)
+
+            # Get the histogram, normalize, rebin, and move the
+            # overflow to the last bin.
+
+            if (sample in signal_samples) and (signal_hist_path is not None):
+                sample.hist = sample._datamccomp_file.Get(signal_hist_path)
+            else:
+                sample.hist = sample._datamccomp_file.Get(histogram_path)
+            if not issubclass(type(sample.hist), ROOT.TH1):
+                raise RuntimeError('histogram %s not found in %s' % (histogram_path, sample._datamccomp_filename))
+
+            xax = sample.hist.GetXaxis()
+            if not first_binning:
+                first_binning = [None] # ibin starts at 1
+                for ibin in xrange(1, xax.GetNbins()+2):
+                    first_binning.append(xax.GetBinLowEdge(ibin))
             else:
                 sample.hist = sample.hist.Rebin(rebin, rebin_name)
             
