@@ -77,7 +77,11 @@ struct MFVEvent {
   std::vector<TLorentzVector> gen_bquarks;
   std::vector<TLorentzVector> gen_leptons;
   std::vector<TLorentzVector> gen_electrons;
+  std::vector<double> gen_ele_dxy;
+  std::vector<double> gen_ele_dxybs;
   std::vector<TLorentzVector> gen_muons;
+  std::vector<double> gen_mu_dxy;
+  std::vector<double> gen_mu_dxybs;
   std::vector<TLorentzVector> gen_jets;
 
   int gen_lepton_id(int which) { // same convention as reco lep_id below, el=1, mu=0
@@ -219,8 +223,9 @@ struct MFVEvent {
   float pv_score_(size_t i) const { return i == 0 ? pv_score : pvsscores[i-1]; } // JMTBAD oops, didn't bin in Producer
 
   std::vector<uchar> jet_id; // see encode_jet_id for definition
-  std::vector<float> jet_bdisc_old; // JMTBAD CSV for backward compatibility, to be removed
-  std::vector<float> jet_bdisc;
+  std::vector<float> jet_bdisc_csv; // JMTBAD CSV for backward compatibility, to be removed
+  std::vector<float> jet_bdisc_deepcsv; // JMTBAD CSV for backward compatibility, to be removed
+  std::vector<float> jet_bdisc_deepflav;
   std::vector<float> jet_pudisc; // to be removed and put into _id when working points defined
   std::vector<float> jet_pt;
   std::vector<float> jet_raw_pt;
@@ -228,6 +233,11 @@ struct MFVEvent {
   std::vector<float> jet_phi;
   std::vector<float> jet_energy;
   std::vector<float> jet_gen_energy;
+
+  std::vector<float> calo_jet_pt;
+  std::vector<float> calo_jet_eta;
+  std::vector<float> calo_jet_phi;
+  std::vector<float> calo_jet_energy;
 
   TLorentzVector jet_p4(int w) const {
     TLorentzVector v;

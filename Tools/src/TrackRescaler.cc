@@ -1,7 +1,11 @@
 #include "JMTucker/Tools/interface/AnalysisEras.h"
 #include "JMTucker/Tools/interface/TrackRescaler.h"
+#include <vector>  //Alec added
+#include <iostream> //Alec added
+using namespace std; //Alec added
 
 //FIXME: need further study to see whether this need to be changed
+//JetHT parameter apply to high HT
 namespace jmt {
   void TrackRescaler::set_JetHT2017B(double x, double eta) {
     if (fabs(eta) < 1.5) {
@@ -188,6 +192,99 @@ namespace jmt {
     }
   }
 
+  void TrackRescaler::set_BTagDispJet20161(double x, double eta) {  //Alec tried using 1/scale_factor since scale_ seems to divide
+    if (fabs(eta) < 1.5) {
+      const double p_dxy[3] = {.90391, .896, -.1585};
+      const double p_dsz[3] = {.90834, .7094, -.1133};
+      const double p_dxydsz[3] = {.7946, .294, .0963};
+    
+      scales_.set(p_dxy[0]-p_dxy[2]*exp(-p_dxy[1]*x),
+                  p_dsz[0]-p_dsz[2]*exp(-p_dsz[1]*x),
+	          p_dxydsz[0]-p_dxydsz[2]*exp(-p_dxydsz[1]*x)
+		  );
+    }
+    else {
+      const double p_dxy[3] = {.89441, .3372, -.13827};
+      const double p_dsz[3] = {.89631, .1800, -.11508};
+      const double p_dxydsz[4] = {.73781, 3.41, -6.0, .002034};
+      
+      scales_.set(p_dxy[0]-p_dxy[2]*exp(-p_dxy[1]*x),
+	          p_dsz[0]-p_dsz[2]*exp(-p_dsz[1]*x),
+		  p_dxydsz[0]-p_dxydsz[2]*exp(-p_dxydsz[1]*x)+p_dxydsz[3]*x
+		  );
+    }
+  }
+
+  void TrackRescaler::set_BTagDispJet20162(double x, double eta) {
+    if (fabs(eta) < 1.5) {
+      const double p_dxy[1] = {0.981341};
+      const double p_dsz[3] = {1.8725, -.0005732, -.1141};
+      const double p_dxydsz[3] = {.93580, 2.026, .350};
+
+      scales_.set(p_dxy[0],
+		  p_dsz[0]-exp(-p_dsz[1]*x+p_dsz[2]),
+		  p_dxydsz[0]-p_dxydsz[2]*exp(-p_dxydsz[1]*x)
+                  );
+    }
+    else {
+      const double p_dxy[1] = {0.998868};
+      const double p_dsz[3] = {1.2526, -.001625, -1.3885};
+      const double p_dxydsz[3] = {.9649, .080, -.0512};
+
+      scales_.set(p_dxy[0],
+                  p_dsz[0]-exp(-p_dsz[1]*x+p_dsz[2]),
+                  p_dxydsz[0]-p_dxydsz[2]*exp(-p_dxydsz[1]*x)
+                  );
+    }
+  }
+
+  void TrackRescaler::set_BTagDispJet2017(double x, double eta) {
+    //Alec
+    if (fabs(eta) < 1.5) {
+      const double p_dxy[3] = {1.17509, .771, -1.263};
+      const double p_dsz[3] = {1.15733, 1.274, -1.257};
+      const double p_dxydsz[3] = {1.2828, 3.05, -6.1};
+
+      scales_.set(p_dxy[0]-exp(-p_dxy[1]*x+p_dxy[2]),
+                  p_dsz[0]-exp(-p_dsz[1]*x+p_dsz[2]),
+                  p_dxydsz[0]-p_dxydsz[2]*exp(-p_dxydsz[1]*x)
+                  );
+    }
+    else {
+      const double p_dxy[3] = {1.3108, .2508, -.9690};
+      const double p_dsz[3] = {1.2758, .1959, -1.1719};
+      const double p_dxydsz[3] = {1.526, .285, -.375};
+
+      scales_.set(p_dxy[0]-exp(-p_dxy[1]*x+p_dxy[2]),
+                  p_dsz[0]-exp(-p_dsz[1]*x+p_dsz[2]),
+                  p_dxydsz[0]-p_dxydsz[2]*exp(-p_dxydsz[1]*x)
+                  );
+    }
+  }
+
+  void TrackRescaler::set_BTagDispJet2018(double x, double eta) {
+    if (fabs(eta) < 1.5) {
+      const double p_dxy[3] = {1.09967, 1.582, -.842};
+      const double p_dsz[3] = {1.11861, 3.14, .91};
+      const double p_dxydsz[3] = {1.0866, .595, -.2691};
+
+      scales_.set(p_dxy[0]-exp(-p_dxy[1]*x+p_dxy[2]),
+                  p_dsz[0]-exp(-p_dsz[1]*x+p_dsz[2]),
+                  p_dxydsz[0]-p_dxydsz[2]*exp(-p_dxydsz[1]*x)
+                  );
+    }
+    else {
+      const double p_dxy[3] = {1.1875, .3201, -1.4224};
+      const double p_dsz[3] = {1.06183, .402, -2.5405};
+      const double p_dxydsz[3] = {1.259, .097, -.197};
+
+      scales_.set(p_dxy[0]-exp(-p_dxy[1]*x+p_dxy[2]),
+                  p_dsz[0]-exp(-p_dsz[1]*x+p_dsz[2]),
+                  p_dxydsz[0]-p_dxydsz[2]*exp(-p_dxydsz[1]*x)
+                  );
+    }
+  }
+
   void TrackRescaler::set_SingleLep2018(double x, double eta, std::string type) {
     if (fabs(eta) < 1.5) {
       if (type == "") {
@@ -227,7 +324,7 @@ namespace jmt {
       if (type == "") {
         const double p_dxy[7] = {1.0133027312506913, 0.022318204661493413, 1.0132560573122338, 0.030203922649456587, -0.0011920662142896792, 1.2075301903740283, -0.0009030071324799313};
         const double p_dsz[7] = {1.0122428157879715, 0.007255082361121984, 1.0128200774147489, 0.00966372174191818, -0.00040699524051006656, 1.079658308344396, -0.0002488112151517263};
-        const double p_dxydsz[11] = {1.3166283744401028, 0.08185582853274989, -0.02577622285830496, 0.0009324392251916928, 0.00011486069705164841, 1.2095572705954116, -0.007444915625685196, 0.0008944005459964158, -2.5539279747627624e-05, 0.9557625567755772, 0.002860260280510063}; // no values yet 
+        const double p_dxydsz[11] = {1.3166283744401028, 0.08185582853274989, -0.02577622285830496, 0.0009324392251916928, 0.00011486069705164841, 1.2095572705954116, -0.007444915625685196, 0.0008944005459964158, -2.5539279747627624e-05, 0.9557625567755772, 0.002860260280510063}; 
 
         scales_.set((x<=4)*(p_dxy[0]+p_dxy[1]*x)+(x>=4&&x<=15)*(p_dxy[2]+p_dxy[3]*x+p_dxy[4]*pow(x,2))+(x>=15&&x<=200)*(p_dxy[5]+p_dxy[6]*x)+(x>200)*(p_dxy[5]+p_dxy[6]*x),
                     (x<=4)*(p_dsz[0]+p_dsz[1]*x)+(x>=4&&x<=15)*(p_dsz[2]+p_dsz[3]*x+p_dsz[4]*pow(x,2))+(x>=15&&x<=200)*(p_dsz[5]+p_dsz[6]*x)+(x>200)*(p_dsz[5]+p_dsz[6]*x),
@@ -237,7 +334,7 @@ namespace jmt {
       if (type == "electron") {
         const double p_dxy[2] = {1.1751514975615347, -0.0003876098750689068};
         const double p_dsz[2] = {1.064929992984938, 0.00010390378131054125};
-        const double p_dxydsz[2] = {1.202563534368814, -0.001312167352572044}; // no values yet 
+        const double p_dxydsz[2] = {1.202563534368814, -0.001312167352572044}; 
 
         scales_.set((x>=20&&x<=200)*(p_dxy[0]+p_dxy[1]*x)+(x>200)*(p_dxy[0]+p_dxy[1]*x),
                     (x>=20&&x<=200)*(p_dsz[0]+p_dsz[1]*x)+(x>200)*(p_dsz[0]+p_dsz[1]*x),
@@ -261,14 +358,28 @@ namespace jmt {
 
   void TrackRescaler::set(double era, int /*which*/, double pt, double eta) {
     if (enable()) {
-      if      (era == jmt::AnalysisEras::e_2017B) set_JetHT2017B(pt, eta);
-      else if (era == jmt::AnalysisEras::e_2017C) set_JetHT2017C(pt, eta);
-      else if (era == jmt::AnalysisEras::e_2017D || era == jmt::AnalysisEras::e_2017E) set_JetHT2017DE(pt, eta);
-      else if (era == jmt::AnalysisEras::e_2017F) set_JetHT2017F(pt, eta);
-      else if (era == jmt::AnalysisEras::e_2018A) set_JetHT2018A(pt, eta);
-      else if (era == jmt::AnalysisEras::e_2018B) set_JetHT2018B(pt, eta);
-      else if (era == jmt::AnalysisEras::e_2018C) set_JetHT2018C(pt, eta);
-      else if (era == jmt::AnalysisEras::e_2018D) set_JetHT2018D(pt, eta);
+      //if      (era == jmt::AnalysisEras::e_2017B) set_JetHT2017B(pt, eta);
+      //else if (era == jmt::AnalysisEras::e_2017C) set_JetHT2017C(pt, eta);
+      //else if (era == jmt::AnalysisEras::e_2017D || era == jmt::AnalysisEras::e_2017E) set_JetHT2017DE(pt, eta);     Alec changed
+      //else if (era == jmt::AnalysisEras::e_2017F) set_JetHT2017F(pt, eta);
+      //else if (era == jmt::AnalysisEras::e_2018A) set_JetHT2018A(pt, eta);
+      //else if (era == jmt::AnalysisEras::e_2018B) set_JetHT2018B(pt, eta);
+      //else if (era == jmt::AnalysisEras::e_2018C) set_JetHT2018C(pt, eta);
+      //else if (era == jmt::AnalysisEras::e_2018D) set_JetHT2018D(pt, eta);
+      if      (era == jmt::AnalysisEras::e_2017B || era == jmt::AnalysisEras::e_2017C || era == jmt::AnalysisEras::e_2017D || era == jmt::AnalysisEras::e_2017E || era == jmt::AnalysisEras::e_2017F) set_BTagDispJet2017(pt, eta);
+      else if (era == jmt::AnalysisEras::e_2018A || era == jmt::AnalysisEras::e_2018B || era == jmt::AnalysisEras::e_2018C || era == jmt::AnalysisEras::e_2018D) set_BTagDispJet2018(pt, eta);
+      else if (era == jmt::AnalysisEras::e_20161B1 || era == jmt::AnalysisEras::e_20161B2 || era == jmt::AnalysisEras::e_20161C || era == jmt::AnalysisEras::e_20161D || era == jmt::AnalysisEras::e_20161E || era == jmt::AnalysisEras::e_20161F) set_BTagDispJet20161(pt, eta);
+      else if (era == jmt::AnalysisEras::e_20162F || era == jmt::AnalysisEras::e_20162G || era == jmt::AnalysisEras::e_20162H) set_BTagDispJet20162(pt, eta);
+      else throw std::out_of_range("bad era");
+    }
+    else
+      scales_.reset();
+  }
+
+  void TrackRescaler::set(double era, int /*which*/, double pt, double eta, std::string type) {
+    if (enable()) {
+      if (era == jmt::AnalysisEras::e_2018A || era == jmt::AnalysisEras::e_2018B || 
+            era == jmt::AnalysisEras::e_2018C || era == jmt::AnalysisEras::e_2018D) set_SingleLep2018(pt, eta, type);
       else throw std::out_of_range("bad era");
     }
     else
@@ -283,6 +394,8 @@ namespace jmt {
     else
       scales_.reset();
   }
+
+  int counter = 0;
 
   TrackRescaler::ret_t TrackRescaler::scale(const reco::Track& tk) {
     ret_t r;

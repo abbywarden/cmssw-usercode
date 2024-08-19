@@ -4,7 +4,7 @@
 #include "Math/SMatrix.h"
 #include "TLorentzVector.h"
 #include "TTree.h"
-
+#include "JMTucker/MFVNeutralinoFormats/interface/VertexAux.h"
 #define JMT_STANDALONE_BTAGGING
 #include "JMTucker/Tools/interface/BTagging.h"
 
@@ -48,8 +48,9 @@ namespace mfv {
     float jet_phi[50];
     float jet_energy[50];
     unsigned char jet_id[50];
-    float jet_bdisc_old[50];
-    float jet_bdisc[50];
+    float jet_bdisc_csv[50];
+    float jet_bdisc_deepcsv[50];
+    float jet_bdisc_deepflav[50];
     float jet_hlt_pt[50];
     float jet_hlt_eta[50];
     float jet_hlt_phi[50];
@@ -70,14 +71,17 @@ namespace mfv {
     }
     float ht(float min_jet_pt=40.) const;
     bool is_btagged(int i, float min_bdisc=jmt::BTagging::discriminator_min(jmt::BTagging::tight)) const;
-    int nbtags_(float min_bdisc, bool old) const;
+    int nbtags_(float min_bdisc, int tagger) const;
     int nbtags_old(float min_bdisc) const { return nbtags_(min_bdisc, true); }
     int nbtags(float min_bdisc) const { return nbtags_(min_bdisc, false); }
 
     int nbtags_tight() const { return nbtags(jmt::BTagging::discriminator_min(jmt::BTagging::tight)); }
     int nbtags_medium() const { return nbtags(jmt::BTagging::discriminator_min(jmt::BTagging::medium)); }
     int nbtags_loose() const { return nbtags(jmt::BTagging::discriminator_min(jmt::BTagging::loose)); }
-
+    
+    float gen_pv_x0;
+    float gen_pv_y0;
+    float gen_pv_z0;
     float gen_x[2];
     float gen_y[2];
     float gen_z[2];
@@ -95,6 +99,8 @@ namespace mfv {
     std::vector<int>* p_gen_daughter_id;
     std::vector<TLorentzVector>* p_gen_bquarks;
     std::vector<TLorentzVector>* p_gen_leptons;
+    
+    //MFVVertexAuxCollection vertices;
 
     unsigned char nvtx;
     unsigned char ntk0;

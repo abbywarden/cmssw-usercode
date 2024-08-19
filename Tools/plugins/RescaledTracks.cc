@@ -82,6 +82,10 @@ void JMTRescaledTracks::produce(edm::Event& event, const edm::EventSetup&) {
                  jmt::AnalysisEras::pick(event, this),
                  which);
 
+  //  rescaler.setup(!event.isRealData() && which != -1,
+  //                jmt::AnalysisEras::pick(event, this),
+  //                which);
+
   for (size_t i = 0, ie = tracks->size(); i < ie; ++i) {
     reco::TrackRef tk(tracks, i);
     if (which == 1) output_tracks->push_back(rescaler.scale(*tk, "").rescaled_tk);

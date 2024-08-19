@@ -2,6 +2,8 @@
 #include "TRandom3.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/Math/interface/deltaR.h"
+#include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/Event.h"
@@ -11,6 +13,10 @@
 #include "JMTucker/Tools/interface/Utilities.h"
 #include "JMTucker/MFVNeutralinoFormats/interface/Event.h"
 #include "JMTucker/MFVNeutralino/interface/EventTools.h"
+#include "DataFormats/Math/interface/PtEtaPhiMass.h"
+#include "JMTucker/MFVNeutralinoFormats/interface/VertexAux.h"
+#include "TLorentzVector.h"
+#include "DataFormats/Math/interface/Point3D.h"
 
 class MFVEventHistos : public edm::EDAnalyzer {
  public:
@@ -20,8 +26,16 @@ class MFVEventHistos : public edm::EDAnalyzer {
  private:
   const edm::EDGetTokenT<MFVEvent> mevent_token;
   const edm::EDGetTokenT<double> weight_token;
+  const edm::EDGetTokenT<MFVVertexAuxCollection> vertex_token;
+  
 
   TH1F* h_w;
+  TH1F* h_nsv;
+  TH1F* h_ntrack_sv;
+  TH1F* h_sum_ntrack_sv;
+  TH1F* h_sum_noutseedtrack;
+
+
   TH1F* h_eventid;
 
   TH2F* h_gen_decay;
@@ -136,8 +150,10 @@ class MFVEventHistos : public edm::EDAnalyzer {
 
   TH1F* h_nbtags[3];
   TH2F* h_nbtags_v_bquark_code[3];
-  TH1F* h_jet_bdisc;
-  TH2F* h_jet_bdisc_v_bquark_code;
+  TH1F* h_jet_bdisc_csv;
+  TH1F* h_jet_bdisc_deepcsv;
+  TH1F* h_jet_bdisc_deepflav;
+  TH2F* h_jet_bdisc_deepflav_v_bquark_code;
   TH1F* h_bjet_pt;
   TH1F* h_bjet_eta;
   TH1F* h_bjet_phi;
@@ -249,11 +265,18 @@ class MFVEventHistos : public edm::EDAnalyzer {
 
 MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   : mevent_token(consumes<MFVEvent>(cfg.getParameter<edm::InputTag>("mevent_src"))),
-    weight_token(consumes<double>(cfg.getParameter<edm::InputTag>("weight_src")))
+    weight_token(consumes<double>(cfg.getParameter<edm::InputTag>("weight_src"))),
+	vertex_token(consumes<MFVVertexAuxCollection>(cfg.getParameter<edm::InputTag>("vertex_src")))
+
 {
   edm::Service<TFileService> fs;
 
   h_w = fs->make<TH1F>("h_w", ";event weight;events/0.1", 100, 0, 10);
+  h_nsv = fs->make<TH1F>("h_nsv", ";# of raw secondary vertices;arb. units", 20, 0, 20);
+  h_ntrack_sv = fs->make<TH1F>("h_ntrack_sv", ";ntrack/ raw secondary vertices;arb. units", 20, 0, 20);
+  h_sum_ntrack_sv = fs->make<TH1F>("h_sum_ntrack_sv", ";sum of all in-vertex seed tracks;arb. units", 50, 0, 50);
+  h_sum_noutseedtrack = fs->make<TH1F>("h_sum_noutseedtrack", ";sum of all out-vertex seed tracks;arb. units", 50, 0, 50);
+
   h_eventid = fs->make<TH1F>("h_eventid", ";eventid", 10000, 0, 10000);
 
   h_gen_decay = fs->make<TH2F>("h_gen_decay", "0-2=e,mu,tau, 3=h;decay code #0;decay code #1", 4, 0, 4, 4, 0, 4);
@@ -407,8 +430,10 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
     h_nbtags[i] = fs->make<TH1F>(TString::Format("h_nbtags_%i", i), TString::Format(";# of %s b tags;events", lmt_ex[i]), 10, 0, 10);
     h_nbtags_v_bquark_code[i] = fs->make<TH2F>(TString::Format("h_nbtags_v_bquark_code_%i", i), TString::Format(";bquark code;# of %s b tags", lmt_ex[i]), 3, 0, 3, 3, 0, 3);
   }
-  h_jet_bdisc = fs->make<TH1F>("h_jet_bdisc", ";jets' b discriminator;jets/0.02", 51, 0, 1.02);
-  h_jet_bdisc_v_bquark_code = fs->make<TH2F>("h_jet_bdisc_v_bquark_code", ";b quark code;jets' b discriminator", 3, 0, 3, 51, 0, 1.02);
+  h_jet_bdisc_csv = fs->make<TH1F>("h_jet_bdisc_csv", ";jets' csv score;jets/0.02", 51, 0, 1.02);
+  h_jet_bdisc_deepcsv = fs->make<TH1F>("h_jet_bdisc_deepcsv", ";jets' deepcsv score;jets/0.02", 51, 0, 1.02);
+  h_jet_bdisc_deepflav = fs->make<TH1F>("h_jet_bdisc_deepflav", ";jets' deepflavour score;jets/0.02", 51, 0, 1.02);
+  h_jet_bdisc_deepflav_v_bquark_code = fs->make<TH2F>("h_jet_bdisc_deepflav_v_bquark_code", ";b quark code;jets' b discriminator", 3, 0, 3, 51, 0, 1.02);
   h_bjet_pt = fs->make<TH1F>("h_bjet_pt", ";bjets p_{T} (GeV);bjets/10 GeV", 150, 0, 1500);
   h_bjet_eta = fs->make<TH1F>("h_bjet_eta", ";bjets #eta (rad);bjets/.05", 120, -3, 3);
   h_bjet_phi = fs->make<TH1F>("h_bjet_phi", ";bjets #phi (rad);bjets/.063", 100, -3.1416, 3.1416);
@@ -507,14 +532,19 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   edm::Handle<MFVEvent> mevent;
   event.getByToken(mevent_token, mevent);
 
+  edm::Handle<MFVVertexAuxCollection> auxes;
+  event.getByToken(vertex_token, auxes);
+  const int nsv = int(auxes->size());
+
   edm::Handle<double> weight;
   event.getByToken(weight_token, weight);
   const double w = *weight;
   h_w->Fill(w);
+  h_nsv->Fill(nsv, w);
   h_eventid->Fill(event.id().event());
 
   //////////////////////////////////////////////////////////////////////////////
-
+  /*
   h_gen_decay->Fill(mevent->gen_decay_type[0], mevent->gen_decay_type[1], w);
   h_gen_flavor_code->Fill(mevent->gen_flavor_code, w);
 
@@ -551,6 +581,7 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
 
   const size_t ngenjet = mevent->gen_jets.size();
   h_gen_jets->Fill(ngenjet, w);
+  
 
   const size_t ngendaughter = mevent->gen_daughters.size();
   h_gen_daughters->Fill(ngendaughter, w);
@@ -594,13 +625,23 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
       h_bquark_pairdphi->Fill(reco::deltaPhi(mevent->gen_bquarks[i].Phi(), mevent->gen_bquarks[j].Phi()), w);
   }
 
+  for (int igenv = 0; igenv < 2; ++igenv) {
+    double genx = mevent->gen_lsp_decay[igenv*3+0];
+    double geny = mevent->gen_lsp_decay[igenv*3+1];
+    double genz = mevent->gen_lsp_decay[igenv*3+2];
+    double genbs2ddist = mevent->mag(genx - mevent->bsx_at_z(genz),
+                                     geny - mevent->bsy_at_z(genz) 
+        );
+    h_gen_bs2ddist->Fill(genbs2ddist, w);
+  }
+  */
   h_minlspdist2d->Fill(mevent->minlspdist2d(), w);
   h_lspdist2d->Fill(mevent->lspdist2d(), w);
   h_lspdist3d->Fill(mevent->lspdist3d(), w);
-  h_llp_dphi->Fill(mevent->gen_lsp_phi[0]-mevent->gen_lsp_phi[1], w);
+  //h_llp_dphi->Fill(mevent->gen_lsp_phi[0]-mevent->gen_lsp_phi[1], w);
 
-  h_llp_pt_vecsum->Fill((mevent->gen_lsp_p4(0)+mevent->gen_lsp_p4(1)).Pt(), w);
-  h_llp0pt_llp1pt->Fill(std::max(mevent->gen_lsp_pt[0], mevent->gen_lsp_pt[1]), std::min(mevent->gen_lsp_pt[0], mevent->gen_lsp_pt[1]), w);
+  //h_llp_pt_vecsum->Fill((mevent->gen_lsp_p4(0)+mevent->gen_lsp_p4(1)).Pt(), w);
+  //h_llp0pt_llp1pt->Fill(std::max(mevent->gen_lsp_pt[0], mevent->gen_lsp_pt[1]), std::min(mevent->gen_lsp_pt[0], mevent->gen_lsp_pt[1]), w);
   double decay_quarks0_pt[2] = {-1,-1};
   double decay_quarks1_pt[2] = {-1,-1};
   double decaylsp0_pt = -1;
@@ -1119,8 +1160,10 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   for (size_t ijet = 0; ijet < mevent->jet_id.size(); ++ijet) {
     if (mevent->jet_pt[ijet] < mfv::min_jet_pt)
       continue;
-    h_jet_bdisc->Fill(mevent->jet_bdisc[ijet], w);
-    h_jet_bdisc_v_bquark_code->Fill(mevent->gen_flavor_code, mevent->jet_bdisc[ijet], w);
+    h_jet_bdisc_csv->Fill(mevent->jet_bdisc_csv[ijet], w);
+    h_jet_bdisc_deepcsv->Fill(mevent->jet_bdisc_deepcsv[ijet], w);
+    h_jet_bdisc_deepflav->Fill(mevent->jet_bdisc_deepflav[ijet], w);
+    h_jet_bdisc_deepflav_v_bquark_code->Fill(mevent->gen_flavor_code, mevent->jet_bdisc_deepflav[ijet], w);
     if (mevent->is_btagged(ijet, ibtag)) {
       h_bjet_pt->Fill(mevent->jet_pt[ijet], w);
       h_bjet_eta->Fill(mevent->jet_eta[ijet], w);

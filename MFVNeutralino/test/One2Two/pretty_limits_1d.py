@@ -4,8 +4,8 @@ from JMTucker.Tools.ROOTTools import *
 ROOT.gErrorIgnoreLevel = 1001 # Suppress TCanvas::SaveAs messages.
 
 which = '2017p8' if '2017p8' in sys.argv else 'run2'
-intlumi = 140 if which == 'run2' else 101
-path = plot_dir('pretty_limits_1d_June2021_%s' % which, make=True)
+intlumi = 120 if which == 'run2' else 101
+path = plot_dir('pretty_limits_1d_May2024_%s' % which, make=True)
 
 ts = tdr_style()
 
@@ -20,20 +20,27 @@ def write(font, size, x, y, text):
 f = ROOT.TFile('limits_1d_%s.root' % which)
 
 kinds = [
-    'multijet_M0800',
-    'multijet_M1600',
-    'multijet_M2400',
-    'multijet_M3000',
+    'multijet_M0200',
+    'multijet_M0300',
+    'multijet_M0400',
+    'multijet_M0600',
     'multijet_tau300um',
     'multijet_tau1mm',
     'multijet_tau10mm',
-    'dijet_M0800',
-    'dijet_M1600',
-    'dijet_M2400',
-    'dijet_M3000',
+    'dijet_M0200',
+    'dijet_M0300',
+    'dijet_M0400',
+    'dijet_M0600',
     'dijet_tau300um',
     'dijet_tau1mm',
     'dijet_tau10mm',
+    'dijet_bb_tau300um',
+    'dijet_bb_tau1mm',
+    'dijet_bb_tau10mm',
+    'dijet_bb_M0200',
+    'dijet_bb_M0300',
+    'dijet_bb_M0400',
+    'dijet_bb_M0600',
     ]
 
 def tau(tau):
@@ -51,10 +58,14 @@ def nice_leg(kind):
         return '#tilde{#chi}^{0}/#tilde{g} #rightarrow tbs', 'm = %i GeV' % int(kind.replace('multijet_M', ''))
     elif kind.startswith('dijet_M'):
         return '#tilde{t} #rightarrow #bar{d}#kern[0.1]{#bar{d}}', 'm = %i GeV' % int(kind.replace('dijet_M', ''))
+    elif kind.startswith('dijet_bb_M'):
+        return '#tilde{t} #rightarrow #bar{b}#kern[0.1]{#bar{b}}', 'm = %i GeV' % int(kind.replace('dijet_bb_M', ''))
     elif kind.startswith('multijet_tau'):
         return '#tilde{#chi}^{0}/#tilde{g} #rightarrow tbs', 'c#tau = ' + tau(kind.replace('multijet_tau', ''))
     elif kind.startswith('dijet_tau'):
         return '#tilde{t} #rightarrow #bar{d}#kern[0.1]{#bar{d}}', 'c#tau = ' + tau(kind.replace('dijet_tau', ''))
+    elif kind.startswith('dijet_bb_tau'):
+        return '#tilde{t} #rightarrow #bar{b}#kern[0.1]{#bar{b}}', 'c#tau = ' + tau(kind.replace('dijet_bb_tau', ''))
 
 def nice_theory(kind, idx=1):
     if kind.startswith('multijet') and idx == 1:
@@ -79,6 +90,7 @@ for kind in kinds:
     c.SetRightMargin(0.085)
 
     observed = f.Get('%s/observed' % kind)
+    expect16 = f.Get('%s/expect16' % kind)
     expect50 = f.Get('%s/expect50' % kind)
     expect68 = f.Get('%s/expect68' % kind)
     expect95 = f.Get('%s/expect95' % kind)
@@ -157,7 +169,8 @@ for kind in kinds:
     yax.SetLabelSize(0.045)
 
     if versus_mass:
-        xax.SetLimits(105, 3200)
+        #xax.SetLimits(105, 3200)
+        xax.SetLimits(200, 1600)
         yax.SetRangeUser(0.01, 100000 if versus_tau else 130) #(versus_tau and draw_theory) else 130)
     elif versus_tau:
         xax.SetLimits(0.068, 130)
@@ -168,22 +181,27 @@ for kind in kinds:
     expect50.SetLineStyle(2)
     theory.SetLineWidth(2)
     if kind.startswith('multijet'):
-        theory_color = 9
+        theory_color = ROOT.kViolet
         theory2_color = 96
     elif kind.startswith('dijet'):
-        theory_color = 46
+        theory_color = ROOT.kViolet
     theory.SetLineColor(theory_color)
-    theory.SetFillColorAlpha(theory_color, 0.5)
+    #theory.SetFillColorAlpha(theory_color, 0.5)
+    theory.SetFillColorAlpha(theory_color, 1.0)
 
     if theory2 :
         theory2.SetLineWidth(2)
         theory2.SetLineColor(theory2_color)
         theory2.SetFillColorAlpha(theory2_color, 0.5)
+        #theory2.SetFillColorAlpha(theory_color, 1.0)
 
     expect95.SetLineColor(ROOT.kOrange)
     expect68.SetLineColor(ROOT.kGreen+1)
     expect95.SetFillColor(ROOT.kOrange)
     expect68.SetFillColor(ROOT.kGreen+1)
+
+    expect16.SetLineWidth(2)
+    expect16.SetLineColor(ROOT.kBlue)
 
     expect95.Draw('3')
     expect68.Draw('3')
@@ -193,7 +211,7 @@ for kind in kinds:
     if theory2 :
         theory2.Draw('L3')
     expect50.Draw('L')
-    observed.Draw('L')
+    #observed.Draw('L')
 
 #    if draw_theory:
 #        leg = ROOT.TLegend(0.552, 0.563, 0.870, 0.867)
@@ -209,24 +227,25 @@ for kind in kinds:
     leg.SetFillColor(ROOT.kWhite)
     leg.SetBorderSize(0)
     leg.AddEntry(0, '#kern[-0.22]{95% CL upper limits:}', '')
-    leg.AddEntry(observed, 'Observed', 'L')
+    #leg.AddEntry(observed, 'Observed', 'L')
     leg.AddEntry(expect50, 'Median expected', 'L')
+    #leg.AddEntry(expect16, 'Previous Results', 'L')
     leg.AddEntry(expect68, '68% expected', 'F')
     leg.AddEntry(expect95, '95% expected', 'F')
 #    if draw_theory:
 #        leg.AddEntry(theory, nice_theory(kind) + ', #bf{#it{#Beta}}=1', 'LF')
-    leg.AddEntry(theory, nice_theory(kind) + ', #bf{#it{#Beta}}=1', 'LF')
+#    leg.AddEntry(theory, nice_theory(kind) + ', #bf{#it{#Beta}}=0.1', 'LF')
     if theory2 :
-        leg.AddEntry(theory2, nice_theory(kind,2) + ', #bf{#it{#Beta}}=1', 'LF')
+        leg.AddEntry(theory2, nice_theory(kind,2) + ', #bf{#it{#Beta}}=0.1', 'LF')
     leg.Draw()
 
     labels = nice_leg(kind)
 
-    if "dijet_M" in kind :
+    if "dijet_M" in kind or "dijet_bb_M" in kind:
         sig_text         = write(42, 0.04, 0.17, 0.655, labels[0])
         mass_or_tau_text = write(42, 0.04, 0.17, 0.605, labels[1])
         cms = write(61, 0.050, 0.16, 0.825, 'CMS')
-    elif "dijet_tau" in kind :
+    elif "dijet_tau" in kind or "dijet_bb_tau" in kind:
         sig_text         = write(42, 0.04, 0.17, 0.215, labels[0])
         mass_or_tau_text = write(42, 0.04, 0.17, 0.165, labels[1])
         cms = write(61, 0.050, 0.16, 0.825, 'CMS')

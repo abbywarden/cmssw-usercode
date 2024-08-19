@@ -110,8 +110,9 @@ void MFVMiniTreer::analyze(const edm::Event& event, const edm::EventSetup&) {
     nt.jet_phi[i] = mevent->jet_phi[i];
     nt.jet_energy[i] = mevent->jet_energy[i];
     nt.jet_id[i] = mevent->jet_id[i];
-    nt.jet_bdisc_old[i] = mevent->jet_bdisc_old[i];
-    nt.jet_bdisc[i] = mevent->jet_bdisc[i];
+    nt.jet_bdisc_csv[i] = mevent->jet_bdisc_csv[i];
+    nt.jet_bdisc_deepcsv[i] = mevent->jet_bdisc_deepcsv[i];
+    nt.jet_bdisc_deepflav[i] = mevent->jet_bdisc_deepflav[i];
 
     if (mevent->jet_hlt_pt.size() > size_t(i)) {
       nt.jet_hlt_pt[i] = mevent->jet_hlt_pt[i];
@@ -135,6 +136,10 @@ void MFVMiniTreer::analyze(const edm::Event& event, const edm::EventSetup&) {
       nt.displaced_jet_hlt_energy[i] = -1;
     }
   }
+
+  nt.gen_pv_x0 = mevent->gen_pv[0];
+  nt.gen_pv_y0 = mevent->gen_pv[1];
+  nt.gen_pv_z0 = mevent->gen_pv[2];
 
   for (int i = 0; i < 2; ++i) {
     const double z = mevent->gen_lsp_decay[i*3+2];
@@ -168,11 +173,14 @@ void MFVMiniTreer::analyze(const edm::Event& event, const edm::EventSetup&) {
 
   MFVVertexAuxCollection vertices;
 
-  for (const MFVVertexAux& v : *input_vertices)
+  for (const MFVVertexAux& v : *input_vertices) {
     vertices.push_back(xform_vertex(*mevent, v));
+  }
 
   h_nsv->Fill(input_vertices->size());
   h_nsvsel->Fill(vertices.size());
+
+  //nt.vertices = vertices;
 
   if (vertices.size() == 1) {
     const MFVVertexAux& v0 = vertices[0];
@@ -239,10 +247,8 @@ void MFVMiniTreer::analyze(const edm::Event& event, const edm::EventSetup&) {
     nt.rescale_bs2derr0 = v0.rescale_bs2derr;
     nt.bs2derr1 = v1.bs2derr;
     nt.rescale_bs2derr1 = v1.rescale_bs2derr;
+    
   }
-  else
-    return;
-
   tree->Fill();
 }
 

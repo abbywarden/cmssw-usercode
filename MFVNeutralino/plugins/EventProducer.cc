@@ -48,6 +48,7 @@ private:
   const edm::EDGetTokenT<mfv::MCInteraction> mci_token;
   const edm::EDGetTokenT<std::vector<PileupSummaryInfo> > pileup_summary_token;
   const edm::EDGetTokenT<pat::JetCollection> jets_token;
+  const edm::EDGetTokenT<reco::CaloJetCollection> calo_jets_token;
   const edm::EDGetTokenT<double> rho_token;
   const bool use_met;
   const edm::EDGetTokenT<pat::METCollection> met_token;
@@ -118,6 +119,7 @@ MFVEventProducer::MFVEventProducer(const edm::ParameterSet& cfg)
     mci_token(consumes<mfv::MCInteraction>(cfg.getParameter<edm::InputTag>("mci_src"))),
     pileup_summary_token(consumes<std::vector<PileupSummaryInfo> >(cfg.getParameter<edm::InputTag>("pileup_info_src"))),
     jets_token(consumes<pat::JetCollection>(cfg.getParameter<edm::InputTag>("jets_src"))),
+    calo_jets_token(consumes<reco::CaloJetCollection>(cfg.getParameter<edm::InputTag>("calo_jets_src"))),
     rho_token(consumes<double>(cfg.getParameter<edm::InputTag>("rho_src"))),
     use_met(cfg.getParameter<edm::InputTag>("met_src").label() != ""),
     met_token(consumes<pat::METCollection>(cfg.getParameter<edm::InputTag>("met_src"))),
@@ -244,7 +246,7 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
     edm::Handle<mfv::MCInteraction> mci;
     event.getByToken(mci_token, mci);
 
-    // mevent->secondaries = mci->secondaries;
+    //mevent->secondaries = mci->secondaries;
     // mevent->primaries = mci->primaries;
 
     std::vector<reco::GenParticleRef> mci_lep;
@@ -253,7 +255,6 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
     // event.getByToken(secondaries_token, secondaries);
     // edm::Handle<std::vector<double>> primaries;
     // event.getByToken(secondaries_token, primaries);
-
     if (mci->valid()) {
       mevent->gen_valid = true;
 
@@ -271,21 +272,13 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
 	mevent->gen_lsp_decay[i*3+2] = p.z;
 
 	mevent->gen_decay_type[i] = mci->decay_type()[i];
-  if (mci->secondaries(i).size() == 0) std::cout << "warning : found no gen daughters..." << std::endl;
+      if (mci->secondaries(i).size() == 0) std::cout << "warning : found no gen daughters..." << std::endl;
         for (const reco::GenParticleRef& s : mci->secondaries(i)) {
           mevent->gen_daughters.push_back(MFVEvent::p4(s->pt(), s->eta(), s->phi(), s->mass()));
           mevent->gen_daughter_id.push_back(s->pdgId());
         }
       }
       
-      // for (const reco::GenParticleRef& p : *primaries) {
-      // 	mevent->gen_lsp.push_back(MFVEvent::p4(p->pt(), p->eta(), p->phi(), p->mass()));
-      // }
-
-      // for (const reco::GenParticeRef& s : *secondaries) {
-      // 	mevent->gen_daughters.push_back(MFVEvent::p4(s->pt(), s->eta(), s->phi(), s->mass()));
-      // 	mevent->gen_daughter_id.push_back(s->pdgId());
-      // }
       mci_lep = mci->light_leptons();
     }
 
@@ -439,8 +432,9 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
     mevent->jet_pudisc.push_back(jet.userFloat("pileupJetId:fullDiscriminant")); // to be removed and put into _id when working points defined
     mevent->jet_pt.push_back(jet.pt());
     mevent->jet_raw_pt.push_back(jet.pt()*jet.jecFactor("Uncorrected"));
-    mevent->jet_bdisc_old.push_back(jmt::BTagging::discriminator(jet, true));
-    mevent->jet_bdisc.push_back(jmt::BTagging::discriminator(jet));
+    mevent->jet_bdisc_csv.push_back(jmt::BTagging::discriminator(jet, 0));
+    mevent->jet_bdisc_deepcsv.push_back(jmt::BTagging::discriminator(jet, 1));
+    mevent->jet_bdisc_deepflav.push_back(jmt::BTagging::discriminator(jet, 2));
     mevent->jet_eta.push_back(jet.eta());
     mevent->jet_phi.push_back(jet.phi());
     mevent->jet_energy.push_back(jet.energy());
@@ -499,6 +493,16 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
         mevent->jet_track_hp_push_back(tk->hitPattern().numberOfValidPixelHits(), tk->hitPattern().numberOfValidStripHits(), tk->hitPattern().pixelLayersWithMeasurement(), tk->hitPattern().stripLayersWithMeasurement());
       }
     }
+  }
+
+  edm::Handle<reco::CaloJetCollection> calo_jets;
+  event.getByToken(calo_jets_token, calo_jets);
+
+  for (const reco::CaloJet& cjet : *calo_jets) {
+    mevent->calo_jet_pt.push_back(cjet.pt());
+    mevent->calo_jet_eta.push_back(cjet.eta());
+    mevent->calo_jet_phi.push_back(cjet.phi());
+    mevent->calo_jet_energy.push_back(cjet.energy());
   }
 
 //////////////////////////////////////////////////////////////////////

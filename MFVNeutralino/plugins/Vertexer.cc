@@ -1,5 +1,12 @@
 #include "TH2.h"
 #include "TMath.h"
+#include <math.h>  
+#include "JMTucker/MFVNeutralino/interface/NtupleFiller.h"
+#include "JMTucker/MFVNeutralino/interface/Ntuple.h"
+#include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
+#include "TrackingTools/GeomPropagators/interface/AnalyticalTrajectoryExtrapolatorToLine.h"
+#include "TrackingTools/GeomPropagators/interface/AnalyticalImpactPointExtrapolator.h"
+#include "RecoVertex/VertexPrimitives/interface/ConvertToFromReco.h"
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "DataFormats/Math/interface/deltaPhi.h"
 #include "DataFormats/Math/interface/deltaR.h"
@@ -8,6 +15,7 @@
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
+#include "DataFormats/TrackReco/interface/TrackBase.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "FWCore/Framework/interface/EDProducer.h"
@@ -24,16 +32,18 @@
 #include "JMTucker/MFVNeutralinoFormats/interface/VertexerPairEff.h"
 #include "JMTucker/MFVNeutralino/interface/VertexerParams.h"
 #include "JMTucker/Tools/interface/Utilities.h"
+#include "JMTucker/Tools/interface/TrackRescaler.h"
+#include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+#include <TRandom3.h>
 
 class MFVVertexer : public edm::EDProducer {
-public:
-  MFVVertexer(const edm::ParameterSet&);
-  virtual void produce(edm::Event&, const edm::EventSetup&);
+  public:
+    MFVVertexer(const edm::ParameterSet&);
+    virtual void produce(edm::Event&, const edm::EventSetup&);
 
-private:
-  typedef std::set<reco::TrackRef> track_set;
-  typedef std::vector<reco::TrackRef> track_vec;
-
+  private:
+    typedef std::set<reco::TrackRef> track_set;
+    typedef std::vector<reco::TrackRef> track_vec;
     std::pair<bool, std::vector<std::vector<size_t>>> sharedjets(const size_t vtx0idx, const size_t vtx1idx, const std::vector < std::vector<size_t>>& sv_match_jetidx, const std::vector < std::vector<size_t>>& sv_match_trkidx);
     bool hasCommonElement(std::vector<size_t> vec0, std::vector<size_t> vec1);
     std::vector<size_t>::iterator getFirstCommonElement(std::vector<size_t>& vec0, std::vector<size_t>& vec1);
@@ -41,76 +51,80 @@ private:
     void createSetofSharedJetTracks(std::vector<std::vector<size_t>>& vec_sharedjet_track_idx, std::vector<size_t>& vec_special_sharedjet_track_idx, std::vector<size_t>& vec_all_track_idx, std::vector<size_t>& vec_sharedjet_idx, size_t sharedjet_idx); 
     bool match_track_jet(const reco::Track& tk, const pat::Jet& jet, const pat::JetCollection& jets, const size_t& idx);
 
-  void finish(edm::Event&, const std::vector<reco::TransientTrack>&, std::unique_ptr<reco::VertexCollection>, std::unique_ptr<VertexerPairEffs>, const std::vector<std::pair<track_set, track_set>>&);
-  
-  enum stepEnum{beforedzfit, afterdzfit, aftermerge, aftersharedjets, N_STEPS};
-  std::vector<TString> stepStrs = {"beforedzfit", "afterdzfit", "aftermerge", "aftersharedjets", "N_STEPS"};
-  void fillCommonOutputHists(std::unique_ptr<reco::VertexCollection>& vertices, const reco::Vertex& fake_bs_vtx, edm::ESHandle<TransientTrackBuilder>& tt_builder, size_t step);
-  
-  template <typename T>
-  void print_track_set(const T& ts) const {
-    for (auto r : ts)
-      printf(" %u", r.key());
-  }
+    void finish(edm::Event&, const std::vector<reco::TransientTrack>&, std::unique_ptr<reco::VertexCollection>, std::unique_ptr<VertexerPairEffs>, const std::vector<std::pair<track_set, track_set>>&);
 
-  template <typename T>
-  void print_track_set(const T& ts, const reco::Vertex& v) const {
-    for (auto r : ts)
-      printf(" %u%s", r.key(), (v.trackWeight(r) < mfv::track_vertex_weight_min ? "!" : ""));
-  }
+    enum stepEnum{beforedzfit, afterdzfit, aftermerge, aftersharedjets, aftertrackattach, N_STEPS};
+    std::vector<TString> stepStrs = {"beforedzfit","afterdzfit", "aftermerge", "aftersharedjets", "aftertrackattach", "N_STEPS"};
+    void fillCommonOutputHists(std::unique_ptr<reco::VertexCollection>& vertices, const reco::Vertex& fake_bs_vtx, edm::ESHandle<TransientTrackBuilder>& tt_builder, size_t step);
 
-  void print_track_set(const reco::Vertex& v) const {
-    for (auto r = v.tracks_begin(), re = v.tracks_end(); r != re; ++r)
-      printf(" %lu%s", r->key(), (v.trackWeight(*r) < mfv::track_vertex_weight_min ? "!" : ""));
-  }
-
-  bool is_track_subset(const track_set& a, const track_set& b) const {
-    bool is_subset = true;
-    const track_set& smaller = a.size() <= b.size() ? a : b;
-    const track_set& bigger  = a.size() <= b.size() ? b : a;
-    
-    for (auto t : smaller)
-      if (bigger.count(t) < 1) {
-        is_subset = false;
-        break;
+    template <typename T>
+      void print_track_set(const T& ts) const {
+        for (auto r : ts)
+          printf(" %u", r.key());
       }
 
-    return is_subset;
-  }
-  
-  track_set vertex_track_set(const reco::Vertex& v, const double min_weight = mfv::track_vertex_weight_min) const {
-    track_set result;
-    for (auto it = v.tracks_begin(), ite = v.tracks_end(); it != ite; ++it) {
-      const double w = v.trackWeight(*it);
-      const bool use = w >= min_weight;
-      assert(use);
-      // if (verbose) ("trk #%2i pt %6.3f eta %6.3f phi %6.3f dxy %6.3f dz %6.3f w %5.3f  use? %i\n", int(it-v.tracks_begin()), (*it)->pt(), (*it)->eta(), (*it)->phi(), (*it)->dxy(), (*it)->dz(), w, use);
-      if (use)
-        result.insert(it->castTo<reco::TrackRef>());
+    template <typename T>
+      void print_track_set(const T & ts, const reco::Vertex & v) const {
+        for (auto r : ts)
+          printf(" %u%s", r.key(), (v.trackWeight(r) < mfv::track_vertex_weight_min ? "!" : ""));
+      }
+
+    void print_track_set(const reco::Vertex & v) const {
+      for (auto r = v.tracks_begin(), re = v.tracks_end(); r != re; ++r)
+        printf(" %lu%s", r->key(), (v.trackWeight(*r) < mfv::track_vertex_weight_min ? "!" : ""));
     }
 
-    return result;
-  }
+    bool is_track_subset(const track_set & a, const track_set & b) const {
+      bool is_subset = true;
+      const track_set& smaller = a.size() <= b.size() ? a : b;
+      const track_set& bigger = a.size() <= b.size() ? b : a;
 
-  track_vec vertex_track_vec(const reco::Vertex& v, const double min_weight = mfv::track_vertex_weight_min) const {
-    track_set s = vertex_track_set(v, min_weight);
-    return track_vec(s.begin(), s.end());
-  }
+      for (auto t : smaller)
+        if (bigger.count(t) < 1) {
+          is_subset = false;
+          break;
+        }
 
-  Measurement1D vertex_dist(const reco::Vertex& v0, const reco::Vertex& v1) const {
-    if (use_2d_vertex_dist)
-      return vertex_dist_2d.distance(v0, v1);
-    else
-      return vertex_dist_3d.distance(v0, v1);
-  }
+      return is_subset;
+    }
 
-  std::pair<bool, Measurement1D> track_dist(const reco::TransientTrack& t, const reco::Vertex& v) const {
-    if (use_2d_track_dist) {
+    track_set vertex_track_set(const reco::Vertex & v, const double min_weight = mfv::track_vertex_weight_min) const {
+      track_set result;
+
+      for (auto it = v.tracks_begin(), ite = v.tracks_end(); it != ite; ++it) {
+        const double w = v.trackWeight(*it);
+        const bool use = w >= min_weight;
+        assert(use);
+        //if (verbose) ("trk #%2i pt %6.3f eta %6.3f phi %6.3f dxy %6.3f dz %6.3f w %5.3f  use? %i\n", int(it-v.tracks_begin()), (*it)->pt(), (*it)->eta(), (*it)->phi(), (*it)->dxy(), (*it)->dz(), w, use);
+        if (use)
+          result.insert(it->castTo<reco::TrackRef>());
+      }
+
+      return result;
+    }
+
+    track_vec vertex_track_vec(const reco::Vertex & v, const double min_weight = mfv::track_vertex_weight_min) const {
+      track_set s = vertex_track_set(v, min_weight);
+      return track_vec(s.begin(), s.end());
+    }
+
+    Measurement1D vertex_dist(const reco::Vertex & v0, const reco::Vertex & v1) const {
+      if (use_2d_vertex_dist)
+        return vertex_dist_2d.distance(v0, v1);
+      else
+        return vertex_dist_3d.distance(v0, v1);
+    }
+
+    std::pair<bool, Measurement1D> track_dist(const reco::TransientTrack & t, const reco::Vertex & v) const {
+      if (use_2d_track_dist)
+        return IPTools::absoluteTransverseImpactParameter(t, v);
+      else
+        return IPTools::absoluteImpactParameter3D(t, v);
+    }
+
+    std::pair<bool, Measurement1D> track_dist2d(const reco::TransientTrack & t, const reco::Vertex & v) const {
       return IPTools::absoluteTransverseImpactParameter(t, v);
     }
-    else
-      return IPTools::absoluteImpactParameter3D(t, v);
-  }
 
   std::pair<bool, Measurement1D> track_dist2d(const reco::TransientTrack & t, const reco::Vertex & v) const {
     return IPTools::absoluteTransverseImpactParameter(t, v);
@@ -168,6 +182,9 @@ private:
   const bool remove_one_track_at_a_time;
   const double max_nm1_refit_dist3;
   const double max_nm1_refit_distz;
+  const double max_nm1_refit_distz_sig;
+  const bool ignore_lep_in_refit_distz;
+  const bool order_seed_vertex;
   const int max_nm1_refit_count;
   const double trackrefine_sigmacut;
   const double trackrefine_trimmax;
@@ -182,6 +199,7 @@ private:
   const std::string module_label;
 
   TH1F* h_n_seed_vertices;
+  TH1F* h_n_at_least_3trk_seed_vertices;
   TH1F* h_seed_vertex_track_weights;
   TH1F* h_seed_vertex_chi2;
   TH1F* h_seed_vertex_ndof;
@@ -196,7 +214,8 @@ private:
   TH1F* h_n_resets;
   TH1F* h_n_onetracks;
 
-  // TH1F* h_n_noshare_vertices;
+  TH1F* h_n_at_least_3trk_noshare_vertices;
+  TH1F* h_n_noshare_vertices;
   TH1F* h_noshare_vertex_ntracks;
   TH1F* h_noshare_vertex_mass;
   TH1F* h_noshare_vertex_track_weights;
@@ -233,6 +252,9 @@ private:
   TH1F* h_n_at_least_4trk_output_vertices;
   TH1F* h_n_at_least_5trk_output_vertices;
 
+  TH1F* h_failedseed_vertex_chi2;
+  TH1F* h_failedseed_vertex_isvalid;
+  
   TH1F* h_dz_vertex_chi2;
   TH1F* h_dz_vertex_tkvtxdistz;
   TH1F* h_dz_vertex_tkvtxdisterrz;
@@ -247,14 +269,15 @@ private:
   TH1F* h_dz_vertex_vtxnm1_z;
   TH1F* h_dz_vertex_cov_vtxdistsigz;
 
-
   TH1F* hs_output_vertex_tkvtxdist[stepEnum::N_STEPS];
   TH1F* hs_output_vertex_tkvtxdisterr[stepEnum::N_STEPS];
   TH1F* hs_output_vertex_tkvtxdistsig[stepEnum::N_STEPS];
   TH1F* hs_n_at_least_3trk_output_vertices[stepEnum::N_STEPS];
+
   TH1F* hs_n_at_least_4trk_output_vertices[stepEnum::N_STEPS];
   TH1F* hs_n_at_least_5trk_output_vertices[stepEnum::N_STEPS];
   TH1F* hs_n_nice_output_vertices[stepEnum::N_STEPS];
+
   TH1F* hs_output_vertex_nm1_bsbs2ddist[stepEnum::N_STEPS];
   TH1F* hs_output_vertex_nm1_bs2derr[stepEnum::N_STEPS];
   TH1F* hs_output_vertex_ntracks[stepEnum::N_STEPS];
@@ -315,7 +338,6 @@ private:
 
   TH2F* h_dzstage_droppedtk_dphi_vs_sigma;
 
-
 };
 
 MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
@@ -345,6 +367,9 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
     remove_one_track_at_a_time(cfg.getParameter<bool>("remove_one_track_at_a_time")),
     max_nm1_refit_dist3(cfg.getParameter<double>("max_nm1_refit_dist3")),
     max_nm1_refit_distz(cfg.getParameter<double>("max_nm1_refit_distz")),
+    max_nm1_refit_distz_sig(cfg.getParameter<double>("max_nm1_refit_distz_sig")), 
+    ignore_lep_in_refit_distz(cfg.getParameter<bool>("ignore_lep_in_refit_distz")),
+    order_seed_vertex(cfg.getParameter<bool>("order_seed_vertex")),
     max_nm1_refit_count(cfg.getParameter<int>("max_nm1_refit_count")),
     trackrefine_sigmacut(cfg.getParameter<double>("trackrefine_sigmacut")),
     trackrefine_trimmax(cfg.getParameter<double>("trackrefine_trimmax")),
@@ -364,23 +389,40 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
   produces<reco::VertexCollection>();
   produces<VertexerPairEffs>();
   produces<reco::TrackCollection>("seed"); // JMTBAD remove me
+  produces<reco::TrackCollection>("all"); 
   produces<reco::TrackCollection>("inVertices");
 
   if (histos) {
     edm::Service<TFileService> fs;
 
-    h_n_seed_vertices                = fs->make<TH1F>("h_n_seed_vertices",                "",  50,   0,    200);
-    h_seed_vertex_track_weights      = fs->make<TH1F>("h_seed_vertex_track_weights",      "",  21,   0,      1.05);
-    h_seed_vertex_chi2               = fs->make<TH1F>("h_seed_vertex_chi2",               "",  20,   0, max_seed_vertex_chi2);
-    h_seed_vertex_ndof               = fs->make<TH1F>("h_seed_vertex_ndof",               "",  10,   0,     20);
-    h_seed_vertex_x                  = fs->make<TH1F>("h_seed_vertex_x",                  "", 100,  -1,      1);
-    h_seed_vertex_y                  = fs->make<TH1F>("h_seed_vertex_y",                  "", 100,  -1,      1);
-    h_seed_vertex_rho                = fs->make<TH1F>("h_seed_vertex_rho",                "", 100,   0,      2);
-    h_seed_vertex_phi                = fs->make<TH1F>("h_seed_vertex_phi",                "",  50,  -3.15,   3.15);
-    h_seed_vertex_z                  = fs->make<TH1F>("h_seed_vertex_z",                  "",  40, -20,     20);
-    h_seed_vertex_r                  = fs->make<TH1F>("h_seed_vertex_r",                  "", 100,   0,      2);
-    h_seed_vertex_paird2d            = fs->make<TH1F>("h_seed_vertex_paird2d",            "", 100,   0,      0.2);
-    h_seed_vertex_pairdphi           = fs->make<TH1F>("h_seed_vertex_pairdphi",           "", 100,  -3.14,   3.14);
+    h_failedseed_vertex_chi2            = fs->make<TH1F>("h_failedseed_vertex_chi2",      ";normalized chi2",  40,   0, 40);
+    h_failedseed_vertex_isvalid         = fs->make<TH1F>("h_failedseed_vertex_isvalid",   ";isvalid?",  2,   0, 2);
+    h_dz_vertex_chi2                    = fs->make<TH1F>("h_dz_vertex_chi2",              ";normalized chi2",  40,   0, 40);
+    h_dz_vertex_tkvtxdistz              = fs->make<TH1F>("h_dz_vertex_tkvtxdistz", ";tkvtxdistz (cm.)", 80, -0.1, 0.1);
+    h_dz_vertex_tkvtxdisterrz           = fs->make<TH1F>("h_dz_vertex_tkvtxdisterrz", ";err tkvtxdistz (cm.)", 80, 0, 0.1);
+    h_dz_vertex_tkvtxdistsigz           = fs->make<TH1F>("h_dz_vertex_tkvtxdistsigz", ";n#sigma tkvtxdistz (cm.)", 40, -10, 10);
+    h_dz_vertex_tkvtxdistxy              = fs->make<TH1F>("h_dz_vertex_tkvtxdistxy", ";tkvtxdistxy (cm.)", 80, -0.1, 0.1);
+    h_dz_vertex_tkvtxdisterrxy          = fs->make<TH1F>("h_dz_vertex_tkvtxdisterrxy", ";err tkvtxdistxy (cm.)", 80, 0, 0.1);
+    h_dz_vertex_tkvtxdistsigxy           = fs->make<TH1F>("h_dz_vertex_tkvtxdistsigxy", ";n#sigma tkvtxdistxy (cm.)", 40, -10, 10);
+    h_dz_vertex_vtxdistz              = fs->make<TH1F>("h_dz_vertex_vtxdistz", ";shift vtxdistz (cm.)", 100, -0.025, 0.025);
+    h_dz_vertex_cov_vtxdisterrz       = fs->make<TH1F>("h_dz_vertex_cov_vtxdisterrz", ";sqrt(cov_zz_nm1vtx - cov_zz_vtx) (cm.)", 40, 0, 0.2);
+    h_dz_vertex_vtxnm1_covzz        = fs->make<TH1F>("h_dz_vertex_vtxnm1_covzz", ";sqrt(cov_zz_nm1vtx)(cm.)", 40, 0, 0.1);
+    h_dz_vertex_vtx_covzz           = fs->make<TH1F>("h_dz_vertex_vtx_covzz", ";sqrt(cov_zz_vtx)(cm.)", 40, 0, 0.1);
+    h_dz_vertex_vtxnm1_z               = fs->make<TH1F>("h_dz_vertex_vtxnm1_z", ";vtxnm1's z (cm.)", 200, -10.0, 10.0);
+    h_dz_vertex_cov_vtxdistsigz  = fs->make<TH1F>("h_dz_vertex_cov_vtxdistsigz", "; #frac{shift vtxdistz}{sqrt(cov_zz_nm1vtx - cov_zz_vtx)}", 40, -10, 10);
+    h_n_seed_vertices                = fs->make<TH1F>("h_n_seed_vertices",                ";# of seed vertices",  200,   0,    200);
+    h_n_at_least_3trk_seed_vertices  = fs->make<TH1F>("h_n_at_least_3trk_seed_vertices",  ";# of seed vertices w/ >=3trk/vtx",  200,   0,    200);
+    h_seed_vertex_track_weights      = fs->make<TH1F>("h_seed_vertex_track_weights",      ";seed vertex's track weights",  21,   0,      1.05);
+    h_seed_vertex_chi2               = fs->make<TH1F>("h_seed_vertex_chi2",               ";normalized chi2",  40,   0, 10);
+    h_seed_vertex_ndof               = fs->make<TH1F>("h_seed_vertex_ndof",               ";ndof",  10,   0,     20);
+    h_seed_vertex_x                  = fs->make<TH1F>("h_seed_vertex_x",                  ";vtxbsdist_x (cm.)", 20,  -1,      1);
+    h_seed_vertex_y                  = fs->make<TH1F>("h_seed_vertex_y",                  ";vtxbsdist_y (cm.)", 20,  -1,      1);
+    h_seed_vertex_rho                = fs->make<TH1F>("h_seed_vertex_rho",                ";vtx rho", 20,   0,      2);
+    h_seed_vertex_phi                = fs->make<TH1F>("h_seed_vertex_phi",                ";vtx phi",  20,  -3.15,   3.15);
+    h_seed_vertex_z                  = fs->make<TH1F>("h_seed_vertex_z",                  ";vtxbsdist_z (cm.)",  20, -20,     20);
+    h_seed_vertex_r                  = fs->make<TH1F>("h_seed_vertex_r",                  ";vtxbsdist_r (cm.)", 20,   0,      2);
+    h_seed_vertex_paird2d            = fs->make<TH1F>("h_seed_vertex_paird2d",            ";svdist2d (cm.) every pair", 100,   0,      0.2);
+    h_seed_vertex_pairdphi           = fs->make<TH1F>("h_seed_vertex_pairdphi",           ";dPhi(vtx0,vtx1) every pair", 100,  -3.14,   3.14);
 
     h_n_resets                       = fs->make<TH1F>("h_n_resets",                       "", 50,   0,   500);
     h_n_onetracks                    = fs->make<TH1F>("h_n_onetracks",                    "",  5,   0,     5);
@@ -418,38 +460,20 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
       h_noshare_trackrefine_trimmax_vertex_tkvtxdistsig = fs->make<TH1F>("h_noshare_trackrefine_trimmax_vertex_tkvtxdistsig", ";missdist sig", 20, 0, 6);
       h_noshare_trackrefine_trimmax_vertex_distr_shift = fs->make<TH1F>("h_noshare_trackrefine_trimmax_vertex_distr_shift", ";vtx after trimmax'r - vtx before trimmax'r (cm)", 20, -0.08, 0.08);
     }
-
-    h_dz_vertex_chi2                    = fs->make<TH1F>("h_dz_vertex_chi2",              ";normalized chi2",  40,   0, 40);
-    h_dz_vertex_tkvtxdistz              = fs->make<TH1F>("h_dz_vertex_tkvtxdistz", ";tkvtxdistz (cm.)", 80, -0.1, 0.1);
-    h_dz_vertex_tkvtxdisterrz           = fs->make<TH1F>("h_dz_vertex_tkvtxdisterrz", ";err tkvtxdistz (cm.)", 80, 0, 0.1);
-    h_dz_vertex_tkvtxdistsigz           = fs->make<TH1F>("h_dz_vertex_tkvtxdistsigz", ";n#sigma tkvtxdistz (cm.)", 40, -10, 10);
-    h_dz_vertex_tkvtxdistxy              = fs->make<TH1F>("h_dz_vertex_tkvtxdistxy", ";tkvtxdistxy (cm.)", 80, -0.1, 0.1);
-    h_dz_vertex_tkvtxdisterrxy          = fs->make<TH1F>("h_dz_vertex_tkvtxdisterrxy", ";err tkvtxdistxy (cm.)", 80, 0, 0.1);
-    h_dz_vertex_tkvtxdistsigxy           = fs->make<TH1F>("h_dz_vertex_tkvtxdistsigxy", ";n#sigma tkvtxdistxy (cm.)", 40, -10, 10);
-    h_dz_vertex_vtxdistz              = fs->make<TH1F>("h_dz_vertex_vtxdistz", ";shift vtxdistz (cm.)", 100, -0.025, 0.025);
-    h_dz_vertex_cov_vtxdisterrz       = fs->make<TH1F>("h_dz_vertex_cov_vtxdisterrz", ";sqrt(cov_zz_nm1vtx - cov_zz_vtx) (cm.)", 40, 0, 0.2);
-    h_dz_vertex_vtxnm1_covzz        = fs->make<TH1F>("h_dz_vertex_vtxnm1_covzz", ";sqrt(cov_zz_nm1vtx)(cm.)", 40, 0, 0.1);
-    h_dz_vertex_vtx_covzz           = fs->make<TH1F>("h_dz_vertex_vtx_covzz", ";sqrt(cov_zz_vtx)(cm.)", 40, 0, 0.1);
-    h_dz_vertex_vtxnm1_z               = fs->make<TH1F>("h_dz_vertex_vtxnm1_z", ";vtxnm1's z (cm.)", 200, -10.0, 10.0);
-    h_dz_vertex_cov_vtxdistsigz  = fs->make<TH1F>("h_dz_vertex_cov_vtxdistsigz", "; #frac{shift vtxdistz}{sqrt(cov_zz_nm1vtx - cov_zz_vtx)}", 40, -10, 10);
-
-
-    h_n_output_vertices              = fs->make<TH1F>("h_n_output_vertices",              "", 50, 0, 50);
-    h_n_at_least_5trk_output_vertices = fs->make<TH1F>("h_n_at_least_5trk_output_vertices", ";# of output vertices w/ >=5trk/vtx", 20, 0, 20);
+    h_n_output_vertices = fs->make<TH1F>("h_n_output_vertices", ";# of output vertices", 50, 0, 50);
     h_n_at_least_3trk_output_vertices = fs->make<TH1F>("h_n_at_least_3trk_output_vertices", ";# of output vertices w/ >=3trk/vtx", 20, 0, 20);
-    h_n_at_least_4trk_output_vertices = fs->make<TH1F>("h_n_at_least_4trk_output_vertices", ";# of output vertices w/ >=4trk/vtx", 20, 0, 20);
+    h_n_at_least_5trk_output_vertices = fs->make<TH1F>("h_n_at_least_5trk_output_vertices", ";# of output vertices w/ >=5trk/vtx", 20, 0, 20);
 
     for(size_t step = 0; step < stepEnum::N_STEPS; ++step) {
 
-      if (step == stepEnum::beforedzfit      && !histos_output_beforedzfit)      continue; 
-      if ( step == stepEnum::afterdzfit  && !histos_output_afterdzfit)      continue;
+      if (step == stepEnum::beforedzfit      && !histos_output_beforedzfit)      continue;
+      if (step == stepEnum::afterdzfit      && !histos_output_afterdzfit)      continue;
       if (step == stepEnum::aftermerge      && !histos_output_aftermerge)      continue;
       if (step == stepEnum::aftersharedjets && !histos_output_aftersharedjets) continue;
-      
-      hs_n_at_least_5trk_output_vertices[step] = fs->make<TH1F>("h_n_at_least_5trk_output_"+stepStrs[step]+"_vertices", ";# of >=5trk-vertices", 20, 0, 20);
+	  if (step == stepEnum::aftertrackattach && !histos_output_aftertrackattach) continue;
       hs_n_at_least_3trk_output_vertices[step] = fs->make<TH1F>("h_n_at_least_3trk_output_"+stepStrs[step]+"_vertices", ";# of >=3trk-vertices", 20, 0, 20);
-      hs_n_at_least_4trk_output_vertices[step] = fs->make<TH1F>("h_n_at_least_4trk_output_"+stepStrs[step]+"_vertices", ";# of >=4trk-vertices", 20, 0, 20);
-      hs_n_nice_output_vertices[step] = fs->make<TH1F>("h_n_nice_output_"+stepStrs[step]+"_vertices", ";# vertices that pass cuts", 20, 0, 20);
+      hs_n_at_least_5trk_output_vertices[step] = fs->make<TH1F>("h_n_at_least_5trk_output_"+stepStrs[step]+"_vertices", ";# of >=5trk-vertices", 20, 0, 20);
+
       hs_output_vertex_nm1_bsbs2ddist[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_nm1_bsbs2ddist", ";dBV (cm.) w/ n-1 cuts applied", 100, 0, 1.0);
       hs_output_vertex_nm1_bs2derr[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_nm1_bs2derr", ";bs2derr (cm.) w/ n-1 cuts applied", 20, 0, 0.05);
       hs_output_vertex_tkvtxdist[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_tkvtxdist", ";tkvtxdist (cm.)", 20, 0, 0.1);
@@ -475,8 +499,7 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
       hs_output_vertex_y[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_y", ";vtxbsdist_y (cm.)", 20, -1, 1);
       hs_output_vertex_rho[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_rho", ";vtx rho", 20, 0, 2);
       hs_output_vertex_phi[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_phi", ";vtx phi", 20, -3.15, 3.15);
-      hs_output_vertex_z[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_z", ";vtxbsdist_z (cm.)", 400, -20, 20);
-      hs_output_vertex_zerr[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_zerr", ";vtx_dist_zerr (cm.)", 40, 0, 1);
+      hs_output_vertex_z[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_z", ";vtxbsdist_z (cm.)", 20, -20, 20);
       hs_output_vertex_r[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_r", ";vtxbsdist_r (cm.)", 20, 0, 2);
       hs_output_vertex_paird2d[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_paird2d", ";svdist2d (cm.) every pair", 100, 0, 0.2);
       hs_output_vertex_paird2dsig[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_paird2dsig", ";svdist2d significance every pair", 100, 0, 20);
@@ -526,6 +549,8 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
 
 void MFVVertexer::finish(edm::Event& event, const std::vector<reco::TransientTrack>& seed_tracks, std::unique_ptr<reco::VertexCollection> vertices, std::unique_ptr<VertexerPairEffs> vpeffs, const std::vector<std::pair<track_set, track_set>>& vpeffs_tracks) {
   std::unique_ptr<reco::TrackCollection> tracks_seed      (new reco::TrackCollection);
+  std::unique_ptr<reco::TrackCollection> tracks_missseed (new reco::TrackCollection);
+  std::unique_ptr<reco::TrackCollection> tracks_all(new reco::TrackCollection);
   std::unique_ptr<reco::TrackCollection> tracks_inVertices(new reco::TrackCollection);
 
   if (verbose) printf("finish:\nseed tracks:\n");
@@ -540,6 +565,10 @@ void MFVVertexer::finish(edm::Event& event, const std::vector<reco::TransientTra
 
     if (verbose) printf("id: %i key: %lu pt: %f x: %7.3f y: %7.3f\n", tk.id().id(), tk.key(), tk->pt(), tk->vx(), tk->vy());
   }
+  
+  
+  edm::Handle<reco::BeamSpot> beamspot;
+  event.getByToken(beamspot_token, beamspot);
 
   assert(vpeffs->size() == vpeffs_tracks.size());
   for (size_t i = 0, ie = vpeffs->size(); i < ie; ++i) {
@@ -548,6 +577,7 @@ void MFVVertexer::finish(edm::Event& event, const std::vector<reco::TransientTra
   }
 
   if (verbose) printf("vertices:\n");
+  int count_3trk_vertices = 0;
   int count_5trk_vertices = 0;
   for (const reco::Vertex& v : *vertices) {
     if (verbose) printf("x: %f y %f z %f\n", v.x(), v.y(), v.z());
@@ -569,6 +599,8 @@ void MFVVertexer::finish(edm::Event& event, const std::vector<reco::TransientTra
   event.put(std::move(vertices));
   event.put(std::move(vpeffs));
   event.put(std::move(tracks_seed),       "seed");
+  event.put(std::move(tracks_missseed),       "seed");
+  event.put(std::move(tracks_all),        "all");
   event.put(std::move(tracks_inVertices), "inVertices");
 }
 
@@ -586,20 +618,19 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
   edm::ESHandle<TransientTrackBuilder> tt_builder;
   setup.get<TransientTrackRecord>().get("TransientTrackBuilder", tt_builder);
 
-  edm::Handle<std::vector<reco::TrackRef>> seed_track_refs;
-  event.getByToken(seed_tracks_token, seed_track_refs);
-
   edm::Handle<std::vector<reco::TrackRef>> quality_track_refs;
   if (track_attachment)
     event.getByToken(quality_tracks_token, quality_track_refs);
 
+  edm::Handle<std::vector<reco::TrackRef>> seed_track_refs;
+  event.getByToken(seed_tracks_token, seed_track_refs);
+
   std::vector<reco::TransientTrack> seed_tracks;
   std::map<reco::TrackRef, size_t> seed_track_ref_map;
-  track_set all_seed_tracks;
+
 
 
   for (const reco::TrackRef& tk : *seed_track_refs) {
-    all_seed_tracks.insert(tk);
     seed_tracks.push_back(tt_builder->build(tk));
     seed_track_ref_map[tk] = seed_tracks.size() - 1;
   }
@@ -610,7 +641,6 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
     if (track_attachment)
       printf("n_quality_tracks: %5lu\n", quality_track_refs->size());
   }
-
   //////////////////////////////////////////////////////////////////////
   // Form seed vertices from all pairs of tracks whose vertex fit
   // passes cuts.
@@ -628,7 +658,6 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
   }
 
   std::vector<size_t> itks(n_tracks_per_seed_vertex, 0);
-
   auto try_seed_vertex = [&]() {
     std::vector<reco::TransientTrack> ttks(n_tracks_per_seed_vertex);
     for (int i = 0; i < n_tracks_per_seed_vertex; ++i)
@@ -652,7 +681,7 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
           printf("from tracks");
           for (auto itk : itks)
             printf(" %lu", itk);
-          printf(": vertex #%3lu: chi2/dof: %7.3f dof: %7.3f pos: <%7.3f, %7.3f, %7.3f>  rho: %7.3f  phi: %7.3f  r: %7.3f\n", vertices->size()-1, vchi2, vndof, vx, vy, vz, rho, phi, r);
+          printf(": vertex #%3lu: chi2/dof: %7.3f dof: %7.3f pos: <%7.3f, %7.3f, %7.3f>  rho: %7.3f  phi: %7.3f  r: %7.3f\n", vertices->size() - 1, vchi2, vndof, vx, vy, vz, rho, phi, r);
         }
         if (histos) {
           for (auto it = v.tracks_begin(), ite = v.tracks_end(); it != ite; ++it)
@@ -668,21 +697,25 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
         }
       }
     }
+    else{
+          h_failedseed_vertex_chi2->Fill(seed_vertex.normalisedChiSquared());
+          h_failedseed_vertex_isvalid->Fill(seed_vertex.isValid());
+    }
   };
 
   // ha
   for (size_t itk = 0; itk < ntk; ++itk) {
     itks[0] = itk;
-    for (size_t jtk = itk+1; jtk < ntk; ++jtk) {
+    for (size_t jtk = itk + 1; jtk < ntk; ++jtk) {
       itks[1] = jtk;
       if (n_tracks_per_seed_vertex == 2) { try_seed_vertex(); continue; }
-      for (size_t ktk = jtk+1; ktk < ntk; ++ktk) {
+      for (size_t ktk = jtk + 1; ktk < ntk; ++ktk) {
         itks[2] = ktk;
         if (n_tracks_per_seed_vertex == 3) { try_seed_vertex(); continue; }
-        for (size_t ltk = ktk+1; ltk < ntk; ++ltk) {
+        for (size_t ltk = ktk + 1; ltk < ntk; ++ltk) {
           itks[3] = ltk;
           if (n_tracks_per_seed_vertex == 4) { try_seed_vertex(); continue; }
-          for (size_t mtk = ltk+1; mtk < ntk; ++mtk) {
+          for (size_t mtk = ltk + 1; mtk < ntk; ++mtk) {
             itks[4] = mtk;
             try_seed_vertex();
           }
@@ -691,16 +724,21 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
     }
   }
 
+  int count_3trk_vertices = 0;
+
   if (histos) {
     for (std::vector<reco::Vertex>::const_iterator v0 = vertices->begin(); v0 != vertices->end(); ++v0) {
       const double v0x = v0->position().x() - bsx;
       const double v0y = v0->position().y() - bsy;
       const double phi0 = atan2(v0y, v0x);
+      const int ntracks = v0->nTracks();
+      if (ntracks >= 3)
+        count_3trk_vertices++;
       for (std::vector<reco::Vertex>::const_iterator v1 = v0 + 1; v1 != vertices->end(); ++v1) {
         const double v1x = v1->position().x() - bsx;
         const double v1y = v1->position().y() - bsy;
         const double phi1 = atan2(v1y, v1x);
-        h_seed_vertex_paird2d ->Fill(mag(v0x - v1x, v0y - v1y));
+        h_seed_vertex_paird2d->Fill(mag(v0x - v1x, v0y - v1y));
         h_seed_vertex_pairdphi->Fill(reco::deltaPhi(phi0, phi1));
       }
     }
@@ -708,13 +746,16 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
 
   if (verbose)
     printf("n_seed_vertices: %lu\n", vertices->size());
-  if (histos)
+  if (histos){
+    h_n_at_least_3trk_seed_vertices->Fill(count_3trk_vertices);
     h_n_seed_vertices->Fill(vertices->size());
+  }
 
-  //order vertices by pt 
-  std::sort(vertices->begin(), vertices->end(), order_seed_vtx_pt());
-
-
+  if (order_seed_vertex){ //FIXMENOW
+    //order vertices by pt 
+    std::sort(vertices->begin(), vertices->end(), order_seed_vtx_pt());
+  }
+  
   //////////////////////////////////////////////////////////////////////
   // Take care of track sharing. If a track is in two vertices, and
   // the vertices are "close", refit the tracks from the two together
@@ -1007,7 +1048,15 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
   if (histos) {
     h_n_resets->Fill(n_resets);
     h_n_onetracks->Fill(n_onetracks);
-    // h_n_noshare_vertices->Fill(vertices->size());
+    h_n_noshare_vertices->Fill(vertices->size());
+    int count_3trk_vertices = 0;
+    for (size_t i = 0, ie = vertices->size(); i < ie; ++i) {
+      reco::Vertex& v = vertices->at(i);
+      const int ntracks = v.nTracks();
+      if (ntracks >= 3)
+        count_3trk_vertices++;
+    }
+    h_n_at_least_3trk_noshare_vertices->Fill(count_3trk_vertices);
   }
 
 
@@ -1198,9 +1247,10 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
       h_max_noshare_track_multiplicity->Fill(max_noshare_track_multiplicity);
   }
 
-  //////////////////////////////////////////////////////////////////////
-  // Merge vertices that are still "close". JMTBAD this doesn't do anything currently, only run in verbose mode
-  //////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  // Merge vertices that are still "close" in 2D, aka "loose" merging (typically off by default)
+  //////////////////////////////////////////////////////////////////////////////////////////////
+
   if (verbose)
     printf("fun2! before 'loose' merging loop, # vertices = %lu\n", vertices->size());
 
@@ -1298,6 +1348,19 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
 
             Measurement1D nv_dist = vertex_dist(*nv[0], *nv[1]);
             printf("  new vertex dist (2d? %i) %7.3f  sig %7.3f\n", use_2d_vertex_dist, nv_dist.value(), nv_dist.significance());
+
+          }
+        }
+      }
+
+      // Printouts of new vertex distance when using verbose mode
+      if (verbose) {
+        std::vector<reco::Vertex>::iterator nv[2];
+        for (nv[0] = vertices->begin(); nv[0] != vertices->end(); ++nv[0]) {
+          for (nv[1] = nv[0] + 1; nv[1] != vertices->end(); ++nv[1]) {
+
+            Measurement1D nv_dist = vertex_dist(*nv[0], *nv[1]);
+            printf("  new vertex dist (2d? %i) %7.3f  sig %7.3f\n", use_2d_vertex_dist, nv_dist.value(), nv_dist.significance());
           }
         }
       }
@@ -1307,12 +1370,11 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
   if (histos_output_beforedzfit){
     fillCommonOutputHists(vertices, fake_bs_vtx, tt_builder, stepEnum::beforedzfit);
   }
-
   //////////////////////////////////////////////////////////////////////
   // Drop tracks that "move" the vertex too much by refitting without each track.
   //////////////////////////////////////////////////////////////////////
+  if (max_nm1_refit_dist3 > 0 || max_nm1_refit_distz > 0 || max_nm1_refit_distz_sig > 0) { 
 
-  if (max_nm1_refit_dist3 > 0 || max_nm1_refit_distz > 0) { 
     /*
     auto& tks = nt.tracks();
     for (int it=0, ite = tks.n(); it < ite; it++){
@@ -1362,7 +1424,7 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
         //          extrapolator.extrapolate(tt_builder->build(tks[i]).impactPointState(), RecoVertex::convertPos(v[0]->position()));
         //GlobalPoint impactPoint = closestOnTransversePlaneState.globalPosition();
         //const double tkv_distz_alt = impactPoint.z() - v[0]->z();
-        const double tkv_distz = (tks[i]->vz() - v[0]->z()) - ((tks[i]->vx() -  v[0]->x()) * tks[i]->px() + (tks[i]->vy() -  v[0]->y()) * tks[i]->py()) / tks[i]->pt() * tks[i]->pz() / tks[i]->pt();
+	const double tkv_distz = (tks[i]->vz() - v[0]->z()) - ((tks[i]->vx() -  v[0]->x()) * tks[i]->px() + (tks[i]->vy() -  v[0]->y()) * tks[i]->py()) / tks[i]->pt() * tks[i]->pz() / tks[i]->pt();
         const double err_tkv_distz = sqrt(tks[i]->covariance(4,4) * (tks[i]->p()*tks[i]->p())) / tks[i]->pt(); //same as dzErr() 
         std::pair<bool, Measurement1D> tkbs_dist_2d = track_dist2d(tt_builder->build(tks[i]), *v[0]);
         const double vchi2 = v[0]->normalizedChi2();
@@ -1372,7 +1434,8 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
         reco::TrackRef tk = tks[i];
         std::pair<bool, Measurement1D> tk_vtx_dist = track_dist(tt_builder->build(tks[i]), vnm1);
 
-        if (ntks >= 3 && vchi2 < 5 && dBV < 2.0 && dBV > 0.01 && bs2derr < 0.005){ 
+        if (max_nm1_refit_distz_sig > 0) {
+           if (ntks >= 3 && vchi2 < 5 && dBV < 2.0 && dBV > 0.01 && bs2derr < 0.005){ 
               h_dz_vertex_tkvtxdistz->Fill(tkv_distz);
               h_dz_vertex_tkvtxdisterrz->Fill(err_tkv_distz);
               h_dz_vertex_tkvtxdistsigz->Fill(tkv_distz/err_tkv_distz);
@@ -1385,54 +1448,62 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
               h_dz_vertex_vtxnm1_z->Fill(vnm1.z()); 
               h_dz_vertex_vtxnm1_covzz->Fill(sqrt(vnm1.covariance(2,2)));
               h_dz_vertex_vtx_covzz->Fill(sqrt(v[0]->covariance(2,2)));
+           }
         }
+        
         const double distz_sig = distz/sqrt(mag(vnm1.covariance(2,2) - v[0]->covariance(2,2)));  
+
+        if (max_nm1_refit_distz > 0) {
+            h_dzstage_droppedtk_pt_vs_sigma->Fill(tkpt_todrop, fabs(distz_sig));  
+            h_dzstage_droppedtk_pt_vs_dz->Fill(tkpt_todrop, fabs(distz)); 
+            h_dzstage_droppedtk_dz_vs_sigma->Fill(fabs(distz), fabs(distz_sig)); 
+
+            h_dzstage_droppedtk_pt->Fill(tkpt_todrop); 
+            h_dzstage_droppedtk_dz->Fill(fabs(distz)); 
+            h_dzstage_droppedtk_sigma->Fill(fabs(distz_sig)); 
+
+            if (leptkpt_todrop > 0) {
+               h_dzstage_droppedleptk_pt_vs_sigma->Fill(leptkpt_todrop, fabs(distz_sig));
+               h_dzstage_droppedleptk_pt_vs_dz->Fill(leptkpt_todrop, fabs(distz)); 
+               h_dzstage_droppedleptk_dz_vs_sigma->Fill(fabs(distz), fabs(distz_sig));
+
+               h_dzstage_droppedleptk_pt_vs_missdist->Fill(leptkpt_todrop, fabs(tk_vtx_dist.second.value()));
+               h_dzstage_droppedleptk_missdist_vs_dz->Fill(fabs(tk_vtx_dist.second.value()), fabs(distz)); 
+               h_dzstage_droppedleptk_missdist_vs_sigma->Fill(fabs(tk_vtx_dist.second.value()), fabs(distz_sig));
+
+               h_dzstage_droppedleptk_missdist3d_vs_missdist2d->Fill(fabs(IPTools::absoluteImpactParameter3D(tt_builder->build(tks[i]), vnm1).second.value()), 
+                                                                fabs(IPTools::absoluteTransverseImpactParameter(tt_builder->build(tks[i]), vnm1).second.value()));
+               if (leptkpt_todrop >= 50) {
+                  if (verbose) printf(" POSSIBILITY OF LARGE LEP IN VERTEX...DOES IT DROP?");
+                  h_dzstage_droppedleptk50_missdist3d_vs_missdist2d->Fill(fabs(IPTools::absoluteImpactParameter3D(tt_builder->build(tks[i]), vnm1).second.value()), 
+                                                                fabs(IPTools::absoluteTransverseImpactParameter(tt_builder->build(tks[i]), vnm1).second.value()));
+               }                                                                
+               h_dzstage_droppedleptk_pt->Fill(leptkpt_todrop);
+               h_dzstage_droppedleptk_dz->Fill(fabs(distz)); 
+               h_dzstage_droppedleptk_sigma->Fill(fabs(distz_sig));
+               h_dzstage_droppedleptk_missdist->Fill(fabs(tk_vtx_dist.second.value()));
+            }
+        }
 
         if (verbose) printf("  refit %lu chi2 %7.4f vtx %7.4f %7.4f %7.4f dist3 %7.4f distz %7.4f\n", i, vnm1.chi2(), vnm1.x(), vnm1.y(), vnm1.z(), sqrt(dist3_2), distz);
         if (verbose) printf(" distz_sig : %7.4f\n", distz_sig);
-        h_dzstage_droppedtk_pt_vs_sigma->Fill(tkpt_todrop, fabs(distz_sig));  
-        h_dzstage_droppedtk_pt_vs_dz->Fill(tkpt_todrop, fabs(distz)); 
-        h_dzstage_droppedtk_dz_vs_sigma->Fill(fabs(distz), fabs(distz_sig)); 
-
-        h_dzstage_droppedtk_pt->Fill(tkpt_todrop); 
-        h_dzstage_droppedtk_dz->Fill(fabs(distz)); 
-        h_dzstage_droppedtk_sigma->Fill(fabs(distz_sig)); 
-
-        if (leptkpt_todrop > 0) {
-          h_dzstage_droppedleptk_pt_vs_sigma->Fill(leptkpt_todrop, fabs(distz_sig));
-          h_dzstage_droppedleptk_pt_vs_dz->Fill(leptkpt_todrop, fabs(distz)); 
-          h_dzstage_droppedleptk_dz_vs_sigma->Fill(fabs(distz), fabs(distz_sig));
-
-          h_dzstage_droppedleptk_pt_vs_missdist->Fill(leptkpt_todrop, fabs(tk_vtx_dist.second.value()));
-          h_dzstage_droppedleptk_missdist_vs_dz->Fill(fabs(tk_vtx_dist.second.value()), fabs(distz)); 
-          h_dzstage_droppedleptk_missdist_vs_sigma->Fill(fabs(tk_vtx_dist.second.value()), fabs(distz_sig));
-
-          h_dzstage_droppedleptk_missdist3d_vs_missdist2d->Fill(fabs(IPTools::absoluteImpactParameter3D(tt_builder->build(tks[i]), vnm1).second.value()), 
-                                                                fabs(IPTools::absoluteTransverseImpactParameter(tt_builder->build(tks[i]), vnm1).second.value()));
-          if (leptkpt_todrop >= 50) {
-            if (verbose) printf(" POSSIBILITY OF LARGE LEP IN VERTEX...DOES IT DROP?");
-            h_dzstage_droppedleptk50_missdist3d_vs_missdist2d->Fill(fabs(IPTools::absoluteImpactParameter3D(tt_builder->build(tks[i]), vnm1).second.value()), 
-                                                                fabs(IPTools::absoluteTransverseImpactParameter(tt_builder->build(tks[i]), vnm1).second.value()));
-          }                                                                
-          h_dzstage_droppedleptk_pt->Fill(leptkpt_todrop);
-          h_dzstage_droppedleptk_dz->Fill(fabs(distz)); 
-          h_dzstage_droppedleptk_sigma->Fill(fabs(distz_sig));
-          h_dzstage_droppedleptk_missdist->Fill(fabs(tk_vtx_dist.second.value()));
-        }
-
+        if (verbose) printf(" distz : %7.4f\n", distz);
+         
         if (vnm1.chi2() < 0 ||
-            (max_nm1_refit_dist3 > 0 && mag2(vnm1.x() - v[0]->x(), vnm1.y() - v[0]->y(), vnm1.z() - v[0]->z()) > pow(max_nm1_refit_dist3, 2)) ||
-            (max_nm1_refit_distz > 0 && fabs(distz) > max_nm1_refit_distz)) { 
-        
+            (max_nm1_refit_dist3 > 0 && mag2(vnm1.x() - v[0]->x(), vnm1.y() - v[0]->y(), vnm1.z() - v[0]->z()) > pow(max_nm1_refit_dist3, 2)) || (max_nm1_refit_distz_sig > 0 && fabs(distz_sig) > max_nm1_refit_distz_sig) 
+  || (max_nm1_refit_distz > 0 && fabs(distz) > max_nm1_refit_distz)) 
+        { 
           
-          if (abs(tks[i]->pt() >= 40.0 ))
-            h_dzstage_droppedtk_dphi_vs_sigma->Fill(dphi_avg, distz_sig);
+          if (max_nm1_refit_distz > 0 && fabs(distz) > max_nm1_refit_distz) {
+             if (abs(tks[i]->pt() >= 40.0 ))
+                h_dzstage_droppedtk_dphi_vs_sigma->Fill(dphi_avg, distz_sig);
 
-          //ignoring lepton tracks 
-          if ((tks[i].id().id() == 155 || tks[i].id().id() == 156) && fabs(tks[i]->pt()) >= 20.0 ) {
-            break;
+             //ignoring lepton tracks 
+             if (ignore_lep_in_refit_distz && (tks[i].id().id() == 155 || tks[i].id().id() == 156) && fabs(tks[i]->pt()) >= 20.0 ) {
+                break;
+             }
           }
-
+          
           if (verbose) {
             printf("    replacing");
             if (refit_count[iv] < max_nm1_refit_count - 1)
@@ -1575,6 +1646,122 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
     fillCommonOutputHists(vertices, fake_bs_vtx, tt_builder, stepEnum::aftermerge);
 
   }
+
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////
+  // Merge every pair of output vertices that satisfy the following criteria to resolve split-vertices:
+  //   - >=2trk/vtx
+  //   - dBV > 100 um
+  //   - |dPhi(vtx0,vtx1)| < 0.5 
+  //   - svdist2d < 300 um
+  // Note that the merged vertex must pass chi2/dof < 5
+  ////////////////////////////////////////////////////////////////////////////////////////////////////
+  if (resolve_split_vertices_tight) {
+    reco::VertexCollection potential_merged_vertices;
+
+    for (v[0] = vertices->begin(); v[0] != vertices->end(); ++v[0]) {
+
+      track_set tracks[2];
+      tracks[0] = vertex_track_set(*v[0]);
+
+      bool merge = false;
+      for (v[1] = v[0] + 1; v[1] != vertices->end(); ++v[1]) {
+        if (vertices->size() >= 2 && v[0]->nTracks() >= 2 && v[1]->nTracks() >= 2) {
+
+          tracks[1] = vertex_track_set(*v[1]);
+
+          Measurement1D v_dist = vertex_dist_2d.distance(*v[0], *v[1]);
+
+          Measurement1D dBV0_Meas1D = vertex_dist_2d.distance(*v[0], fake_bs_vtx);
+          double dBV0 = dBV0_Meas1D.value();
+
+          Measurement1D dBV1_Meas1D = vertex_dist_2d.distance(*v[1], fake_bs_vtx);
+          double dBV1 = dBV1_Meas1D.value();
+
+          double v0x = v[0]->x() - bsx;
+          double v0y = v[0]->y() - bsy;
+
+          double phi0 = atan2(v0y, v0x);
+
+          double v1x = v[1]->x() - bsx;
+          double v1y = v[1]->y() - bsy;
+
+          double phi1 = atan2(v1y, v1x);
+
+          if (fabs(reco::deltaPhi(phi0, phi1)) < 0.5 && v_dist.value() < 0.0300 && dBV0 > 0.0100 && dBV1 > 0.0100) {
+            track_set tracks_to_fit;
+            for (int i = 0; i < 2; ++i)
+              for (auto tk : tracks[i])
+                tracks_to_fit.insert(tk);
+            std::vector<reco::TransientTrack> ttks;
+            for (auto tk : tracks_to_fit)
+              ttks.push_back(seed_tracks[seed_track_ref_map[tk]]);
+
+            if (investigate_merged_vertices) {
+              std::vector<TransientVertex> tv(1, kv_reco->vertex(ttks));
+              potential_merged_vertices.push_back(reco::Vertex(tv[0]));
+              //std::cout << "ntrack in potental merged: " << potential_merged_vertices.back().nTracks() << std::endl;
+            }
+
+            reco::VertexCollection merged_vertices;
+            for (const TransientVertex& tv : kv_reco_dropin(ttks)) {
+              merged_vertices.push_back(reco::Vertex(tv));
+            }
+
+            if (merged_vertices.size() == 1 && vertex_track_set(merged_vertices[0], 0) == tracks_to_fit) {
+
+              merge = true;
+
+              if (verbose) {
+                printf(" sv2ddist between a merging pair is %7.3f \n", v_dist.value());
+                printf(" |dPhi(vtx0,vtx1) between a merging pair is %4.3f \n", fabs(reco::deltaPhi(phi0, phi1)));
+                printf(" # of tracks per vtx0 is %u \n", v[0]->nTracks());
+                printf(" # of tracks per vtx1 is %u \n", v[1]->nTracks());
+                printf(" ---------------- merge the two vertices if chi2/dof < 5 ----------------- \n");
+                printf(" # of tracks per a new merged vertex is %u \n", merged_vertices[0].nTracks());
+              }
+
+              v[1] = vertices->erase(v[1]) - 1; // (1) erase and point the iterator at the previous entry
+              *v[0] = reco::Vertex(merged_vertices[0]); // (2) updated v[0] (ok to use v[0] after the erase(v[1]) because v[0] is by construction before v[1])
+            }
+          }
+        }
+      }
+	  // going through all the pairs of of v[1] and a fixed v[0] for merging, if merge happens (1) each v[1] is erased (2) v[0] is updated (recurring until exit loop) (3) reset the combination again
+	  if (merge)
+		  v[0] = vertices->begin() - 1; // (3) reset the combination if a valid merge happens 
+    }
+
+    if (investigate_merged_vertices) {
+      for (size_t i = 0, ie = potential_merged_vertices.size(); i < ie; ++i) {
+        reco::Vertex vpm = potential_merged_vertices[i];
+        const int ntracks = vpm.nTracks();
+        const double vchi2 = vpm.normalizedChi2();
+        Measurement1D dBV_Meas1D = vertex_dist_2d.distance(vpm, fake_bs_vtx);
+        double dBV = dBV_Meas1D.value();
+        double bs2derr = dBV_Meas1D.error();
+
+        // n-1 plots of the various cuts used (ntk, dBV, bs2derr, chi2)
+        if (ntracks >= 5 && dBV > 0.01 && bs2derr < 0.0025) {
+          h_output_aftermerge_potential_merged_vertex_nm1_chi2->Fill(vchi2);
+        }
+        if (vchi2 < 5 && dBV > 0.01 && bs2derr < 0.0025) {
+          h_output_aftermerge_potential_merged_vertex_nm1_ntracks->Fill(ntracks);
+        }
+        if (vchi2 < 5 && ntracks >= 5 && bs2derr < 0.0025) {
+          h_output_aftermerge_potential_merged_vertex_nm1_bsbs2ddist->Fill(dBV);
+        }
+        if (vchi2 < 5 && ntracks >= 5 && dBV > 0.01) {
+          h_output_aftermerge_potential_merged_vertex_nm1_bs2derr->Fill(bs2derr);
+        }
+      }
+    }
+  }
+
+  if (histos_output_aftermerge) {
+    fillCommonOutputHists(vertices, fake_bs_vtx, tt_builder, stepEnum::aftermerge);
+  }
+>>>>>>> origin/UL_Lepton
 
   //////////////////////////////////////////////////////////////////////
   // Shared-jet mitigation with the following procedure:
@@ -1770,16 +1957,103 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
       h_output_aftersharedjets_n_onetracks->Fill(n_output_aftersharedjets_onetracks);
     }
   }
+																					  
+  // track attachment
+  if (track_attachment) {
+	  // build transient tracks from quality tracks (not included in seed tracks)
+	  std::vector<reco::TransientTrack> quality_tracks;
+	  std::map<reco::TrackRef, size_t> quality_track_ref_map;
+	  track_set all_quality_tracks;
+	  for (const reco::TrackRef& tk : *quality_track_refs) {
+		  all_quality_tracks.insert(tk);
+		  quality_tracks.push_back(tt_builder->build(tk));
+		  quality_track_ref_map[tk] = quality_tracks.size() - 1;
+	  }
+	  //start track attachment, attach tracks to vertices if dist(track, vertex)<5 sigma, if a track is close to more than one vertices, attach to the closer one, if a tracks has distance with more than one vertices <=1.5 sigma, attach it to the vertex with more tracks
+	  bool refit = true;
+	  while (refit) {
+		  refit = false;
+		  if (verbose) {
+			  std::cout << "now trying attaching tracks: ";
+			  print_track_set(all_quality_tracks);
+			  std::cout << std::endl;
+		  }
+		  for (const reco::TrackRef& itk : all_quality_tracks) {
+			  const reco::TransientTrack& ttk = quality_tracks[quality_track_ref_map[itk]];
+			  int v_assign = -1;
+			  double v_assign_dist_sig = 999;
+			  unsigned int v_assign_ntk = 0;
 
+			  if (verbose) {
+				  std::cout << "For track " << itk.key() << std::endl;
+			  }
+			  for (size_t i = 0; i < vertices->size(); ++i) {
+				  const reco::Vertex& v = vertices->at(i);
+				  std::pair<bool, Measurement1D> t_dist = track_dist(ttk, v);
+				  t_dist.first = t_dist.first && (t_dist.second.value() < max_track_vertex_dist || t_dist.second.significance() < max_track_vertex_sig); // whether it is too far away from the vtx
+				  if (t_dist.first) {
+					  if ((t_dist.second.significance() < min_track_vertex_sig_to_remove) && (v_assign_dist_sig < min_track_vertex_sig_to_remove)) {
+						  if (v_assign_ntk < v.nTracks()) {
+							  v_assign = i;
+							  v_assign_dist_sig = t_dist.second.significance();
+							  v_assign_ntk = v.nTracks();
+						  }
+					  }
+					  else if (t_dist.second.significance() < v_assign_dist_sig) {
+						  v_assign = i;
+						  v_assign_dist_sig = t_dist.second.significance();
+						  v_assign_ntk = v.nTracks();
+					  }
+				  }
 
+				  if (verbose) {
+					  std::cout << "  Track-vertex " << i << " " << t_dist.first << " dist: " << t_dist.second.value() << " sig: " << t_dist.second.significance() << std::endl;
+				  }
+			  }
+			  if (verbose)
+				  std::cout << "Track " << itk.key() << " assigned to " << v_assign << std::endl;
+			  if (v_assign >= 0) {
+				  refit = true;
+				  all_quality_tracks.erase(itk);
+				  if (verbose) {
+					  std::cout << "Fitting vertex " << v_assign << " with tracks: ";
+					  print_track_set((*vertices)[v_assign]);
+					  std::cout << " with added track " << itk.key() << std::endl;
+				  }
+				  std::vector<reco::TransientTrack> ttks;
+				  for (auto tk : vertex_track_set((*vertices)[v_assign])) {
+					  ttks.push_back(tt_builder->build(tk));
+				  }
+				  ttks.push_back(ttk);
+				  if (verbose)
+					  std::cout << " fitting vertex with " << ttks.size() << " tracks " << std::endl;
+				  reco::VertexCollection new_vertices;
+				  for (const TransientVertex& tv : kv_reco_dropin(ttks))
+					  new_vertices.push_back(reco::Vertex(tv));
+				  if (verbose) {
+					  printf("      got %lu new vertices out of the av fit for v%i\n", new_vertices.size(), v_assign);
+					  printf("      these track sets:");
+					  for (const auto& nv : new_vertices) {
+						  printf(" (");
+						  print_track_set(nv);
+						  printf(" ),");
+					  }
+					  printf("\n");
+				  }
+				  if (new_vertices.size() == 1)
+					  (*vertices)[v_assign] = new_vertices[0];
+				  break;
+			  }
+		  }
+	  }
 
-  //////////////////////////////////////////////////////////////////////
-  // Put the output.
-  //////////////////////////////////////////////////////////////////////
+	  if (histos_output_aftertrackattach) {
+		  fillCommonOutputHists(vertices, fake_bs_vtx, tt_builder, stepEnum::aftertrackattach);
+	  }
+  }
 
   finish(event, seed_tracks, std::move(vertices), std::move(vpeffs), vpeffs_tracks);
 }
-
 
 // this function will only return false only if shared jets between the given vertex pair contribute multiple shared-jet tracks to 'both' vertices (not a special case we consider).   
 std::pair<bool, std::vector<std::vector<size_t>>> MFVVertexer::sharedjets(const size_t vtx0idx, const size_t vtx1idx, const std::vector < std::vector<size_t>>& sv_match_jetidx, const std::vector < std::vector<size_t>>& sv_match_trkidx) {
@@ -1909,9 +2183,8 @@ void MFVVertexer::fillCommonOutputHists(std::unique_ptr<reco::VertexCollection>&
 
   std::map<reco::TrackRef, int> track_use;
   int count_3trk_vertices = 0;
-  int count_4trk_vertices = 0;
   int count_5trk_vertices = 0;
-  int count_nice_vertices = 0;
+
   const double bsx = fake_bs_vtx.position().x();
   const double bsy = fake_bs_vtx.position().y();
   const double bsz = fake_bs_vtx.position().z();
@@ -1964,21 +2237,19 @@ void MFVVertexer::fillCommonOutputHists(std::unique_ptr<reco::VertexCollection>&
 
     hs_output_vertex_ntracks[step]->Fill(ntracks);
 
-    hs_output_vertex_ntracks[step]->Fill(ntracks);
-    if (ntracks >= 5) 
-      count_5trk_vertices++;
-    if (ntracks >= 4) 
-      count_4trk_vertices++;
-    if (ntracks >= 3) {
+    if (ntracks >= 3) 
       count_3trk_vertices++;
+    if (ntracks >= 5) {
+      count_5trk_vertices++;
+
       Measurement1D dBV_Meas1D = vertex_dist_2d.distance(v, fake_bs_vtx);
       double dBV = dBV_Meas1D.value();
       double bs2derr = dBV_Meas1D.error();
 
-      if (vchi2 < 5 && ntracks >= 3 && bs2derr < 0.05) {
+      if (vchi2 < 5 && ntracks >= 5 && bs2derr < 0.0025) {
         hs_output_vertex_nm1_bsbs2ddist[step]->Fill(dBV);
       }
-      if (vchi2 < 5 && ntracks >= 3 && dBV > 0.01) {
+      if (vchi2 < 5 && ntracks >= 5 && dBV > 0.01) {
         hs_output_vertex_nm1_bs2derr[step]->Fill(bs2derr);
       }
       if (vchi2 < 5 && ntracks >= 3 && dBV > 0.01 && bs2derr < 0.05) {
@@ -1995,10 +2266,9 @@ void MFVVertexer::fillCommonOutputHists(std::unique_ptr<reco::VertexCollection>&
       hs_output_vertex_tkvtxdist[step]->Fill(tk_vtx_dist.second.value());
       hs_output_vertex_tkvtxdisterr[step]->Fill(tk_vtx_dist.second.error());
       hs_output_vertex_tkvtxdistsig[step]->Fill(tk_vtx_dist.second.significance());
-
     }
 
-	  hs_output_vertex_mass[step]->Fill(vmass);
+	hs_output_vertex_mass[step]->Fill(vmass);
     hs_output_vertex_chi2[step]->Fill(vchi2);
     hs_output_vertex_ndof[step]->Fill(vndof);
     hs_output_vertex_x[step]->Fill(vx);
@@ -2006,7 +2276,6 @@ void MFVVertexer::fillCommonOutputHists(std::unique_ptr<reco::VertexCollection>&
     hs_output_vertex_rho[step]->Fill(rho);
     hs_output_vertex_phi[step]->Fill(phi);
     hs_output_vertex_z[step]->Fill(vz);
-    hs_output_vertex_zerr[step]->Fill(v.zError());
     hs_output_vertex_r[step]->Fill(r);
 
     for (size_t j = i + 1, je = vertices->size(); j < je; ++j) {
@@ -2022,10 +2291,8 @@ void MFVVertexer::fillCommonOutputHists(std::unique_ptr<reco::VertexCollection>&
   }
 
   hs_n_at_least_3trk_output_vertices[step]->Fill(count_3trk_vertices);
-  hs_n_at_least_4trk_output_vertices[step]->Fill(count_4trk_vertices);
   hs_n_at_least_5trk_output_vertices[step]->Fill(count_5trk_vertices);
-  hs_n_nice_output_vertices[step]->Fill(count_nice_vertices);
-}
 
+}
 
 DEFINE_FWK_MODULE(MFVVertexer);

@@ -15,15 +15,44 @@ elif 'bkg_mixed_correlated' in sys.argv:
 else: #elif 'bkg_uncorrelated' in sys.argv:
     bkg_correlation = False
 
-include_2016 = 'include_2016' in sys.argv # includes 2015
+include_all = 'include_all' in sys.argv
+include_2016 = 'include_2016' in sys.argv
 include_sigmc = 'no_sigmc' not in sys.argv
-years = ('2016','2017','2018') if include_2016 else ('2017','2018')
+years = ('2016APV','2016','2017','2018') if include_all else (('2016','2017','2018') if include_2016 else ('2017','2018'))
 
 template = '''
 # isample = {0.isample}
 # nice name = {0.nice_name}
 # total sig rate = {0.total_sig_rate} / {0.total_int_lumi_xsec} -> {0.total_sig_eff} eff -> hint {0.limit_hint}
 '''
+
+if include_all:
+    template += '''
+imax 12
+jmax 4
+kmax {0.nsyst}
+------------
+bin           b50 b51 b52       b60  b61  b62      b70  b71  b72      b80  b81  b82
+observation   {0.observed_2016APV} {0.observed_2016}  {0.observed_2017}  {0.observed_2018}
+------------
+bin           b50 b51 b52    b60  b61  b62      b70  b71  b72      b80  b81  b82               b50 b51 b52         b60  b61  b62      b70  b71  b72      b80  b81  b82          b50 b51 b52    b60  b61  b62      b70  b71  b72      b80  b81  b82              b50 b51 b52    b60  b61  b62      b70  b71  b72      b80  b81  b82             b50 b51 b52    b60  b61  b62      b70  b71  b72      b80  b81  b82
+process       sig sig sig    sig  sig  sig      sig  sig  sig      sig  sig  sig               bk5 bk5 bk5         bk6  bk6  bk6      bk6  bk6  bk6      bk6  bk6  bk6          bk5 bk5 bk5    bk6  bk6  bk6      bk6  bk6  bk6      bk6  bk6  bk6              bk5 bk5 bk5    bk7  bk7  bk7      bk7  bk7  bk7      bk7  bk7  bk7             bk5 bk5 bk5    bk8  bk8  bk8      bk8  bk8  bk8      bk8  bk8  bk8
+process       0   0   0      0    0    0        0    0    0        0    0    0                 1   1   1           1    1    1        1    1    1        1    1    1            2   2   2      2    2    2        2    2    2        2    2    2                3   3   3      3    3    3        3    3    3        3    3    3               4   4   4      4    4    4        4    4    4        4    4    4  
+rate          {0.sig_rate_2016APV} {0.sig_rate_2016}  {0.sig_rate_2017}  {0.sig_rate_2018}        {0.bkg_rate_2016APV}   0    0    0        0    0    0        0    0    0            0   0   0      {0.bkg_rate_2016}  0    0    0        0    0    0                0   0   0      0    0    0        {0.bkg_rate_2017}  0    0    0               0   0   0      0    0    0        0    0    0        {0.bkg_rate_2018}
+------------
+sig5 lnN {0.sig_uncert_2016APV} DASH9       DASH12    DASH12    DASH12   DASH12
+sig6 lnN DASH3 {0.sig_uncert_2016} DASH6    DASH12    DASH12    DASH12   DASH12
+sig7 lnN DASH6 {0.sig_uncert_2017} DASH3    DASH12    DASH12    DASH12   DASH12
+sig8 lnN DASH9 {0.sig_uncert_2018}          DASH12    DASH12    DASH12   DASH12
+'''
+    if include_sigmc:
+        template += '''
+sig5MC gmN {0.ngen_2016APV} {0.sigmc_alpha_2016APV} DASH9    DASH12   DASH12   DASH12   DASH12
+sig6MC gmN {0.ngen_2016} DASH3 {0.sigmc_alpha_2016} DASH6    DASH12   DASH12   DASH12   DASH12
+sig7MC gmN {0.ngen_2017} DASH6 {0.sigmc_alpha_2017} DASH3    DASH12   DASH12   DASH12   DASH12
+sig8MC gmN {0.ngen_2018} DASH9 {0.sigmc_alpha_2018}          DASH12   DASH12   DASH12   DASH12
+'''
+
 
 if include_2016:
     template += '''
@@ -50,7 +79,7 @@ sig7MC gmN {0.ngen_2017} DASH3 {0.sigmc_alpha_2017} DASH3    DASH9   DASH9   DAS
 sig8MC gmN {0.ngen_2018} DASH6 {0.sigmc_alpha_2018}          DASH9   DASH9   DASH9
 '''
 
-else:
+if not (include_all or include_2016):
     template += '''
 imax 6
 jmax 2
@@ -136,7 +165,24 @@ bkg5 lnN DASH6    DASH6                              DASH3 - - {0.bkg_stat_uncer
 bkg6 lnN DASH6    {0.bkg_syst_uncert_2017_0} {0.bkg_syst_uncert_2017_1} {0.bkg_syst_uncert_2017_2} DASH3    DASH3 {0.bkg_syst_uncert_2018_0} {0.bkg_syst_uncert_2018_1} {0.bkg_syst_uncert_2018_2}'''
 
 else:
-    if include_2016:
+
+    if include_all:
+        template += '''
+bkg0  lnN DASH12    {0.bkg_uncert_2016APV_0} - - DASH9   DASH12                                   DASH12                                    DASH12
+bkg1  lnN DASH12    - {0.bkg_uncert_2016APV_1} - DASH9   DASH12                                   DASH12                                    DASH12
+bkg2  lnN DASH12    - - {0.bkg_uncert_2016APV_2} DASH9   DASH12                                   DASH12                                    DASH12
+bkg3  lnN DASH12    DASH12                               DASH3 {0.bkg_uncert_2016_0} - - DASH6    DASH12                                    DASH12
+bkg4  lnN DASH12    DASH12                               DASH3 - {0.bkg_uncert_2016_1} - DASH6    DASH12                                    DASH12
+bkg5  lnN DASH12    DASH12                               DASH3 - - {0.bkg_uncert_2016_2} DASH6    DASH12                                    DASH12
+bkg6  lnN DASH12    DASH12                               DASH12                                   DASH6 {0.bkg_uncert_2017_0} - - DASH3     DASH12
+bkg7  lnN DASH12    DASH12                               DASH12                                   DASH6 - {0.bkg_uncert_2017_1} - DASH3     DASH12
+bkg8  lnN DASH12    DASH12                               DASH12                                   DASH6 - - {0.bkg_uncert_2017_2} DASH3     DASH12
+bkg9  lnN DASH12    DASH12                               DASH12                                   DASH12                                    DASH9 {0.bkg_uncert_2018_0} - -
+bkg10 lnN DASH12    DASH12                               DASH12                                   DASH12                                    DASH9 - {0.bkg_uncert_2018_1} -
+bkg11 lnN DASH12    DASH12                               DASH12                                   DASH12                                    DASH9 - - {0.bkg_uncert_2018_2}
+'''
+
+    elif include_2016:
         template += '''
 bkg0 lnN DASH9    {0.bkg_uncert_2016_0} - - DASH6    DASH9                                    DASH9
 bkg1 lnN DASH9    - {0.bkg_uncert_2016_1} - DASH6    DASH9                                    DASH9
@@ -158,7 +204,7 @@ bkg4 lnN DASH6    DASH6                              DASH3 - {0.bkg_uncert_2018_
 bkg5 lnN DASH6    DASH6                              DASH3 - - {0.bkg_uncert_2018_2}
 '''
 
-for d in 3,6,9:
+for d in 3,6,9,12:
     template = template.replace('DASH%i' % d, ' '.join('-'*d))
 
 def make(isample):
@@ -183,10 +229,15 @@ def make(isample):
         fmt = '%.9g' if typ == float else '%s'
         return ' '.join(fmt % typ(v) for v in l)
 
+    print(years)
     for year in years:
+        #setattr(r, 'observed_%s'    % year, st('h_observed_%s'      % year))
+        #setattr(r, 'bkg_rate_%s'    % year, st('h_bkg_dvv_rebin_%s' % year))
+        #setattr(r, 'sig_rate_%s'    % year, st(r.hs_dvv_rebin[year]))
+        #setattr(r, 'sig_uncert_%s'  % year, st(r.hs_uncert[year]))
         setattr(r, 'observed_%s'    % year, st('h_observed_%s'      % year))
-        setattr(r, 'bkg_rate_%s'    % year, st('h_bkg_dvv_rebin_%s' % year))
-        setattr(r, 'sig_rate_%s'    % year, st(r.hs_dvv_rebin[year]))
+        setattr(r, 'bkg_rate_%s'    % year, st('h_bkg_sumdbv_rebin_%s' % year))
+        setattr(r, 'sig_rate_%s'    % year, st(max(r.hs_sumdbv_rebin[year], 0.0001)))
         setattr(r, 'sig_uncert_%s'  % year, st(r.hs_uncert[year]))
 
         ngen = r.ngens[year]

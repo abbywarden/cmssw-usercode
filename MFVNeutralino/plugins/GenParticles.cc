@@ -186,7 +186,7 @@ bool MFVGenParticles::try_MFVtbs(mfv::MCInteraction& mc, const edm::Handle<reco:
       h.lsps[0] = lsp;
     else {
       if (reco::deltaR(*h.lsps[0], gen) < 0.001)
-	throw cms::Exception("BadAssumption", "may have found same LSP twice based on deltaR < 0.001");
+         edm::LogWarning("GenParticles") << "BadAssumption; may have found same LSP twice based on deltaR < 0.001" ;
       which = 1;
       h.lsps[1] = lsp;
     }
@@ -362,7 +362,7 @@ bool MFVGenParticles::try_MFVthree(mfv::MCInteraction& mc, const edm::Handle<rec
       h.p[0] = lsp;
     else {
       if (reco::deltaR(*h.p[0], gen) < 0.001)
-	throw cms::Exception("BadAssumption", "may have found same LSP twice based on deltaR < 0.001");
+        edm::LogWarning("GenParticles") << "BadAssumption; may have found same LSP twice based on deltaR < 0.001" ;
       which = 1;
       h.p[1] = lsp;
     }
@@ -509,7 +509,7 @@ bool MFVGenParticles::try_MFVdijet(mfv::MCInteraction& mc, const edm::Handle<rec
       h.p[0] = ref;
     else {
       if (reco::deltaR(*h.p[0], gen) < 0.001)
-	throw cms::Exception("BadAssumption", "may have found same LSP twice based on deltaR < 0.001");
+        edm::LogWarning("GenParticles") << "BadAssumption; may have found same LSP twice based on deltaR < 0.001" ;
       which = 1;
       h.p[1] = ref;
     }
@@ -573,7 +573,7 @@ bool MFVGenParticles::try_stopdbardbar(mfv::MCInteraction& mc, const edm::Handle
           h.p[0] = ref;
         else {
           if (reco::deltaR(*h.p[0], gen) < 0.001)
-            throw cms::Exception("BadAssumption", "may have found same LSP twice based on deltaR < 0.001");
+            edm::LogWarning("GenParticles") << "BadAssumption; may have found same LSP twice based on deltaR < 0.001" ;
           which = 1;
           h.p[1] = ref;
         }
@@ -783,7 +783,7 @@ bool MFVGenParticles::try_splitSUSY(mfv::MCInteraction& mc, const edm::Handle<re
         h.p[0] = ref;
       else {
         if (reco::deltaR(*h.p[0], gen) < 0.001)
-          throw cms::Exception("BadAssumption", "may have found same LSP twice based on deltaR < 0.001");
+          edm::LogWarning("GenParticles") << "BadAssumption; may have found same LSP twice based on deltaR < 0.001" ;
         which = 1;
         h.p[1] = ref;
       }
@@ -845,14 +845,13 @@ void MFVGenParticles::produce(edm::Event& event, const edm::EventSetup&) {
   std::unique_ptr<reco::GenParticleCollection> primaries  (new reco::GenParticleCollection);
   std::unique_ptr<reco::GenParticleCollection> secondaries(new reco::GenParticleCollection);
   std::unique_ptr<reco::GenParticleCollection> visible    (new reco::GenParticleCollection);
-
   if (!event.isRealData()) {
     edm::Handle<reco::GenParticleCollection> gen_particles;
     event.getByToken(gen_particles_token, gen_particles);
 
     const reco::GenParticle& for_vtx = gen_particles->at(2);
     const int for_vtx_id = abs(for_vtx.pdgId());
-    if (for_vtx_id != 21 && !(for_vtx_id >= 1 && for_vtx_id <= 5))
+    if (for_vtx_id != 21 && for_vtx_id != 23 && for_vtx_id != 24 && for_vtx_id != -24 && !(for_vtx_id >= 1 && for_vtx_id <= 5))
       throw cms::Exception("BadAssumption", "gen_particles[2] is not a gluon or udscb: id=") << for_vtx_id;
 
     (*primary_vertex)[0] = for_vtx.vx();
@@ -893,9 +892,9 @@ void MFVGenParticles::produce(edm::Event& event, const edm::EventSetup&) {
     // try_XX4j    (*mc, gen_particles) ||
     // try_stopdbardbar(*mc, gen_particles, -1) || // stop -> dbar dbar + c.c.
     // try_stopdbardbar(*mc, gen_particles, -5) || // stop -> bbar bbar + c.c.
-    // try_MFVdijet(*mc, gen_particles, 1) || //ddbar
-    // try_MFVdijet(*mc, gen_particles, 4) || //ccbar
-    // try_MFVdijet(*mc, gen_particles, 5) || //bbbar
+     try_MFVdijet(*mc, gen_particles, 1) || //ddbar
+     try_MFVdijet(*mc, gen_particles, 4) || //ccbar
+     try_MFVdijet(*mc, gen_particles, 5); //bbbar
     // try_MFVlq   (*mc, gen_particles);
 
     if (mc->valid()) {
@@ -945,7 +944,6 @@ void MFVGenParticles::produce(edm::Event& event, const edm::EventSetup&) {
   }
 
   if (debug) {
-    std::cout << "MFVGenParticles " << *mc << "MFVGenParticles decay_vertices:";
     for (double d : *decay_vertices)
       printf(" %6.3f", d);
     printf("\n");

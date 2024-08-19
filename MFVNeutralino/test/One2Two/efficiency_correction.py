@@ -4,7 +4,7 @@ from array import array
 ROOT.TH1.AddDirectory(0)
 
 is_mc = True
-version = 'v23m'
+version = 'ULV9Bm'
 year = '2017'
 
 set_style()

@@ -7,11 +7,16 @@ from JMTucker.Tools.CRAB3ToolsBase import crab_dirs_root, crab_renew_proxy_if_ne
 from JMTucker.Tools.CondorTools import cs_timestamp
 from JMTucker.Tools.general import mkdirs_if_needed, popen, save_git_status, int_ceil, touch
 
+#+SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el7:x86_64" #Alec added
+
 if not os.environ.has_key('SCRAM_ARCH') or not os.environ.has_key('CMSSW_VERSION'):
     raise EnvironmentError('CMSSW environment not set?')
 
+#Alec added: export X509_CERT_DIR=/cvmfs/grid.cern.ch/etc/grid-security/certificates/ 11 lines below
 class CondorSubmitter:
     sh_template = '''#!/bin/bash
+
+export X509_CERT_DIR=/cvmfs/grid.cern.ch/etc/grid-security/certificates/
 
 workdir=$(pwd)
 realjob=$1
@@ -20,9 +25,10 @@ job=${jobmap[$realjob]}
 
 echo realjob $realjob job $job start at $(date)
 
+export X509_CERT_DIR=/cvmfs/grid.cern.ch/etc/grid-security/certificates/
+
 export SCRAM_ARCH=__SCRAM_ARCH__
 source /cvmfs/cms.cern.ch/cmsset_default.sh
-export XRD_NETWORKSTACK=IPv4
 
 scram project CMSSW __CMSSW_VERSION__ 2>&1 > /dev/null
 scramexit=$?
@@ -91,6 +97,7 @@ mv publish ${workdir}/publish_${job}.txt
 if [[ $xrdcp_problem -ne 0 ]]; then
     exit 60307
 fi
+#Alec added +SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el7:x86_64" below
 ''' # 60307 will show up as unix code 147
 
     jdl_template = '''
@@ -100,16 +107,13 @@ arguments = $(Process)
 Output = stdout.$(Process)
 Error = stderr.$(Process)
 Log = log.$(Process)
-request_memory = 3 GB
-request_disk = 3 GB
-requirements = TARGET.HAS_OSG_WN_CLIENT =?= TRUE
-requirements = TARGET.OpSysMajorVer == 7
 stream_output = false
 stream_error = false
 notification = never
 should_transfer_files = YES
 when_to_transfer_output = ON_EXIT
 transfer_input_files = __TARBALL_FN__,cs_jobmap,cs_njobs,cs_pset.py,cs_filelist.py,cs.json,cs_cmsrun_args,cs_primaryds,cs_samplename,cs_timestamp__INPUT_FNS__
++SingularityImage = "/cvmfs/unpacked.cern.ch/registry.hub.docker.com/cmssw/el7:x86_64"
 x509userproxy = $ENV(X509_USER_PROXY)
 __EXTRAS__
 Queue __NJOBS__
@@ -164,7 +168,7 @@ def get(i): return _l[i]
             os.mkdir(links_dir)
 
         if submit_host.endswith('fnal.gov'):
-            schedds = ['lpcschedd%i.fnal.gov' % i for i in 1,2,3]
+            schedds = ['lpcschedd%i.fnal.gov' % i for i in 1,2,3,4,5,6]
             for schedd in schedds:
                 schedd_d = os.path.join(links_dir, schedd)
                 if not os.path.isdir(schedd_d):
@@ -252,8 +256,7 @@ def get(i): return _l[i]
             crab_renew_proxy_if_needed()
             self.get_proxy = False
 
-        # username = os.environ['USER']
-        username = 'awarden'
+        username = os.environ['USER']
         self.timestamp = datetime.now()
         #os.system('mkdir -p /tmp/%s' % username)
 
@@ -326,7 +329,8 @@ def get(i): return _l[i]
                 if stageout_path:
                     stageout_path = '/' + stageout_path
                 #stageout_path = 'root://cmseos.fnal.gov//store/user/' + stageout_user + stageout_path
-                stageout_path = 'root://cmsxrootd.hep.wisc.edu//store/user/' + stageout_user + stageout_path
+                stageout_path = 'root://cmsxrootd.hep.wisc.edu//store/user/' + stageout_user + stageout_path #TODO : CLEANUP Wisc usage
+                #stageout_path = 'root://cmseos.fnal.gov//store/group/lpclonglived/' + stageout_user + stageout_path
                 if not publish_name:
                     publish_name = batch_name.replace('/', '_')
                 stageout_path += '/$(<cs_primaryds)/' + publish_name + '/$(<cs_timestamp)/$(printf "%04i" $(($job/1000)) )'
@@ -357,8 +361,7 @@ def get(i): return _l[i]
 
     def normalize_fns(self, fns):
         # JMTBAD fall back to global redirector
-        #return ['root://cmseos.fnal.gov/' + x for x in fns if x.startswith('/store')]
-        return ['root://cmsxrootd.hep.wisc.edu/' + x for x in fns if x.startswith('/store')]
+        return ['root://cmseos.fnal.gov/' + x for x in fns if x.startswith('/store')]
 
     def filelist(self, sample, working_dir):
         # JMTBAD are there performance problems by not matching the json to the files per job?
@@ -371,7 +374,6 @@ def get(i): return _l[i]
         filenames = sample.filenames
         if not self.is_cmsRun:
             filenames = self.normalize_fns(filenames)
-
         if sample.split_by == 'events':
             per = sample.events_per
             assert sample.nevents_orig > 0 or sample.total_events > 0
@@ -379,7 +381,7 @@ def get(i): return _l[i]
             njobs = int_ceil(nevents, per)
             fn_groups = [filenames]
         else:
-            use_njobs = sample.files_per < 0
+            use_njobs = sample.files_per < 0 
             per = abs(sample.files_per)
             if sample.total_files > 0:
                 filenames = filenames[:sample.total_files]
@@ -387,12 +389,12 @@ def get(i): return _l[i]
             fn_groups = [x for x in (filenames[i*per:(i+1)*per] for i in xrange(njobs)) if x]
             if not use_njobs:
                 njobs = len(fn_groups) # let it fail downward
+        
         if self._njobs is not None:
             assert self._njobs <= njobs
             njobs = self._njobs
 
         encoded_filelist = base64.b64encode(zlib.compress(pickle.dumps(fn_groups, -1)))
-
         files_to_write = [
             ('cs_outputfiles',   self.output_files),
             ('cs_stageoutfiles', self.stageout_files),
@@ -427,10 +429,10 @@ def get(i): return _l[i]
                 to_replace = []
             else:
                 to_add, to_replace = ret
-            for a,b,err in to_replace:
-                if pset.find(a) < 0:
-                    raise ValueError(err)
-                pset = pset.replace(a,b)
+            #for a,b,err in to_replace:
+            #    if pset.find(a) < 0:
+            #        raise ValueError(err)
+            #    pset = pset.replace(a,b)
             if to_add:
                 pset += '\n' + '\n'.join(to_add) + '\n'
 
@@ -449,7 +451,7 @@ def get(i): return _l[i]
         cwd = os.getcwd()
         os.chdir(working_dir)
         try:
-            #submit_out, submit_ret = popen('condor_submit < cs_submit.jdl', return_exit_code=True)
+            #submit_out, submit_ret = popen('condor_submit cs_submit.jdl', return_exit_code=True) #Alec changed 'condor_submit < cs_submit.jdl' to how it appears now
             submit_out, submit_ret = popen('ssh `uname -n` "export X509_USER_PROXY=%s; cd %s; condor_submit < cs_submit.jdl"' % (os.environ['X509_USER_PROXY'], working_dir), return_exit_code=True)
             ok = False
             cluster = None
@@ -458,7 +460,7 @@ def get(i): return _l[i]
                 for line in submit_out.split('\n'):
                     if line.startswith('Attempting to submit jobs to '):
                         schedd = line.strip().replace('Attempting to submit jobs to ', '')
-                        assert schedd in cls.schedds
+                        #assert schedd in cls.schedds
             for line in submit_out.split('\n'):
                 if 'job(s) submitted to cluster' in line:
                     ok = True
@@ -542,7 +544,7 @@ def get(i): return _l[i]
         for sample in samples:
             self.submit(sample)
 
-def NtupleReader_submit(batch_name, dataset, samples, exe_fn='hists.exe', exe_args='', output_fn='hists.root', split_default=1, split={}):
+def NtupleReader_submit(batch_name, dataset, samples, exe_fn='hists.exe', exe_args='', output_fn='hists.root', split_default=1, split={}, input_fns_extra=[]):
     meat = '''
 job=$(<cs_job)
 njobs=$(<cs_njobs)
@@ -570,5 +572,6 @@ fi
         sample.files_per = -1
         sample.njobs = len(sample.filenames) * getattr(sample, 'nr_split', split.get(sample.name, split_default))
 
-    cs = CondorSubmitter(batch_name=batch_name, dataset=dataset, meat=meat, pset_template_fn='', input_files=[exe_fn], output_files=[output_fn])
+    cs = CondorSubmitter(batch_name=batch_name, dataset=dataset, meat=meat, pset_template_fn='', input_files=[exe_fn]+input_fns_extra, output_files=[output_fn], stageout_files='all')
+    #cs = CondorSubmitter(batch_name=batch_name, dataset=dataset, meat=meat, pset_template_fn='', input_files=[exe_fn]+input_fns_extra, output_files=[output_fn])
     cs.submit_all(samples)

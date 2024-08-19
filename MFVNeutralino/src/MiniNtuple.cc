@@ -22,6 +22,9 @@ namespace mfv {
     gen_flavor_code = pass_hlt = npv = npu = njets = nvtx = ntk0 = ntk1 = 0;
     l1_htt = l1_myhtt = l1_myhttwbug = hlt_ht = bsx = bsy = bsz = bsdxdz = bsdydz = pvx = pvy = pvz = weight = ren_weight_up = ren_weight_dn = fac_weight_up = fac_weight_dn = x0 = y0 = z0 = bs2derr0 = rescale_bs2derr0 = x1 = y1 = z1 = bs2derr1 = rescale_bs2derr1 = met = 0;
     genmatch0 = genmatch1 = 0;
+    gen_pv_x0 = 0;
+    gen_pv_y0 = 0;
+    gen_pv_z0 = 0;
     for (int i = 0; i < 2; ++i)
       gen_x[i] = gen_y[i] = gen_z[i] = gen_lsp_pt[i] = gen_lsp_eta[i] = gen_lsp_phi[i] = gen_lsp_mass[i] = 0;
     gen_daughters.clear();
@@ -30,7 +33,7 @@ namespace mfv {
     gen_leptons.clear();
     gen_jet_ht = gen_jet_ht40 = 0;
     for (int i = 0; i < 50; ++i) {
-      jet_pt[i] = jet_eta[i] = jet_phi[i] = jet_energy[i] = jet_bdisc[i] = 0;
+      jet_pt[i] = jet_eta[i] = jet_phi[i] = jet_energy[i] = jet_bdisc_deepflav[i] = jet_bdisc_deepcsv[i] = jet_bdisc_csv[i] = 0;
       jet_hlt_pt[i] = jet_hlt_eta[i] = jet_hlt_phi[i] = jet_hlt_energy[i] = 0;
       displaced_jet_hlt_pt[i] = displaced_jet_hlt_eta[i] = displaced_jet_hlt_phi[i] = displaced_jet_hlt_energy[i] = 0;
       jet_id[i] = 0;
@@ -67,12 +70,12 @@ namespace mfv {
   }
 
   bool MiniNtuple::is_btagged(int i, float min_bdisc) const {
-    return jet_bdisc[i] >= min_bdisc;
+    return jet_bdisc_deepflav[i] >= min_bdisc;
   }
 
-  int MiniNtuple::nbtags_(float min_bdisc, bool old) const {
+  int MiniNtuple::nbtags_(float min_bdisc, int tagger) const {
     int sum = 0;
-    const float* bdisc = old ? jet_bdisc_old : jet_bdisc;
+    const float* bdisc = tagger==0 ? jet_bdisc_csv : tagger==1 ? jet_bdisc_deepcsv : jet_bdisc_deepflav;
     for (int i = 0; i < njets; ++i)
       if (bdisc[i] >= min_bdisc)
         ++sum;
@@ -137,105 +140,7 @@ namespace mfv {
         }
         return passed_kinematics;
       }
-      case b_HLT_PFHT380_SixPFJet32_DoublePFBTagDeepCSV_2p2 :
-      {
-        if(ht(40) < 530 || njets < 6) return false;
-        if(nbtaggedjets < 2) return false;
-
-        for(int j0 = 0; j0 < njets; ++j0){
-          if(!jet_hlt_match(j0) || jet_pt[j0] < 72) continue;
-
-          for(int j1 = j0+1; j1 < njets; ++j1){
-            if(!jet_hlt_match(j1) || jet_pt[j1] < 72) continue;
-
-            for(int j2 = j1+1; j2 < njets; ++j2){
-              if(!jet_hlt_match(j2) || jet_pt[j2] < 72) continue;
-
-              for(int j3 = j2+1; j3 < njets; ++j3){
-                if(!jet_hlt_match(j3) || jet_pt[j3] < 72) continue;
-
-                for(int j4 = j3+1; j4 < njets; ++j4){
-                  if(!jet_hlt_match(j4) || jet_pt[j4] < 72) continue;
-
-                  for(int j5 = j4+1; j5 < njets; ++j5){
-                    if(!jet_hlt_match(j5) || jet_pt[j5] < 72) continue;
-
-                    passed_kinematics = true;
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        return passed_kinematics;
-      }
-      case b_HLT_PFHT380_SixPFJet32_DoublePFBTagCSV_2p2 :
-      {
-        if(ht(40) < 530 || njets < 6) return false;
-        if(nbtaggedjets < 2) return false;
-
-        for(int j0 = 0; j0 < njets; ++j0){
-          if(!jet_hlt_match(j0) || jet_pt[j0] < 72) continue;
-
-          for(int j1 = j0+1; j1 < njets; ++j1){
-            if(!jet_hlt_match(j1) || jet_pt[j1] < 72) continue;
-
-            for(int j2 = j1+1; j2 < njets; ++j2){
-              if(!jet_hlt_match(j2) || jet_pt[j2] < 72) continue;
-
-              for(int j3 = j2+1; j3 < njets; ++j3){
-                if(!jet_hlt_match(j3) || jet_pt[j3] < 72) continue;
-
-                for(int j4 = j3+1; j4 < njets; ++j4){
-                  if(!jet_hlt_match(j4) || jet_pt[j4] < 72) continue;
-
-                  for(int j5 = j4+1; j5 < njets; ++j5){
-                    if(!jet_hlt_match(j5) || jet_pt[j5] < 72) continue;
-
-                    passed_kinematics = true;
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        return passed_kinematics;
-      }
-      case b_HLT_PFHT430_SixPFJet40_PFBTagCSV_1p5 :
-      {
-        if(ht(40) < 580 || njets < 6) return false;
-        if(nbtaggedjets < 1) return false;
-
-        for(int j0 = 0; j0 < njets; ++j0){
-          if(!jet_hlt_match(j0) || jet_pt[j0] < 80) continue;
-
-          for(int j1 = j0+1; j1 < njets; ++j1){
-            if(!jet_hlt_match(j1) || jet_pt[j1] < 80) continue;
-
-            for(int j2 = j1+1; j2 < njets; ++j2){
-              if(!jet_hlt_match(j2) || jet_pt[j2] < 80) continue;
-
-              for(int j3 = j2+1; j3 < njets; ++j3){
-                if(!jet_hlt_match(j3) || jet_pt[j3] < 80) continue;
-
-                for(int j4 = j3+1; j4 < njets; ++j4){
-                  if(!jet_hlt_match(j4) || jet_pt[j4] < 80) continue;
-
-                  for(int j5 = j4+1; j5 < njets; ++j5){
-                    if(!jet_hlt_match(j5) || jet_pt[j5] < 80) continue;
-
-                    passed_kinematics = true;
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        return passed_kinematics;
-      }
+      
       case b_HLT_DoublePFJets116MaxDeta1p6_DoubleCaloBTagDeepCSV_p71 :
       {
         if(njets < 4) return false;
@@ -272,98 +177,6 @@ namespace mfv {
                 if(!jet_hlt_match(j3) || jet_pt[j3] < 80) continue;
 
                 passed_kinematics = true;
-              }
-            }
-          }
-        }
-        return passed_kinematics;
-      }
-      case b_HLT_PFHT400_FivePFJet_100_100_60_30_30_DoublePFBTagDeepCSV_4p5 :
-      {
-        if(ht(40) < 550 || njets < 5) return false;
-        if(nbtaggedjets < 2) return false;
-
-        for(int j0 = 0; j0 < njets; ++j0){
-          if(!jet_hlt_match(j0) || jet_pt[j0] < 140) continue;
-
-          for(int j1 = j0+1; j1 < njets; ++j1){
-            if(!jet_hlt_match(j1) || jet_pt[j1] < 140) continue;
-
-            for(int j2 = j1+1; j2 < njets; ++j2){
-              if(!jet_hlt_match(j2) || jet_pt[j2] < 100) continue;
-
-              for(int j3 = j2+1; j3 < njets; ++j3){
-                if(!jet_hlt_match(j3) || jet_pt[j3] < 70) continue;
-
-                for(int j4 = j3+1; j4 < njets; ++j4){
-                  if(!jet_hlt_match(j4) || jet_pt[j4] < 70) continue;
-
-                  passed_kinematics = true;
-                }
-              }
-            }
-          }
-        }
-        return passed_kinematics;
-      }
-      case b_HLT_PFHT400_SixPFJet32_DoublePFBTagDeepCSV_2p94 :
-      {
-        if(ht(40) < 150 || njets < 6) return false;
-        if(nbtaggedjets < 2) return false;
-
-        for(int j0 = 0; j0 < njets; ++j0){
-          if(!jet_hlt_match(j0) || jet_pt[j0] < 72) continue;
-
-          for(int j1 = j0+1; j1 < njets; ++j1){
-            if(!jet_hlt_match(j1) || jet_pt[j1] < 72) continue;
-
-            for(int j2 = j1+1; j2 < njets; ++j2){
-              if(!jet_hlt_match(j2) || jet_pt[j2] < 72) continue;
-
-              for(int j3 = j2+1; j3 < njets; ++j3){
-                if(!jet_hlt_match(j3) || jet_pt[j3] < 72) continue;
-
-                for(int j4 = j3+1; j4 < njets; ++j4){
-                  if(!jet_hlt_match(j4) || jet_pt[j4] < 72) continue;
-
-                  for(int j5 = j4+1; j5 < njets; ++j5){
-                    if(!jet_hlt_match(j5) || jet_pt[j5] < 72) continue;
-
-                    passed_kinematics = true;
-                  }
-                }
-              }
-            }
-          }
-        }
-        return passed_kinematics;
-      }
-      case b_HLT_PFHT450_SixPFJet36_PFBTagDeepCSV_1p59 :
-      {
-        if(ht(40) < 600 || njets < 6) return false;
-        if(nbtaggedjets < 1) return false;
-
-        for(int j0 = 0; j0 < njets; ++j0){
-          if(!jet_hlt_match(j0) || jet_pt[j0] < 76) continue;
-
-          for(int j1 = j0+1; j1 < njets; ++j1){
-            if(!jet_hlt_match(j1) || jet_pt[j1] < 76) continue;
-
-            for(int j2 = j1+1; j2 < njets; ++j2){
-              if(!jet_hlt_match(j2) || jet_pt[j2] < 76) continue;
-
-              for(int j3 = j2+1; j3 < njets; ++j3){
-                if(!jet_hlt_match(j3) || jet_pt[j3] < 76) continue;
-
-                for(int j4 = j3+1; j4 < njets; ++j4){
-                  if(!jet_hlt_match(j4) || jet_pt[j4] < 76) continue;
-
-                  for(int j5 = j4+1; j5 < njets; ++j5){
-                    if(!jet_hlt_match(j5) || jet_pt[j5] < 76) continue;
-
-                    passed_kinematics = true;
-                  }
-                }
               }
             }
           }
@@ -467,8 +280,9 @@ namespace mfv {
     tree->Branch("jet_phi", nt.jet_phi, "jet_phi[njets]/F");
     tree->Branch("jet_energy", nt.jet_energy, "jet_energy[njets]/F");
     tree->Branch("jet_id", nt.jet_id, "jet_id[njets]/b");
-    tree->Branch("jet_bdisc_old", nt.jet_bdisc_old, "jet_bdisc_old[njets]/F");
-    tree->Branch("jet_bdisc", nt.jet_bdisc, "jet_bdisc[njets]/F");
+    tree->Branch("jet_bdisc_csv", nt.jet_bdisc_csv, "jet_bdisc_csv[njets]/F");
+    tree->Branch("jet_bdisc_deepcsv", nt.jet_bdisc_deepcsv, "jet_bdisc_deepcsv[njets]/F");
+    tree->Branch("jet_bdisc_deepflav", nt.jet_bdisc_deepflav, "jet_bdisc_deepflav[njets]/F");
     tree->Branch("jet_hlt_pt", nt.jet_hlt_pt, "jet_hlt_pt[njets]/F");
     tree->Branch("jet_hlt_eta", nt.jet_hlt_eta, "jet_hlt_eta[njets]/F");
     tree->Branch("jet_hlt_phi", nt.jet_hlt_phi, "jet_hlt_phi[njets]/F");
@@ -477,6 +291,9 @@ namespace mfv {
     tree->Branch("displaced_jet_hlt_eta", nt.displaced_jet_hlt_eta, "displaced_jet_hlt_eta[njets]/F");
     tree->Branch("displaced_jet_hlt_phi", nt.displaced_jet_hlt_phi, "displaced_jet_hlt_phi[njets]/F");
     tree->Branch("displaced_jet_hlt_energy", nt.displaced_jet_hlt_energy, "displaced_jet_hlt_energy[njets]/F");
+    tree->Branch("gen_pv_x0", &nt.gen_pv_x0);
+    tree->Branch("gen_pv_y0", &nt.gen_pv_y0);
+    tree->Branch("gen_pv_z0", &nt.gen_pv_z0);
     tree->Branch("gen_x", nt.gen_x, "gen_x[2]/F");
     tree->Branch("gen_y", nt.gen_y, "gen_y[2]/F");
     tree->Branch("gen_z", nt.gen_z, "gen_z[2]/F");
@@ -490,6 +307,7 @@ namespace mfv {
     tree->Branch("gen_leptons", &nt.gen_leptons, 32000, 0);
     tree->Branch("gen_jet_ht", &nt.gen_jet_ht);
     tree->Branch("gen_jet_ht40", &nt.gen_jet_ht40);
+    //tree->Branch("vertices", &nt.vertices); 
     tree->Branch("nvtx", &nt.nvtx);
     tree->Branch("ntk0", &nt.ntk0);
     tree->Branch("tk0_qchi2", &nt.tk0_qchi2);
@@ -533,6 +351,7 @@ namespace mfv {
     tree->SetAlias("phi0",  "atan2(y0,x0)");
     tree->SetAlias("phi1",  "atan2(y1,x1)");
     tree->SetAlias("svdist",  "(nvtx >= 2) * sqrt((x0-x1)**2 + (y0-y1)**2)");
+    tree->SetAlias("sumdbv",  "(nvtx >= 2) * sqrt(x0**2 + y0**2) + sqrt(x1**2 + y1**2)");
     tree->SetAlias("svdphi",  "(nvtx >= 2) * TVector2::Phi_mpi_pi(atan2(y0,x0)-atan2(y1,x1))");
     tree->SetAlias("svdz",    "(nvtx >= 2) * (z0 - z1)");
   }
@@ -569,8 +388,9 @@ namespace mfv {
     tree->SetBranchAddress("jet_phi", nt.jet_phi);
     tree->SetBranchAddress("jet_energy", nt.jet_energy);
     tree->SetBranchAddress("jet_id", nt.jet_id);
-    tree->SetBranchAddress("jet_bdisc_old", nt.jet_bdisc_old);
-    tree->SetBranchAddress("jet_bdisc", nt.jet_bdisc);
+    tree->SetBranchAddress("jet_bdisc_csv", nt.jet_bdisc_csv);
+    tree->SetBranchAddress("jet_bdisc_deepcsv", nt.jet_bdisc_deepcsv);
+    tree->SetBranchAddress("jet_bdisc_deepflav", nt.jet_bdisc_deepflav);
     tree->SetBranchAddress("jet_hlt_pt", nt.jet_hlt_pt);
     tree->SetBranchAddress("jet_hlt_eta", nt.jet_hlt_eta);
     tree->SetBranchAddress("jet_hlt_phi", nt.jet_hlt_phi);
@@ -579,6 +399,9 @@ namespace mfv {
     tree->SetBranchAddress("displaced_jet_hlt_eta", nt.displaced_jet_hlt_eta);
     tree->SetBranchAddress("displaced_jet_hlt_phi", nt.displaced_jet_hlt_phi);
     tree->SetBranchAddress("displaced_jet_hlt_energy", nt.displaced_jet_hlt_energy);
+    tree->SetBranchAddress("gen_pv_x0", &nt.gen_pv_x0);
+    tree->SetBranchAddress("gen_pv_y0", &nt.gen_pv_y0);
+    tree->SetBranchAddress("gen_pv_z0", &nt.gen_pv_z0);
     tree->SetBranchAddress("gen_x", nt.gen_x);
     tree->SetBranchAddress("gen_y", nt.gen_y);
     tree->SetBranchAddress("gen_z", nt.gen_z);
@@ -592,6 +415,7 @@ namespace mfv {
     tree->SetBranchAddress("gen_leptons", &nt.p_gen_leptons);
     tree->SetBranchAddress("gen_jet_ht", &nt.gen_jet_ht);
     tree->SetBranchAddress("gen_jet_ht40", &nt.gen_jet_ht40);
+    //tree->SetBranchAddress("vertices",&nt.vertices);
     tree->SetBranchAddress("nvtx", &nt.nvtx);
     tree->SetBranchAddress("ntk0", &nt.ntk0);
     tree->SetBranchAddress("tk0_qchi2", &nt.p_tk0_qchi2);
@@ -637,6 +461,8 @@ namespace mfv {
     if (nt.p_gen_daughter_id) nnt->gen_daughter_id = *nt.p_gen_daughter_id;
     if (nt.p_gen_bquarks) nnt->gen_bquarks = *nt.p_gen_bquarks;
     if (nt.p_gen_leptons) nnt->gen_leptons = *nt.p_gen_leptons;
+
+    //nnt->vertices = nt.vertices;
     
     if (nt.p_tk0_qchi2) nnt->tk0_qchi2 = *nt.p_tk0_qchi2;
     if (nt.p_tk0_ndof ) nnt->tk0_ndof  = *nt.p_tk0_ndof;

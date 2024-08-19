@@ -41,6 +41,7 @@ def tgae(x, y, exl, exh, eyl, eyh, title, xtitle, color):
         eyh = [0]*l
     eyh = array('f', eyh)
     #print l, x, y, exl, exh, eyl, eyh
+    if l == 0: return ROOT.TGraphAsymmErrors()
     t = ROOT.TGraphAsymmErrors(l, x, y, exl, exh, eyl, eyh)
     return fmt(t, title, xtitle, color)
 
@@ -48,9 +49,10 @@ def parse_theory(which, include_errors=True, cache={}):
     if which not in ('gluglu', 'stopstop', 'higgsino_N2N1'):
         raise ValueError('bad which %r' % which)
     fn = which + '.csv'
+    br = 1.0
     if not cache.has_key(fn):
         xsecs = [eval(x.strip()) for x in open(fn) if x.strip()]
-        xsecs = [(z[0], z[1]*1000, z[2]/100*z[1]*1000) for z in xsecs] # convert pb to fb and percent to absolute
+        xsecs = [(z[0], z[1]*1000*br*br, z[2]/100*z[1]*1000*br*br) for z in xsecs] # convert pb to fb and percent to absolute
         if not include_errors:
             xsecs = [(a,b,0.) for a,b,_ in xsecs]
         cache[fn] = xsecs
@@ -163,6 +165,7 @@ def make_1d_plot(d, name, xkey='mass'):
                     yield y
     g = G()
 
+    print d[xkey], name, xkey
     g.observed = tgae(d[xkey], d['observed'], None, None, None, None, '', xtitle, 1)
     g.expect50 = tgae(d[xkey], d['expect50'], None, None, None, None, '', xtitle, 1)
     g.expect95 = tgae(d[xkey], d['expect95'], None, None, d['expect95lo'], d['expect95hi'], '', xtitle, ROOT.kOrange)
@@ -216,32 +219,41 @@ def make_1d_plot(d, name, xkey='mass'):
 
 def save_1d_plots():
     xxx = [
-        ('multijet_M0800',   lambda s: 'neu'          in sample.name and sample.mass ==  800 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  800.)),
-        ('multijet_M1600',   lambda s: 'neu'          in sample.name and sample.mass == 1600 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau', 1600.)),
-        ('multijet_M2400',   lambda s: 'neu'          in sample.name and sample.mass == 2400 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau', 2400.)),
-        ('multijet_M3000',   lambda s: 'neu'          in sample.name and sample.mass == 3000 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau', 3000.)),
-        ('multijet_tau300um',lambda s: 'neu'          in sample.name and sample.tau  ==  0.3 and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
         ('multijet_tau1mm',  lambda s: 'neu'          in sample.name and sample.tau  ==  1.  and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
+        ('multijet_M0200',   lambda s: 'neu'          in sample.name and sample.mass ==  200 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  200.)),
+        ('multijet_M0300',   lambda s: 'neu'          in sample.name and sample.mass ==  300 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  300.)),
+        ('multijet_M0400',   lambda s: 'neu'          in sample.name and sample.mass ==  400 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  400.)),
+        ('multijet_M0600',   lambda s: 'neu'          in sample.name and sample.mass ==  600 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  600.)),
+        ('multijet_tau300um',lambda s: 'neu'          in sample.name and sample.tau  ==  0.3 and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
         ('multijet_tau10mm', lambda s: 'neu'          in sample.name and sample.tau  == 10.  and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
-        ('dijet_M0800',      lambda s: 'stopdbardbar' in sample.name and sample.mass ==  800 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  800.)),
-        ('dijet_M1600',      lambda s: 'stopdbardbar' in sample.name and sample.mass == 1600 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau', 1600.)),
-        ('dijet_M2400',      lambda s: 'stopdbardbar' in sample.name and sample.mass == 2400 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau', 2400.)),
-        ('dijet_M3000',      lambda s: 'stopdbardbar' in sample.name and sample.mass == 3000 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau', 3000.)),
+        ('dijet_M0200',      lambda s: 'stopdbardbar' in sample.name and sample.mass ==  200 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  200.)),
+        ('dijet_M0300',      lambda s: 'stopdbardbar' in sample.name and sample.mass ==  300 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  300.)),
+        ('dijet_M0400',      lambda s: 'stopdbardbar' in sample.name and sample.mass ==  400 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  400.)),
+        ('dijet_M0600',      lambda s: 'stopdbardbar' in sample.name and sample.mass ==  600 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  600.)),
         ('dijet_tau300um',   lambda s: 'stopdbardbar' in sample.name and sample.tau  ==  0.3 and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
         ('dijet_tau1mm',     lambda s: 'stopdbardbar' in sample.name and sample.tau  ==  1.  and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
         ('dijet_tau10mm',    lambda s: 'stopdbardbar' in sample.name and sample.tau  == 10.  and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
+        ('dijet_bb_tau300um',   lambda s: 'stopbbarbbar' in sample.name and sample.tau  ==  0.3 and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
+        ('dijet_bb_tau1mm',     lambda s: 'stopbbarbbar' in sample.name and sample.tau  ==  1.  and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
+        ('dijet_bb_tau10mm',    lambda s: 'stopbbarbbar' in sample.name and sample.tau  == 10.  and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
+        ('dijet_bb_M0200',      lambda s: 'stopdbardbar' in sample.name and sample.mass ==  200 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  200.)),
+        ('dijet_bb_M0300',      lambda s: 'stopdbardbar' in sample.name and sample.mass ==  300 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  300.)),
+        ('dijet_bb_M0400',      lambda s: 'stopdbardbar' in sample.name and sample.mass ==  400 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  400.)),
+        ('dijet_bb_M0600',      lambda s: 'stopdbardbar' in sample.name and sample.mass ==  600 and sample.tau <= 100., lambda s: s.sample.tau,  ('tau',  600.)),
         ]
     
     in_f = ROOT.TFile('limitsinput.root')
     for which, years in ('run2', [2016,2017,2018]), ('2017p8', [2017,2018]):
+        #if which == 'run2':
+        #    continue
         out_f = ROOT.TFile('limits_1d_%s.root' % which, 'recreate')
         for name, use, sorter, xkey in xxx:
             d = limits()
             for sample in sample_iterator(in_f, years, slices_1d=True):
                 if use(sample):
                     #print sample.isample, sample.name, sample.kind, sample.tau, sample.mass
-                    #d.parse(sample, 'combine_output_%s/signal_%05i/results' % (which, sample.isample)) # condor
-                    d.parse(sample, 'combine_output_%s/crab_signal_%05i/results' % (which, sample.isample)) # crab
+                    d.parse(sample, '/uscms_data/d3/shogan/crab_dirs/combine_output_v4/crab_signal_%05i/results' % sample.isample)
+                    #d.parse(sample, '/uscms_data/d3/shogan/crab_dirs/combine_output_HighBkgTest/crab_signal_%05i/results' % sample.isample)
             d.points.sort(key=sorter)
 
             out_f.mkdir(name).cd()
@@ -267,7 +279,7 @@ def save_2d_plots():
     for which, years in ('run2', [2016,2017,2018]), ('2017p8', [2017,2018]):
         out_f = ROOT.TFile('limits_%s.root' % which, 'recreate')
 
-        for kind in 'mfv_stopdbardbar', 'mfv_neu':
+        for kind in 'mfv_stopdbardbar', 'mfv_stopbbarbbar', 'mfv_neu':
             d = limits()
             for sample in sample_iterator(in_f, years):
                 if -sample.isample in (209,210,211,303,399,489,589,590,675,676):
@@ -275,7 +287,8 @@ def save_2d_plots():
                 if sample.kind != kind:
                     continue
                 #d.parse(sample, 'combine_output_%s/signal_%05i/results' % (which, sample.isample)) # condor
-                d.parse(sample, 'combine_output_%s/crab_signal_%05i/results' % (which, sample.isample)) # crab
+                #d.parse(sample, 'combine_output_%s/crab_signal_%05i/results' % (which, sample.isample)) # crab
+                d.parse(sample, '/uscms_data/d3/shogan/crab_dirs/combine_output_May09/signal_%05i/results' % sample.isample)
 
             taus, masses = axisize(d['tau']), axisize(d['mass'])
             taus.remove(30.)
@@ -472,6 +485,7 @@ env R_LIBS=~/.R R --no-save <<EOF
 
 def one_from_r(ex, name):
     def read_csv(fn):
+        print fn
         lines = [x.strip() for x in open(os.path.join('/uscms/home/joeyr/public/to_r/run2',fn)).read().replace('"', '').split('\n') if x.strip()]
         lines.pop(0)
         vs = []
