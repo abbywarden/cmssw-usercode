@@ -11,6 +11,12 @@ all: hists.exe
 %.exe: %.cc $(SHADOWDEPS)
 	g++ -o $@ $< $(FLAGS)
 
+%.exe: %low.cc $(SHADOWDEPS)
+	g++ -o $@ $< $(FLAGS)
+
+%.exe: %high.cc $(SHADOWDEPS)
+	g++ -o $@ $< $(FLAGS)
+
 #copier.cc: $(SHADOWDEPS)
 #        generate_ntuple_copier.sh mfv::SplitPVNtuple mfvSplitPVs
 

@@ -49,7 +49,7 @@ MFVGenParticles::MFVGenParticles(const edm::ParameterSet& cfg)
     beamspot_token(consumes<reco::BeamSpot>(cfg.getParameter<edm::InputTag>("beamspot_src"))),
     last_flag_check(cfg.getParameter<bool>("last_flag_check")),
     debug(cfg.getUntrackedParameter<bool>("debug", false)),
-    histos(cfg.getUntrackedParameter<bool>("histos", true)),
+    histos(cfg.getUntrackedParameter<bool>("histos", false)),
     lsp_id(cfg.getUntrackedParameter<int>("lsp_id", -1))
 {
   produces<mfv::MCInteraction>();
@@ -877,7 +877,7 @@ void MFVGenParticles::produce(edm::Event& event, const edm::EventSetup&) {
     // the order of these tries is important, at least that MFVtbses come before Ttbar
     try_MFV_stoplq   (*mc, gen_particles) ||
     // try_splitSUSY(*mc,gen_particles) || //splitSUSY gluino  -> qqbar neu
-    // try_MFVtbs  (*mc, gen_particles, 5, 3) || // tbs
+    try_MFVtbs  (*mc, gen_particles, 5, 3) || // tbs
     // try_MFVtbs  (*mc, gen_particles, 1, 3) || // tds
     // try_MFVtbs  (*mc, gen_particles, 5, 5) || // tbb
     try_Ttbar   (*mc, gen_particles); 
@@ -890,8 +890,8 @@ void MFVGenParticles::produce(edm::Event& event, const edm::EventSetup&) {
     // try_MFVthree(*mc, gen_particles,  5, 1,  4) || // cdb
     // try_MFVthree(*mc, gen_particles,  5, 5,  2) || // ubb
     // try_XX4j    (*mc, gen_particles) ||
-    // try_stopdbardbar(*mc, gen_particles, -1) || // stop -> dbar dbar + c.c.
-    // try_stopdbardbar(*mc, gen_particles, -5) || // stop -> bbar bbar + c.c.
+    try_stopdbardbar(*mc, gen_particles, -1) || // stop -> dbar dbar + c.c.
+    try_stopdbardbar(*mc, gen_particles, -5) || // stop -> bbar bbar + c.c.
      try_MFVdijet(*mc, gen_particles, 1) || //ddbar
      try_MFVdijet(*mc, gen_particles, 4) || //ccbar
      try_MFVdijet(*mc, gen_particles, 5); //bbbar

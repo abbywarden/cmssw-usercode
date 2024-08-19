@@ -41,15 +41,6 @@ def era_modifier(sample):
         return [], [(magic, ('\nsettings.era = "%s"' % era) + magic, 'trying to submit on data and no magic string %r' % magic)]
     else:
         return [], []
-    # if not sample.is_mc:
-    #     mo = re.search(r'(201\d)([A-Z])', sample.name)
-    #     assert mo
-    #     yr, era = mo.groups()
-    #     assert year == int(yr)
-    #     magic = '\nsettings.is_mc ='
-    #     return [], [(magic, ('\nsettings.era = "%s"' % era) + magic, 'trying to submit on data and no magic string %r' % magic)]
-    # else:
-    #     return [], []
 
 def repro_modifier(sample):
     if sample.name.startswith('Repro'):

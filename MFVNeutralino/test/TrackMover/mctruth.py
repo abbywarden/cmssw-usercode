@@ -14,9 +14,10 @@ process = ntuple_process(settings)
 tfileservice(process, 'mctruth.root')
 dataset = 'miniaod' if settings.is_miniaod else 'main'
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WplusH_HToSSTodddd_WToLNu_MH-125_MS-55_ctauS-1_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/40000/0BD790C6-883F-0147-A66E-8EC9DC53750F.root')
-#max_events(process, 1000)
+#max_events(process, 100)
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/StopStopbarTo2Dbar2D_M-800_CTau-1mm_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/50000/B5C839E5-8F24-C344-B539-9915B1A6F90C.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/ggH_HToSSTo4l_lowctau_MH-800_MS-350_ctauS-1_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/2550000/36A34C5C-7F31-7E4F-A8C7-43A72226A91D.root')
+#input_files(process, '/store/mc/RunIISummer20UL16MiniAODAPVv2/GluinoGluinoToNeutralinoNeutralinoTo2T2B2S_M-800_CTau-1mm_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/50000/91C7124F-ED8D-A441-B7D1-1B2A04EC78EC.root')
 cmssw_from_argv(process)
 
 
@@ -31,8 +32,10 @@ if dataset == 'miniaod':
     process.mfvGenParticles.last_flag_check = False
     process.mfvGenParticles.gen_particles_src = 'prunedGenParticles'
 
+#for met 
 process.p = cms.Path(process.mfvEventFilterSequence *process.mfvGenParticles*process.BadPFMuonFilterUpdateDz * process.fullPatMetSequence * process.mfvTriggerFloats)
-
+#for jet
+#process.p = cms.Path(process.mfvEventFilterSequence *process.mfvGenParticles* process.mfvTriggerFloats)
 
 tree = cms.EDAnalyzer('MFVMovedTracksTreer',
                                              jmtNtupleFiller_pset(settings.is_miniaod, True, False),
@@ -53,12 +56,12 @@ ReferencedTagsTaskAdder(process)('p')
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
-    #samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=False)
+    samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=False)
     #samples = pick_samples(dataset, all_signal='only')
     
-    samples = [getattr(Samples, 'ZHToSSTodddd_tau1mm_M55_2017')] 
+    #samples = [getattr(Samples, 'ZHToSSTodddd_tau300um_M55_2018')] 
     #samples = [getattr(Samples, 'mfv_stopdbardbar_tau001000um_M0800_2017')] 
-    #samples = [getattr(Samples, 'ggHToSSTo4l_tau1mm_M350_2017')]
+    #samples = [getattr(Samples, 'WminusHToSSTodddd_tau300um_M55_2018')]
     set_splitting(samples, dataset, 'ntuple')
     ms = MetaSubmitter('TrackMoverMCTruth' + version, dataset=dataset)
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, per_sample_pileup_weights_modifier())

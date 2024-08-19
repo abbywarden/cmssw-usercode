@@ -4,13 +4,13 @@ from JMTucker.Tools.general import named_product
 from JMTucker.MFVNeutralino.NtupleCommon import *
 
 settings = NtupleSettings()
-settings.is_mc = True
+settings.is_mc = False
 settings.is_miniaod = True
 #settings.event_filter= 'electrons only novtx'
 settings.event_filter = 'muons only novtx'
 #settings.event_filter = 'bjets OR displaced dijet novtx'
 
-version = settings.version + 'v8'
+version = settings.version + 'v8' #v8 : [2,0], v9 : [0,2], v10 : [3,2]
 
 # for stat extension
 #version = settings.version + 'ext1'
@@ -38,9 +38,11 @@ cfgs = named_product(njets = [2], #FIXME
 process = ntuple_process(settings)
 #tfileservice(process, '/uscms/home/pkotamni/nobackup/crabdirs/movedtree.root')
 tfileservice(process, 'movedtree.root')
-max_events(process, 100)
+#max_events(process, 100)
 dataset = 'miniaod' if settings.is_miniaod else 'main'
-input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/120001/A8C3978F-4BE4-A844-BEE8-8DEE129A02B7.root')
+#input_files(process, '/store/data/Run2016B/BTagCSV/MINIAOD/21Feb2020_ver2_UL2016_HIPM-v1/240000/FEBA5DAA-3D1A-384D-91EB-A10EF4E504F5.root')
+#input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/120001/A8C3978F-4BE4-A844-BEE8-8DEE129A02B7.root')
+#input_files(process, '/store/mc/RunIISummer20UL16MiniAODAPVv2/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/2540000/00AF8175-C641-344B-8777-F62041FD6308.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/100000/177D06A8-D7E8-E14A-8FB8-E638820EDFF3.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/110000/01DA55E6-2A8C-AE48-B2C4-A3DC37E2052D.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/110000/10063082-9BA1-D14B-A04D-EDA3288D079A.root')
@@ -122,7 +124,8 @@ for icfg, cfg in enumerate(cfgs):
                             min_jet_ntracks = cms.uint32(2), 
                             njets = cms.uint32(cfg.njets),
                             nbjets = cms.uint32(cfg.nbjets),
-                            tau = cms.double(0.03), #FIXME default 1.
+                            tau = cms.double(1.), #FIXME default 1.
+                            halftoss = cms.bool(True), #FIXME True for exotic-Higgs and False otherwise
                             sig_theta = cms.double(cfg.angle),
                             sig_phi = cms.double(cfg.angle),
                             )
@@ -157,11 +160,11 @@ random_service(process, random_dict)
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
-    #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, met=True, diboson=True, Lepton_data=False)
-    samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=True)
-
-    set_splitting(samples, dataset, 'trackmover', data_json=json_path('ana_2017p8.json'), limit_ttbar=True)
-    ms = MetaSubmitter('TrackMover0p03' + version, dataset=dataset)
+    #samples = pick_samples(dataset, qcd=True, data=False, all_signal=False, qcd_lep=False, leptonic=False, ttbar=True, diboson=False, Lepton_data=False, BTagCSV_data=False, DisplacedJet_data=False)
+    samples = pick_samples(dataset, qcd=False, data=False, all_signal=False, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=True, BTagCSV_data=False, DisplacedJet_data=False)
+    #samples = [getattr(Samples, 'ttbar_2018')]
+    set_splitting(samples, dataset, 'trackmover', data_json=json_path('ana_2016.json' if year in [20161, 20162] else 'ana_2017p8.json'), limit_ttbar=True)
+    ms = MetaSubmitter('TrackMover' + version, dataset=dataset)
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, per_sample_pileup_weights_modifier())
     ms.condor.stageout_files = 'all'
     ms.submit(samples)

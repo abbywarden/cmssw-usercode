@@ -401,9 +401,9 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
 
   if (use_met) {
     // getting MET using original source
-    //edm::Handle<pat::METCollection> mets;
-    //event.getByToken(met_token, mets);
-    //const pat::MET& met = mets->at(0);
+    edm::Handle<pat::METCollection> mets;
+    event.getByToken(met_token, mets);
+    const pat::MET& met = mets->at(0);
     //mevent->metx = met.px();
     //mevent->mety = met.py();
 

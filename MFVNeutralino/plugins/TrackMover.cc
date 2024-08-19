@@ -39,6 +39,7 @@ private:
   const unsigned njets;
   const unsigned nbjets;
   const double tau;
+  const bool halftoss;
   const double sig_theta;
   const double sig_phi;
 };
@@ -57,6 +58,7 @@ MFVTrackMover::MFVTrackMover(const edm::ParameterSet& cfg)
     njets(cfg.getParameter<unsigned>("njets")),
     nbjets(cfg.getParameter<unsigned>("nbjets")),
     tau(cfg.getParameter<double>("tau")),
+    halftoss(cfg.getParameter<bool>("halftoss")),
     sig_theta(cfg.getParameter<double>("sig_theta")),
     sig_phi(cfg.getParameter<double>("sig_phi"))
 {
@@ -226,7 +228,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
         }
         if (!(pt > 1.0 && npxlayers >= 2 && nstlayers >= 6 && (min_r <= 1.0 || (min_r == 2.0 && trackLostInnerHits == 0) ))) continue;
        
-        if (rint.fire(1,0.5) == 0) continue; //FIXME : To toss out a track randomly 
+        if (rint.fire(1,0.5) == 0 && halftoss==true) continue; //To toss out a track randomly 
 
         reco::TrackBase::Point new_point(tk->vx() + move.x(),
                                          tk->vy() + move.y(),

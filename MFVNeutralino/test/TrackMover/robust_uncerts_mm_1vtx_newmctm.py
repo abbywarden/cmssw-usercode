@@ -128,7 +128,7 @@ def calcTocShiftUncert(low, cent, hi):
 
 # Initialize stuff:
 
-year = '20161p2'
+year = '2017p8'
 doShift  = True
 reweight = True
 #toc_shift = 0.0   # How much to move the turn-on curve by
@@ -174,11 +174,11 @@ for mass in masses:
                 sig_non_str = ''
 
                 if not reweight:
-                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/background_leptonpresel_%s.root" % (int(ctau), year)
-                    dat_str = "~/nobackup/crabdirs/TrackMover_SrudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/SingleMuon%s.root" % (int(ctau), year)
+                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/background_leptonpresel_%s.root" % (int(ctau), year)
+                    dat_str = "~/nobackup/crabdirs/TrackMover_SrudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/SingleMuon%s.root" % (int(ctau), year)
                 else:
-                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/background_leptonpresel_%s.root" % (int(ctau), int(mass), year)
-                    dat_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/SingleMuon%s.root" % (int(ctau), int(mass), year)
+                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/background_leptonpresel_%s.root" % (int(ctau), int(mass), year)
+                    dat_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/SingleMuon%s.root" % (int(ctau), int(mass), year)
                 tm_sim  = ROOT.TFile(sim_str)
                 tm_dat  = ROOT.TFile(dat_str)
                 
@@ -187,14 +187,14 @@ for mass in masses:
                 elif mass == '40':
                     sig_non_str  = '~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root'
                 else :
-                    sig_non_str  = '~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root'
+                    sig_non_str  = '~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root'
 
 
                 signal_non = ROOT.TFile(sig_non_str)
 
-                signal  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                signal  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
 
-                signal_ht  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                signal_ht  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
                 
                 dat_den = tm_dat.Get('all_closeseedtks_den')
                 #dat_den = cutZero(dat_den, 5)
@@ -241,8 +241,6 @@ for mass in masses:
                 shift_val = int(signon_dist.GetMean()-sim_den.GetMean())
                 shift_fr = round(signon_dist.GetMean()-sim_den.GetMean(),2) - int(signon_dist.GetMean()-sim_den.GetMean())
 
-                simtmslidedistr_dist = shiftDIST(simtmslidedistr_dist, shift_val, shift_fr) # psd_dist to sig_dist
-               
                 #print(" sig sim - TM sim shift ", round(signon_dist.GetMean()-sim_den.GetMean(),2))   
                 #print (shift_val, shift_fr)
 
@@ -394,10 +392,30 @@ for mass in masses:
                     #print(" TM dat- TM sim shift ", round(sim_den.GetMean()-dat_den.GetMean(),2))   
                     
                     psd_dist = shiftDIST(psd_dist, shift_val, shift_fr) # psd_dist to sig_dist
+
+                    norm_sig = sig_dist.Clone()
+                    fdata = ROOT.TFile("sig_dist.root", "recreate")
+                    norm_sig.Scale(1.0/norm_sig.Integral())
+                    norm_sig.Write()
+                    fdata.Close()
+                    
+                    simslide = psd_dist.Clone()
+                    #simslide = shiftDIST(simslide, shift_val, shift_fr)
+                    ftmslide = ROOT.TFile("sigsimslide_dist.root", "recreate")
+                    simslide.Scale(1.0/simslide.Integral())
+                    simslide.Write()
+                    ftmslide.Close()
                     
                 if psd_method == 'scale_distr':
                     psd_dist = sig_dist.Clone()
                     psd_dist.Multiply(scale_factors)
+
+                    simscale = psd_dist.Clone()
+                    #simscale.Multiply(scale_factors)
+                    ftmscale = ROOT.TFile("sigsimscale_dist.root", "recreate")
+                    simscale.Scale(1.0/simscale.Integral())
+                    simscale.Write()
+                    ftmscale.Close()
                 
                 fout = ROOT.TFile(psd_method+"_dist.root", "recreate")
                 psd_dist.Write()

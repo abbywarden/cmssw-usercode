@@ -17,7 +17,7 @@ mfvAnalysisCuts = cms.EDFilter('MFVAnalysisCuts',
                                apply_presel = apply_presel,  # 1 = jets, 2 = el/mu, 3 = jets OR bjet/displaced dijet triggers, 4 = bjet/displaced dijet triggers veto HT trigger, 5 = MET trigger
                                                              # 6 = bjets/displaced dijet (HT agnostic)
                                require_met_filters = cms.bool(True) if use_MET_triggers else cms.bool(False),
-                               require_bquarks  = cms.bool(False),
+                               require_bquarks  = cms.bool(True) if use_btag_triggers else cms.bool(False),
                                require_trigbit  = cms.bool(True),
                                require_gen_sumdbv  = cms.bool(False),
                                require_bjet_psel   = cms.bool(True), # Used to turn on/off the nbjet requirement in bjet-trigger presel

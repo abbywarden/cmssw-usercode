@@ -39,9 +39,9 @@ private:
   const edm::EDGetTokenT<pat::ElectronCollection> electrons_token;
   const edm::EDGetTokenT<reco::VertexRefVector> vertex_ref_token;
   const edm::EDGetTokenT<reco::VertexCollection> vertex_token;
-  const edm::EDGetTokenT<GenEventInfoProduct> gen_info_token;
-  const edm::EDGetTokenT<std::vector<double>> gen_vertex_token;
-  const edm::EDGetTokenT<reco::GenParticleCollection> gen_particles_token;
+  //const edm::EDGetTokenT<GenEventInfoProduct> gen_info_token;
+  //const edm::EDGetTokenT<std::vector<double>> gen_vertex_token;
+  //const edm::EDGetTokenT<reco::GenParticleCollection> gen_particles_token;
   const bool input_is_refs;
   const double min_vertex_track_weight;
   const bool histos;
@@ -64,6 +64,7 @@ private:
   TH2F* h_muinSV_pt_vs_dxy;
 
   //now also genmatching these leptons -> plot the gen level pt, dxy
+  /*
   TH1F* h_geneleinSV_pt;
   TH1F* h_genmuinSV_pt;
   TH1F* h_geneleinSV_dxy;
@@ -80,7 +81,7 @@ private:
   TH1F* h_biggenIDs_recomuinSV50;
   TH1F* h_biggenIDs_recoeleinSV;
   TH1F* h_biggenIDs_recoeleinSV50;
-
+  */
   TH2F* h_matchedtkpt_vs_matchedmupt;
   TH2F* h_matchedtkpt_vs_matchedelept;
   TH1F* h_ele_pt;
@@ -97,9 +98,9 @@ MFVLeptonVertexAssociator::MFVLeptonVertexAssociator(const edm::ParameterSet& cf
     electrons_token(consumes<pat::ElectronCollection>(cfg.getParameter<edm::InputTag>("electrons_src"))),
     vertex_ref_token(consumes<reco::VertexRefVector>(cfg.getParameter<edm::InputTag>("vertex_src"))),
     vertex_token(consumes<reco::VertexCollection>(cfg.getParameter<edm::InputTag>("vertex_src"))),
-    gen_info_token(consumes<GenEventInfoProduct>(cfg.getParameter<edm::InputTag>("gen_info_src"))),
-    gen_vertex_token(consumes<std::vector<double>>(cfg.getParameter<edm::InputTag>("gen_vertex_src"))),
-    gen_particles_token(consumes<reco::GenParticleCollection>(cfg.getParameter<edm::InputTag>("gen_particles_src"))),
+    //gen_info_token(consumes<GenEventInfoProduct>(cfg.getParameter<edm::InputTag>("gen_info_src"))),
+    //gen_vertex_token(consumes<std::vector<double>>(cfg.getParameter<edm::InputTag>("gen_vertex_src"))),
+    //gen_particles_token(consumes<reco::GenParticleCollection>(cfg.getParameter<edm::InputTag>("gen_particles_src"))),
     input_is_refs(cfg.getParameter<bool>("input_is_refs")),
     min_vertex_track_weight(cfg.getParameter<double>("min_vertex_track_weight")),
     histos(cfg.getUntrackedParameter<bool>("histos", true)),
@@ -123,7 +124,7 @@ MFVLeptonVertexAssociator::MFVLeptonVertexAssociator(const edm::ParameterSet& cf
     h_muinSV_pt_vs_dxy = fs->make<TH2F>("h_muinSV_pt_vs_dxy", ";pt of muons associated to SV (GeV);dxy of muons associated to SV (cm)", 200, 0, 400, 200, 0, 0.2);
     h_eleinSV_pt_vs_dxy = fs->make<TH2F>("h_eleinSV_pt_vs_dxy", ";pt of electrons associated to SV (GeV);dxy of electrons associated to SV (cm)", 200, 0, 400, 200, 0, 0.2);
     
-
+    /*
     h_genmuinSV_pt = fs->make<TH1F>("h_gennmuinSV_pt", ";pt of gen muons associated to SV (GeV);arb. units", 200, 0, 400);
     h_geneleinSV_pt = fs->make<TH1F>("h_geneleinSV_pt", ";pt of gen electrons associated to SV (GeV);arb. units", 200, 0, 400);
     h_genmuinSV_dxy = fs->make<TH1F>("h_genmuinSV_dxy", ";dxy of gen muons associated to SV (cm);arb. units", 200, 0, 0.2);
@@ -140,7 +141,7 @@ MFVLeptonVertexAssociator::MFVLeptonVertexAssociator(const edm::ParameterSet& cf
     h_biggenIDs_recoeleinSV = fs->make<TH1F>("h_biggenIDs_recoeleinSV", ";abs(pdgID) of the gen particle matched to the reco ele in SV;arb. units", 200, 213, 1213);
     h_biggenIDs_recomuinSV50 = fs->make<TH1F>("h_biggenIDs_recomuinSV50", ";abs(pdgID) of the gen particle matched to the reco mu w/ pt > 50 in SV;arb. units", 200, 213, 1213);
     h_biggenIDs_recoeleinSV50 = fs->make<TH1F>("h_biggenIDs_recoeleinSV50", ";abs(pdgID) of the gen particle matched to the reco ele w/ pt > 50 in SV;arb. units", 200, 213, 1213);
-
+    */
     h_matchedtkpt_vs_matchedmupt = fs->make<TH2F>("h_matchedtkpt_vs_matchedmupt", ";pt of matched tk (GeV); pt of matched mu (GeV))", 200, 0, 400, 200, 0, 400);
     h_matchedtkpt_vs_matchedelept = fs->make<TH2F>("h_matchedtkpt_vs_matchedelept", ";pt of matched tk (GeV); pt of matched ele (GeV))", 200, 0, 400, 200, 0, 400);
 
@@ -167,7 +168,8 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
 
   std::vector<reco::VertexRef> vertices;
 
-  //cant be real data 
+  //cant be real data
+  /*
   edm::Handle<GenEventInfoProduct> gen_info;
   event.getByToken(gen_info_token, gen_info);
 
@@ -176,7 +178,7 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
 
   edm::Handle<reco::GenParticleCollection> gen_particles;
   event.getByToken(gen_particles_token, gen_particles);
-
+  */
   if (input_is_refs) {
     edm::Handle<reco::VertexRefVector> h;
     event.getByToken(vertex_ref_token, h);
@@ -329,6 +331,7 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
           h_muinSV_pt_vs_dxy->Fill(muon.pt(), muinSV_dxy);
 
           //now do the genmatching 
+          /*
           std::vector<double> mindR;
           for (const reco::GenParticle& gen : *gen_particles) {
             double dR = reco::deltaR(muon.eta(), muon.phi(), gen.eta(), gen.phi());
@@ -359,6 +362,7 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
               }
             }
           }
+          */
         }
         else {
           h_mu_pt->Fill(muon.pt());
@@ -373,7 +377,8 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
           h_eleinSV_dxy->Fill(eleinSV_dxy);
           h_eleinSV_pt_vs_dxy->Fill(electron.pt(), eleinSV_dxy);
 
-          //now do the genmatching 
+          //now do the genmatching
+          /*
           std::vector<double> mindR; //now for all 
           for (const reco::GenParticle& gen : *gen_particles) {
             double dR = reco::deltaR(electron.eta(), electron.phi(), gen.eta(), gen.phi());
@@ -405,6 +410,7 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
               }
             }
           }
+          */
         }
         else {
           h_ele_pt->Fill(electron.pt());

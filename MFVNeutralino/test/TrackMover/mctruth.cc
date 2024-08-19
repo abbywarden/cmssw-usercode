@@ -497,7 +497,7 @@ int main(int argc, char** argv) {
       const double lspcostheta = ((gen.p4(0).X()*gen.p4(1).X()) + (gen.p4(0).Y()*gen.p4(1).Y()) + (gen.p4(0).Z()*gen.p4(1).Z()))/(gen.p4(0).P()*gen.p4(1).P());
       const double lspdist3symmath = 2*sin(lspdr/2)*movedist3;
 
-      if ( dvv < 0.1 )
+      if ( dvv < 0.1 ) //FIXME
         continue; 
       
       // Second part of preselection: only look at move vectors
