@@ -21,17 +21,25 @@ def shiftTOC(num, den, sint, fr):
     s_num.Divide(s_den)
     return s_num
 
+def scaledDist(dist):
+    s_dist = dist.Clone()
+    for b in range(0,dist.GetNbinsX()):
+        if (s_dist.GetBinContent(b) != 0):
+          if (b == 1):
+            s_dist.SetBinContent(1, 0.0)
+            s_dist.SetBinError(1, 0.0)
+          elif (b == 2):
+            s_dist.SetBinContent(2, 0.01)
+            s_dist.SetBinError(2, 0.01)
+          else:
+            s_dist.SetBinContent(b, dist.GetBinContent(b)*0.99/dist.Integral(3,100))
+            s_dist.SetBinError(b, dist.GetBinError(b)*0.99/dist.Integral(3,100))
+    print("unity? ", s_dist.Integral())
+    return s_dist
+
+
 def scaledTOC(sig_curve, data_curve, mc_curve):
     s_curve = sig_curve.Clone()
-    
-    #### invalid with the identity test
-
-    #factors = mc_curve.Clone()
-    #divisor = data_curve.Clone()
-    #s_curve.Scale(factors.Integral()/sig_curve.Integral())
-    #divisor.Scale(1.0/divisor.Integral())
-    #factors.Divide(divisor)
-    #s_curve.Multiply(factors)
     
     for b in range(0,s_curve.GetNbinsX()):
         if (mc_curve.GetBinContent(b) != 0):
@@ -62,17 +70,18 @@ def shiftDIST(den, sint, fr):
 
 ################################################################################################
 
-def assessMCToDataUncerts(slide_uncerts, scale_uncerts, toc_uncerts, tkscl_uncerts, mc_unc, stat_unc):
+def assessRatioEffPropagateUncerts(den, num):
+    d_den = den.Clone() 
+    n_num = num.Clone()
 
-    sys_dist_val = max(abs(slide_uncerts), abs(scale_uncerts))
-    print("01 TMMC-TMData : slide n scale distr", slide_uncerts, scale_uncerts)
-    total = np.sqrt (sys_dist_val**2 + toc_uncerts**2 + 0.0**2 + tkscl_uncerts**2 + stat_unc**2)
+    es0 = ROOT.Double(0) 
+    is0 = d_den.IntegralAndError(0,200,es0)
+    es1 = ROOT.Double(0) 
+    is1 = n_num.IntegralAndError(0,200,es1)
+    rat_err = (is1/is0)*np.hypot(es0/is0, es1/is1) 
+    
+    return rat_err
 
-    print( " 1-vtx Unc. by SF_{nclsedtks,non} : %.2f (sys_distr) +/- %.2f (sys_scale_toc) +/- %.2f (sys_stat) +/- %.2f (sys_reweight) +/- %.2f (sys_tkrescl) : %.2f %% " % (sys_dist_val, toc_uncerts, stat_unc, 0.0, tkscl_uncerts, total) )
-
-    return total
-
-################################################################################################
 
 def assessRatioEffUncerts(eff_num, err_eff_num, eff_den, err_eff_den):
 
@@ -83,8 +92,27 @@ def assessRatioEffUncerts(eff_num, err_eff_num, eff_den, err_eff_den):
 
     return rat_err
 
+
 ################################################################################################
 
+def assessMCToDataUncerts(eff_slide, err_slide, eff_scale, err_scale, eff_toc, err_toc, tkscl_uncerts, stat_unc, eff_sig, err_sig):
+
+    slide_uncerts = round(100*(1-(eff_slide/eff_sig)), 2)
+    err_slide_uncerts = assessRatioEffUncerts(eff_slide, err_slide, eff_sig, err_sig)
+    scale_uncerts = round(100*(1-(eff_scale/eff_sig)), 2)
+    err_scale_uncerts = assessRatioEffUncerts(eff_scale, err_scale, eff_sig, err_sig)
+    toc_uncerts = round(100*(1-(eff_toc/eff_sig)), 2)
+    err_toc_uncerts = assessRatioEffUncerts(eff_toc, err_toc, eff_sig, err_sig)
+    
+    print("01 TMMC-TMData : slide distr %.2f +/- %.2f and scale distr %.2f +/- %.2f" % (slide_uncerts, err_slide_uncerts, scale_uncerts, err_scale_uncerts))
+    total = np.sqrt (slide_uncerts**2 + toc_uncerts**2 + tkscl_uncerts**2 + stat_unc**2) #FIXME tkrescl
+    err_total = np.sqrt(err_slide_uncerts**2 + err_toc_uncerts**2)
+    
+    print( " 1-vtx Unc. by SF_{nclsedtks,non} : %.2f +/- %.2f (sys_distr) +/- %.2f +/- %.2f (sys_scale_toc) +/- %.2f (sys_stat) +/- %.2f (sys_tkrescl) : %.2f +/- %.2f%% " % (slide_uncerts, err_slide_uncerts, toc_uncerts, err_toc_uncerts, stat_unc, tkscl_uncerts, total, err_total) )
+
+    return total
+
+################################################################################################
 
 def assessSigToTMMCUncerts(eff_slide, err_slide, eff_scale, err_scale, eff_toc, err_toc, eff_sig, err_sig):
 
@@ -95,16 +123,11 @@ def assessSigToTMMCUncerts(eff_slide, err_slide, eff_scale, err_scale, eff_toc, 
     toc_uncerts = round(100*(1-(eff_toc/eff_sig)), 2)
     err_toc_uncerts = assessRatioEffUncerts(eff_toc, err_toc, eff_sig, err_sig)
     
-    dist_uncerts = max(abs(slide_uncerts), abs(scale_uncerts))
-    if (slide_uncerts > scale_uncerts):
-       err_dist_uncerts = err_slide_uncerts
-    else:
-       err_dist_uncerts = err_scale_uncerts
-    print("02 sigMC-TMMC : slide n scale distr", slide_uncerts, scale_uncerts)
-    total = np.sqrt (dist_uncerts**2 + toc_uncerts**2)
-    err_total = np.sqrt(err_dist_uncerts**2 + err_toc_uncerts**2)
-
-    print( " 1-vtx Unc. by SF_{TMMC-to-signalMC} : %.2f +/- %.2f (sys_distr) +/- %.2f +/- %.2f (sys_scale_toc) : %.2f +/- %.2f %% " % (dist_uncerts, err_dist_uncerts, toc_uncerts, err_toc_uncerts, total, err_total) )
+    print("02 sigMC-TMMC :  slide distr %.2f +/- %.2f and toc %.2f +/- %.2f" % (slide_uncerts, err_slide_uncerts, toc_uncerts, err_toc_uncerts))
+    total = np.sqrt (toc_uncerts**2)
+    err_total = np.sqrt(err_toc_uncerts**2)
+    
+    print( " 1-vtx Unc. by SF_{TMMC-to-signalMC} : %.2f +/- %.2f (sys_scale_toc)%% " % (total, err_total) )
 
     return total
 
@@ -128,7 +151,7 @@ def calcTocShiftUncert(low, cent, hi):
 
 # Initialize stuff:
 
-year = '2017p8'
+year = '20161p2'
 doShift  = True
 reweight = True
 #toc_shift = 0.0   # How much to move the turn-on curve by
@@ -378,8 +401,10 @@ for mass in masses:
                 # Calculate the scale factors
                 scale_factors = dat_den.Clone()
                 scale_divisor = sim_den.Clone()
-                scale_factors.Scale(1.0/scale_factors.Integral())
-                scale_divisor.Scale(1.0/scale_divisor.Integral())
+                #scale_factors.Scale(1.0/scale_factors.Integral()) #FIXME
+                #scale_divisor.Scale(1.0/scale_divisor.Integral()) #FIXME
+                scale_factors = scaledDist(scale_factors) #FIXME
+                scale_divisor = scaledDist(scale_divisor) #FIXME
                 scale_factors.Divide(scale_divisor)
 
                 # Fill pseudodata distribution
@@ -400,7 +425,6 @@ for mass in masses:
                     fdata.Close()
                     
                     simslide = psd_dist.Clone()
-                    #simslide = shiftDIST(simslide, shift_val, shift_fr)
                     ftmslide = ROOT.TFile("sigsimslide_dist.root", "recreate")
                     simslide.Scale(1.0/simslide.Integral())
                     simslide.Write()
@@ -411,8 +435,7 @@ for mass in masses:
                     psd_dist.Multiply(scale_factors)
 
                     simscale = psd_dist.Clone()
-                    #simscale.Multiply(scale_factors)
-                    ftmscale = ROOT.TFile("sigsimscale_dist.root", "recreate")
+                    ftmscale = ROOT.TFile("sigsimctscale_dist.root", "recreate")
                     simscale.Scale(1.0/simscale.Integral())
                     simscale.Write()
                     ftmscale.Close()
@@ -440,12 +463,19 @@ for mass in masses:
                 psd_curve.Write()
                 fout2.Close()
                 
-                possible_sim = sig_dist.Integral()
+                possible_sig = sig_dist.Integral()
                 possible_signon = signon_dist.Integral()
                 possible_simtmslidedistr =  simtmslidedistr_dist.Integral()
                 possible_simtmscaledistr =  simtmscaledistr_dist.Integral()
                 possible_simtmscaletoc =  simtmscaletoc_dist.Integral()
                 possible_psd = psd_dist.Integral()
+
+                pre_sig_dist = sig_dist.Clone()
+                pre_signon_dist = signon_dist.Clone()
+                pre_simtmscaledistr_dist = simtmscaledistr_dist.Clone() 
+                pre_simtmslidedistr_dist = simtmslidedistr_dist.Clone() 
+                pre_simtmscaletoc_dist = simtmscaletoc_dist.Clone() 
+                pre_psd_dist = psd_dist.Clone()
 
                 sig_dist.Multiply(sig_curve)
                 signon_dist.Multiply(signon_curve)
@@ -460,37 +490,38 @@ for mass in masses:
                 psd_dist.Write()
                 fout3.Close()
 
-                pass_sim = sig_dist.Integral()
+                pass_sig = sig_dist.Integral()
                 pass_signon = signon_dist.Integral()
                 pass_simtmscaledistr = simtmscaledistr_dist.Integral() 
                 pass_simtmslidedistr = simtmslidedistr_dist.Integral() 
                 pass_simtmscaletoc = simtmscaletoc_dist.Integral() 
                 pass_psd = psd_dist.Integral()
                 
-                psd_dist.Scale(pass_sim/pass_psd)
-                
-                eff_sim = pass_sim/possible_sim
+                eff_sig = pass_sig/possible_sig
                 eff_signon = pass_signon/possible_signon
                 eff_simtmscaledistr = pass_simtmscaledistr/possible_simtmscaledistr
                 eff_simtmslidedistr = pass_simtmslidedistr/possible_simtmscaledistr
                 eff_simtmscaletoc = pass_simtmscaletoc/possible_simtmscaletoc
                 eff_psd = (pass_psd/possible_psd)
 
-                err_sim = np.sqrt(eff_sim * (1-eff_sim)/possible_sim)
-                err_psd = np.sqrt(eff_psd * (1-eff_psd)/possible_psd)
-                err_signon = np.sqrt(eff_signon * (1-eff_signon)/possible_signon)
-                err_simtmscaledistr = np.sqrt(eff_simtmscaledistr * (1-eff_simtmscaledistr)/possible_simtmscaledistr)
-                err_simtmslidedistr = np.sqrt(eff_simtmslidedistr * (1-eff_simtmslidedistr)/possible_simtmslidedistr)
-                err_simtmscaletoc = np.sqrt(eff_simtmscaletoc * (1-eff_simtmscaletoc)/possible_simtmscaletoc)
+                err_sig =  assessRatioEffPropagateUncerts(pre_sig_dist, sig_dist) #np.sqrt(eff_sig * (1-eff_sig)/possible_sig)
+                err_psd =   assessRatioEffPropagateUncerts(pre_psd_dist, psd_dist) #np.sqrt(eff_psd * (1-eff_psd)/possible_psd)
+                err_signon =  assessRatioEffPropagateUncerts(pre_signon_dist, signon_dist)#np.sqrt(eff_signon * (1-eff_signon)/possible_signon)
+                err_simtmscaledistr = assessRatioEffPropagateUncerts(pre_simtmscaledistr_dist, simtmscaledistr_dist) #np.sqrt(eff_simtmscaledistr * (1-eff_simtmscaledistr)/possible_simtmscaledistr)
+                err_simtmslidedistr = assessRatioEffPropagateUncerts(pre_simtmslidedistr_dist, simtmslidedistr_dist)#np.sqrt(eff_simtmslidedistr * (1-eff_simtmslidedistr)/possible_simtmslidedistr)
+                err_simtmscaletoc = assessRatioEffPropagateUncerts(pre_simtmscaletoc_dist, simtmscaletoc_dist) #np.sqrt(eff_simtmscaletoc * (1-eff_simtmscaletoc)/possible_simtmscaletoc)
                 
 
-                effArray.append(round(100*(1-eff_psd/eff_sim), 2))
-      
+                effArray.append(eff_psd)
+                errArray.append(err_psd)
+
+                print(" pseudo eff. "+psd_method, effArray[-1])
+                print(" pseudo err eff. "+psd_method, errArray[-1])
                 if psd_method == 'none':
-                     stat_uncerts = assessRatioEffUncerts(eff_psd, err_psd, eff_sim, err_sim)
+                     stat_uncerts = assessRatioEffUncerts(eff_psd, err_psd, eff_sig, err_sig)
                 overlap_uncerts = round (100*overlap_right_unc,2) 
-        print("Mass: %s   Ctau: %s  1-vtx Eff: %.2f " % (mass, ctau, 100*eff_sim*eff_sim))
-        datsim_unc = assessMCToDataUncerts( effArray[1], effArray[2], effArray[3], 0.0, mc_unc, stat_uncerts) #FIXME tkrecl unc is fixed at 6% 
+        print("Mass: %s   Ctau: %s  1-vtx Eff: %.2f " % (mass, ctau, 100*eff_sig*eff_sig))
+        datsim_unc = assessMCToDataUncerts( effArray[1], errArray[1], effArray[2], errArray[2], effArray[3], errArray[3], 0.0, stat_uncerts, eff_sig, err_sig) #FIXME tkrescl 
         mc_unc = assessSigToTMMCUncerts(eff_simtmslidedistr, err_simtmslidedistr, eff_simtmscaledistr, err_simtmscaledistr, eff_simtmscaletoc, err_simtmscaletoc, eff_signon, err_signon)
         print( " 1-vtx Unc. by TMMC-to-signalMC : %.2f %%" % (mc_unc) )
         print( " 1-vtx Unc. by SF_{GEN3DdVV, mix}: %.2f %%" % (overlap_uncerts) )
