@@ -1,5 +1,5 @@
 import FWCore.ParameterSet.Config as cms
-from JMTucker.MFVNeutralino.NtupleCommon import use_btag_triggers, use_MET_triggers, use_Muon_triggers, use_Electron_triggers, use_DisplacedLepton_triggers
+from JMTucker.MFVNeutralino.NtupleCommon import use_btag_triggers, use_MET_triggers, use_Muon_triggers, use_Electron_triggers, use_Lepton_triggers #use_DisplacedLepton_triggers
 
 if use_btag_triggers:
   apply_presel = cms.int32(6)
@@ -8,6 +8,8 @@ elif use_MET_triggers:
 elif use_Muon_triggers:
   apply_presel = cms.int32(2)
 elif use_Electron_triggers:
+  apply_presel = cms.int32(2)
+elif use_Lepton_triggers:
   apply_presel = cms.int32(2)
 else:
   apply_presel = cms.int32(1)

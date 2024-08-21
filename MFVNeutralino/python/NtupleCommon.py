@@ -1,12 +1,13 @@
 from JMTucker.Tools.CMSSWTools import *
 from JMTucker.Tools.Year import year
 
-ntuple_version_ = 'ULV9' #V8 : new vertexer; no ordering;  V9 : new vertexer w/ pt ordering of seed tracks && seed vertices 
+ntuple_version_ = 'ULV12'
 lsp_id = 1000006 # should do that in a smarter way; currently for stop
 use_btag_triggers = False
 use_MET_triggers = False
 use_Muon_triggers = True
 use_Electron_triggers = False
+use_Lepton_triggers = False
 use_DisplacedLepton_triggers = False
 if use_btag_triggers : 
     ntuple_version_ += "B" # for "Btag triggers"; also includes DisplacedDijet triggers
@@ -17,6 +18,8 @@ elif use_Muon_triggers :
     ntuple_version_ += "LepMu"
 elif use_Electron_triggers :
     ntuple_version_ += "LepEle"
+elif use_Lepton_triggers :
+    ntuple_version_ += 'Lep'
 ntuple_version_use = ntuple_version_ + 'm'
 dataset = 'ntuple' + ntuple_version_use.lower()
 
@@ -311,7 +314,7 @@ def miniaod_ntuple_process(settings):
     process.mfvEvent.pileup_info_src = 'slimmedAddPileupInfo'
     process.mfvEvent.met_src = cms.InputTag('slimmedMETs', '', 'Ntuple') 
     
-    # MET correction and filtersi 
+    # MET correction and filters
     # https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription#PF_MET
     from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
     process.load("Configuration.StandardSequences.GeometryRecoDB_cff") 
@@ -381,6 +384,9 @@ def signals_no_event_filter_modifier(sample):
         elif use_Electron_triggers :
             magic ="event_filter = 'electrons only veto muons'"
             print("signal : turn on ele trig")
+        elif use_Lepton_triggers :
+            magic ="event_filter = 'leptons only'"
+            print("signal : turn on lepton trig")
         else :
             magic = "event_filter = 'jets only'"
         to_replace = [(magic, 'event_filter = False', 'tuple template does not contain the magic string "%s"' % magic)]
