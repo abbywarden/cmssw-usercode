@@ -37,42 +37,19 @@ displaced_dijet_paths = [
     "HLT_HT650_DisplacedDijet60_Inclusive_v*",
     ]
 
-#For 2017 :
-lepton_paths = [
-     "HLT_Ele35_WPTight_Gsf_v*",
-     "HLT_Ele115_CaloIdVT_GsfTrkIdT_v*",
-     "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v*",
-     "HLT_IsoMu27_v*",
-     "HLT_Mu50_v*"
- ]
-
 muon_paths = [
-     "HLT_IsoMu27_v*",
-     "HLT_Mu50_v*"
+    "HLT_IsoMu27_v*", #2016,2017
+    "HLT_IsoMu24_v*", #2018
+    "HLT_Mu50_v*"
 ]
 
 electron_paths = [
-     "HLT_Ele35_WPTight_Gsf_v*",
-     "HLT_Ele115_CaloIdVT_GsfTrkIdT_v*",
-     "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v*",
+    "HLT_Ele37_WPTight_Gsf_v*", #2016
+    "HLT_Ele35_WPTight_Gsf_v*", #2017
+    "HLT_Ele32_WPTight_Gsf_v*", #2018
+    "HLT_Ele115_CaloIdVT_GsfTrkIdT_v*",
+    "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v*",
 ]
-#For 2018 :
-#lepton_paths = [
-#    "HLT_Ele32_WPTight_Gsf_v*",
-#    "HLT_Ele115_CaloIdVT_GsfTrkIdT_v*",
-#    "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v*",
-#    "HLT_IsoMu27_v*",
-#    "HLT_Mu50_v*"
-#]
-
-#For 2016 :
-# lepton_paths = [
-#     "HLT_Ele27_WPTight_Gsf_v*",
-#     "HLT_Ele115_CaloIdVT_GsfTrkIdT_v*",
-#     "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v*",
-#     "HLT_IsoMu27_v*",
-#     "HLT_Mu50_v*"
-# ]
 
 displaced_lepton_paths = [
     "HLT_Mu43NoFiltersNoVtx_Photon43_CaloIdL_v*",
@@ -94,7 +71,7 @@ cross_paths = [
     ]
 
 mfvTriggerFilter = HLTrigger.HLTfilters.hltHighLevel_cfi.hltHighLevel.clone(
-    HLTPaths = jet_paths + lepton_paths + cross_paths,
+    HLTPaths = jet_paths + electron_paths + muon_paths + cross_paths,
     andOr = True, # = OR
     throw = False,
     )
@@ -108,6 +85,12 @@ mfvTriggerFilterBJetsOnly = mfvTriggerFilter.clone(
         throw = False,
         )
 mfvTriggerFilterDisplacedDijetOnly = mfvTriggerFilter.clone(HLTPaths = displaced_dijet_paths)
+# mfvTriggerFilterLeptonsOnly = mfvTriggerFilter.clone(HLTPaths = lepton_paths)
+mfvTriggerFilterLeptonsOnly = mfvTriggerFilter.clone(
+    HLTPaths = electron_paths + muon_paths,
+    andOr = True, # OR
+    throw = False,
+)
 mfvTriggerFilterMuonsOnly = mfvTriggerFilter.clone(HLTPaths = muon_paths)
 mfvTriggerFilterElectronsOnly = mfvTriggerFilter.clone(HLTPaths = electron_paths)
 mfvTriggerFilterDileptonOnly = mfvTriggerFilter.clone(

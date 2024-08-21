@@ -222,35 +222,26 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
     if (apply_presel == 2) {
       bool success = false;
       bool pass_muon_events = false;
+      bool pass_ele_events = false;
       for(size_t trig : mfv::MuonTriggers){
-	if(satisfiesLepTrigger(mevent, trig, setup)) { 
-	  success = true;
+	      if(satisfiesLepTrigger(mevent, trig, setup)) { 
           pass_muon_events = true;
-	  break;
-	}
+	        break;
+	      }
       }
-      
-      if (apply_electrons_only && !pass_muon_events){ // to avoid event-events that already pass muon triggers being double-counted
-        if (success){  
-          success = false;
-        }
-        else{
-          for(size_t trig : mfv::ElectronTriggers){
-            if(satisfiesLepTrigger(mevent, trig, setup)) { 
-	      success = true;
-              break;
-	    }
+      if (!pass_muon_events) {  
+        for(size_t trig : mfv::ElectronTriggers){
+          if(satisfiesLepTrigger(mevent, trig, setup)) { 
+            pass_ele_events = true;
+            break;
           }
         }
       }
-      if (apply_displacedlepton_triggers) {
-	for(size_t trig : mfv::DisplacedLeptonTriggers){
-	  if(satisfiesDispLepTrigger(mevent, trig, setup)) { 
-	    success = true;
-	    break;
-	  }
-	}
-      }
+      //now section into categories 
+      if (apply_electrons_only) success = pass_ele_events; //electron veto mu 
+      else if (apply_muons_only) success = pass_muon_events; //muons only 
+      else success = (pass_muon_events || pass_ele_events); // both 
+      
       // if we want to consider displaced lepton triggers, to make it a logical OR, we need the single lepton triggers to fail. 
       if (apply_displacedlepton_triggers && success == false) {
 	      for(size_t trig : mfv::DisplacedLeptonTriggers){
@@ -953,6 +944,7 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
 bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t trig, const edm::EventSetup& setup) { 
   if(!mevent->pass_hlt(trig)) return false;
 
+  int year = int(MFVNEUTRALINO_YEAR);
   int nmuons     = mevent->nmuons();
   int nelectrons = mevent->nelectrons();
   int njets      = mevent->njets(20);
@@ -960,15 +952,41 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
   bool passed_kinematics = false;
 
   switch(trig){
-  //27 is for 2016. 35 is for 2017; 32 is for 2018. 
-  // case mfv::b_HLT_Ele27_WPTight_Gsf :
-  // case mfv::b_HLT_Ele35_WPTight_Gsf :
-  case mfv::b_HLT_Ele32_WPTight_Gsf :
+  case mfv::b_HLT_Ele27_WPTight_Gsf : //for 2016
     {
+    if (year != 20161 || year !=20162) return false;
+    for(int ie =0; ie < nelectrons; ++ie){
+      if (mevent->electron_pt[ie] < 30) continue; //for 2016
+      if (mevent->electron_ID[ie][3] == 1) {
+        if (abs(mevent->electron_eta[ie]) < 2.4) { 
+          if (mevent->electron_iso[ie] < 0.10) {
+            passed_kinematics = true;
+          } 
+        }
+      }
+    }
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_Ele35_WPTight_Gsf : //for 2017
+    {
+    if (year != 2017) return false;
+    for(int ie =0; ie < nelectrons; ++ie){
+      if (mevent->electron_pt[ie] < 38) continue; //for 2017
+      if (mevent->electron_ID[ie][3] == 1) {
+        if (abs(mevent->electron_eta[ie]) < 2.4) { 
+          if (mevent->electron_iso[ie] < 0.10) {
+            passed_kinematics = true;
+          } 
+        }
+      }
+    }
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_Ele32_WPTight_Gsf : //for 2018
+    {
+      if (year != 2018) return false;
       for(int ie =0; ie < nelectrons; ++ie){
-        // if (mevent->electron_pt[ie] < 30) continue;
-	      // if (mevent->electron_pt[ie] < 38) continue;
-        if (mevent->electron_pt[ie] < 35) continue;
+        if (mevent->electron_pt[ie] < 35) continue; //for 2018
 	      if (mevent->electron_ID[ie][3] == 1) {
 	        if (abs(mevent->electron_eta[ie]) < 2.4) { 
 	          if (mevent->electron_iso[ie] < 0.10) {
@@ -980,13 +998,26 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
       return passed_kinematics;
     }
 
-  //isomu24 is for : 2018 
-  // case mfv::b_HLT_IsoMu27 : 
-  case mfv::b_HLT_IsoMu24 :
+  case mfv::b_HLT_IsoMu27 : //for 2016,2017
     {
+    if (year != 2016 || year != 2017) return false;
+    for(int im =0; im < nmuons; ++im) {
+      if (mevent->muon_pt[im] < 30) continue; //for 2016,2017
+      if (mevent->muon_ID[im][1] == 1) {
+        if (abs(mevent->muon_eta[im]) < 2.4) {
+          if (mevent->muon_iso[im] < 0.15) {
+            passed_kinematics = true;
+          }
+        }
+      }
+    }
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_IsoMu24 : //for 2018
+    {
+      if (year != 2018) return false;
       for(int im =0; im < nmuons; ++im) {
-        // if (mevent->muon_pt[im] < 30) continue;
-        if (mevent->muon_pt[im] < 27) continue;
+        if (mevent->muon_pt[im] < 27) continue; //for 2018
 	      if (mevent->muon_ID[im][1] == 1) {
 	        if (abs(mevent->muon_eta[im]) < 2.4) {
 	          if (mevent->muon_iso[im] < 0.15) {
