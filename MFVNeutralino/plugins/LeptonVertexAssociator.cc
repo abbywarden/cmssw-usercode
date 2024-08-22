@@ -39,9 +39,6 @@ private:
   const edm::EDGetTokenT<pat::ElectronCollection> electrons_token;
   const edm::EDGetTokenT<reco::VertexRefVector> vertex_ref_token;
   const edm::EDGetTokenT<reco::VertexCollection> vertex_token;
-  //const edm::EDGetTokenT<GenEventInfoProduct> gen_info_token;
-  //const edm::EDGetTokenT<std::vector<double>> gen_vertex_token;
-  //const edm::EDGetTokenT<reco::GenParticleCollection> gen_particles_token;
   const bool input_is_refs;
   const double min_vertex_track_weight;
   const bool histos;
@@ -51,11 +48,10 @@ private:
   TH1F* h_ele_vtx_miss_dist;
   TH1F* h_mu_vtx_miss_dist;
 
-  //also get how many leptons/electrons/muons are in vertex + their pt 
+  //also get how many leptons/electrons/muons are in vertex + their pt and dxy
   TH1F* h_nlepinSV;
   TH1F* h_nmuinSV;
   TH1F* h_neleinSV;
-
   TH1F* h_eleinSV_pt;
   TH1F* h_muinSV_pt;
   TH1F* h_eleinSV_dxy;
@@ -63,23 +59,6 @@ private:
   TH2F* h_eleinSV_pt_vs_dxy;
   TH2F* h_muinSV_pt_vs_dxy;
 
-  //now also genmatching these leptons -> plot the gen level pt, dxy
-  TH1F* h_geneleinSV_pt;
-  TH1F* h_genmuinSV_pt;
-  TH1F* h_geneleinSV_dxy;
-  TH1F* h_genmuinSV_dxy;
-  TH2F* h_geneleinSV_pt_vs_dxy;
-  TH2F* h_genmuinSV_pt_vs_dxy;
-
-  //by design -- does not include genID of mu to recomu, ele to recoele. 
-  TH1F* h_genIDs_recomuinSV;
-  TH1F* h_genIDs_recomuinSV50;
-  TH1F* h_genIDs_recoeleinSV;
-  TH1F* h_genIDs_recoeleinSV50;
-  TH1F* h_biggenIDs_recomuinSV;
-  TH1F* h_biggenIDs_recomuinSV50;
-  TH1F* h_biggenIDs_recoeleinSV;
-  TH1F* h_biggenIDs_recoeleinSV50;
 
   TH2F* h_matchedtkpt_vs_matchedmupt;
   TH2F* h_matchedtkpt_vs_matchedelept;
@@ -97,9 +76,6 @@ MFVLeptonVertexAssociator::MFVLeptonVertexAssociator(const edm::ParameterSet& cf
     electrons_token(consumes<pat::ElectronCollection>(cfg.getParameter<edm::InputTag>("electrons_src"))),
     vertex_ref_token(consumes<reco::VertexRefVector>(cfg.getParameter<edm::InputTag>("vertex_src"))),
     vertex_token(consumes<reco::VertexCollection>(cfg.getParameter<edm::InputTag>("vertex_src"))),
-    //gen_info_token(consumes<GenEventInfoProduct>(cfg.getParameter<edm::InputTag>("gen_info_src"))),
-    //gen_vertex_token(consumes<std::vector<double>>(cfg.getParameter<edm::InputTag>("gen_vertex_src"))),
-    //gen_particles_token(consumes<reco::GenParticleCollection>(cfg.getParameter<edm::InputTag>("gen_particles_src"))),
     input_is_refs(cfg.getParameter<bool>("input_is_refs")),
     min_vertex_track_weight(cfg.getParameter<double>("min_vertex_track_weight")),
     histos(cfg.getUntrackedParameter<bool>("histos", true)),
@@ -123,23 +99,6 @@ MFVLeptonVertexAssociator::MFVLeptonVertexAssociator(const edm::ParameterSet& cf
     h_muinSV_pt_vs_dxy = fs->make<TH2F>("h_muinSV_pt_vs_dxy", ";pt of muons associated to SV (GeV);dxy of muons associated to SV (cm)", 200, 0, 400, 200, 0, 0.2);
     h_eleinSV_pt_vs_dxy = fs->make<TH2F>("h_eleinSV_pt_vs_dxy", ";pt of electrons associated to SV (GeV);dxy of electrons associated to SV (cm)", 200, 0, 400, 200, 0, 0.2);
     
-
-    h_genmuinSV_pt = fs->make<TH1F>("h_gennmuinSV_pt", ";pt of gen muons associated to SV (GeV);arb. units", 200, 0, 400);
-    h_geneleinSV_pt = fs->make<TH1F>("h_geneleinSV_pt", ";pt of gen electrons associated to SV (GeV);arb. units", 200, 0, 400);
-    h_genmuinSV_dxy = fs->make<TH1F>("h_genmuinSV_dxy", ";dxy of gen muons associated to SV (cm);arb. units", 200, 0, 0.2);
-    h_geneleinSV_dxy = fs->make<TH1F>("h_geneleinSV_dxy", ";dxy of gen electrons associated to SV (cm);arb. units", 200, 0, 0.2);
-    h_genmuinSV_pt_vs_dxy = fs->make<TH2F>("h_genmuinSV_pt_vs_dxy", ";pt of gen muons associated to SV (GeV);dxy of gen muons associated to SV (cm)", 200, 0, 400, 200, 0, 0.2);
-    h_geneleinSV_pt_vs_dxy = fs->make<TH2F>("h_geneleinSV_pt_vs_dxy", ";pt of gen electrons associated to SV (GeV);dxy of gen electrons associated to SV (cm)", 200, 0, 400, 200, 0, 0.2);
-    
-    h_genIDs_recomuinSV = fs->make<TH1F>("h_genIDs_recomuinSV", ";abs(pdgID) of the gen particle matched to the reco mu in SV;arb. units", 212, 0, 212);
-    h_genIDs_recoeleinSV = fs->make<TH1F>("h_genIDs_recoeleinSV", ";abs(pdgID) of the gen particle matched to the reco ele in SV;arb. units", 212, 0, 212);
-    h_genIDs_recomuinSV50 = fs->make<TH1F>("h_genIDs_recomuinSV50", ";abs(pdgID) of the gen particle matched to the reco mu w/ pt > 50 in SV;arb. units", 212, 0, 212);
-    h_genIDs_recoeleinSV50 = fs->make<TH1F>("h_genIDs_recoeleinSV50", ";abs(pdgID) of the gen particle matched to the reco ele w/ pt > 50 in SV;arb. units", 212, 0, 212);
-
-    h_biggenIDs_recomuinSV = fs->make<TH1F>("h_biggenIDs_recomuinSV", ";abs(pdgID) of the gen particle matched to the reco mu in SV;arb. units", 200, 213, 1213);
-    h_biggenIDs_recoeleinSV = fs->make<TH1F>("h_biggenIDs_recoeleinSV", ";abs(pdgID) of the gen particle matched to the reco ele in SV;arb. units", 200, 213, 1213);
-    h_biggenIDs_recomuinSV50 = fs->make<TH1F>("h_biggenIDs_recomuinSV50", ";abs(pdgID) of the gen particle matched to the reco mu w/ pt > 50 in SV;arb. units", 200, 213, 1213);
-    h_biggenIDs_recoeleinSV50 = fs->make<TH1F>("h_biggenIDs_recoeleinSV50", ";abs(pdgID) of the gen particle matched to the reco ele w/ pt > 50 in SV;arb. units", 200, 213, 1213);
 
     h_matchedtkpt_vs_matchedmupt = fs->make<TH2F>("h_matchedtkpt_vs_matchedmupt", ";pt of matched tk (GeV); pt of matched mu (GeV))", 200, 0, 400, 200, 0, 400);
     h_matchedtkpt_vs_matchedelept = fs->make<TH2F>("h_matchedtkpt_vs_matchedelept", ";pt of matched tk (GeV); pt of matched ele (GeV))", 200, 0, 400, 200, 0, 400);
@@ -167,17 +126,6 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
 
   std::vector<reco::VertexRef> vertices;
 
-  //cant be real data
-  /*
-  edm::Handle<GenEventInfoProduct> gen_info;
-  event.getByToken(gen_info_token, gen_info);
-
-  edm::Handle<std::vector<double>> gen_vertex;
-  event.getByToken(gen_vertex_token, gen_vertex);
-
-  edm::Handle<reco::GenParticleCollection> gen_particles;
-  event.getByToken(gen_particles_token, gen_particles);
-  */
   if (input_is_refs) {
     edm::Handle<reco::VertexRefVector> h;
     event.getByToken(vertex_ref_token, h);
@@ -320,7 +268,6 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
       int nmuinSV = 0;
       int neleinSV = 0;
       for (size_t imuon = 0; imuon < n_muons; ++imuon) {
-        // bool gen_matched = false; 
         const pat::Muon& muon = muons->at(imuon);
         if (mu_index_in_vertex[imuon] > 0) {
           nmuinSV += 1;

@@ -67,6 +67,8 @@ namespace jmt {
     void set_SingleLep2017F(double pt, double eta, std::string type);
     void set_SingleLep2018(double pt, double eta, std::string type);
 
+    // void set_SingleLep2017(double pt, double eta, std::string type);
+
     void set(double era, int which, double pt, double eta);
     void set(double pt, double eta) { set(era_, which_, pt, eta); }
 

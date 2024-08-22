@@ -7,7 +7,14 @@ settings.is_mc = True
 settings.is_miniaod = True
 settings.cross = '' # 2017to2018' # 2017to2017p8'
 
+#for submission to condor
+randpars_filter = False
+#for testing local :
+#randpars_filter = 'randpar HToSSTobbbb M15_ct10-'
+
+sample_files(process, 'qcdht1000_2017', 'miniaod')
 #sample_files(process, 'mfv_stopbbarbbar_tau001000um_M1600_2018', 'miniaod')
+
 geometry_etc(process, settings)
 tfileservice(process, 'filtercheck.root')
 cmssw_from_argv(process)

@@ -10,9 +10,11 @@ ps = plot_saver(plot_dir('sigeff_trig'), size=(600,600), log=False, pdf=True)
 study_new_triggers = True
 
 if study_new_triggers :
-    #root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrigFiltCheckV3/'
-    #trigs = ['TriggerLeptons', 'TriggerEMu_35_27', 'TriggerEMu_35_50', 'TriggerEMu_50_27', 'TriggerEMu_50_50']
-    #nice = ['SingleLep', 'EMu_35_27', 'EMu_35_50', 'EMu_50_27', 'EMu_50_50']
+
+    root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrigFiltCheckV3/'
+    trigs = ['TriggerLeptons', 'TriggerEMu_35_27', 'TriggerEMu_35_50', 'TriggerEMu_50_27', 'TriggerEMu_50_50']
+    nice = ['SingleLep', 'EMu_35_27', 'EMu_35_50', 'EMu_50_27', 'EMu_50_50']
+
     #root_file_dir = '/uscms/home/ali/nobackup/LLP/crabdir/TrigFiltCheckV3/'
     #trigs = ['Trigger','TriggerBjets','TriggerDispDijet','TriggerMET']
     #nice = ['HT1050','Bjet','DisplacedDijet','MET']
@@ -20,13 +22,13 @@ if study_new_triggers :
     #trigs = ['Trigger','TriggerMET','TriggerMuons']
     #nice = ['HT1050','MET','Muons']
     
-    root_file_dir = '/uscms_data/d3/shogan/crab_dirs/TrigFiltCheckV3'
+    #root_file_dir = '/uscms_data/d3/shogan/crab_dirs/TrigFiltCheckV3'
     #trigs = ['TriggerBjets','TriggerDispDijet','TriggerOR']
     #nice = ['Bjet','DisplacedDijet','Logical OR']
     #colors = [ROOT.kBlue, ROOT.kGreen+2, ROOT.kOrange+3]
-    trigs = ['TriggerOR']
-    nice = ['Logical OR']
-    colors = [ROOT.kOrange+3]
+    #trigs = ['TriggerOR']
+    #nice = ['Logical OR']
+    #colors = [ROOT.kOrange+3]
 else :
     root_file_dir = '/uscms_data/d2/tucker/crab_dirs/TrigFiltCheckV1'
     trigs = ['Trigger']
@@ -57,7 +59,11 @@ def mvpave(pave, x1, y1, x2, y2):
     pave.SetY1(y1)
     pave.SetY2(y2)
 
+
 for sample in DisplacedSUSY: 
+#for sample in multijet + dijet:
+#for sample in splitSUSY:
+#for sample in multijet + dijet_d + dijet_b:# +  higgs:
     fn = os.path.join(root_file_dir, sample.name + '.root')
     if not os.path.exists(fn):
         continue

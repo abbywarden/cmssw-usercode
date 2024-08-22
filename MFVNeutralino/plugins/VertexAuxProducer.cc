@@ -134,7 +134,8 @@ std::pair<bool, Measurement1D> MFVVertexAuxProducer::track_dist(const reco::Tran
 void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& setup) {
   if (verbose) std::cout << "MFVVertexAuxProducer " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
 
-  const int track_rescaler_which = 1; // JMTBAD which rescaling if ever a different one (0 : JetHT, 1 : SingleLepton, -1 disable)
+  const int track_rescaler_which = 1; // JMTBAD which rescaling if ever a different one (0 : BTagDisplJet, 1 : SingleLepton, 2 : JetHT, -1 disable)
+
   track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
                        jmt::AnalysisEras::pick(event, this),
                        track_rescaler_which);
@@ -758,6 +759,7 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
 		  }
 	  }
 	  
+
   }
   sorter.sort(*auxes);
 

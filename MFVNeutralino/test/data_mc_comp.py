@@ -6,10 +6,6 @@ import JMTucker.MFVNeutralino.AnalysisConstants as ac
 from JMTucker.Tools.ROOTTools import *
 from JMTucker.Tools import Samples
 
-year = '2018'
-version = 'ULV5Lepm_SingleLep'
-
-root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/HistosULV5Lepm_SingleLep'
 #root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV1_Lepm_cut0_etagt1p5_2017_wsellep/'
 
 year = 'run2'
@@ -63,6 +59,7 @@ if year == 'run2':
     lumi = ac.int_lumi_run2
     lumi_nice = ac.int_lumi_nice_run2
 
+
 for s in qcd_samples:
     s.join_info = True, 'QCD lept enriched', ROOT.kMagenta+3
 for s in ttbar_samples:
@@ -100,6 +97,7 @@ C = partial(data_mc_comparison,
             preliminary = True,
             simulation = True,
             )
+
 
 #C('ntuple_njets',
 #  histogram_path = 'evtHst0VNoHt/h_njets',
@@ -161,6 +159,7 @@ C = partial(data_mc_comparison,
 # )
 #
 
+
 #C('presel_htall',
 #  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_jet_ht',
 #  )
@@ -204,6 +203,7 @@ C = partial(data_mc_comparison,
 #  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_nbtags_tight',
 #  )
 #
+
 #C('presel_seedtrack_dz',
 #  histogram_path = 'mfvEventHistosPreSel/h_vertex_seed_track_dz',
 #  y_range = (1,1e6),
@@ -272,6 +272,7 @@ C('onevtx_dbv',
 #  x_range = (0, 0.4),
 #  y_range = (1, 1e4),
 #  )
+
 #
 #C('dvv',
 #  histogram_path = 'mfvVertexHistosFullSel/h_svdist2d',

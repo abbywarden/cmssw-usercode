@@ -11,7 +11,7 @@ settings.run_n_tk_seeds = False
 settings.minitree_only = False
 settings.prepare_vis = False
 settings.keep_all = False #FIXME 
-settings.keep_gen = False
+settings.keep_gen = True #FIXME needed to run histos currently :(
 settings.keep_tk = False
 if use_btag_triggers :
     #settings.event_filter = 'dilepton only' # for new trigger studies
