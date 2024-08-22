@@ -5,9 +5,9 @@ ntuple_version_ = 'ULV12'
 lsp_id = 1000006 # should do that in a smarter way; currently for stop
 use_btag_triggers = False
 use_MET_triggers = False
-use_Muon_triggers = True
+use_Muon_triggers = False
 use_Electron_triggers = False
-use_Lepton_triggers = False
+use_Lepton_triggers = True
 use_DisplacedLepton_triggers = False
 if use_btag_triggers : 
     ntuple_version_ += "B" # for "Btag triggers"; also includes DisplacedDijet triggers

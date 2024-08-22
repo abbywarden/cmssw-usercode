@@ -143,9 +143,34 @@ for name, ds, fns in _removed:
 
 ################################################################################
 
+##For local testing
 _add_ds("miniaod", {
     'qcdmupt15_2017': (1, ['/store/mc/RunIISummer20UL17MiniAOD/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v1/100000/034AE4F2-7180-7F40-81D6-740D15738CBA.root'])
 })
+
+# _add_ds("miniaod", {
+#     'mfv_stopld_tau010000um_M0800_2018' : (2, ['/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/21602664-E4E1-3E48-A244-2D131F063685.root', '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/27A92C07-345E-1B48-98D9-F1C966151362.root'])
+# })
+
+_add_ds("miniaod", {
+    'mfv_stopld_tau010000um_M0800_2017' : (1, ['/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/181536B9-11E5-2344-9E8E-BACCD7482A0A.root'])
+})
+
+# _add_ds("miniaod", {
+#     'ttbar_semilep_2018' : (3, ['/store/mc/RunIISummer20UL18MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/120000/016D5B69-2F13-A94D-8A61-91551911BFBD.root',
+#                                 '/store/mc/RunIISummer20UL18MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/120000/01292B43-5A7A-164B-92B7-292369F64D70.root',
+#                                 '/store/mc/RunIISummer20UL18MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/120000/0120869B-F7FD-C24C-A083-924B2F01BB88.root'
+#                                 ])
+# })
+
+_add_ds("miniaod", {
+    'ttbar_semilep_2017' : (1, ['/store/mc/RunIISummer20UL17MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/00000/005708B7-331C-904E-88B9-189011E6C9DD.root'])
+})
+
+_add_ds("ntupleulv12lepmum", {
+    'test' : (1, ['file:/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/ntuple.root'])
+ })
+##################################################################################
 
 """
 _add_ds("miniaod", {
@@ -297,7 +322,7 @@ xrange(38,100))]),
 'SingleMuon2016APVE': _fromnum1("/store/user/lpclonglived/shogan/SingleMuon/NtupleUL16APVV9_trigstudy_Bm_20161/240215_215721", 87),
 'SingleMuon2016APVF': _fromnum1("/store/user/lpclonglived/shogan/SingleMuon/NtupleUL16APVV9_trigstudy_Bm_20161/240215_215742", 83),
 
-})
+
 
 # As of mid-December '23, this ntuple is identical to the one below, but fixes an issue where ~no
 # HLT calojets were saved. I don't think this information will be needed in the long run (hence why
@@ -882,10 +907,6 @@ _add_ds("miniaod", {
                                 ])
 })
 
-_add_ds("ntupleulv9lepm", {
-    'test' : (1, ['file:/afs/hep.wisc.edu/home/acwarden/work/llp/mfv_1068p1/src/JMTucker/MFVNeutralino/test/ntuple.root'])
- })
-
 
 # _add_ds("miniaod", {
 #     'mfv_stopld_tau000100um_M0200_2018':_fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-pythia8/RunIISummer20UL18_MiniAOD/220518_074408/0000", 5, fnbase="MiniAOD", numbereddirs=False),
@@ -1434,121 +1455,6 @@ _add_ds("ntupleulv30lepmum", {
 })
 
 
-_add_ds("ntupleulv1lepm", {
-'qcdempt015_2017': _fromnum1("/store/user/awarden/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221118_130831", 35),
-'qcdmupt15_2017': _fromnum1("/store/user/awarden/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221117_163136", 120),
-'qcdempt020_2017': _fromnum1("/store/user/awarden/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221117_163154", 96),
-#'qcdempt030_2017': (36, ['/store/user/awarden/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221117_163213/0000/ntuple_%i.root' % i for i in chain(xrange(1,25), xrange(26,38))]),
-'qcdempt050_2017': _fromnum1("/store/user/awarden/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221117_163232", 39),
-'qcdempt080_2017': _fromnum1("/store/user/awarden/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221117_163255", 36),
-'qcdempt120_2017': _fromnum1("/store/user/awarden/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221117_163313", 44),
-'qcdempt170_2017': _fromnum1("/store/user/awarden/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221117_163333", 27),
-'qcdempt300_2017': _fromnum1("/store/user/awarden/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221117_163356", 17),
-'qcdbctoept020_2017': _fromnum1("/store/user/awarden/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/NtupleULV1Lepm_2017/221117_163540", 51),
-#'qcdbctoept030_2017': (47, ['/store/user/awarden/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/NtupleULV1Lepm_2017/221117_163601/0000/ntuple_%i.root' % i for i in chain(xrange(1,26), xrange(27,49))]),
-#'qcdbctoept080_2017': (37, ['/store/user/awarden/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/NtupleULV1Lepm_2017/221117_163620/0000/ntuple_%i.root' % i for i in chain(xrange(1,13), xrange(14,39))]),
-'qcdbctoept170_2017': _fromnum1("/store/user/awarden/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/NtupleULV1Lepm_2017/221117_163638", 44),
-'qcdbctoept250_2017': _fromnum1("/store/user/awarden/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/NtupleULV1Lepm_2017/221117_163656", 37),
-#'wjetstolnu_2017': (145, ['/store/user/awarden/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleULV1Lepm_2017/221117_163717/0000/ntuple_%i.root' % i for i in chain(xrange(1,35), xrange(41,152))]),
-#'dyjetstollM10_2017': (130, ['/store/user/awarden/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleULV1Lepm_2017/221117_163735/0000/ntuple_%i.root' % i for i in chain(xrange(1,26), xrange(35,41), xrange(42,139), [29, 33])]),
-#'dyjetstollM50_2017': (137, ['/store/user/awarden/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleULV1Lepm_2017/221117_163753/0000/ntuple_%i.root' % i for i in chain(xrange(1,19), xrange(21,140))]),
-'ttbar_2017': _fromnum0("/store/user/awarden/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/NtupleULV1Lepm_2017/221117_095953", 1019),
-#'ww_2017': (30, ['/store/user/awarden/WW_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221117_163812/0000/ntuple_%i.root' % i for i in chain(xrange(1,9), xrange(10,32))]),
-'zz_2017': _fromnum1("/store/user/awarden/WZ_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221117_163833", 18),
-'wz_2017': _fromnum1("/store/user/awarden/ZZ_TuneCP5_13TeV-pythia8/NtupleULV1Lepm_2017/221117_163852", 14),
-'mfv_stoplb_tau000100um_M1000_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173002", 201),
-'mfv_stoplb_tau000300um_M1000_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173020", 201),
-'mfv_stoplb_tau010000um_M1000_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173041", 101),
-'mfv_stoplb_tau001000um_M1000_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173100", 201),
-'mfv_stoplb_tau030000um_M1000_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173118", 201),
-'mfv_stoplb_tau000100um_M1200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173137", 201),
-'mfv_stoplb_tau000300um_M1200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173156", 200),
-'mfv_stoplb_tau010000um_M1200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173214", 101),
-'mfv_stoplb_tau001000um_M1200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173232", 201),
-'mfv_stoplb_tau030000um_M1200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173250", 201),
-'mfv_stoplb_tau000100um_M1400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173311", 201),
-'mfv_stoplb_tau000300um_M1400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173330", 201),
-'mfv_stoplb_tau010000um_M1400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173349", 101),
-'mfv_stoplb_tau001000um_M1400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173408", 201),
-'mfv_stoplb_tau030000um_M1400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173433", 201),
-'mfv_stoplb_tau000100um_M1600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173453", 201),
-'mfv_stoplb_tau000300um_M1600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173514", 201),
-'mfv_stoplb_tau010000um_M1600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173536", 101),
-'mfv_stoplb_tau001000um_M1600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173555", 101),
-'mfv_stoplb_tau030000um_M1600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173621", 101),
-'mfv_stoplb_tau000100um_M1800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173641", 201),
-'mfv_stoplb_tau000300um_M1800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173659", 201),
-'mfv_stoplb_tau010000um_M1800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173717", 101),
-'mfv_stoplb_tau001000um_M1800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173737", 101),
-'mfv_stoplb_tau030000um_M1800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173758", 101),
-'mfv_stoplb_tau000100um_M0200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173817", 201),
-'mfv_stoplb_tau000300um_M0200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173835", 201),
-'mfv_stoplb_tau010000um_M0200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173854", 201),
-'mfv_stoplb_tau030000um_M0200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173935", 201),
-'mfv_stoplb_tau000100um_M0300_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_173953", 201),
-'mfv_stoplb_tau000300um_M0300_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174011", 200),
-'mfv_stoplb_tau010000um_M0300_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174033", 201),
-'mfv_stoplb_tau030000um_M0300_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174111", 201),
-'mfv_stoplb_tau000100um_M0400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174246", 201),
-'mfv_stoplb_tau000300um_M0400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174306", 201),
-'mfv_stoplb_tau010000um_M0400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174324", 201),
-'mfv_stoplb_tau030000um_M0400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174403", 201),
-'mfv_stoplb_tau000100um_M0600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174427", 201),
-'mfv_stoplb_tau000300um_M0600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174445", 201),
-'mfv_stoplb_tau010000um_M0600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174504", 201),
-'mfv_stoplb_tau030000um_M0600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174545", 201),
-'mfv_stoplb_tau000100um_M0800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174603", 201),
-'mfv_stoplb_tau000300um_M0800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174621", 201),
-'mfv_stoplb_tau010000um_M0800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174643", 101),
-'mfv_stoplb_tau030000um_M0800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174720", 201),
-'mfv_stopld_tau000100um_M1000_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174737", 201),
-'mfv_stopld_tau000300um_M1000_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174757", 201),
-'mfv_stopld_tau010000um_M1000_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174814", 101),
-'mfv_stopld_tau001000um_M1000_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174833", 201),
-'mfv_stopld_tau030000um_M1000_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221118_131235", 201),
-'mfv_stopld_tau000100um_M1200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174909", 201),
-'mfv_stopld_tau000300um_M1200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221118_131255", 201),
-'mfv_stopld_tau010000um_M1200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_174927", 101),
-'mfv_stopld_tau001000um_M1200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221118_131320", 201),
-'mfv_stopld_tau030000um_M1200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175002", 201),
-'mfv_stopld_tau000100um_M1400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175023", 201),
-'mfv_stopld_tau000300um_M1400_2017': (200, ['/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175040/0000/ntuple_%i.root' % i for i in chain(xrange(1,64), xrange(65,202))]),
-'mfv_stopld_tau010000um_M1400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175059", 101),
-'mfv_stopld_tau001000um_M1400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175117", 201),
-'mfv_stopld_tau030000um_M1400_2017': (200, ['/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175136/0000/ntuple_%i.root' % i for i in chain(xrange(1,79), xrange(80,202))]),
-'mfv_stopld_tau000100um_M1600_2017': (200, ['/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175155/0000/ntuple_%i.root' % i for i in chain(xrange(1,189), xrange(190,202))]),
-'mfv_stopld_tau000300um_M1600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175213", 201),
-'mfv_stopld_tau010000um_M1600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175231", 101),
-'mfv_stopld_tau001000um_M1600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175252", 101),
-'mfv_stopld_tau030000um_M1600_2017': (100, ['/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175310/0000/ntuple_%i.root' % i for i in chain(xrange(3,102), [1])]),
-'mfv_stopld_tau000100um_M1800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175328", 200),
-'mfv_stopld_tau000300um_M1800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175347", 201),
-'mfv_stopld_tau010000um_M1800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175408", 101),
-'mfv_stopld_tau001000um_M1800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175429", 101),
-'mfv_stopld_tau030000um_M1800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175453", 101),
-'mfv_stopld_tau000100um_M0200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175514", 201),
-'mfv_stopld_tau000300um_M0200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175533", 201),
-'mfv_stopld_tau010000um_M0200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175552", 200),
-'mfv_stopld_tau030000um_M0200_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175631", 201),
-'mfv_stopld_tau000100um_M0300_2017': (199, ['/store/user/awarden/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175649/0000/ntuple_%i.root' % i for i in chain(xrange(1,28), xrange(29,131), xrange(132,202))]),
-'mfv_stopld_tau000300um_M0300_2017': (199, ['/store/user/awarden/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175707/0000/ntuple_%i.root' % i for i in chain(xrange(1,95), xrange(96,142), xrange(143,202))]),
-'mfv_stopld_tau010000um_M0300_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175725", 201),
-'mfv_stopld_tau030000um_M0300_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175804", 201),
-'mfv_stopld_tau000100um_M0400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175822", 201),
-'mfv_stopld_tau000300um_M0400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175840", 201),
-'mfv_stopld_tau010000um_M0400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175859", 201),
-'mfv_stopld_tau030000um_M0400_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175937", 201),
-'mfv_stopld_tau000100um_M0600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_175955", 201),
-'mfv_stopld_tau000300um_M0600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_180013", 200),
-'mfv_stopld_tau010000um_M0600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_180031", 196),
-'mfv_stopld_tau030000um_M0600_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_180109", 201),
-'mfv_stopld_tau000100um_M0800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_180128", 201),
-'mfv_stopld_tau000300um_M0800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_180146", 201),
-'mfv_stopld_tau010000um_M0800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_180204", 101),
-'mfv_stopld_tau030000um_M0800_2017': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV1Lepm_2017/221117_180245", 201),
-})
-
-
 #TrackMover subntuples 
 
 _add_ds("trackmoveronnormdzulv30lepmumawdv8", {
@@ -1743,42 +1649,6 @@ _add_ds("trackmovermctruthonnormdzulv30lepmumv6", {
 
 
 
-#TrackingTreer with good lepton sel tracks + tracks matched to good leptons; event filter and trigger filter were applied
-_add_ds("trackingtreerulv1_lepm_wsellep", {
-'qcdempt015_2017': _fromnum1("/store/user/awarden/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094341", 35, fnbase="trackingtreer"),
-'qcdmupt15_2017': _fromnum1("/store/user/awarden/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094356", 142, fnbase="trackingtreer"),
-'qcdempt020_2017': _fromnum1("/store/user/awarden/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094410", 103, fnbase="trackingtreer"),
-'qcdempt030_2017': (33, ['/store/user/awarden/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094427/0000/trackingtreer_%i.root' % i for i in chain(xrange(3,35), [1])]),
-'qcdempt050_2017': _fromnum1("/store/user/awarden/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094441", 38, fnbase="trackingtreer"),
-'qcdempt080_2017': _fromnum1("/store/user/awarden/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094456", 34, fnbase="trackingtreer"),
-'qcdempt120_2017': _fromnum1("/store/user/awarden/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094511", 41, fnbase="trackingtreer"),
-'qcdempt170_2017': _fromnum1("/store/user/awarden/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094527", 25, fnbase="trackingtreer"),
-'qcdempt300_2017': _fromnum1("/store/user/awarden/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094543", 17, fnbase="trackingtreer"),
-'qcdbctoept020_2017': _fromnum1("/store/user/awarden/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094558", 51, fnbase="trackingtreer"),
-'qcdbctoept030_2017': _fromnum1("/store/user/awarden/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094613", 48, fnbase="trackingtreer"),
-'qcdbctoept080_2017': (33, ['/store/user/awarden/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094629/0000/trackingtreer_%i.root' % i for i in chain(xrange(1,5), xrange(6,35))]),
-'qcdbctoept170_2017': _fromnum1("/store/user/awarden/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094645", 46, fnbase="trackingtreer"),
-'qcdbctoept250_2017': _fromnum1("/store/user/awarden/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094700", 32, fnbase="trackingtreer"),
-'wjetstolnu_2017': _fromnum1("/store/user/awarden/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094805", 106, fnbase="trackingtreer"),
-'dyjetstollM10_2017': (93, ['/store/user/awarden/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094821/0000/trackingtreer_%i.root' % i for i in chain(xrange(1,10), xrange(11,63), xrange(64,96))]),
-'dyjetstollM50_2017': (60, ['/store/user/awarden/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094836/0000/trackingtreer_%i.root' % i for i in chain(xrange(1,7), xrange(9,17), xrange(18,23), xrange(24,35), xrange(36,41), xrange(44,52), xrange(53,55), xrange(60,67), xrange(68,72), [42, 56, 58, 74])]),
-'ttbar_2017': (254, ['/store/user/awarden/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_123503/0000/trackingtreer_%i.root' % i for i in chain(xrange(106), xrange(107,255))]),
-'ww_2017': _fromnum1("/store/user/awarden/WW_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094852", 21, fnbase="trackingtreer"),
-'zz_2017': _fromnum1("/store/user/awarden/WZ_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094908", 13, fnbase="trackingtreer"),
-'wz_2017': _fromnum1("/store/user/awarden/ZZ_TuneCP5_13TeV-pythia8/TrackingTreerULV1_Lepm_wsellep_2017/221004_094923", 14, fnbase="trackingtreer"),
-'SingleMuon2017B': _fromnum0("/store/user/awarden/SingleMuon/TrackingTreerULV1_Lepm_wsellep_2017/221004_044926", 60, fnbase="trackingtreer"),
-'SingleMuon2017C': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV1_Lepm_wsellep_2017/221004_094716", 78, fnbase="trackingtreer"),
-'SingleMuon2017D': _fromnum0("/store/user/awarden/SingleMuon/TrackingTreerULV1_Lepm_wsellep_2017/221004_044927", 34, fnbase="trackingtreer"),
-'SingleMuon2017E': _fromnum0("/store/user/awarden/SingleMuon/TrackingTreerULV1_Lepm_wsellep_2017/221004_044928", 86, fnbase="trackingtreer"),
-'SingleMuon2017F': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV1_Lepm_wsellep_2017/221004_094732", 109, fnbase="trackingtreer"),
-'SingleElectron2017B': _fromnum0("/store/user/awarden/SingleElectron/TrackingTreerULV1_Lepm_wsellep_2017/221004_044929", 32, fnbase="trackingtreer"),
-'SingleElectron2017C': _fromnum0("/store/user/awarden/SingleElectron/TrackingTreerULV1_Lepm_wsellep_2017/221004_044930", 64, fnbase="trackingtreer"),
-'SingleElectron2017D': _fromnum0("/store/user/awarden/SingleElectron/TrackingTreerULV1_Lepm_wsellep_2017/221004_044931", 25, fnbase="trackingtreer"),
-'SingleElectron2017E': (59, ['/store/user/awarden/SingleElectron/TrackingTreerULV1_Lepm_wsellep_2017/221004_044932/0000/trackingtreer_%i.root' % i for i in chain(xrange(9), xrange(10,60))]),
-'SingleElectron2017F': _fromnum1("/store/user/awarden/SingleElectron/TrackingTreerULV1_Lepm_wsellep_2017/221004_094749", 89, fnbase="trackingtreer"),
-})
-
-
 ## ntuple v9 : relax min_r = 2, but with lost hits = 1 (recover tracks going through the dead pixel layer) & all the lepton changes thus far and Peace's vertexer 
 ## which uses sigmaz in the deltaz stage - no special consideration for leptons. also pt ordering for seed tracks & seed vertices 
 _add_ds("ntupleulv9lepm", {
@@ -1911,11 +1781,11 @@ _add_ds("ntupleulv9lepm", {
 'mfv_stopld_tau030000um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV9Lepm_2018/240413_110547", 101),
 })
 
-_add_ds("ntupleulv9lepm_wgen", {
-'ttbar_lep_2018': _fromnum1("/store/user/awarden/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/NtupleULV9Lepm_WGen_2018/240505_141029", 310),
-'ttbar_semilep_2018': (1004, ['/store/user/awarden/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/NtupleULV9Lepm_WGen_2018/240505_141134' + '/%04i/ntuple_%i.root' % (i/1000,i) for i in chain(xrange(1,39), xrange(40,796), xrange(797,873), xrange(874,890), xrange(891,1009))]),
-'ttbar_had_2018': _fromnum1("/store/user/awarden/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/NtupleULV9Lepm_WGen_2018/240505_141249", 723),
-})
+# _add_ds("ntupleulv9lepm_wgen", {
+# 'ttbar_lep_2018': _fromnum1("/store/user/awarden/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/NtupleULV9Lepm_WGen_2018/240505_141029", 310),
+# 'ttbar_semilep_2018': (1004, ['/store/user/awarden/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/NtupleULV9Lepm_WGen_2018/240505_141134' + '/%04i/ntuple_%i.root' % (i/1000,i) for i in chain(xrange(1,39), xrange(40,796), xrange(797,873), xrange(874,890), xrange(891,1009))]),
+# 'ttbar_had_2018': _fromnum1("/store/user/awarden/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/NtupleULV9Lepm_WGen_2018/240505_141249", 723),
+# })
 
 _add_ds("ntupleulv10lepm_wgen", {
 'qcdempt015_2017': _fromnum1("/store/user/awarden/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV10Lepm_WGen_2017/240522_115135", 10),
@@ -2171,7 +2041,6 @@ _add_ds("ntupleulv10lepm_wgen", {
 #back to og dz (keep lep w/ pt >= 20) + pt ordering 
 
 ##track rescaling applied 2018
-"""
 _add_ds("ntupleulv11lepm_wgen", {
 'qcdmupt15_2018': _fromnum1("/store/user/awarden/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_085759", 34),
 'qcdempt015_2018': _fromnum1("/store/user/awarden/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_085905", 13),
@@ -2299,170 +2168,57 @@ _add_ds("ntupleulv11lepm_wgen", {
 'mfv_stopld_tau010000um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_110906", 101),
 'mfv_stopld_tau030000um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_111012", 101),
 })
-#back to og dz (keep lep w/ pt >= 20) + pt ordering 
-
-##track rescaling applied 2018
-_add_ds("ntupleulv11lepm_wgen", {
-'qcdmupt15_2018': _fromnum1("/store/user/awarden/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_085759", 34),
-'qcdempt015_2018': _fromnum1("/store/user/awarden/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_085905", 13),
-'qcdempt020_2018': _fromnum1("/store/user/awarden/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_090010", 17),
-'qcdempt030_2018': _fromnum1("/store/user/awarden/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_090117", 15),
-'qcdempt050_2018': _fromnum1("/store/user/awarden/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_090223", 14),
-'qcdempt080_2018': _fromnum1("/store/user/awarden/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_090328", 12),
-'qcdempt120_2018': _fromnum1("/store/user/awarden/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_090433", 14),
-'qcdempt170_2018': _fromnum1("/store/user/awarden/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_090537", 5),
-'qcdbctoept015_2018': _fromnum1("/store/user/awarden/QCD_Pt_15to20_bcToE_TuneCP5_13TeV_pythia8/NtupleULV11Lepm_WGen_2018/240801_090644", 19),
-'qcdbctoept020_2018': (40, ['/store/user/awarden/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/NtupleULV11Lepm_WGen_2018/240801_090748/0000/ntuple_%i.root' % i for i in chain(xrange(1,38), xrange(39,42))]),
-'qcdbctoept030_2018': _fromnum1("/store/user/awarden/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/NtupleULV11Lepm_WGen_2018/240801_090853", 34),
-'qcdbctoept080_2018': _fromnum1("/store/user/awarden/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/NtupleULV11Lepm_WGen_2018/240801_091000", 45),
-'qcdbctoept170_2018': _fromnum1("/store/user/awarden/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/NtupleULV11Lepm_WGen_2018/240801_091107", 52),
-'qcdbctoept250_2018': _fromnum1("/store/user/awarden/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/NtupleULV11Lepm_WGen_2018/240801_091212", 47),
-'qcdempt300_2018': _fromnum1("/store/user/awarden/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_091317", 4),
-'ttbar_lep_2018': _fromnum1("/store/user/awarden/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/NtupleULV11Lepm_WGen_2018/240801_091422", 310),
-'ttbar_semilep_2018': _fromnum1("/store/user/awarden/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/NtupleULV11Lepm_WGen_2018/240801_091527", 1007),
-'ttbar_had_2018': _fromnum1("/store/user/awarden/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/NtupleULV11Lepm_WGen_2018/240801_091633", 723),
-'wjetstolnu_2018': _fromnum1("/store/user/awarden/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleULV11Lepm_WGen_2018/240801_111117", 99),
-'wjetstolnu_ext_2018': _fromnum1("/store/user/awarden/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleULV11Lepm_WGen_2018/240801_111225", 180),
-'dyjetstollM10_2018': _fromnum1("/store/user/awarden/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleULV11Lepm_WGen_2018/240801_111330", 114),
-'dyjetstollM50_2018': _fromnum1("/store/user/awarden/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/NtupleULV11Lepm_WGen_2018/240801_111434", 110),
-'ww_2018': _fromnum1("/store/user/awarden/WW_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_111539", 23),
-'wz_2018': _fromnum1("/store/user/awarden/WZ_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_111645", 17),
-'zz_2018': _fromnum1("/store/user/awarden/ZZ_TuneCP5_13TeV-pythia8/NtupleULV11Lepm_WGen_2018/240801_111750", 5),
-'mfv_stoplb_tau000100um_M0200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_091737", 201),
-'mfv_stoplb_tau000300um_M0200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_091843", 201),
-'mfv_stoplb_tau001000um_M0200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_091950", 201),
-'mfv_stoplb_tau010000um_M0200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_092055", 201),
-'mfv_stoplb_tau030000um_M0200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_092203", 201),
-'mfv_stoplb_tau000100um_M0300_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_092311", 201),
-'mfv_stoplb_tau000300um_M0300_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_092419", 201),
-'mfv_stoplb_tau001000um_M0300_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_092526", 200),
-'mfv_stoplb_tau010000um_M0300_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_092630", 201),
-'mfv_stoplb_tau030000um_M0300_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_092735", 201),
-'mfv_stoplb_tau000100um_M0400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_092841", 201),
-'mfv_stoplb_tau000300um_M0400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_092946", 201),
-'mfv_stoplb_tau001000um_M0400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_093050", 201),
-'mfv_stoplb_tau010000um_M0400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_093154", 201),
-'mfv_stoplb_tau030000um_M0400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_093302", 200),
-'mfv_stoplb_tau000100um_M0600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_093410", 201),
-'mfv_stoplb_tau000300um_M0600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_093514", 200),
-'mfv_stoplb_tau001000um_M0600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_093622", 200),
-'mfv_stoplb_tau010000um_M0600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_093727", 201),
-'mfv_stoplb_tau030000um_M0600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_093836", 200),
-'mfv_stoplb_tau000100um_M0800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_093943", 200),
-'mfv_stoplb_tau000300um_M0800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_094048", 200),
-'mfv_stoplb_tau001000um_M0800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_094151", 201),
-'mfv_stoplb_tau010000um_M0800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_094303", 100),
-'mfv_stoplb_tau030000um_M0800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_094426", 201),
-'mfv_stoplb_tau000100um_M1000_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_094530", 201),
-'mfv_stoplb_tau000300um_M1000_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_094636", 201),
-'mfv_stoplb_tau001000um_M1000_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_094743", 201),
-'mfv_stoplb_tau010000um_M1000_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_094850", 101),
-'mfv_stoplb_tau030000um_M1000_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_094957", 201),
-'mfv_stoplb_tau000100um_M1200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_095102", 201),
-'mfv_stoplb_tau000300um_M1200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_095209", 201),
-'mfv_stoplb_tau001000um_M1200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_095314", 201),
-'mfv_stoplb_tau010000um_M1200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_095418", 101),
-'mfv_stoplb_tau030000um_M1200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_095522", 201),
-'mfv_stoplb_tau000100um_M1400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_095628", 201),
-'mfv_stoplb_tau000300um_M1400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_095733", 201),
-'mfv_stoplb_tau001000um_M1400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_095837", 201),
-'mfv_stoplb_tau010000um_M1400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_095943", 101),
-'mfv_stoplb_tau030000um_M1400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_100048", 200),
-'mfv_stoplb_tau000100um_M1600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_100159", 201),
-'mfv_stoplb_tau000300um_M1600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_100303", 201),
-'mfv_stoplb_tau001000um_M1600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_100411", 101),
-'mfv_stoplb_tau010000um_M1600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_100515", 101),
-'mfv_stoplb_tau030000um_M1600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_100620", 101),
-'mfv_stoplb_tau000100um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_100723", 200),
-'mfv_stoplb_tau000300um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_100827", 201),
-'mfv_stoplb_tau001000um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_100932", 101),
-'mfv_stoplb_tau010000um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_101035", 101),
-'mfv_stoplb_tau030000um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLBottom_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_101140", 101),
-'mfv_stopld_tau000100um_M0200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_101244", 201),
-'mfv_stopld_tau000300um_M0200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_101350", 201),
-'mfv_stopld_tau001000um_M0200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_101454", 201),
-'mfv_stopld_tau010000um_M0200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_101606", 201),
-'mfv_stopld_tau030000um_M0200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_200_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_101712", 201),
-'mfv_stopld_tau000100um_M0300_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_300_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_101817", 201),
-'mfv_stopld_tau000300um_M0300_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_300_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_101921", 201),
-'mfv_stopld_tau001000um_M0300_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_300_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_102026", 201),
-'mfv_stopld_tau010000um_M0300_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_300_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_102131", 201),
-'mfv_stopld_tau030000um_M0300_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_300_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_102236", 201),
-'mfv_stopld_tau000100um_M0400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_102342", 201),
-'mfv_stopld_tau000300um_M0400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_102446", 201),
-'mfv_stopld_tau001000um_M0400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_102552", 201),
-'mfv_stopld_tau010000um_M0400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_102659", 201),
-'mfv_stopld_tau030000um_M0400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_400_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_102805", 201),
-'mfv_stopld_tau000100um_M0600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_102910", 201),
-'mfv_stopld_tau000300um_M0600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_103014", 201),
-'mfv_stopld_tau001000um_M0600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_103120", 200),
-'mfv_stopld_tau010000um_M0600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_103224", 201),
-'mfv_stopld_tau030000um_M0600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_600_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_103332", 201),
-'mfv_stopld_tau000100um_M0800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_103436", 200),
-'mfv_stopld_tau000300um_M0800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_103550", 201),
-'mfv_stopld_tau001000um_M0800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_103656", 201),
-'mfv_stopld_tau010000um_M0800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_103802", 101),
-'mfv_stopld_tau030000um_M0800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_800_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_103908", 201),
-'mfv_stopld_tau000100um_M1000_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_104015", 201),
-'mfv_stopld_tau000300um_M1000_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_104120", 201),
-'mfv_stopld_tau001000um_M1000_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_104225", 201),
-'mfv_stopld_tau010000um_M1000_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_104332", 101),
-'mfv_stopld_tau030000um_M1000_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1000_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_104439", 201),
-'mfv_stopld_tau000100um_M1200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_104543", 201),
-'mfv_stopld_tau000300um_M1200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_105023", 201),
-'mfv_stopld_tau001000um_M1200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_105133", 201),
-'mfv_stopld_tau010000um_M1200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_105239", 101),
-'mfv_stopld_tau030000um_M1200_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1200_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_105344", 201),
-'mfv_stopld_tau000100um_M1400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_105451", 201),
-'mfv_stopld_tau000300um_M1400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_105555", 200),
-'mfv_stopld_tau001000um_M1400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_105700", 201),
-'mfv_stopld_tau010000um_M1400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_105805", 101),
-'mfv_stopld_tau030000um_M1400_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1400_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_105909", 201),
-'mfv_stopld_tau000100um_M1600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_110015", 201),
-'mfv_stopld_tau000300um_M1600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_110120", 201),
-'mfv_stopld_tau001000um_M1600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_110232", 101),
-'mfv_stopld_tau010000um_M1600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_110340", 101),
-'mfv_stopld_tau030000um_M1600_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1600_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_110447", 100),
-'mfv_stopld_tau000100um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_0p1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_110551", 201),
-'mfv_stopld_tau000300um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_110657", 201),
-'mfv_stopld_tau001000um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_1mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_110803", 101),
-'mfv_stopld_tau010000um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_10mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_110906", 101),
-'mfv_stopld_tau030000um_M1800_2018': _fromnum1("/store/user/awarden/DisplacedSUSY_stopToLD_M_1800_30mm_TuneCP5_13TeV-madgraph-pythia8/NtupleULV11Lepm_WGen_2018/240801_111012", 101),
-})
-"""
-
-#TrackingTreer 2018 
 
 
-#TrackingTreer 2018 
 
-
-#TrackingTreer 2018 
-
+#TrackingTreer
 _add_ds("trackingtreerulv2_lepm", {
-# 'qcdempt015_20161': _fromnum1("/store/user/awarden/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_171542", 32, fnbase="trackingtreer"),
-# 'qcdmupt15_20161': _fromnum1("/store/user/awarden/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240804_093128", 13, fnbase="trackingtreer"),
-# 'qcdempt020_20161': _fromnum1("/store/user/awarden/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_171748", 8, fnbase="trackingtreer"),
-# 'qcdempt030_20161': _fromnum1("/store/user/awarden/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240804_093230", 8, fnbase="trackingtreer"),
-# 'qcdempt050_20161': _fromnum1("/store/user/awarden/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_171953", 8, fnbase="trackingtreer"),
-# 'qcdempt080_20161': _fromnum1("/store/user/awarden/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_172057", 8, fnbase="trackingtreer"),
-# 'qcdempt120_20161': _fromnum1("/store/user/awarden/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_172200", 10, fnbase="trackingtreer"),
-# 'qcdempt170_20161': _fromnum1("/store/user/awarden/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_172303", 5, fnbase="trackingtreer"),
-# 'qcdempt300_20161': _fromnum0("/store/user/awarden/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240804_093352", 5, fnbase="trackingtreer"),
-# 'qcdbctoept020_20161': _fromnum1("/store/user/awarden/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20161/240803_172508", 13, fnbase="trackingtreer"),
-# 'qcdbctoept030_20161': _fromnum1("/store/user/awarden/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20161/240803_172613", 13, fnbase="trackingtreer"),
-# 'qcdbctoept080_20161': _fromnum1("/store/user/awarden/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20161/240803_172720", 16, fnbase="trackingtreer"),
-# 'qcdbctoept170_20161': _fromnum1("/store/user/awarden/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20161/240803_172821", 13, fnbase="trackingtreer"),
-# 'qcdbctoept250_20161': _fromnum1("/store/user/awarden/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20161/240803_172922", 16, fnbase="trackingtreer"),
-# 'wjetstolnu_20161': (90, ['/store/user/awarden/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV2_Lepm_20161/240803_173333/0000/trackingtreer_%i.root' % i for i in chain(xrange(1,13), xrange(14,17), xrange(18,62), xrange(63,85), xrange(86,95))]),
-# 'dyjetstollM10_20161': _fromnum1("/store/user/awarden/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV2_Lepm_20161/240803_173438", 33, fnbase="trackingtreer"),
-# 'dyjetstollM50_20161': _fromnum1("/store/user/awarden/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV2_Lepm_20161/240803_173540", 103, fnbase="trackingtreer"),
-# 'ttbar_lep_20161': _fromnum1("/store/user/awarden/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/TrackingTreerULV2_Lepm_20161/240803_173027", 66, fnbase="trackingtreer"),
-# 'ttbar_semilep_20161': (201, ['/store/user/awarden/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/TrackingTreerULV2_Lepm_20161/240803_173129/0000/trackingtreer_%i.root' % i for i in chain(xrange(1,135), xrange(136,181), xrange(182,193), xrange(194,205))]),
-# 'ttbar_had_20161': _fromnum1("/store/user/awarden/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/TrackingTreerULV2_Lepm_20161/240803_173231", 153, fnbase="trackingtreer"),
-# 'ww_20161': _fromnum1("/store/user/awarden/WW_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240804_093522", 22, fnbase="trackingtreer"),
-# 'zz_20161': _fromnum1("/store/user/awarden/ZZ_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_173748", 5, fnbase="trackingtreer"),
-# 'wz_20161': _fromnum1("/store/user/awarden/WZ_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_173850", 13, fnbase="trackingtreer"),
+'qcdempt015_2016APV': _fromnum1("/store/user/awarden/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_171542", 32, fnbase="trackingtreer"),
+'qcdmupt15_2016APV': _fromnum1("/store/user/awarden/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240804_093128", 13, fnbase="trackingtreer"),
+'qcdempt020_2016APV': _fromnum1("/store/user/awarden/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_171748", 8, fnbase="trackingtreer"),
+'qcdempt030_2016APV': _fromnum1("/store/user/awarden/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240804_093230", 8, fnbase="trackingtreer"),
+'qcdempt050_2016APV': _fromnum1("/store/user/awarden/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_171953", 8, fnbase="trackingtreer"),
+'qcdempt080_2016APV': _fromnum1("/store/user/awarden/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_172057", 8, fnbase="trackingtreer"),
+'qcdempt120_2016APV': _fromnum1("/store/user/awarden/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_172200", 10, fnbase="trackingtreer"),
+'qcdempt170_2016APV': _fromnum1("/store/user/awarden/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_172303", 5, fnbase="trackingtreer"),
+'qcdempt300_2016APV': _fromnum1("/store/user/awarden/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240804_093352", 6, fnbase="trackingtreer"),
+'qcdbctoept020_2016APV': _fromnum1("/store/user/awarden/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20161/240803_172508", 13, fnbase="trackingtreer"),
+'qcdbctoept030_2016APV': _fromnum1("/store/user/awarden/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20161/240803_172613", 13, fnbase="trackingtreer"),
+'qcdbctoept080_2016APV': _fromnum1("/store/user/awarden/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20161/240803_172720", 16, fnbase="trackingtreer"),
+'qcdbctoept170_2016APV': _fromnum1("/store/user/awarden/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20161/240803_172821", 13, fnbase="trackingtreer"),
+'qcdbctoept250_2016APV': _fromnum1("/store/user/awarden/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20161/240803_172922", 16, fnbase="trackingtreer"),
+'wjetstolnu_2016APV': _fromnum1("/store/user/awarden/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV2_Lepm_20161/240803_173333", 94, fnbase="trackingtreer"),
+'dyjetstollM10_2016APV': _fromnum1("/store/user/awarden/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV2_Lepm_20161/240803_173438", 33, fnbase="trackingtreer"),
+'dyjetstollM50_2016APV': _fromnum1("/store/user/awarden/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV2_Lepm_20161/240803_173540", 103, fnbase="trackingtreer"),
+'ttbar_lep_2016APV': _fromnum1("/store/user/awarden/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/TrackingTreerULV2_Lepm_20161/240803_173027", 66, fnbase="trackingtreer"),
+'ttbar_semilep_2016APV': _fromnum1("/store/user/awarden/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/TrackingTreerULV2_Lepm_20161/240803_173129", 204, fnbase="trackingtreer"),
+'ttbar_had_2016APV': _fromnum1("/store/user/awarden/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/TrackingTreerULV2_Lepm_20161/240803_173231", 153, fnbase="trackingtreer"),
+'ww_2016APV': _fromnum1("/store/user/awarden/WW_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240804_093522", 22, fnbase="trackingtreer"),
+'zz_2016APV': _fromnum1("/store/user/awarden/ZZ_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_173748", 5, fnbase="trackingtreer"),
+'wz_2016APV': _fromnum1("/store/user/awarden/WZ_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20161/240803_173850", 13, fnbase="trackingtreer"),
+'qcdempt015_2016': _fromnum1("/store/user/awarden/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_154212", 12, fnbase="trackingtreer"),
+'qcdmupt15_2016': _fromnum1("/store/user/awarden/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_154314", 11, fnbase="trackingtreer"),
+'qcdempt020_2016': _fromnum1("/store/user/awarden/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_154415", 12, fnbase="trackingtreer"),
+'qcdempt030_2016': _fromnum1("/store/user/awarden/QCD_Pt-30to50_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_154516", 4, fnbase="trackingtreer"),
+'qcdempt050_2016': _fromnum1("/store/user/awarden/QCD_Pt-50to80_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_154619", 7, fnbase="trackingtreer"),
+'qcdempt080_2016': _fromnum1("/store/user/awarden/QCD_Pt-80to120_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_154723", 8, fnbase="trackingtreer"),
+'qcdempt120_2016': _fromnum1("/store/user/awarden/QCD_Pt-120to170_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_154825", 6, fnbase="trackingtreer"),
+'qcdempt170_2016': _fromnum1("/store/user/awarden/QCD_Pt-170to300_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_154926", 3, fnbase="trackingtreer"),
+'qcdempt300_2016': _fromnum1("/store/user/awarden/QCD_Pt-300toInf_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_155027", 5, fnbase="trackingtreer"),
+'qcdbctoept020_2016': _fromnum1("/store/user/awarden/QCD_Pt_20to30_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20162/240811_155127", 13, fnbase="trackingtreer"),
+'qcdbctoept030_2016': _fromnum1("/store/user/awarden/QCD_Pt_30to80_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20162/240811_155232", 18, fnbase="trackingtreer"),
+'qcdbctoept080_2016': _fromnum1("/store/user/awarden/QCD_Pt_80to170_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20162/240811_155334", 16, fnbase="trackingtreer"),
+'qcdbctoept170_2016': _fromnum1("/store/user/awarden/QCD_Pt_170to250_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20162/240811_155435", 16, fnbase="trackingtreer"),
+'qcdbctoept250_2016': _fromnum1("/store/user/awarden/QCD_Pt_250toInf_bcToE_TuneCP5_13TeV_pythia8/TrackingTreerULV2_Lepm_20162/240811_155537", 17, fnbase="trackingtreer"),
+'wjetstolnu_2016': (99, ['/store/user/awarden/WJetsToLNu_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV2_Lepm_20162/240811_155954/0000/trackingtreer_%i.root' % i for i in chain(xrange(1,37), xrange(38,101))]),
+'dyjetstollM10_2016': _fromnum1("/store/user/awarden/DYJetsToLL_M-10to50_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV2_Lepm_20162/240811_160056", 29, fnbase="trackingtreer"),
+'dyjetstollM50_2016': _fromnum1("/store/user/awarden/DYJetsToLL_M-50_TuneCP5_13TeV-madgraphMLM-pythia8/TrackingTreerULV2_Lepm_20162/240811_160157", 95, fnbase="trackingtreer"),
+'ttbar_lep_2016': _fromnum1("/store/user/awarden/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/TrackingTreerULV2_Lepm_20162/240811_155644", 107, fnbase="trackingtreer"),
+'ttbar_semilep_2016': (324, ['/store/user/awarden/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/TrackingTreerULV2_Lepm_20162/240811_155746/0000/trackingtreer_%i.root' % i for i in chain(xrange(1,182), xrange(183,326))]),
+'ttbar_had_2016': (246, ['/store/user/awarden/TTToHadronic_TuneCP5_13TeV-powheg-pythia8/TrackingTreerULV2_Lepm_20162/240811_155849/0000/trackingtreer_%i.root' % i for i in chain(xrange(1,88), xrange(89,248))]),
+'ww_2016': _fromnum1("/store/user/awarden/WW_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_160302", 25, fnbase="trackingtreer"),
+'zz_2016': _fromnum1("/store/user/awarden/ZZ_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_160405", 9, fnbase="trackingtreer"),
+'wz_2016': _fromnum1("/store/user/awarden/WZ_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_20162/240811_160506", 15, fnbase="trackingtreer"),
 'qcdempt015_2017': _fromnum1("/store/user/awarden/QCD_Pt-15to20_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_2017/240514_094641", 10, fnbase="trackingtreer"),
 'qcdmupt15_2017': _fromnum1("/store/user/awarden/QCD_Pt-20_MuEnrichedPt15_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_2017/240514_094744", 32, fnbase="trackingtreer"),
 'qcdempt020_2017': _fromnum1("/store/user/awarden/QCD_Pt-20to30_EMEnriched_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_2017/240514_094840", 20, fnbase="trackingtreer"),
@@ -2488,6 +2244,22 @@ _add_ds("trackingtreerulv2_lepm", {
 'zz_2017': _fromnum1("/store/user/awarden/ZZ_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_2017/240514_101745", 4, fnbase="trackingtreer"),
 'wz_2017': _fromnum1("/store/user/awarden/WZ_TuneCP5_13TeV-pythia8/TrackingTreerULV2_Lepm_2017/240514_101840", 15, fnbase="trackingtreer"),
 
+'SingleMuon2016APVB2': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV2_Lepm_20161/240811_100205", 99, fnbase="trackingtreer"),
+'SingleMuon2016APVC': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV2_Lepm_20161/240808_081334", 44, fnbase="trackingtreer"),
+'SingleMuon2016APVD': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV2_Lepm_20161/240808_081439", 62, fnbase="trackingtreer"),
+'SingleMuon2016APVE': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV2_Lepm_20161/240808_081548", 62, fnbase="trackingtreer"),
+'SingleMuon2016APVF': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV2_Lepm_20161/240808_081654", 43, fnbase="trackingtreer"),
+'SingleElectron2016APVB2': _fromnum1("/store/user/awarden/SingleElectron/TrackingTreerULV2_Lepm_20161/240811_100309", 177, fnbase="trackingtreer"),
+'SingleElectron2016APVC': _fromnum1("/store/user/awarden/SingleElectron/TrackingTreerULV2_Lepm_20161/240808_082012", 75, fnbase="trackingtreer"),
+'SingleElectron2016APVD': _fromnum1("/store/user/awarden/SingleElectron/TrackingTreerULV2_Lepm_20161/240808_082125", 108, fnbase="trackingtreer"),
+'SingleElectron2016APVE': (88, ['/store/user/awarden/SingleElectron/TrackingTreerULV2_Lepm_20161/240808_082230/0000/trackingtreer_%i.root' % i for i in chain(xrange(1,75), xrange(78,91), [76])]),
+'SingleElectron2016APVF': _fromnum1("/store/user/awarden/SingleElectron/TrackingTreerULV2_Lepm_20161/240808_082333", 55, fnbase="trackingtreer"),
+'SingleMuon2016F': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV2_Lepm_20162/240811_152421", 8, fnbase="trackingtreer"),
+'SingleMuon2016G': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV2_Lepm_20162/240811_152523", 107, fnbase="trackingtreer"),
+'SingleMuon2016H': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV2_Lepm_20162/240811_152628", 130, fnbase="trackingtreer"),
+'SingleElectron2016F': _fromnum1("/store/user/awarden/SingleElectron/TrackingTreerULV2_Lepm_20162/240811_152730", 10, fnbase="trackingtreer"),
+'SingleElectron2016G': _fromnum1("/store/user/awarden/SingleElectron/TrackingTreerULV2_Lepm_20162/240811_152832", 127, fnbase="trackingtreer"),
+'SingleElectron2016H': _fromnum1("/store/user/awarden/SingleElectron/TrackingTreerULV2_Lepm_20162/240811_152935", 116, fnbase="trackingtreer"),
 'SingleMuon2017B': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV2_Lepm_2017/240514_100430", 105, fnbase="trackingtreer"),
 'SingleMuon2017C': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV2_Lepm_2017/240514_100525", 145, fnbase="trackingtreer"),
 'SingleMuon2017D': _fromnum1("/store/user/awarden/SingleMuon/TrackingTreerULV2_Lepm_2017/240514_100621", 66, fnbase="trackingtreer"),

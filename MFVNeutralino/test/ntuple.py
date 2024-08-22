@@ -26,6 +26,8 @@ elif use_Muon_triggers :
     settings.mode = 'muons only' #FIXME
 elif use_Electron_triggers :
     settings.mode = 'electrons only' #FIXME
+elif use_Lepton_triggers :
+    settings.mode = 'leptons only'
 else :
     settings.mode = 'jets only'
 
@@ -35,16 +37,13 @@ settings.randpars_filter = False
 
 process = ntuple_process(settings)
 dataset = 'miniaod' if settings.is_miniaod else 'main'
-sample_files(process, 'ttbar_semilep_2018', dataset, 3)
-#sample_files(process, 'qcdmupt15_2017', dataset, 1)
+#sample_files(process, 'ttbar_semilep_2017', dataset, 1)
+sample_files(process, 'mfv_stopld_tau010000um_M0800_2017', dataset, 1)
 #sample_files(process, 'mfv_neu_tau010000um_M0800_2018', dataset, 1)
-#sample_files(process, 'mfv_stoplb_tau000300um_M0800_2018', dataset, 1)
+#sample_files(process, 'mfv_stopld_tau010000um_M0800_2018', dataset, 5)
 
-
-max_events(process, 10000)
+max_events(process, 5000)
 cmssw_from_argv(process)
-
-
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *

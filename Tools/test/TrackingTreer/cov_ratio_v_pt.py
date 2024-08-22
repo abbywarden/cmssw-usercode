@@ -5,14 +5,17 @@ from JMTucker.Tools.ROOTTools import *
 
 set_style()
 
+##TODO : major cleanup needed
 
 do_fits = True
 compare_rescaled = False
 
-year = '2018'
+#year = '2018'
 #year = '2017'
-#cov = ['dxyerr', 'dszerr', 'absdxydszcov']
-cov = ['dxyerr', 'dszerr']
+#year = '20161'
+year = '20162'
+cov = ['dxyerr', 'dszerr', 'absdxydszcov']
+#cov = ['dxyerr', 'dszerr']
 
 
 etabins = ['lt1p5', 'gt1p5']
@@ -45,35 +48,45 @@ seltracks_bins_gt1p5 += [x for x in range(60, 140, 40)]
 seltracks_bins_gt1p5 += [x for x in range(140,260,60)]
                     
 
-ps = plot_saver(plot_dir('cov_v_pt_ratio_all_%s' % year), size=(600,600), pdf=True, log=False)
+ps = plot_saver(plot_dir('cov_v_pt_ratio_rescaledbyera_v2_%s' % year), size=(600,600), pdf=True, log=False)
 
 eras = ['B', 'C', 'D', 'E', 'F']
+era_lc = ['b', 'c', 'd', 'e', 'f'] #for dxydszcov fitting
 if year == '2018':
     eras = ['A', 'B', 'C', 'D']
+if year == '2016APV':
+    eras = ['BC', 'DEF']
+if year == '2016':
+    eras = ['F', 'G', 'H']
 
 
 bkgr = 'background_leptonpresel_%s' % year
 #bkgr = 'bkg_leptonpresel_wqcd_%s' % year
-datasets = ['SingleLepton%(yr)s%(era)s' % locals() for yr in [year] for era in eras] 
+#datasets = ['SingleLepton%(yr)s%(era)s' % locals() for yr in [year] for era in eras]  #when separate era 
+datasets = ['SingleLepton%(yr)s' % locals() for yr in [year]]  #when combined era
 
 
+# hn = 'h_sel_mu_tracks_%s_v_pt'
+# track = 'sel_mu_track'
+is_muon = False
 
-hn = 'h_pass_muon_tracks_%s_v_pt'
-track = 'pass_mu'
-# hn = 'h_pass_ele_tracks_%s_v_pt'
-# track = 'pass_ele'
+hn = 'h_sel_ele_tracks_%s_v_pt'
+track = 'sel_ele_track'
+is_ele = True
 #hn_1d = 'h_pass_ele_tracks_pt'
-# hn = 'h_sel_nolep_tracks_%s_v_pt'
-# track = 'sel_track'
-#pt_slices = ['pt_20', 'pt_40', 'pt_60', 'pt_90', 'pt_130', 'pt_200']
 
-is_muon = True
-is_ele = False
+# hn = 'h_sel_tracks_%s_v_pt'
+# track = 'sel_track'
 is_seltracks = False
 
-fn_string = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV1_Lepm_cut0_eta%s_2018_wsellep/%s.root'
-#fn_scale_string = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV1_Lepm_eta%s_era%s_2018/%s.root'
-fn_scale_string = ''
+#pt_slices = ['pt_20', 'pt_40', 'pt_60', 'pt_90', 'pt_130', 'pt_200']
+
+
+
+
+fn_string = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV2_Lepm_cut0_eta%s_2016/%s.root'
+fn_scale_string = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV2_Lepm_eta%s_rescaled_2016/%s.root'
+#fn_scale_string = ''
 
 buff = []
 colors = [ROOT.kPink-3, ROOT.kBlue, ROOT.kGreen+1, ROOT.kOrange+7, ROOT.kViolet-4]
@@ -82,7 +95,6 @@ colors = [ROOT.kPink-3, ROOT.kBlue, ROOT.kGreen+1, ROOT.kOrange+7, ROOT.kViolet-
 def get_profile(fn, hn):
     f = ROOT.TFile(fn)
     h = f.Get(hn)
-    #print h
     profile = h.ProfileX(hn + "pfx")
     profile.SetLineWidth(2)
     profile.SetStats(0)
@@ -120,13 +132,15 @@ def ratio_hist(num, den):
 
 #names = ['%(yr)s%(era)s Data' % locals() for yr in [year] for era in eras]
 names = ['%(yr)s%(era)s' % locals() for yr in [year] for era in eras]
+#names = ['%(yr)s' % locals() for yr in [year]] #not separated by era
+
 if compare_rescaled:
   #idata = 0
   #data = datasets[idata]
   #era = eras[idata]
   var = 'dxyerr'
   for idata, data in enumerate(datasets):
-    era = eras[idata]
+    era = era[idata] #iff 2017 : era_lc
     for etabin in etabins:
         leg = ROOT.TLegend(0.65,0.7,0.9,0.9)
 
@@ -145,8 +159,10 @@ if compare_rescaled:
 
         mc = get_profile(fn_string % (etabin, bkgr), hn % var)
         # print fn_string % (etabin, bkgr)
-        #mcrescaled = get_profile(fn_scale_string % (etabin, era, bkgr), hn % var)
+        #mcrescaled = get_profile(fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % era)
+        mcrescaled = get_profile(fn_scale_string % (etabin, bkgr), hn % var)
         #print fn_scale_string % (etabin, era, bkgr)
+        
         newmc = mc.Rebin(len(bins)-1, 'newmc', array('d', bins))
         newmc.SetLineColor(ROOT.kBlack)
         newmc.SetLineWidth(2)
@@ -155,28 +171,30 @@ if compare_rescaled:
         newmc.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var))
         leg.AddEntry(newmc, 'background MC')
         
-        #newmcrescaled = mcrescaled.Rebin(len(bins)-1, 'newmcrescaled', array('d', bins))
-        #newmcrescaled.SetLineColor(ROOT.kBlue)
-        #newmcrescaled.SetLineWidth(2)
-        #newmcrescaled.SetFillColor(0)
-        #newmcrescaled.SetStats(0)
-        #newmcrescaled.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var))
-        #leg.AddEntry(newmcrescaled, 'background MC rescaled')
+        newmcrescaled = mcrescaled.Rebin(len(bins)-1, 'newmcrescaled', array('d', bins))
+        newmcrescaled.SetLineColor(ROOT.kBlue)
+        newmcrescaled.SetLineWidth(2)
+        newmcrescaled.SetFillColor(0)
+        newmcrescaled.SetStats(0)
+        newmcrescaled.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var))
+        leg.AddEntry(newmcrescaled, 'background MC rescaled')
         
-        d = get_profile(fn_string % (etabin, data), hn % var)
-        #print fn_string % (etabin, data)
-        newd = d.Rebin(len(bins)-1, 'newd', array('d', bins))
-        newd.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var))
-        newd.SetLineColor(colors[idata])
-        newd.SetLineWidth(2)
-        newd.SetFillColor(0)
-        newd.SetStats(0)
-        newd.Draw('hist e')
-        newmc.Draw('sames hist e')
-        #newmcrescaled.Draw('sames hist e')
-        leg.AddEntry(newd, '%s' % (names[idata]))
-        leg.Draw()
-        ps.save('%s_eta%s_rescaled_era%s_%s' % (var, etabin, era, track))
+        for idata, data in enumerate(datasets):
+            d = get_profile(fn_string % (etabin, data), hn % var)
+            #print fn_string % (etabin, data)
+            newd = d.Rebin(len(bins)-1, 'newd', array('d', bins))
+            newd.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var))
+            newd.SetLineColor(colors[idata])
+            newd.SetLineWidth(2)
+            newd.SetFillColor(0)
+            newd.SetStats(0)
+            newd.Draw('hist e')
+            newmc.Draw('sames hist e')
+            newmcrescaled.Draw('sames hist e')
+            leg.AddEntry(newd, '%s' % (names[idata]))
+            leg.Draw()
+        #ps.save('%s_eta%s_rescaled_era%s_%s' % (var, etabin, era, track))
+        ps.save('%s_eta%s_rescaled_%s' % (var, etabin, track))
 
 
 for var in cov:
@@ -197,21 +215,23 @@ for var in cov:
             else :
                 bins = seltracks_bins_gt1p5
         
-        #mc = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, data, bkgr), hn % var)
-        mc = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, era, bkgr), hn % var)
+        #mc = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % era) #-> iff absdxydszcov
+        mc = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), hn % var)
         newmc = mc.Rebin(len(bins)-1, 'newmc', array('d', bins))
         newmc.SetLineColor(ROOT.kBlack)
         newmc.SetLineWidth(2)
         newmc.SetFillColor(0)
         newmc.SetStats(0)
         newmc.GetYaxis().SetRangeUser(0, 0.01)
+        #for absdxydszcov muon (2018)
+        #newmc.GetYaxis().SetRangeUser(0, 0.00000035)
+        #for ele absdxydszcov 
+        #newmc.GetYaxis().SetRangeUser(0, 0.000003)
         newmc.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var))
                    
         newmc.Draw('hist e')
         leg0.AddEntry(newmc, 'background MC')
- 
         for idata, data in enumerate(datasets):
-            
             d = get_profile(fn_string % (etabin, data), hn % var)
             newd = d.Rebin(len(bins)-1, 'newd', array('d', bins))
             newd.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var))
@@ -231,8 +251,10 @@ for var in cov:
         leg1 = ROOT.TLegend(0.65,0.2,0.9,0.4)
         for idata, data in enumerate(datasets):
             num = get_profile(fn_string % (etabin, data), hn % var)
-            #den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in var else fn_scale_string % (etabin, data, bkgr), hn % var)
-            den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, eras[idata], bkgr), hn % var)
+            #den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, eras[idata], bkgr), hn % var)
+            den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), hn % var) #no era argument (for dxyerr and dszerr)
+            #den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % eras[idata]) #for absdxydszerr; if 2017 era_lc
+
             if etabin == 'lt1p5':
                 if is_muon or is_ele: 
                     bins = lep_bins_lt1p5
@@ -277,39 +299,32 @@ def fit_func_dict(cov, etabin):
                         'JetHT2018D':'(x<=3)*pol1(0) + (x>3 && x<=10)*pol1(2) + (x>10 && x<=15)*pol1(4) + (x>15 && x<=200)*pol2(6)',
 
                         # Group A) good electron and Group B) good muon
+                        'SingleLepton2016':'(x>=20 && x<=200)*pol1(0)'
+
                         # 'SingleLepton2017B':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017C':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017D':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017E':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017F':'(x>=20 && x<=200)*pol1(0)'
+                        #'SingleLepton2017':'(x>=20 && x<=200)*pol1(0)'
                         
-                        #Good Muon
-                        # 'SingleLepton2018A':'(x>=20 && x<=60)*pol1(0) + (x>=60 && x<=200)*pol1(2)',
-                        # 'SingleLepton2018B':'(x>=20 && x<=60)*pol1(0) + (x>=60 && x<=200)*pol1(2)',
-                        # 'SingleLepton2018C':'(x>=20 && x<=60)*pol1(0) + (x>=60 && x<=200)*pol1(2)',
-                        # 'SingleLepton2018D':'(x>=20 && x<=60)*pol1(0) + (x>=60 && x<=200)*pol1(2)',
+                        # 'SingleLepton2016APVBC' :'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2016APVDEF':'(x>=20 && x<=200)*pol1(0)',
                         
-                        'SingleLepton2018A':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018B':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018C':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018D':'(x>=20 && x<=200)*pol1(0)'
-                        
-                        #Good Electron
-                        # 'SingleLepton2018A':'(x>=20 && x<=60)*pol2(0) + (x>=60 && x<=200)*pol1(3)',
-                        # 'SingleLepton2018B':'(x>=20 && x<=60)*pol2(0) + (x>=60 && x<=200)*pol1(3)',
-                        # 'SingleLepton2018C':'(x>=20 && x<=60)*pol2(0) + (x>=60 && x<=200)*pol1(3)',
-                        # 'SingleLepton2018D':'(x>=20 && x<=60)*pol2(0) + (x>=60 && x<=200)*pol1(3)',
+                       #'SingleLepton2018':'(x>=20 && x<=200)*pol1(0)'
                         
                         # # Group C) sel tracks 
+                        #'SingleLepton2016' :'(x<=6)*pol2(0) + (x>=6 && x<=60)*pol1(3) + (x>=60 && x <=200)*pol1(5)',
+                        # 'SingleLepton2016APVBC' :'(x<=8)*pol2(0) + (x>=8 && x<=200)*pol1(3)',
+                        # 'SingleLepton2016APVDEF':'(x<=8)*pol2(0) + (x>=8 && x<=200)*pol1(3)',
                         # 'SingleLepton2017B':'(x<=5)*pol2(0) + (x>5 && x<=40)*pol1(3) + (x>40 && x<=200)*pol1(5)', 
                         # 'SingleLepton2017C':'(x<=5)*pol2(0) + (x>5 && x<=200)*pol1(3)',
                         # 'SingleLepton2017D':'(x<=5)*pol2(0) + (x>5 && x<=200)*pol1(3)',
                         # 'SingleLepton2017E':'(x<=5)*pol2(0) + (x>5 && x<=25)*pol1(3) + (x>25 && x<=200)*pol1(5)',
                         # 'SingleLepton2017F':'(x<=5)*pol2(0) + (x>5 && x<=200)*pol1(3)'
-                        # 'SingleLepton2018A':'(x<=4)*pol1(0) + (x>=4 && x<=18)*pol1(2) + (x>=18 && x<=200)*pol2(4)',
-                        # 'SingleLepton2018B':'(x<=4)*pol1(0) + (x>=4 && x<=18)*pol1(2) + (x>=18 &&x<=200)*pol2(4)', 
-                        # 'SingleLepton2018C':'(x<=4)*pol1(0) + (x>=4 && x<=18)*pol1(2) + (x>=18 && x<=200)*pol2(4)', 
-                        # 'SingleLepton2018D':'(x<=4)*pol1(0) + (x>=4 && x<=18)*pol1(2) + (x>=18 && x<=200)*pol2(4)' 
+                        
+                        #'SingleLepton2017':'(x<=5)*pol2(0) + (x>5 && x<=200)*pol1(3)'
+                        #'SingleLepton2018':'(x<=6)*pol2(0) + (x>=6 && x<=44)*pol1(3) + (x>=44 && x<=200)*pol1(5)'
 
             }
        # dxyerr gt1p5
@@ -324,40 +339,32 @@ def fit_func_dict(cov, etabin):
                         'JetHT2018D':'(x<=5)*pol1(0) + (x>5 && x<=9)*pol1(2) + (x>9 && x<=17)*pol1(4) + (x>17 && x<=200)*pol2(6)',
 
                         # good ele and good muons 
+                        'SingleLepton2016':'(x>=20 && x<=200)*pol1(0)'
+                        # 'SingleLepton2016APVBC' :'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2016APVDEF':'(x>=20 && x<=200)*pol1(0)',
                         
                         # 'SingleLepton2017B':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017C':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017D':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017E':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017F':'(x>=20 && x<=200)*pol1(0)'
-                        
-                        #Good Muon
-                        # 'SingleLepton2018A':'(x>=20 && x<=60)*pol1(0) + (x>=60 && x<=200)*pol1(2)',
-                        # 'SingleLepton2018B':'(x>=20 && x<=60)*pol1(0) + (x>=60 && x<=200)*pol1(2)',
-                        # 'SingleLepton2018C':'(x>=20 && x<=60)*pol1(0) + (x>=60 && x<=200)*pol1(2)',
-                        # 'SingleLepton2018D':'(x>=20 && x<=60)*pol1(0) + (x>=60 && x<=200)*pol1(2)',
-                        
-                        'SingleLepton2018A':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018B':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018C':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018D':'(x>=20 && x<=200)*pol1(0)'
-                        
-                        #Good Electron
-                        # 'SingleLepton2018A':'(x>=20 && x<=70)*pol2(0) + (x>=70 && x<=200)*pol2(3)', # 65 -> 70
-                        # 'SingleLepton2018B':'(x>=20 && x<=65)*pol2(0) + (x>=65 && x<=200)*pol2(3)',
-                        # 'SingleLepton2018C':'(x>=20 && x<=70)*pol2(0) + (x>=70 && x<=200)*pol2(3)',
-                        # 'SingleLepton2018D':'(x>=20 && x<=65)*pol2(0) + (x>=65 && x<=200)*pol2(3)'
+                        #'SingleLepton2017':'(x>=20 && x<=200)*pol1(0)'
+
+                        #Good Muon and Electron
+                        #'SingleLepton2018':'(x>=20 && x<=200)*pol1(0)'
 
                         # sel tracks 
-                        # 'SingleLepton2017B':'(x<=5)*pol2(0) + (x>5 && x<=12)*pol2(3) + (x>12 && x<=45)*pol1(6) + (x>45 && x<=200)*pol1(8)',
-                        # 'SingleLepton2017C':'(x<=5)*pol2(0) + (x>5 && x<=10)*pol2(3) + (x>10 && x<=45)*pol1(6) + (x>45 && x<=200)*pol1(8)', 
-                        # 'SingleLepton2017D':'(x<=5)*pol2(0) + (x>5 && x<=10)*pol2(3) + (x>10 && x<=45)*pol1(6) + (x>45 && x<=200)*pol1(8)', 
+                        #'SingleLepton2016' :'(x<=10)*pol2(0) + (x>=10 && x<=200)*pol1(3)',
+                        # 'SingleLepton2016APVBC' :'(x<=20)*pol2(0) + (x>=20 && x<=200)*pol1(3)',
+                        # 'SingleLepton2016APVDEF':'(x<=14)*pol2(0) + (x>=14 && x<=200)*pol1(3)',
+                        # 'SingleLepton2017B':'(x<=5)*pol2(0) + (x>5 && x<=12)*pol2(3) + (x>12 && x<=200)*pol1(8)',
+                        # 'SingleLepton2017C':'(x<=5)*pol2(0) + (x>5 && x<=12)*pol2(3) + (x>12 && x<=200)*pol1(8)', 
+                        # 'SingleLepton2017D':'(x<=5)*pol2(0) + (x>5 && x<=10)*pol2(3) + (x>10 && x<=200)*pol1(8)', 
                         # 'SingleLepton2017E':'(x<=5)*pol2(0) + (x>5 && x<=12)*pol2(3) + (x>12 && x<=200)*pol1(6)',
                         # 'SingleLepton2017F':'(x<=5)*pol2(0) + (x>5 && x<=11)*pol2(3) + (x>11 && x<=200)*pol1(6)'
-                        # 'SingleLepton2018A':'(x<=4)*pol1(0) + (x>=4 && x<=11)*pol2(2) + (x>=11 && x<=200)*pol2(5)',
-                        # 'SingleLepton2018B':'(x<=4)*pol1(0) + (x>=4 && x<=12)*pol2(2) + (x>=12 && x<=200)*pol2(5)', 
-                        # 'SingleLepton2018C':'(x<=4)*pol1(0) + (x>=4 && x<=12)*pol2(2) + (x>=12 && x<=200)*pol2(5)', 
-                        # 'SingleLepton2018D':'(x<=4)*pol1(0) + (x>=4 && x<=12)*pol2(2) + (x>=12 && x<=200)*pol2(5)' 
+                        
+                        #'SingleLepton2017':'(x<=5)*pol2(0) + (x>5 && x<=12)*pol2(3) + (x>12 && x<=200)*pol1(6)'
+                        #'SingleLepton2018':'(x<=4)*pol1(0) + (x>=4 && x<=15)*pol2(2) + (x>=15 && x<=200)*pol1(5)',
 
                         }
   
@@ -373,28 +380,31 @@ def fit_func_dict(cov, etabin):
                         'JetHT2018D':'(x<=5)*pol1(0) + (x>5 && x<=9)*pol1(2) + (x>9 && x<=17)*pol1(4) + (x>17 && x<=200)*pol2(6)',
 
                        # Group A) good electron & good muon
+                        'SingleLepton2016':'(x>=20 && x<=200)*pol1(0)'
+                        # 'SingleLepton2016APVBC' :'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2016APVDEF':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017B':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017C':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017D':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017E':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017F':'(x>=20 && x<=200)*pol1(0)'
-                        
+                        #'SingleLepton2017':'(x>=20 && x<=200)*pol1(0)'
+
                         #Good Muon & Good Electron
-                        'SingleLepton2018A':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018B':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018C':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018D':'(x>=20 && x<=200)*pol1(0)'
+                        #'SingleLepton2018':'(x>=20 && x<=200)*pol1(0)'
                         
                         # #Group B) sel tracks 
+                        #'SingleLepton2016' :'(x<=8)*pol2(0) + (x>=8 && x<=200)*pol1(3)',
+                        # 'SingleLepton2016APVBC' :'(x<=8)*pol2(0) + (x>=8 && x<=200)*pol1(3)',
+                        # 'SingleLepton2016APVDEF':'(x<=8)*pol2(0) + (x>=8 && x<=200)*pol1(3)',
                         # 'SingleLepton2017B':'(x<=5)*pol2(0) + (x>5 && x<=20)*pol1(3) + (x>20 && x<=200)*pol1(5)',
                         # 'SingleLepton2017C':'(x<=5)*pol2(0) + (x>5 && x<=200)*pol1(3)',
                         # 'SingleLepton2017D':'(x<=5)*pol2(0) + (x>5 && x<=200)*pol1(3)',
                         # 'SingleLepton2017E':'(x<=5)*pol2(0) + (x>5 && x<=200)*pol1(3)',
                         # 'SingleLepton2017F':'(x<=5)*pol2(0) + (x>5 && x<=200)*pol1(3)',
-                        # 'SingleLepton2018A':'(x<=4)*pol1(0) + (x>=4 && x<=10)*pol1(2) + (x>=10 && x<=22)*pol1(4) + (x>=22 && x<=200)*pol2(6)',
-                        # 'SingleLepton2018B':'(x<=4)*pol1(0) + (x>=4 && x<=10)*pol1(2) + (x>=10 && x<=200)*pol2(4)',
-                        # 'SingleLepton2018C':'(x<=4)*pol1(0) + (x>=4 && x<=10)*pol1(2) + (x>=10 && x<=200)*pol1(4)', 
-                        # 'SingleLepton2018D':'(x<=3)*pol1(0) + (x>3 && x<=8)*pol1(2) + (x>=8 && x<=200)*pol1(4)' 
+                        #'SingleLepton2017':'(x<=5)*pol2(0) + (x>5 && x<=200)*pol1(3)', #think that 5 or 6 could work?
+                        
+                        #'SingleLepton2018':'(x<=4)*pol1(0) + (x>=4 && x<=10)*pol1(2) + (x>=10 && x<=200)*pol2(4)',
 
                         }
         #dsz err gt1p5
@@ -409,73 +419,95 @@ def fit_func_dict(cov, etabin):
                         'JetHT2018D':'(x<=5)*pol1(0) + (x>5 && x<=9)*pol1(2) + (x>9 && x<=17)*pol1(4) + (x>17 && x<=200)*pol2(6)',
                         
                         #Group A) good electron & good muon
+                        'SingleLepton2016':'(x>=20 && x<=200)*pol1(0)'
+                        # 'SingleLepton2016APVBC' :'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2016APVDEF':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017B':'(x>=20 && x<=200)*pol1(0)', #+ (x>55 && x<=100)*pol1(2) + (x>100 && x<=200)*pol1(4)',
                         # 'SingleLepton2017C':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017D':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017E':'(x>=20 && x<=200)*pol1(0)',
                         # 'SingleLepton2017F':'(x>=20 && x<=200)*pol1(0)'
-                        
-                        # #Good Muon
-                        # 'SingleLepton2018A':'(x>=20 && x<=60)*pol2(0) + (x>=60 && x<=200)*pol1(3)',
-                        # 'SingleLepton2018B':'(x>=20 && x<=60)*pol2(0) + (x>=60 && x<=200)*pol1(3)',
-                        # 'SingleLepton2018C':'(x>=20 && x<=60)*pol2(0) + (x>=60 && x<=200)*pol1(3)',
-                        # 'SingleLepton2018D':'(x>=20 && x<=60)*pol2(0) + (x>=60 && x<=200)*pol1(3)',
-                        
-                        'SingleLepton2018A':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018B':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018C':'(x>=20 && x<=200)*pol1(0)',
-                        'SingleLepton2018D':'(x>=20 && x<=200)*pol1(0)',
-                        
-                        #Good Electron
-                        # 'SingleLepton2018A':'(x>=20 && x<=65)*pol2(0) + (x>=65 && x<=200)*pol2(3)',
-                        # 'SingleLepton2018B':'(x>=20 && x<=65)*pol2(0) + (x>=65 && x<=200)*pol2(3)',
-                        # 'SingleLepton2018C':'(x>=20 && x<=65)*pol2(0) + (x>=65 && x<=200)*pol2(3)',
-                        # 'SingleLepton2018D':'(x>=20 && x<=65)*pol2(0) + (x>=65 && x<=200)*pol2(3)'
+                        #'SingleLepton2017':'(x>=20 && x<=200)*pol1(0)'
 
-                        
+                        # Muon and Electron
+                        #'SingleLepton2018':'(x>=20 && x<=200)*pol1(0)'
+
                         # #Group C) sel tracks 
+                        #'SingleLepton2016' :'(x<=14)*pol2(0) + (x>=14 && x<=200)*pol1(3)',
+                        # 'SingleLepton2016APVBC' :'(x<=20)*pol2(0) + (x>=20 && x<=200)*pol1(3)',
+                        # 'SingleLepton2016APVDEF':'(x<=12)*pol2(0) + (x>=12 && x<=200)*pol1(3)',
                         # 'SingleLepton2017B':'(x<=5)*pol2(0) + (x>5 && x<=15)*pol2(3) + (x>15 && x<=200)*pol1(6)', 
                         # 'SingleLepton2017C':'(x<=5)*pol2(0) + (x>5 && x<=15)*pol2(3) + (x>15 && x<=200)*pol1(6)', 
                         # 'SingleLepton2017D':'(x<=5)*pol2(0) + (x>5 && x<=15)*pol2(3) + (x>15 && x<=200)*pol1(6)',
                         # 'SingleLepton2017E':'(x<=5)*pol2(0) + (x>5 && x<=15)*pol1(3) + (x>15 && x<=200)*pol1(6)', 
-                        # 'SingleLepton2017F':'(x<=5)*pol2(0) + (x>5 && x<=19)*pol2(3) + (x>19 && x<=200)*pol1(6)'
-                        # 'SingleLepton2018A':'(x<=4)*pol1(0) + (x>=4 && x<=10)*pol1(2) + (x>=10 && x<=22)*pol1(4) + (x>=22 && x<=200)*pol2(6)',
-                        # 'SingleLepton2018B':'(x<=4)*pol1(0) + (x>=4 && x<=25)*pol1(2) + (x>=25 && x<=200)*pol2(4)',
-                        # 'SingleLepton2018C':'(x<=4)*pol1(0) + (x>=4 && x<=10)*pol1(2) + (x>=10 && x<=18)*pol1(4) + (x>=18 && x<=200)*pol2(6)', 
-                        # 'SingleLepton2018D':'(x<=4)*pol1(0) + (x>=4 && x<=10)*pol2(2) + (x>=10 && x<=200)*pol2(5)'
+                        # 'SingleLepton2017F':'(x<=5)*pol2(0) + (x>5 && x<=15)*pol2(3) + (x>15 && x<=200)*pol1(6)'
 
+                        #'SingleLepton2017':'(x<=5)*pol2(0) + (x>5 && x<=15)*pol2(3) + (x>15 && x<=200)*pol1(6)', 
+
+                        #'SingleLepton2018':'(x<=4)*pol1(0) + (x>=4 && x<=15)*pol2(2) + (x>=15 && x<=200)*pol1(5)',
+                        
                         }
             
     else:
         #dxydszcov
         if etabin == 'lt1p5':
-            fitfuncs = {'JetHT2017B':'(x<=3.5)*pol1(0) + (x>3.5 && x<=20)*pol1(2) + (x>20)*pol0(4)',
-                        'JetHT2017C':'(x<=3.5)*pol1(0) + (x>3.5 && x<=20)*pol1(2) + (x>20)*pol0(4)',
-                        'JetHT2017DE':'(x<=3.5)*pol1(0) + (x>3.5 && x<=20)*pol1(2) + (x>20)*pol0(4)',
-                        'JetHT2017F':'(x<=3.5)*pol1(0) + (x>3.5 && x<=20)*pol1(2) + (x>20 && x<=60)*pol1(4) + (x>60)*pol0(6)',
-                        'JetHT2018A':'(x<=5)*pol1(0) + (x>5 && x<=10)*pol1(2) + (x>10 && x<=25)*pol1(2)+ (x>25 && x<=200)*pol1(4)',
-                        'JetHT2018B':'(x<=5)*pol1(0) + (x>5 && x<=20)*pol1(2) + (x>20 && x<=200)*pol2(4)',
-                        'JetHT2018C':'(x<=4)*pol1(0) + (x>4 && x<=25)*pol1(2) + (x>25 && x<=200)*pol2(4)',
-                        'JetHT2018D':'(x<=5)*pol1(0) + (x>5 && x<=20)*pol1(2) + (x>20 && x<=60)*pol1(4) + (x>60)*pol0(6)',
+             fitfuncs = {
+                        # 'JetHT2017B':'(x<=3.5)*pol1(0) + (x>3.5 && x<=20)*pol1(2) + (x>20)*pol0(4)',
+            #             'JetHT2017C':'(x<=3.5)*pol1(0) + (x>3.5 && x<=20)*pol1(2) + (x>20)*pol0(4)',
+            #             'JetHT2017DE':'(x<=3.5)*pol1(0) + (x>3.5 && x<=20)*pol1(2) + (x>20)*pol0(4)',
+            #             'JetHT2017F':'(x<=3.5)*pol1(0) + (x>3.5 && x<=20)*pol1(2) + (x>20 && x<=60)*pol1(4) + (x>60)*pol0(6)',
+            #             'JetHT2018A':'(x<=5)*pol1(0) + (x>5 && x<=10)*pol1(2) + (x>10 && x<=25)*pol1(2)+ (x>25 && x<=200)*pol1(4)',
+            #             'JetHT2018B':'(x<=5)*pol1(0) + (x>5 && x<=20)*pol1(2) + (x>20 && x<=200)*pol2(4)',
+            #             'JetHT2018C':'(x<=4)*pol1(0) + (x>4 && x<=25)*pol1(2) + (x>25 && x<=200)*pol2(4)',
+            #             'JetHT2018D':'(x<=5)*pol1(0) + (x>5 && x<=20)*pol1(2) + (x>20 && x<=60)*pol1(4) + (x>60)*pol0(6)',
                         
-                        # Lepton tracks (Muon & ELECTRON?)
-                        # 'SingleLepton2017B':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
-                        # 'SingleLepton2017C':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
-                        # 'SingleLepton2017D':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
-                        # 'SingleLepton2017E':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
-                        # 'SingleLepton2017F':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
+                        # Lepton tracks (Electron)
+                        # 'SingleLepton2017B':'(x>=20 && x<=36)*pol1(0) + (x>=36 && x<=200)*pol1(2)',
+                        # 'SingleLepton2017C':'(x>=20 && x<=34)*pol1(0) + (x>=34 && x<=200)*pol1(2)',
+                        # 'SingleLepton2017D':'(x>=20 && x<=32)*pol1(0) + (x>=32 && x<=200)*pol1(2)',
+                        # 'SingleLepton2017E':'(x>=20 && x<=200)*pol1(2)',
+                        # 'SingleLepton2017F':'(x>=20 && x<=200)*pol1(2)',
                         
-                        'SingleLepton2018A':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
-                        'SingleLepton2018B':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
-                        'SingleLepton2018C':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
-                        'SingleLepton2018D':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
+                        # muon
+
+                        # 'SingleLepton2017B':'(x>=20 && x<=36)*pol1(0) + (x>=36 && x<=200)*pol1(2)',
+                        # 'SingleLepton2017C':'(x>=20 && x<=58)*pol2(0) + (x>=58 && x<=200)*pol1(3)',
+                        # 'SingleLepton2017D':'(x>=20 && x<=58)*pol2(0) + (x>=58 && x<=200)*pol1(3)',
+                        # 'SingleLepton2017E':'(x>=20 && x<=200)*pol1(2)',
+                        # 'SingleLepton2017F':'(x>=20 && x<=200)*pol1(2)',
+                    
+                        # 'SingleLepton2018A':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
+                        # 'SingleLepton2018B':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
+                        # 'SingleLepton2018C':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
+                        # 'SingleLepton2018D':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
                         
+                        # Muon and Electron
+                        'SingleLepton2016' :'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2016APVBC' :'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2016APVDEF':'(x>=20 && x<=200)*pol1(0)',
+                        #'SingleLepton2018':'(x>=20 && x<=56)*pol2(0) + (x>=56 && x<=200)*pol1(3)',
+                        
+                        #electron (not used)
+                        #'SingleLepton2018':'(x>=20 && x<=56)*pol4(0) + (x>=56 && x<=200)*pol1(6)',
+                        #'SingleLepton2018':'(x>=20 && x<=56)*pol2(0) + (x>56 && x<=200)*pol1(3)',
+
+                        #'SingleLepton2017':'(x>=20 && x<=200)*pol1(0)'
+                        
+                        #Sel Tracks 
+                        #'SingleLepton2016' :'(x<=6)*pol2(0) + (x>=6 && x<=200)*pol1(3)',
+                        # 'SingleLepton2016APVBC' :'(x<=10)*pol2(0) + (x>=10 && x<=200)*pol1(3)',
+                        # 'SingleLepton2016APVDEF':'(x<=18)*pol2(0) + (x>=18 && x<=200)*pol1(3)',
+                        #'SingleLepton2018':'(x<=20)*pol2(0) + (x>=20 && x<=200)*pol1(3)',
+                        #'SingleLepton2018':'(x<=8)*pol3(0) + (x>=8 && x<=18)*pol2(4) + (x>=18 && x<=200)*pol1(7)',
+                        #'SingleLepton2017':'(x<=5)*pol1(0) + (x>5 && x<=22)*pol2(2) + (x>=22 && x<=200)*pol1(5)',
+
                         #Sel Tracks
-                        # 'SingleLepton2017B':'(x<=3)*pol1(0) + (x>3 && x<=7)*pol1(2) + (x>7 && x<=20)*pol1(4) + (x>20 && x<=200)*pol1(6)',
-                        # 'SingleLepton2017C':'(x<=3)*pol1(0) + (x>3 && x<=7)*pol1(2) + (x>7 && x<=20)*pol1(4) + (x>20 && x<=200)*pol1(6)',
-                        # 'SingleLepton2017D':'(x<=3)*pol1(0) + (x>3 && x<=7)*pol1(2) + (x>7 && x<=20)*pol1(4) + (x>20 && x<=200)*pol1(6)',
-                        # 'SingleLepton2017E':'(x<=3)*pol1(0) + (x>3 && x<=7)*pol1(2) + (x>7 && x<=20)*pol1(4) + (x>20 && x<=200)*pol1(6)',
-                        # 'SingleLepton2017F':'(x<=4)*pol1(0) + (x>4 && x<=15)*pol2(2) + (x>15 && x<=200)*pol1(5)',
+                        # 'SingleLepton2017B':'(x<=5)*pol2(0) + (x>5 && x<=28)*pol2(3) + (x>28 && x<=200)*pol1(6)',
+                        # 'SingleLepton2017C':'(x<=5)*pol2(0) + (x>5 && x<=40)*pol2(3) + (x>40 && x<=200)*pol1(6)', 
+                        # 'SingleLepton2017D':'(x<=5)*pol2(0) + (x>5 && x<=24)*pol2(3) + (x>24 && x<=200)*pol1(6)',
+                        # 'SingleLepton2017E':'(x<=5)*pol2(0) + (x>5 && x<=18)*pol2(3) + (x>18 && x<=200)*pol1(6)', 
+                        # 'SingleLepton2017F':'(x<=5)*pol2(0) + (x>5 && x<=20)*pol2(3) + (x>20 && x<=200)*pol1(6)', 
+                        
                         # 'SingleLepton2018A':'(x<=4)*pol1(0) + (x>4 && x<=10)*pol1(2) + (x>10 && x<=22)*pol1(4) + (x>22 && x<=200)*pol2(6)',
                         # 'SingleLepton2018B':'(x<=5)*pol1(0) + (x>5 && x<=25)*pol1(2) + (x>25 && x<=200)*pol2(4)',
                         # 'SingleLepton2018C':'(x<=5)*pol1(0) + (x>5 && x<=9)*pol1(2) + (x>9 && x<=20)*pol1(4) + (x>20 && x<=200)*pol2(6)',
@@ -484,46 +516,59 @@ def fit_func_dict(cov, etabin):
                         }
 
         else:
-            fitfuncs = {'JetHT2017B':'(x<=5)*pol1(0) + (x>5 && x<=21)*pol1(2) + (x>21)*pol0(4)',
-                        'JetHT2017C':'(x<=4.5)*pol1(0) + (x>4.5 && x<=21)*pol1(2) + (x>21)*pol0(4)',
-                        'JetHT2017DE':'(x<=5)*pol1(0) + (x>5 && x<=21)*pol1(2) + (x>21)*pol0(4)',
-                        'JetHT2017F':'(x<=5)*pol1(0) + (x>5 && x<=21)*pol1(2) + (x>21)*pol0(4)',
-                        'JetHT2018A':'(x<=7)*pol1(0) + (x>7 && x<=20)*pol1(2) + (x>20 && x<=60)*pol1(4) + (x>60)*pol0(6)',
-                        'JetHT2018B':'(x<=6)*pol1(0) + (x>6 && x<=20)*pol1(2) + (x>20 && x<=200)*pol2(4)',
-                        'JetHT2018C':'(x<=5)*pol1(0) + (x>5 && x<=10)*pol1(2) + (x>10 && x<=40)*pol1(4) + (x>40 && x<=200)*pol1(6)',
-                        'JetHT2018D':'(x<=3.5)*pol1(0) + (x>3.5 && x<=15)*pol1(2) + (x>15 && x<=20)*pol1(4) + (x>20 && x<=60)*pol1(6) + (x>60)*pol0(8)',
+             fitfuncs = {
+                        # 'JetHT2017B':'(x<=5)*pol1(0) + (x>5 && x<=21)*pol1(2) + (x>21)*pol0(4)',
+            #             'JetHT2017C':'(x<=4.5)*pol1(0) + (x>4.5 && x<=21)*pol1(2) + (x>21)*pol0(4)',
+            #             'JetHT2017DE':'(x<=5)*pol1(0) + (x>5 && x<=21)*pol1(2) + (x>21)*pol0(4)',
+            #             'JetHT2017F':'(x<=5)*pol1(0) + (x>5 && x<=21)*pol1(2) + (x>21)*pol0(4)',
+            #             'JetHT2018A':'(x<=7)*pol1(0) + (x>7 && x<=20)*pol1(2) + (x>20 && x<=60)*pol1(4) + (x>60)*pol0(6)',
+            #             'JetHT2018B':'(x<=6)*pol1(0) + (x>6 && x<=20)*pol1(2) + (x>20 && x<=200)*pol2(4)',
+            #             'JetHT2018C':'(x<=5)*pol1(0) + (x>5 && x<=10)*pol1(2) + (x>10 && x<=40)*pol1(4) + (x>40 && x<=200)*pol1(6)',
+            #             'JetHT2018D':'(x<=3.5)*pol1(0) + (x>3.5 && x<=15)*pol1(2) + (x>15 && x<=20)*pol1(4) + (x>20 && x<=60)*pol1(6) + (x>60)*pol0(8)',
+
+                        # Muon & Electron 
+                        'SingleLepton2016' :'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2016APVBC' :'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2016APVDEF':'(x>=20 && x<=200)*pol1(0)',
+                        #'SingleLepton2018':'(x>=20 && x<=200)*pol1(0)',
+                        #'SingleLepton2017':'(x>=20 && x<=200)*pol1(0)',
                         
-                        #ELECTRON tracks
-                        # 'SingleLepton2017B':'(x>=20 && x<=45)*pol2(0) + (x>45 && x<=200)*pol1(3)',
-                        # 'SingleLepton2017C':'(x>=20 && x<=40)*pol1(0) + (x>40 && x<=200)*pol1(3)',
-                        # 'SingleLepton2017D':'(x>=20 && x<=45)*pol2(0) + (x>45 && x<=200)*pol1(3)',
-                        # 'SingleLepton2017E':'(x>=20 && x<=40)*pol1(0) + (x>40 && x<=200)*pol1(2)',
-                        # 'SingleLepton2017F':'(x>=20 && x<=60)*pol2(0) + (x>60 && x<=200)*pol1(3)',
+                        #Sel Tracks 
                         
-                        # 'SingleLepton2018A':'(x>=20 && x<=45)*pol2(0) + (x>45 && x<=200)*pol1(3)',
-                        # 'SingleLepton2018B':'(x>=20 && x<=40)*pol1(0) + (x>40 && x<=200)*pol1(3)',
-                        # 'SingleLepton2018C':'(x>=20 && x<=45)*pol2(0) + (x>45 && x<=200)*pol1(3)',
-                        # 'SingleLepton2018D':'(x>=20 && x<=40)*pol1(0) + (x>40 && x<=200)*pol1(2)',
-                        
+                        #'SingleLepton2018':'(x<=10)*pol4(0) + (x>=10 && x<=18)*pol2(5) + (x>=18 && x<=22)*pol2(8) + (x>=22 && x<=200)*pol1(11)',
+                        #'SingleLepton2018':'(x<=8)*pol4(0) + (x>=8 && x<=32)*pol3(5) + (x>=32 && x<=200)*pol1(9)',
+                        #'SingleLepton2017':'(x<=3)*pol2(0) + (x>=3 && x<=20)*pol2(3) + (x>=20 && x<=200)*pol1(6)'
+
+                        #electron tracks 
+                        # 'SingleLepton2017B':'(x>=20 && x<=48)*pol1(0) + (x>=48 && x<=200)*pol1(2)',
+                        # 'SingleLepton2017C':'(x>=20 && x<=48)*pol1(0) + (x>=48 && x<=200)*pol1(2)',
+                        # 'SingleLepton2017D':'(x>=20 && x<=48)*pol1(0) + (x>=48 && x<=200)*pol1(2)',
+                        # 'SingleLepton2017E':'(x>=20 && x<=48)*pol1(0) + (x>=48 && x<=200)*pol1(2)',
+                        # 'SingleLepton2017F':'(x>=20 && x<=48)*pol1(0) + (x>=48 && x<=200)*pol1(2)',
                         
                         #MUON tracks 
-                        # 'SingleLepton2017B':'(x>=20 && x<=40)*pol2(0) + (x>40 && x<=75)*pol1(3) + (x>75 && x<=200)*pol1(5)',
-                        # 'SingleLepton2017C':'(x>=20 && x<=40)*pol2(0) + (x>40 && x<=75)*pol1(3) + (x>75 && x<=200)*pol1(5)',
-                        # 'SingleLepton2017D':'(x>=20 && x<=40)*pol2(0) + (x>40 && x<=75)*pol1(3) + (x>75 && x<=200)*pol1(5)',
-                        # 'SingleLepton2017E':'(x>=20 && x<=40)*pol2(0) + (x>40 && x<=75)*pol1(3) + (x>75 && x<=200)*pol1(5)',
-                        # 'SingleLepton2017F':'(x>=20 && x<=80)*pol2(0) + (x>80 && x<=200)*pol1(3)',
+
+                        # 'SingleLepton2017B':'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2017C':'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2017D':'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2017E':'(x>=20 && x<=200)*pol1(0)',
+                        # 'SingleLepton2017F':'(x>=20 && x<=78)*pol2(0) + (x>=78 && x<=200)*pol1(3)',
                         
                         
                         #Sel Tracks 
-                        # 'SingleLepton2017D':'(x<=5)*pol2(0) + (x>5 && x<=10)*pol1(3) + (x>10 && x<=18)*pol1(5) + (x>18 && x<=200)*pol1(7)',
-                        # 'SingleLepton2017B':'(x<=5)*pol2(0) + (x>5 && x<=10)*pol1(3) + (x>10 && x<=18)*pol1(5) + (x>18 && x<=200)*pol1(7)',
-                        # 'SingleLepton2017C':'(x<=5)*pol2(0) + (x>5 && x<=10)*pol1(3) + (x>10 && x<=18)*pol1(5) + (x>18 && x<=200)*pol1(7)',
-                        # 'SingleLepton2017E':'(x<=5)*pol2(0) + (x>5 && x<=10)*pol1(3) + (x>10 && x<=18)*pol1(5) + (x>18 && x<=200)*pol1(7)',
-                        # 'SingleLepton2017F':'(x<=5)*pol2(0) + (x>5 && x<=14)*pol2(3) + (x>14 && x<=200)*pol1(6)',
-                        'SingleLepton2018A':'(x<=4)*pol1(0) + (x>4 && x<=10)*pol1(2) + (x>10 && x<=22)*pol1(4) + (x>22 && x<=200)*pol2(6)',
-                        'SingleLepton2018B':'(x<=5)*pol1(0) + (x>5 && x<=25)*pol1(2) + (x>25 && x<=200)*pol2(4)',
-                        'SingleLepton2018C':'(x<=5)*pol1(0) + (x>5 && x<=9)*pol1(2) + (x>9 && x<=20)*pol1(4) + (x>20 && x<=200)*pol2(6)',
-                        'SingleLepton2018D':'(x<=5)*pol1(0) + (x>5 && x<=9)*pol1(2) + (x>9 && x<=17)*pol1(4) + (x>17 && x<=200)*pol2(6)'
+                        #'SingleLepton2016' :'(x<=12)*pol2(0) + (x>=12 && x<=200)*pol1(3)',
+                        # 'SingleLepton2016APVBC' :'(x<=6)*pol2(0) + (x>=6 && x<=200)*pol1(3)',
+                        # 'SingleLepton2016APVDEF':'(x<=6)*pol2(0) + (x>=6 && x<=200)*pol1(3)'
+                        # 'SingleLepton2017B':'(x<=5)*pol2(0) + (x>5 && x<=10)*pol2(3) + (x>10 && x<=200)*pol2(6)',
+                        # 'SingleLepton2017C':'(x<=5)*pol2(0) + (x>5 && x<=10)*pol2(3) + (x>10 && x<=200)*pol2(6)',
+                        # 'SingleLepton2017D':'(x<=5)*pol2(0) + (x>5 && x<=11)*pol2(3) + (x>11 && x<=200)*pol2(6)',
+                        # 'SingleLepton2017E':'(x<=5)*pol2(0) + (x>5 && x<=10)*pol2(3) + (x>10 && x<=200)*pol2(6)',
+                        # 'SingleLepton2017F':'(x<=5)*pol2(0) + (x>5 && x<=10)*pol2(3) + (x>10 && x<=200)*pol2(6)',
+                        
+                        # 'SingleLepton2018A':'(x<=4)*pol1(0) + (x>4 && x<=10)*pol1(2) + (x>10 && x<=22)*pol1(4) + (x>22 && x<=200)*pol2(6)',
+                        # 'SingleLepton2018B':'(x<=5)*pol1(0) + (x>5 && x<=25)*pol1(2) + (x>25 && x<=200)*pol2(4)',
+                        # 'SingleLepton2018C':'(x<=5)*pol1(0) + (x>5 && x<=9)*pol1(2) + (x>9 && x<=20)*pol1(4) + (x>20 && x<=200)*pol2(6)',
+                        # 'SingleLepton2018D':'(x<=5)*pol1(0) + (x>5 && x<=9)*pol1(2) + (x>9 && x<=17)*pol1(4) + (x>17 && x<=200)*pol2(6)'
                         
                         }
     return fitfuncs
@@ -532,9 +577,16 @@ if do_fits:
     for var in cov:
         for etabin in etabins:
             for idata, data in enumerate(datasets):
+                #print data
                 num = get_profile(fn_string % (etabin, data), hn % var)
-                den = get_profile(fn_string % (etabin, bkgr) if 'dxydszcov' not in var else fn_scale_string % (etabin, eras[idata], bkgr), hn % var)
-    
+                #den = get_profile(fn_string % (etabin, bkgr) if 'dxydszcov' not in var else fn_scale_string % (etabin, eras[idata], bkgr), hn % var)
+                den = get_profile(fn_string % (etabin, bkgr) if 'dxydszcov' not in var else fn_scale_string % (etabin, bkgr), hn % var) #no need to separate by eta
+                # if 'dxydszcov' not in var : 
+                #     den = get_profile(fn_string % (etabin, bkgr), hn % var)
+                # else :
+                #     den = get_profile(fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % eras[idata]) #if 2017 era_lc
+                
+
                 if etabin == 'lt1p5':
                     if is_muon or is_ele: 
                         bins = lep_bins_lt1p5

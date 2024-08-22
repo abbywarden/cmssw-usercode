@@ -3,11 +3,20 @@ from JMTucker.Tools.BasicAnalyzer_cfg import *
 is_mc = True # for blinding
 do_track = False # this can onlky be used for ntuple with keep_tk=True
 
-from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_btag_triggers, use_MET_triggers, use_Muon_triggers, use_Electron_triggers
+from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_btag_triggers, use_MET_triggers, use_Muon_triggers, use_Electron_triggers, use_Lepton_triggers
 #currently : keep histos slim -> do only Loose Vertices & NoCuts, Minntk = 3, 4, 5 
 #update : Selected Loose Vertices are changed to Tight Vertices
 #input_files(process, '/eos/uscms/store/group/lpclonglived/pkotamni/WplusH_HToSSTodddd_WToLNu_MH-125_MS-55_ctauS-1_TuneCP5_13TeV-powheg-pythia8/NtupleOffdzULV30LepMum_2017/240131_215245/0000/ntuple_0.root')
 #max_events(process, 100)
+
+#dataset += '_wgen'
+
+#sample_files(process, 'qcdempt015_2017' if is_mc else 'JetHT2017B', dataset, 1)
+#sample_files(process, 'mfv_stopld_tau010000um_M1000_2018' if is_mc else 'SingleMuon2017B', dataset, 1)
+#sample_files(process, 'mfv_stoplb_tau000300um_M0300_2018' if is_mc else 'SingleMuon2017B', dataset, 5)
+sample_files(process, 'test', dataset, 1)
+#sample_files(process, 'ttbar_semilep_2018' if is_mc else 'SingleMuon2017B', dataset, 10)
+
 tfileservice(process, 'histos.root')
 cmssw_from_argv(process)
 
@@ -27,111 +36,78 @@ common_a = cms.Sequence(process.mfvWeight)
 
 process.mfvEventHistosNoCuts = process.mfvEventHistos.clone()
 process.pSkimSel = cms.Path(common * process.mfvEventHistosNoCuts) # just trigger for now
-if do_track:
-  process.mfvTrackHistosNoCuts = process.mfvTrackHistos.clone()
-  process.mfvFilterHistosNoCuts = process.mfvFilterHistos.clone()
-  process.pTrackNoCut = cms.Path(common * process.mfvTrackHistos * process.mfvFilterHistosNoCuts)
 
-process.mfvEventHistosPreSel = process.mfvEventHistos.clone()
+#process.mfvEventHistosNoCuts = process.mfvEventHistos.clone()
+#process.mfvVertexHistosNoCuts = process.mfvVertexHistos.clone(vertex_src = 'mfvSelectedVerticesExtraLoose')
+#process.mfvVertexHistosExtraLooseMinOneVtx = process.mfvVertexHistos.clone(vertex_src = 'mfvSelectedVerticesExtraLoose')
 process.mfvAnalysisCutsPreSel = process.mfvAnalysisCuts.clone(apply_vertex_cuts = False)
-process.pEventPreSel = cms.Path(common * process.mfvAnalysisCutsPreSel * process.mfvEventHistosPreSel)
 
+process.mfvVertexHistos_MinOneLooseVtx = process.mfvVertexHistos.clone(vertex_src = 'mfvSelectedVerticesLoose')
+process.mfvVertexHistos_MinTwoLooseVtx = process.mfvVertexHistos.clone(vertex_src = 'mfvSelectedVerticesLoose')
 
+#process.pSkimSel = cms.Path(common * process.mfvEventHistosNoCuts) # just trigger for now
+#process.pSkimSelVtx = cms.Path(common * process.mfvVertexHistosNoCuts)
 
-# process.mfvEventHistosExtraLoose = process.mfvEventHistos.clone()
-# process.mfvAnalysisCutsExtraLoose = process.mfvAnalysisCuts.clone(vertex_src = 'mfvSelectedVerticesExtraLoose', min_nvertex = 1)
-# process.mfvVertexHistosExtraLoose = process.mfvVertexHistos.clone(vertex_src = 'mfvSelectedVerticesExtraLoose')
-# process.pEventExtraLoose = cms.Path(common * process.mfvAnalysisCutsExtraLoose * process.mfvEventHistosExtraLoose)
-# process.pExtraLoose = cms.Path(common * process.mfvAnalysisCutsExtraLoose * process.mfvVertexHistosExtraLoose)
-
-# process.mfvEventHistosLoose = process.mfvEventHistos.clone()
-# process.mfvAnalysisCutsLoose = process.mfvAnalysisCuts.clone(vertex_src = 'mfvSelectedVerticesLoose')
-# process.mfvVertexHistosLoose = process.mfvVertexHistos.clone(vertex_src = 'mfvSelectedVerticesLoose')
-# process.pEventLoose = cms.Path(common * process.mfvAnalysisCutsLoose * process.mfvEventHistosLoose)
-# process.pLoose = cms.Path(common * process.mfvAnalysisCutsLoose * process.mfvVertexHistosLoose)
-# if do_track:
-#   process.mfvTrackHistosExtraLoose = process.mfvTrackHistos.clone()
-#   process.pTrackExtraLoose = cms.Path(common * process.mfvAnalysisCutsExtraLoose * process.mfvTrackHistosExtraLoose)
-
-#process.mfvEventHistosExtraLooseOnlyOneVtx = process.mfvEventHistos.clone()
-#process.mfvAnalysisCutsExtraLooseOnlyOneVtx = process.mfvAnalysisCuts.clone(vertex_src = 'mfvSelectedVerticesExtraLoose', min_nvertex = 1, max_nvertex = 1)
-#process.mfvVertexHistosExtraLooseOnlyOneVtx = process.mfvVertexHistos.clone(vertex_src = 'mfvSelectedVerticesExtraLoose')
-
-#process.mfvAnaCutFlowHistos = process.mfvCutFlowHistos.clone()
-
-#process.pEventExtraLooseOnlyOneVtx = cms.Path(common * process.mfvAnalysisCutsExtraLooseOnlyOneVtx * process.mfvEventHistosExtraLooseOnlyOneVtx)
-#process.pExtraLooseOnlyOneVtx = cms.Path(common * process.mfvAnalysisCutsExtraLooseOnlyOneVtx * process.mfvVertexHistosExtraLooseOnlyOneVtx)
-
-#process.pCutFlow = cms.Path(common_a * process.mfvAnaCutFlowHistos)
-
-#process.mfvEventHistosPreSel = process.mfvEventHistos.clone()
-#process.mfvAnalysisCutsPreSel = process.mfvAnalysisCuts.clone(apply_vertex_cuts = False)
-#process.pEventPreSel = cms.Path(common * process.mfvAnalysisCutsPreSel * process.mfvEventHistosPreSel)
 
 nm1s = []
 #    ('Bsbs2ddist', 'min_bsbs2ddist = 0'),
 #    ('Bs2derr',    'max_rescale_bs2derr = 1e9'),
 #    ]
 
-ntks = [5,3,4,7,8,9]
+#ntks = [5,3,4,7,8,9]
+ntks = [5,3,4]
 nvs = [0,1,2]
 
-# new setup for lepton : min3, min4, min5 with 'Loose' Vertices 
-"""
-for ntk in ntks : 
-    if ntk == 5: 
-        EX1 = '' 
-    else : 
-        EX1 = 'MinNtk%i' % ntk 
-    EX2 = "vertex_src = 'mfvSelectedVerticesTight%s', " % EX1
-    EX3 = ''
-"""
-## Done 
-    
 for ntk in ntks:
     if ntk == 5:
         EX1 = EX2 = EX3 = ''
-    elif ntk == 7:
-        EX1 = 'Ntk3or4'
-    elif ntk == 8:
-        EX1 = 'Ntk3or5'
-    elif ntk == 9:
-        EX1 = 'Ntk4or5'
+    # elif ntk == 7:
+    #     EX1 = 'Ntk3or4'
+    # elif ntk == 8:
+    #     EX1 = 'Ntk3or5'
+    # elif ntk == 9:
+    #     EX1 = 'Ntk4or5'
+    # else:
+    #     EX1 = 'Ntk%i' % ntk
+
+    ## changed this to be min ntk 3
     else:
-        EX1 = 'Ntk%i' % ntk
+    #   if ntk == 3:
+    #     EX1 = 'MinNtk3'
+    #   else: 
+        EX1 = 'MinNtk%i' % ntk
 
     if EX1:
         EX2 = "vertex_src = 'mfvSelectedVerticesTight%s', " % EX1
-    if ntk == 7:
-        EX3 = 'min_ntracks01 = 7, max_ntracks01 = 7, '
-    if ntk == 8:
-        EX3 = 'ntracks01_0 = 5, ntracks01_1 = 3, '
-    if ntk == 9:
-        EX3 = 'ntracks01_0 = 5, ntracks01_1 = 4, '
+        print EX2
+    # if ntk == 7:
+    #     EX3 = 'min_ntracks01 = 7, max_ntracks01 = 7, '
+    # if ntk == 8:
+    #     EX3 = 'ntracks01_0 = 5, ntracks01_1 = 3, '
+    # if ntk == 9:
+    #     EX3 = 'ntracks01_0 = 5, ntracks01_1 = 4, '
 
     exec '''
-process.EX1mfvAnalysisCutsOnlyOneVtx = process.mfvAnalysisCuts.clone(EX2min_nvertex = 1, max_nvertex = 1)
-process.EX1mfvAnalysisCutsFullSel    = process.mfvAnalysisCuts.clone(EX2EX3min_nvertex = 2)
-process.EX1mfvAnalysisCutsSigReg     = process.mfvAnalysisCuts.clone(EX2EX3min_svdist2d = 0.04)
+# process.EX1mfvAnalysisCutsOnlyOneVtx = process.mfvAnalysisCuts.clone(EX2min_nvertex = 1, max_nvertex = 1)
+# process.EX1mfvAnalysisCutsFullSel    = process.mfvAnalysisCuts.clone(EX2EX3)
+# process.EX1mfvAnalysisCutsSigReg     = process.mfvAnalysisCuts.clone(EX2EX3min_svdist2d = 0.04)
 
-process.EX1mfvEventHistosOnlyOneVtx = process.mfvEventHistos.clone()
-process.EX1mfvEventHistosFullSel    = process.mfvEventHistos.clone()
-process.EX1mfvEventHistosSigReg     = process.mfvEventHistos.clone()
+# process.EX1mfvEventHistosOnlyOneVtx = process.mfvEventHistos.clone()
+# process.EX1mfvEventHistosFullSel    = process.mfvEventHistos.clone()
+# process.EX1mfvEventHistosSigReg     = process.mfvEventHistos.clone()
+
+
 
 process.EX1mfvVertexHistosPreSel     = process.mfvVertexHistos.clone(EX2)
-process.EX1mfvVertexHistosOnlyOneVtx = process.mfvVertexHistos.clone(EX2)
-process.EX1mfvVertexHistosFullSel    = process.mfvVertexHistos.clone(EX2)
-process.EX1mfvVertexHistosSigReg     = process.mfvVertexHistos.clone(EX2)
+# process.EX1mfvVertexHistosOnlyOneVtx = process.mfvVertexHistos.clone(EX2)
+# process.EX1mfvVertexHistosFullSel    = process.mfvVertexHistos.clone(EX2)
+# process.EX1mfvVertexHistosSigReg     = process.mfvVertexHistos.clone(EX2)
+
 
 process.EX1pPreSel     = cms.Path(common * process.mfvAnalysisCutsPreSel                                              * process.EX1mfvVertexHistosPreSel)
-process.EX1pOnlyOneVtx = cms.Path(common * process.EX1mfvAnalysisCutsOnlyOneVtx * process.EX1mfvEventHistosOnlyOneVtx * process.EX1mfvVertexHistosOnlyOneVtx)
-'''.replace('EX1', EX1).replace('EX2', EX2).replace('EX3', EX3)
 
-    if 2 in nvs:
-        exec '''
-process.EX1pFullSel    = cms.Path(common * process.EX1mfvAnalysisCutsFullSel    * process.EX1mfvEventHistosFullSel    * process.EX1mfvVertexHistosFullSel)
-process.EX1pSigReg     = cms.Path(common * process.EX1mfvAnalysisCutsSigReg     * process.EX1mfvEventHistosSigReg     * process.EX1mfvVertexHistosSigReg)
-'''.replace('EX1', EX1)
+# process.EX1pOnlyOneVtx = cms.Path(common * process.EX1mfvAnalysisCutsOnlyOneVtx * process.EX1mfvEventHistosOnlyOneVtx * process.EX1mfvVertexHistosOnlyOneVtx)
+# '''.replace('EX1', EX1).replace('EX2', EX2).replace('EX3', EX3)
 
     for name, cut in nm1s:
         evt_cut = ''
@@ -182,8 +158,10 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     elif use_MET_triggers:
         #samples = pick_samples(dataset, qcd=True, ttbar=False, data=False, leptonic=True, splitSUSY=True, Zvv=True, met=True, span_signal=False)
         samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
+    elif use_Lepton_triggers : 
+        samples = pick_samples(dataset, qcd=False, ttbar=False, all_signal=True, qcd_lep = False, leptonic=False, met=False, diboson=False, Lepton_data=False )
         pset_modifier = chain_modifiers(is_mc_modifier)
-    #elif use_Muon_triggers :
+    elif use_Muon_triggers :
         #samples = pick_samples(dataset, qcd=True, all_signal=True, qcd_lep = True, leptonic=True, met=True, diboson=True, Lepton_data=False )
         #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, met=True, diboson=True, Lepton_data=False)
         #samples = pick_samples(dataset, all_signal=True)
@@ -196,8 +174,10 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = pick_samples(dataset)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
 
-    #set_splitting(samples, dataset, 'histos', data_json=json_path('ana_SingleLept_2017_10pc.json'))
-    set_splitting(samples, dataset, 'histos', data_json=json_path('ana_2016.json' if year in [20161, 20162] else 'ana_2017p8.json'))
+
+    #set_splitting(samples, dataset, 'histos', data_json=json_path('ana_2016.json' if year in [20161, 20162] else 'ana_2017p8.json'))
+    set_splitting(samples, dataset, 'histos', data_json=json_path('ana_SingleLept_2018_10pc.json'))
+
     cs = CondorSubmitter('Histos' + version + '_SingleLep',
                          ex = year,
                          dataset = dataset,

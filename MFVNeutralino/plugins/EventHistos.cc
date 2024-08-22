@@ -818,7 +818,6 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     }
 
   }
-
   //////////////////////////////////////////////////////////////////////////////
 
   h_hlt_bits->Fill(0., w);
@@ -1160,10 +1159,10 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   for (size_t ijet = 0; ijet < mevent->jet_id.size(); ++ijet) {
     if (mevent->jet_pt[ijet] < mfv::min_jet_pt)
       continue;
-    h_jet_bdisc_csv->Fill(mevent->jet_bdisc_csv[ijet], w);
-    h_jet_bdisc_deepcsv->Fill(mevent->jet_bdisc_deepcsv[ijet], w);
-    h_jet_bdisc_deepflav->Fill(mevent->jet_bdisc_deepflav[ijet], w);
-    h_jet_bdisc_deepflav_v_bquark_code->Fill(mevent->gen_flavor_code, mevent->jet_bdisc_deepflav[ijet], w);
+    // h_jet_bdisc_csv->Fill(mevent->jet_bdisc_csv[ijet], w);
+    // h_jet_bdisc_deepcsv->Fill(mevent->jet_bdisc_deepcsv[ijet], w);
+    // h_jet_bdisc_deepflav->Fill(mevent->jet_bdisc_deepflav[ijet], w);
+    // h_jet_bdisc_deepflav_v_bquark_code->Fill(mevent->gen_flavor_code, mevent->jet_bdisc_deepflav[ijet], w);
     if (mevent->is_btagged(ijet, ibtag)) {
       h_bjet_pt->Fill(mevent->jet_pt[ijet], w);
       h_bjet_eta->Fill(mevent->jet_eta[ijet], w);
@@ -1178,7 +1177,6 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
       }
     }
   }
-
   //////////////////////////////////////////////////////////////////////////////
 
   const size_t n_vertex_seed_tracks = mevent->n_vertex_seed_tracks();
@@ -1239,6 +1237,7 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
       h_jet_nseedtrack[i]->Fill(n_seedtrack, w);
   }
   h_jet_nseedtrack[MAX_NJETS]->Fill(njet_seedtrack, w);
+
 }
 
 DEFINE_FWK_MODULE(MFVEventHistos);

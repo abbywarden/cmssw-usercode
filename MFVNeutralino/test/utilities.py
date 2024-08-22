@@ -23,10 +23,13 @@ def cmd_hadd_vertexer_histos():
             #Samples.ttbar_samples_2015 + Samples.qcd_samples_2015 + Samples.qcd_samples_ext_2015 + \
             #Samples.data_samples + \
             #Samples.ttbar_samples + Samples.qcd_samples + Samples.qcd_samples_ext
+            Samples.mfv_stoplb_samples_2018
     )
     for s in samples:
+        print(s.name)
         s.set_curr_dataset(ntuple)
-        hadd(s.name + '.root', ['root://cmseos.fnal.gov/' + fn.replace('ntuple', 'vertex_histos') for fn in s.filenames])
+        #hadd(s.name + '.root', ['root://cmseos.fnal.gov/' + fn.replace('ntuple', 'vertex_histos') for fn in s.filenames])
+        hadd(s.name + '.root', ['root://cmsxrootd.hep.wisc.edu/' + fn.replace('ntuple', 'vertex_histos') for fn in s.filenames])
 
 def cmd_report_data():
     for ds, ex in ('SingleMuon', '_mu'), ('JetHT', ''), ('SingleElectron', '_ele'), ('MET', '_met'):
@@ -177,11 +180,13 @@ def _background_samples(trigeff=False, year=2017, bkg_tag='others'):
         x += ['ttbarht%04i' % x for x in [600, 800, 1200, 2500]]
     return x
 
-def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=2017):
+def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=20162):
     cwd = os.getcwd()
     ok = True
     if year_to_use==-1:
-      for year_s, scale in [('_2017', -AnalysisConstants.int_lumi_2017 * AnalysisConstants.scale_factor_2017),
+      for year_s, scale in [('_2016APV', -AnalysisConstants.int_lumi_20161 * AnalysisConstants.scale_factor_20161),
+                            ('_2016', -AnalysisConstants.int_lumi_20162 * AnalysisConstants.scale_factor_20162),
+                            ('_2017', -AnalysisConstants.int_lumi_2017 * AnalysisConstants.scale_factor_2017),
                             ('_2018', -AnalysisConstants.int_lumi_2018 * AnalysisConstants.scale_factor_2018)]:
   
           year = int(year_s[1:])
@@ -211,18 +216,18 @@ def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=20
           os.system(cmd)
 
     else:
-        if year_to_use==2017:
+        if year_to_use==20161:
+            year_s = '_20161'
+            scale = -AnalysisConstants.int_lumi_20161 * AnalysisConstants.scale_factor_20161
+        elif year_to_use==20162:
+            year_s = '_20162'
+            scale = -AnalysisConstants.int_lumi_20162 * AnalysisConstants.scale_factor_20162        
+        elif year_to_use==2017:
             year_s = '_2017'
             scale = -AnalysisConstants.int_lumi_2017 * AnalysisConstants.scale_factor_2017
         elif year_to_use==2018:
             year_s = '_2018'
             scale = -AnalysisConstants.int_lumi_2018 * AnalysisConstants.scale_factor_2018
-        elif year_to_use==20162:
-            year_s = '_20162'
-            scale = -AnalysisConstants.int_lumi_20162 * AnalysisConstants.scale_factor_20162
-        elif year_to_use==20161:
-            year_s = '_20161'
-            scale = -AnalysisConstants.int_lumi_20161 * AnalysisConstants.scale_factor_20161
         else:
             raise RuntimeError("Year {0} not available!".format(year_to_use))
   

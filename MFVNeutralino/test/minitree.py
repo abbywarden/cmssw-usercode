@@ -2,22 +2,29 @@ from JMTucker.Tools.BasicAnalyzer_cfg import *
 
 is_mc = True # for blinding
 
-from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_btag_triggers, use_MET_triggers, use_Muon_triggers, use_Electron_triggers
-#sample_files(process, 'qcdht2000_2017' if is_mc else 'JetHT2017B', dataset, 1)
-#sample_files(process, 'mfv_stopld_tau000100um_M0200_2018' if is_mc else 'JetHT2017B', dataset, 1)
-input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/100000/177D06A8-D7E8-E14A-8FB8-E638820EDFF3.root')
-max_events(process, 100)
+from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_btag_triggers, use_MET_triggers, use_Muon_triggers, use_Electron_triggers, use_Lepton_triggers
+#dataset += '_wgen'
+#sample_files(process, 'qcdht0200_2017' if is_mc else 'JetHT2017B', dataset, 1)
+sample_files(process, 'mfv_stopld_tau010000um_M0800_2018' if is_mc else 'JetHT2017B', dataset, 5)
+#sample_files(process, 'ttbar_semilep_2018' if is_mc else 'JetHT2017B', dataset, 5)
+#sample_files(process, 'test' if is_mc else 'JetHT2017B', dataset, 1)
+
+
 tfileservice(process, 'minitree.root')
 cmssw_from_argv(process)
 
 process.load('JMTucker.MFVNeutralino.MiniTree_cff')
+#load the mini tree specific for bdt : (apply trigger, event preselection, require at least 1 vertex passing : bs2derr <= 50um and bs2ddist >= 100um)
+#TODO : add BDT specific minitree  
+#process.load('JMTucker.MFVNeutralino.MiniTree_BDT_cff')
 
 # blind btag triggered events
-if not is_mc and use_btag_triggers :
-    del process.pMiniTreeNtk3
-    del process.pMiniTreeNtk4
-    del process.pMiniTreeNtk3or4
-    del process.pMiniTree
+#comment out for bdt 
+# if not is_mc and use_btag_triggers :
+#     del process.pMiniTreeNtk3
+#     del process.pMiniTreeNtk4
+#     del process.pMiniTreeNtk3or4
+#     del process.pMiniTree
 
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
@@ -35,6 +42,8 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     elif use_Electron_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep = True, leptonic=True, met=True, diboson=True)
+    elif use_Lepton_triggers :
+        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, ttbar = True, qcd_lep = False, leptonic=False, met=False, diboson=False)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     else :
         samples = pick_samples(dataset, qcd=True, ttbar=True, all_signal=False, data=False, splitSUSY=True)

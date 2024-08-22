@@ -328,38 +328,6 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
           float muinSV_dxy = - (muon.vx() - beamspot->x0() *sin(muon.phi()) + (muon.vy() - beamspot->y0()) * cos(muon.phi()));
           h_muinSV_dxy->Fill(muinSV_dxy);
           h_muinSV_pt_vs_dxy->Fill(muon.pt(), muinSV_dxy);
-
-          //now do the genmatching 
-          std::vector<double> mindR;
-          for (const reco::GenParticle& gen : *gen_particles) {
-            double dR = reco::deltaR(muon.eta(), muon.phi(), gen.eta(), gen.phi());
-            mindR.push_back(dR);
-          }
-          if (*min_element(mindR.begin(), mindR.end()) < 0.01) {
-            int idx = std::min_element(mindR.begin(), mindR.end()) - mindR.begin();
-            const reco::GenParticle& gen = gen_particles->at(idx);
-            const int id = abs(gen.pdgId());
-            float geninSV_dxy = - (gen.vx() - beamspot->x0() *sin(gen.phi()) + (gen.vy() - beamspot->y0()) * cos(gen.phi()));
-            if (id == 13) {
-              h_genmuinSV_pt->Fill(gen.pt());
-              h_genmuinSV_dxy->Fill(geninSV_dxy);
-              h_genmuinSV_pt_vs_dxy->Fill(gen.pt(), geninSV_dxy);
-            }
-            else {
-              if (id < 213) {
-                h_genIDs_recomuinSV->Fill(abs(gen.pdgId()));
-                if (muon.pt() > 50) {
-                  h_genIDs_recomuinSV50->Fill(abs(gen.pdgId()));
-                }
-              }
-              else if (id > 212) {
-                h_biggenIDs_recomuinSV->Fill(abs(gen.pdgId()));
-                if (muon.pt() > 50) {
-                  h_biggenIDs_recomuinSV50->Fill(abs(gen.pdgId()));
-                }
-              }
-            }
-          }
         }
         else {
           h_mu_pt->Fill(muon.pt());
@@ -373,39 +341,6 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
           float eleinSV_dxy = - (electron.vx() - beamspot->x0() *sin(electron.phi()) + (electron.vy() - beamspot->y0()) * cos(electron.phi()));
           h_eleinSV_dxy->Fill(eleinSV_dxy);
           h_eleinSV_pt_vs_dxy->Fill(electron.pt(), eleinSV_dxy);
-
-          //now do the genmatching 
-          std::vector<double> mindR; //now for all 
-          for (const reco::GenParticle& gen : *gen_particles) {
-            double dR = reco::deltaR(electron.eta(), electron.phi(), gen.eta(), gen.phi());
-            mindR.push_back(dR);
-          }
-
-          if (*min_element(mindR.begin(), mindR.end()) < 0.01) {
-            int idx = std::min_element(mindR.begin(), mindR.end()) - mindR.begin();
-            const reco::GenParticle& gen = gen_particles->at(idx);
-            const int id = abs(gen.pdgId());
-            float geninSV_dxy = - (gen.vx() - beamspot->x0() *sin(gen.phi()) + (gen.vy() - beamspot->y0()) * cos(gen.phi()));
-            if (id == 11) {
-              h_geneleinSV_pt->Fill(gen.pt());
-              h_geneleinSV_dxy->Fill(geninSV_dxy);
-              h_geneleinSV_pt_vs_dxy->Fill(gen.pt(), geninSV_dxy);
-            }
-            else {
-              if (id < 213) {
-                h_genIDs_recoeleinSV->Fill(abs(gen.pdgId()));
-                if (electron.pt() > 50) {
-                  h_genIDs_recoeleinSV50->Fill(abs(gen.pdgId()));
-                }
-              }
-              else if (id > 212) {
-                h_biggenIDs_recoeleinSV->Fill(abs(gen.pdgId()));
-                if (electron.pt() > 50) {
-                  h_biggenIDs_recoeleinSV50->Fill(abs(gen.pdgId()));
-                }
-              }
-            }
-          }
         }
         else {
           h_ele_pt->Fill(electron.pt());

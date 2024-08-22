@@ -516,11 +516,12 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
 }
 
 bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
-  if (verbose)
+  if (verbose) 
     std::cout << "MFVVertexTracks " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
-  
-  const int track_rescaler_which = jmt::TrackRescaler::w_SingleLep;
+  const int track_rescaler_which = jmt::TrackRescaler::w_SingleLep; //FIXME Abby
+  //  const int track_rescaler_which = jmt::TrackRescaler::w_BTagDispJet; //FIXME Alec
   // const int track_rescaler_which = jmt::TrackRescaler::w_JetHT; // JMTBAD which rescaling if ever a different one
+
   track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
                        jmt::AnalysisEras::pick(event, this),
                        track_rescaler_which);
@@ -820,6 +821,11 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
       }
     }
 
+    // if( (sigmadxybs > 4 && rescaled_sigmadxybs < 4) ) {
+    //   printf("RESCALE DROP : track %5lu: pt: %10.3f +- %10.3f eta: %10.3f +- %10.3f phi: %10.3f +- %10.3f dxy: %10.5f +- %10.5f (-> nsig %5.3f, rescaled: %10.5f +- %10.5f -> nsig %10.3f) dz: %10.3f +- %10.3f nhits: %3i/%3i/%3i nlayers: %3i/%3i/%3i ", i, pt, tk->ptError(), tk->eta(), tk->etaError(), tk->phi(), tk->phiError(), dxybs, dxyerr, fabs(sigmadxybs), dxybs, rescaled_dxyerr, fabs(rescaled_sigmadxybs), tk->dz(), tk->dzError(), npxhits, nsthits, nhits, npxlayers, nstlayers, npxlayers + nstlayers);
+    //   printf("track type : %5i", tk.id().id());
+    //   printf("\n");
+    // }
     if (verbose) {
       printf("track %5lu: pt: %10.3f +- %10.3f eta: %10.3f +- %10.3f phi: %10.3f +- %10.3f dxy: %10.5f +- %10.5f (-> nsig %5.3f, rescaled: %10.5f +- %10.5f -> nsig %10.3f) dz: %10.3f +- %10.3f nhits: %3i/%3i/%3i nlayers: %3i/%3i/%3i ", i, pt, tk->ptError(), tk->eta(), tk->etaError(), tk->phi(), tk->phiError(), dxybs, dxyerr, fabs(sigmadxybs), dxybs, rescaled_dxyerr, fabs(rescaled_sigmadxybs), tk->dz(), tk->dzError(), npxhits, nsthits, nhits, npxlayers, nstlayers, npxlayers + nstlayers);
       if (use)

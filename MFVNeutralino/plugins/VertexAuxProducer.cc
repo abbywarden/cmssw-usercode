@@ -277,12 +277,12 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
         //need to double check track ids w/ types
         reco::TrackRef tk = it->castTo<reco::TrackRef>();
 
-        // using generalized function to separate into track types
+        // using generalized function to separate into track types (#FIXME : tk.id's change based on CMSSW)
         if (track_rescaler_which == 1){
-          if ((tk.id().id() == 155) & (tk->pt() >= 20.0)) {
+          if ((tk.id().id() == 166) & (tk->pt() >= 20.0)) {
             rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "electron").rescaled_tk));
           }
-          else if ((tk.id().id() == 156) & (tk->pt() >= 20.0))  {
+          else if ((tk.id().id() == 167) & (tk->pt() >= 20.0))  {
             rs_ttks.push_back(tt_builder->build(track_rescaler.scale(**it, "muon").rescaled_tk));
           }
           else {
@@ -748,7 +748,7 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
 			  aux.outsed_track_tkdist_sig.push_back(tkdist.second.significance());
 			  if (irawsv == 0) {
 				  const double dxybs = sedtk.dxy(*beamspot);
-				  const auto rs = track_rescaler.scale(sedtk);
+				  const auto rs = track_rescaler.scale(sedtk); //problem for lepton trigger case when scale by track type
 				  const double rescaled_dxyerr = rs.rescaled_tk.dxyError();
 				  const double rescaled_sigmadxybs = dxybs / rescaled_dxyerr;
 				  aux.outsed_track_dxy.push_back(fabs(sedtk.dxy(beamspot->position())));

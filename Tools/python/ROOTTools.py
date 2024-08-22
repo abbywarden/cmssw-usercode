@@ -504,8 +504,6 @@ def compare_hists(ps, samples, **kwargs):
     if only_n_first > 0:
         names = names[:only_n_first]
 
-            
-            
 
     def all_same(l, msg):
         if len(set(l)) != 1:

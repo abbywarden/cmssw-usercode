@@ -405,8 +405,8 @@ struct MFVEvent {
 
   std::vector<std::vector<int>> electron_ID;
   std::vector<std::vector<int>> muon_ID;
-  
-  
+
+
   void muon_push_back(const reco::Muon& muon,
 		      const reco::Track& trk,
 		      const float iso,

@@ -5,9 +5,12 @@ debug = 'debug' in sys.argv
 dataset = 'miniaod'
 tfileservice(process, 'gen_particles.root')
 #sample_files(process, 'mfv_ddbar_tau01000um_M1600', dataset)
-#sample_files(process, 'mfv_stopld_tau001000um_M1000_2018', dataset)
-input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/ZH_HToSSTodddd_ZToLL_MH-125_MS-55_ctauS-1_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/2550000/13DF01B3-1BC9-0246-8C88-DF26E2F16793.root')
-max_events(process, 100)
+
+sample_files(process, 'mfv_stoplb_tau000300um_M0800_2018', dataset, 1)
+#sample_files(process, 'ttbar_semilep_2018', dataset, 3)
+
+max_events(process, 1000)
+
 file_event_from_argv(process)
 
 process.load('JMTucker.MFVNeutralino.GenParticles_cff')
