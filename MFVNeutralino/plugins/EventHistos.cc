@@ -62,7 +62,7 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_gen_mu_dxybs;
   TH2F* h_gen_mu_pt_vs_dxy;
   TH2F* h_gen_mu_pt_vs_dxybs;
-  
+
   TH1F* h_nbquarks;
   TH1F* h_bquark_pt;
   TH1F* h_bquark_eta;

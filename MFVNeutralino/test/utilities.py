@@ -131,7 +131,7 @@ def cmd_rm_mc_parts():
                     print y
                     os.remove(y)
 
-def _background_samples(trigeff=False, year=2017, bkg_tag='others'):
+def _background_samples(trigeff=False, year=2017):
     if _qcdlepenrich:
         x = ['qcdmupt15']
         x += ['qcdempt%03i' % x for x in [15,20,30,50,80,120,170]]

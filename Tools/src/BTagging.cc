@@ -12,7 +12,6 @@
 
 namespace jmt {
   namespace BTagging {
-    
     enum {b_loose, b_med, b_tight};
     enum {b_csv, b_deepcsv, b_deepflav};
     // The following function takes in two arguments: wp and tagger

@@ -38,6 +38,10 @@ def setup_event_filter(process,
         trigger_filter = 'HT OR bjets OR displaced dijet'
     elif mode == 'trigger bjets OR displaced dijet veto HT':
         trigger_filter = 'bjets OR displaced dijet veto HT'
+    elif mode == 'trigger leptons only':
+        trigger_filter = 'leptons only'
+    elif mode == 'trigger leptons OR displaced leptons':
+        trigger_filter = 'lep OR displaced lep'
     elif mode == 'trigger muons only':
         trigger_filter = 'muons only'
     elif mode == 'trigger electrons only':
@@ -62,8 +66,6 @@ def setup_event_filter(process,
         event_filter = 'leptons only'
     elif mode == 'trigger bjets OR displaced dijet':
         trigger_filter = 'bjets OR displaced dijet'
-    elif mode == 'jets only':
-        trigger_filter = event_filter = 'jets only'
     elif mode == 'dilepton only':
         trigger_filter = event_filter = 'dilepton only'
     elif mode == 'met only':
@@ -221,7 +223,6 @@ def setup_event_filter(process,
                 overall *= process.goodOfflinePrimaryVertices * process.updatedJetsSeqMiniAOD * process.selectedPatJets * process.jmtUnpackedCandidateTracks * process.mfvVertexSequenceBare * vertexFilter
             else:
                 overall *= process.goodOfflinePrimaryVertices * process.updatedJetsSeqMiniAOD * process.selectedPatJets                                      * process.mfvVertexSequenceBare * vertexFilter
-        
     setattr(process, sequence_name, overall)
 
     if not path_name:

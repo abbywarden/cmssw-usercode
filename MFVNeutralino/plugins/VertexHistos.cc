@@ -141,6 +141,7 @@ class MFVVertexHistos : public edm::EDAnalyzer {
   TH1F* h_svdist2d_no_shared_jets;
   TH1F* h_absdeltaphi01_shared_jets;
   TH1F* h_absdeltaphi01_no_shared_jets;
+
   TH1F* h_sv0_first_large_nsigmadxy_bsp;
   TH1F* h_sv0_second_large_nsigmadxy_bsp;
   TH1F* h_sv0_third_large_nsigmadxy_bsp;
@@ -880,7 +881,6 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
       if (genmatchedvertex[1].first == "tau") h_sv_gensv_mag_[3]->Fill(d.v(), w);
     }
     h_sv_gensv_mag_[0]->Fill(d.v(), w);
-
 
     const int genvtx_2d = d.i();
     double genbs2ddist = mevent->mag(mevent->gen_lsp_decay[genvtx_2d*3+0] - mevent->bsx_at_z(mevent->gen_lsp_decay[genvtx_2d*3+2]),
