@@ -61,7 +61,7 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     elif use_Electron_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=True, leptonic=True, met=True, diboson=True, Lepton_data=False)
     elif use_Lepton_triggers :
-        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=True, met=False, leptonic=True, ttbar=True, diboson=True, Lepton_data=False)
+        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=True, met=False, leptonic=True, ttbar=True, diboson=False, Lepton_data=False)
     else :
         samples = pick_samples(dataset, qcd=False, ttbar=False, data=False, all_signal=not settings.run_n_tk_seeds)
         

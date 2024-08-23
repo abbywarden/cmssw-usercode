@@ -939,7 +939,7 @@ namespace jmt {
       else if  (era == jmt::AnalysisEras::e_2017D) set_SingleLep2017D(pt, eta, type);
       else if  (era == jmt::AnalysisEras::e_2017E) set_SingleLep2017E(pt, eta, type);
       else if  (era == jmt::AnalysisEras::e_2017F) set_SingleLep2017F(pt, eta, type);
-      else if  (era == jmt::AnalysisEras::e_2018A || era==jmt::AnalysisEras::e_2018B || era==jmt::AnalysisEras::e_2018C || era==jmt::AnalysisEras::e_2018D) set_SingleLep2017B(pt, eta, type);
+      else if  (era == jmt::AnalysisEras::e_2018A || era==jmt::AnalysisEras::e_2018B || era==jmt::AnalysisEras::e_2018C || era==jmt::AnalysisEras::e_2018D) set_SingleLep2018(pt, eta, type);
 
       else throw std::out_of_range("bad era");
 

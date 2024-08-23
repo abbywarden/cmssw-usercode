@@ -120,5 +120,5 @@ mfvVertices = cms.EDProducer('MFVVertexer',
                              histos_output_aftermerge = cms.untracked.bool(False),   # make plots of output vertices after the default vertexing  + tight merging routine turned on
                              histos_output_aftersharedjets = cms.untracked.bool(False),   # make plots of output vertices after the default vertexing  + tight merging routine turned on  + shared-jet mitigation turned on 
                              histos_output_aftertrackattach = cms.untracked.bool(False),   # make plots of output vertices after the default vertexing  + tight merging routine turned on  + shared-jet mitigation turned on + track attachment turned on
-                             verbose = cms.untracked.bool(True),
+                             verbose = cms.untracked.bool(False),
                              )

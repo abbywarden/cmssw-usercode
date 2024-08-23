@@ -361,7 +361,8 @@ def get(i): return _l[i]
 
     def normalize_fns(self, fns):
         # JMTBAD fall back to global redirector
-        return ['root://cmseos.fnal.gov/' + x for x in fns if x.startswith('/store')]
+        #return ['root://cmseos.fnal.gov/' + x for x in fns if x.startswith('/store')]
+        return ['root://cmsxrootd.hep.wisc.edu/' + x for x in fns if x.startswith('/store')]
 
     def filelist(self, sample, working_dir):
         # JMTBAD are there performance problems by not matching the json to the files per job?
