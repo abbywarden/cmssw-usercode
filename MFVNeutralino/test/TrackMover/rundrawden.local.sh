@@ -3,9 +3,9 @@ pth0="/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_StudyV2p4_MixEta_NoPreSe
 pth1="/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau001000um_M55_2Dmovedist3movedistjetdrllpsumpcoarse60Correction"
 pth2="/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_StudyV2p4_MixEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau001000um_M55_2Dmovedist3movedistjetdrllpsumpcoarse60Correction"
 pth3="/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau001000um_M55_2Dmovedist3movedistjetdrllpsumpcoarse60Correction"
-sigpth0="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoQrkEtaCut_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
-sigpth1="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoQrkEtaCutV2_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
-sigpth2="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_ExtraJetCuts_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+sigpth0="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_MixEta_NoQrkEtaCut_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+sigpth1="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_MixEta_NoQrkEtaCutV2_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+sigpth2="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_MixEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
 spl="VHToSSTodddd_tau1mm_M55_2017p8.root" 
 spl0="ZHToSSTodddd_tau1mm_M55_20161.root" 
 spl1="ZHToSSTodddd_tau1mm_M55_20162.root" 
@@ -31,7 +31,7 @@ do
     
     #python drawden_comp.py TM_drawtau${tau}_Mu${year}_TMMC_normdzv6_nopreselrelaxsigbspnotw_vetodr0p4_ctau1mm_mixeta_by_year ${pth0}/${bkg0} ${pth0}/${bkg0} ${pth0}/${bkg1} ${pth0}/${bkg2} ${pth0}/${bkg3} ${pth0}/${bkg3} long Muon
 
-    python drawden_comp.py TM_drawtau_Mu${year}_VH_normdzv6_nopreselrelaxsigbspnotw_vetodr0p4_ctau1mm_higheta_studyqrkcut ${sigpth0}/${spl} ${sigpth1}/${spl} ${sigpth0}/${spl} ${sigpth0}/${spl} ${sigpth0}/${spl} ${sigpth0}/${spl} long Muon
+    python drawden_comp.py TM_drawtau_Mu${year}_VH_normdzv6_nopreselrelaxsigbspnotw_vetodr0p4_ctau1mm_mixeta_studyqrkcut ${sigpth0}/${spl} ${sigpth1}/${spl} ${sigpth2}/${spl} ${sigpth0}/${spl} ${sigpth0}/${spl} ${sigpth0}/${spl} long Muon
 
     #python drawnum_comp.py TM_drawtau${tau}_Mu${year}_MFVStopbarbar_normdzv6_nopreselrelaxbspnotw_onlysig_comparejets_studytkdr_all_num ${sigpth1}/${spl4} ${sigpth1}/${spl5} ${sigpth1}/${spl6} ${sigpth1}/${spl6} ${sigpth1}/${spl6} ${sigpth1}/${spl6} long Muon
 

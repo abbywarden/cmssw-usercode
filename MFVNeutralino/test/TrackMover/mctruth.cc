@@ -6,7 +6,7 @@ int main(int argc, char** argv) {
 
   jmt::NtupleReader<mfv::MovedTracksNtuple> nr;
   namespace po = boost::program_options;
-  nr.init_options("mfvMovedTreeMCTruth/t", "TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6", "trackmovermctruthonnormdzulv30lepmumv6", "all_signal = True")
+  nr.init_options("mfvMovedTreeMCTruth/t", "TrackMoverMCTruth_StudyMinijetsV2p4_AllEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6", "trackmovermctruthonnormdzulv30lepmumv6", "all_signal = True")
     ("min-lspdist3", po::value<double>(&min_lspdist3)->default_value(0.00), "min distance between LSP decays to use event") //FIXME 0.02
     ;
 
@@ -859,23 +859,8 @@ int main(int argc, char** argv) {
         if (fabs(quark_p4_0.Eta()) > 2.5 || fabs(quark_p4_1.Eta()) > 2.5)
            continue;
         
-        //FIXME
-        
         if ( fabs(jet_dr) < 0.4 )
            continue;
-
-        //Low-Eta
-        //if (fabs(quark_p4_0.Eta()) > 1.5 || fabs(quark_p4_1.Eta()) > 1.5)
-        // continue;
-        
-        //High-Eta
-        if (fabs(quark_p4_0.Eta()) < 1.5 || fabs(quark_p4_1.Eta()) < 1.5)
-           continue;
-
-        //Mix-Eta
-        //if ((fabs(quark_p4_0.Eta()) > 1.5 && fabs(quark_p4_1.Eta()) > 1.5) || (fabs(quark_p4_0.Eta()) < 1.5 && fabs(quark_p4_1.Eta()) < 1.5))
-        //   continue;
-
 
 
         //std::cout << " run: " << nr.nt().base().run() << std::endl << " lumi: " << nr.nt().base().lumi() << " event: " << nr.nt().base().event() << std::endl;

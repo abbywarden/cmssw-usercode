@@ -61,7 +61,7 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     
     #samples = [getattr(Samples, 'ZHToSSTodddd_tau300um_M55_2018')] 
     #samples = [getattr(Samples, 'mfv_stopdbardbar_tau001000um_M0800_2017')] 
-    #samples = [getattr(Samples, 'WminusHToSSTodddd_tau300um_M55_2018')]
+    #samples = [getattr(Samples, 'WminusHToSSTodddd_tau300um_M55_2017')]
     set_splitting(samples, dataset, 'ntuple')
     ms = MetaSubmitter('TrackMoverMCTruth' + version, dataset=dataset)
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, per_sample_pileup_weights_modifier())

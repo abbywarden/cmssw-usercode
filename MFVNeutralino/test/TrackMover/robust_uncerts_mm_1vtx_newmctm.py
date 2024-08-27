@@ -1,6 +1,6 @@
 import ROOT
 import numpy as np
-
+import math
 
 # FUNCTIONS USED
 #############################################################################################
@@ -34,7 +34,6 @@ def scaledDist(dist):
           else:
             s_dist.SetBinContent(b, dist.GetBinContent(b)*0.99/dist.Integral(3,100))
             s_dist.SetBinError(b, dist.GetBinError(b)*0.99/dist.Integral(3,100))
-    print("unity? ", s_dist.Integral())
     return s_dist
 
 
@@ -43,7 +42,8 @@ def scaledTOC(sig_curve, data_curve, mc_curve):
     
     for b in range(0,s_curve.GetNbinsX()):
         if (mc_curve.GetBinContent(b) != 0):
-            scale = 1*(sig_curve.GetBinContent(b)*data_curve.GetBinContent(b)/mc_curve.GetBinContent(b) > 1) + (data_curve.GetBinContent(b)/mc_curve.GetBinContent(b))*( sig_curve.GetBinContent(b)*data_curve.GetBinContent(b)/mc_curve.GetBinContent(b) < 1)
+            #scale = 1*(sig_curve.GetBinContent(b)*data_curve.GetBinContent(b)/mc_curve.GetBinContent(b) > 1) + (data_curve.GetBinContent(b)/mc_curve.GetBinContent(b))*( sig_curve.GetBinContent(b)*data_curve.GetBinContent(b)/mc_curve.GetBinContent(b) < 1)
+            scale = data_curve.GetBinContent(b)/mc_curve.GetBinContent(b) 
             s_curve.SetBinContent(b, sig_curve.GetBinContent(b)*scale)
             s_curve.SetBinError(b, sig_curve.GetBinError(b)*scale)
     return s_curve
@@ -68,9 +68,34 @@ def shiftDIST(den, sint, fr):
 
     return s_den
 
+#############################################################################################
+
+def FindshiftTOC(dat, sim):
+    dat_curve = dat.Clone() #ROOT.TH1D("placeholder", "", 80, 0, 80)
+    sim_curve = sim.Clone() #ROOT.TH1D("placeholder", "", 80, 0, 80)
+    
+    dat_blow = 0.0
+    dat_bhigh = 0.0
+    sim_blow = 0.0
+    sim_bhigh = 0.0
+    for b in range(0,dat_curve.GetNbinsX()):
+      if dat_curve.GetBinContent(b) > 0.65:
+           dat_bhigh = b 
+           dat_blow = b-1
+           break
+    for b in range(0,sim_curve.GetNbinsX()):
+      if sim_curve.GetBinContent(b) > 0.65:
+           sim_bhigh = b 
+           sim_blow = b-1
+           break
+    dat_b = dat_blow + ((0.65-dat_curve.GetBinContent(dat_blow))/(dat_curve.GetBinContent(dat_bhigh)-dat_curve.GetBinContent(dat_blow)))
+    sim_b = sim_blow + ((0.65-sim_curve.GetBinContent(sim_blow))/(sim_curve.GetBinContent(sim_bhigh)-sim_curve.GetBinContent(sim_blow)))
+    shift = dat_b - sim_b
+    return shift
+
 ################################################################################################
 
-def assessRatioEffPropagateUncerts(den, num):
+def assessRatioEffPropagateUncerts(den, num): #To report pseudo-data efficiency error 
     d_den = den.Clone() 
     n_num = num.Clone()
 
@@ -82,13 +107,29 @@ def assessRatioEffPropagateUncerts(den, num):
     
     return rat_err
 
+def assessCorrelatedDiffEffUncerts(eff_pseudo, eff_sig, denominator): #To report difference error in pseudo-data efficiency and signal efficiency that are correlated 
+    # eff is normalized to 1 
+    rat_err = round (math.sqrt(math.fabs(eff_pseudo*denominator - eff_sig*denominator))/denominator, 2)  
+
+    return rat_err
+
+
+def assessSignalEffUncerts(den, num): #To report signal efficiency error from a binomial distributionof events 
+    # eff is normalized to 1
+    d_den = den.Clone() 
+    n_num = num.Clone()
+    eff_sig = n_num.Integral()/d_den.Integral()
+    denominator = den.Integral()  
+    rat_err = round (math.sqrt(eff_sig*(1-eff_sig)/denominator), 2)  
+
+    return rat_err
 
 def assessRatioEffUncerts(eff_num, err_eff_num, eff_den, err_eff_den):
+    # eff is normalzied to 1
+    tot_err_one = err_eff_num/eff_den #FIXME needs a factor of two 
+    tot_err_two = eff_num*err_eff_den/(eff_den**2) #FIXME needs a factor of two 
 
-    tot_err_one = 2*err_eff_num/eff_den 
-    tot_err_two = 2*eff_num*err_eff_den/(eff_den**2)
-
-    rat_err = round (100*np.hypot(tot_err_one, tot_err_two), 2)  
+    rat_err = round (np.hypot(tot_err_one, tot_err_two), 2)  
 
     return rat_err
 
@@ -151,7 +192,7 @@ def calcTocShiftUncert(low, cent, hi):
 
 # Initialize stuff:
 
-year = '20161p2'
+year = '2017p8'
 doShift  = True
 reweight = True
 #toc_shift = 0.0   # How much to move the turn-on curve by
@@ -160,18 +201,7 @@ reweight = True
 
 masses = ['55']  #['15','40','55']
 ctaus       = ['1000'] #['1000', '3000', '30000'] 
-psd_methods = ['none', 'slide_distr', 'scale_distr', 'scale_toc',] # 'trackrescl']
-
-"""
-if year == '2018': 
-    shift_val = 2 #FIXME
-    shift_fr  = 0.0 #FIXME
-    toc_shift = 1.0 #FIXME 
-if year == '2017': 
-    shift_val = 0 #FIXME
-    shift_fr  = 0.037 #FIXME 
-    toc_shift = 1.0 #FIXME
-"""
+psd_methods = ['none', 'slide_distr', 'scale_distr', 'slide_toc', 'scale_toc'] # 'trackrescl']
 
 # Start actually doing stuff
 
@@ -185,9 +215,27 @@ for mass in masses:
 
         effArray = []
         errArray = []
+        effArray_emu = []
+        errArray_emu = []
+        DiffeffArray = []
+        DifferrArray = []
+        DiffeffArray_emu = []
+        DifferrArray_emu = []
+        none_sig_integral = 0.0
+        none_tmdat_integral = 0.0
+        none_tmmc_integral = 0.0
+        err_none_tmdat_integral = 0.0
+        err_none_tmmc_integral = 0.0
+        none_tmdat_eff = 0.0
+        none_tmmc_eff = 0.0
+        err_none_tmdat_eff = 0.0
+        err_none_tmmc_eff = 0.0
         stat_uncerts = 0.0
         overlap_uncerts = 0.0
-        tm_unc = 0.0
+        eff_pseudo_shift_novp = 0.0
+        eff_pseudo_shift_incl = 0.0
+        err_eff_pseudo_shift_novp = 0.0
+        err_eff_pseudo_shift_incl = 0.0
         mc_unc = 0.0
 
         for psd_method in psd_methods:
@@ -217,7 +265,7 @@ for mass in masses:
 
                 signal  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
 
-                signal_ht  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                signal_ht  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')  
                 
                 dat_den = tm_dat.Get('all_closeseedtks_den')
                 #dat_den = cutZero(dat_den, 5)
@@ -232,47 +280,13 @@ for mass in masses:
                 sim_den = sim_den.Clone()
                 sim_curve.Divide(sim_den)
 
-                if psd_method == "none" :
-                    foutsim_c = ROOT.TFile(psd_method+"sim_curve.root", "recreate")
-                    sim_curve.Write()
-                    foutsim_c.Close()
-                    foutsim_d = ROOT.TFile(psd_method+"sim_dist.root", "recreate")
-                    sim_den.Write()
-                    foutsim_d.Close()
-
 
                 dat_curve = dat_num.Clone()
                 dat_den = dat_den.Clone()
                 dat_curve.Divide(dat_den)
 
-                if psd_method == "none" :
-                    foutdat_c = ROOT.TFile(psd_method+"dat_curve.root", "recreate")
-                    dat_curve.Write()
-                    foutdat_c.Close()
-                    foutdat_d = ROOT.TFile(psd_method+"dat_dist.root", "recreate")
-                    dat_den.Write()
-                    foutdat_d.Close()
-
                 sig_dist = signal.Get('nocuts_closeseedtks_den')
-                print( "intergral : ", sig_dist.Integral())
-                #sig_dist = cutZero(sig_dist, 5)
                 signon_dist = signal_non.Get('nocuts_closeseedtks_den')
-                #signon_dist = cutZero(signon_dist, 5)
-                simtmslidedistr_dist = signon_dist.Clone()  
-                simtmscaledistr_dist = signon_dist.Clone()  
-                simtmscaletoc_dist = signon_dist.Clone()  
-                shift_val = int(signon_dist.GetMean()-sim_den.GetMean())
-                shift_fr = round(signon_dist.GetMean()-sim_den.GetMean(),2) - int(signon_dist.GetMean()-sim_den.GetMean())
-
-                #print(" sig sim - TM sim shift ", round(signon_dist.GetMean()-sim_den.GetMean(),2))   
-                #print (shift_val, shift_fr)
-
-                simscale_factors = sim_den.Clone()
-                simscale_divisor = signon_dist.Clone()
-                simscale_factors.Scale(1.0/simscale_factors.Integral())
-                simscale_divisor.Scale(1.0/simscale_divisor.Integral())
-                simscale_factors.Divide(simscale_divisor)
-                simtmscaledistr_dist.Multiply(simscale_factors)
 
                 sig_denom = signal.Get('all_closeseedtks_den') 
                 sig_aaaaa = signal.Get('all_closeseedtks_num')
@@ -332,7 +346,7 @@ for mass in masses:
                 fout_non0_den.Close()
                 sig_non_m3d_denom.Multiply(sig_non_m3d_curve_ideal)
                 eff_non_ideal = sig_non_m3d_denom.Integral()/sig_non_m3d_denom_copy.Integral()
-
+                
                 sig_non_m3d_curve_shift = shiftDIST(sig_non_m3d_curve_tm, 1, 0.0)
                 fout_non1 = ROOT.TFile("nonm3dcurve1.root", "recreate")
                 sig_non_m3d_curve_shift.Write()
@@ -342,8 +356,8 @@ for mass in masses:
                 fout_non1_den.Close()
                 sig_non_m3d_denom_tm.Multiply(sig_non_m3d_curve_shift)
                 eff_non_shift = sig_non_m3d_denom_tm.Integral()/sig_non_m3d_denom_copy.Integral()
-
-
+                err_eff_non_shift = assessRatioEffPropagateUncerts(sig_non_m3d_denom_copy,sig_non_m3d_denom)
+                
                 sig_m3d_curve_ideal = shiftDIST(sig_m3d_curve, 0, 0.0)
                 fout_0 = ROOT.TFile("m3dcurve0.root", "recreate")
                 sig_m3d_curve_ideal.Write()
@@ -363,7 +377,8 @@ for mass in masses:
                 fout_1_den.Close()
                 sig_m3d_denom_tm.Multiply(sig_m3d_curve_shift)
                 eff_shift = sig_m3d_denom_tm.Integral()/sig_m3d_denom_copy.Integral()
-
+                err_eff_shift = assessRatioEffPropagateUncerts(sig_m3d_denom_copy,sig_m3d_denom)
+                
                 sig_dvv_curve_ideal = shiftDIST(sig_dvv_curve, 0, 0.0)
                 fout_dvv0 = ROOT.TFile("dvvcurve0.root", "recreate")
                 sig_dvv_curve_ideal.Write()
@@ -390,8 +405,10 @@ for mass in masses:
 
                 overlap_right_unc = abs((1.0 - (eff_tm2/eff)))
                 overlap_left_unc = abs((1.0 - (eff_tm/eff)))
-                tm_unc = 100*(1 - (eff_shift/eff_non_shift)*(eff_non_ideal/eff_ideal)) 
-                
+                eff_pseudo_shift_incl = eff_shift    
+                eff_pseudo_shift_novp = eff_non_shift
+                err_pseudo_shift_incl = err_eff_shift    
+                err_pseudo_shift_novp = err_eff_non_shift
                 # FIXME shift sim to look like dat
                 # shift_val = int(sim_den.GetMean()-dat_den.GetMean())
                 # shift_fr = round(sim_den.GetMean()-dat_den.GetMean(),3) - int(sim_den.GetMean()-dat_den.GetMean())
@@ -407,124 +424,206 @@ for mass in masses:
                 scale_divisor = scaledDist(scale_divisor) #FIXME
                 scale_factors.Divide(scale_divisor)
 
+                scale_factors_emu = sim_den.Clone()
+                scale_divisor_emu = signon_dist.Clone()
+                #scale_factors_emu.Scale(1.0/scale_factors_emu.Integral()) #FIXME
+                #scale_divisor_emu.Scale(1.0/scale_divisor_emu.Integral()) #FIXME
+                scale_factors_emu = scaledDist(scale_factors_emu) #FIXME
+                scale_divisor_emu = scaledDist(scale_divisor_emu) #FIXME
+                scale_factors_emu.Divide(scale_divisor_emu)
+
                 # Fill pseudodata distribution
                 psd_dist = sig_dist.Clone()
-
-
+                psd_emu_dist = signon_dist.Clone()
+                psdtmmc_dist = sim_den.Clone()
+                
                 if psd_method == 'slide_distr':
                     shift_val = int(sim_den.GetMean()-dat_den.GetMean())
                     shift_fr = round(sim_den.GetMean()-dat_den.GetMean(),3) - int(sim_den.GetMean()-dat_den.GetMean())
-                    #print(" TM dat- TM sim shift ", round(sim_den.GetMean()-dat_den.GetMean(),2))   
+                    print(" Dist shift (red) : ", round(sim_den.GetMean()-dat_den.GetMean(),2))   
                     
-                    psd_dist = shiftDIST(psd_dist, shift_val, shift_fr) # psd_dist to sig_dist
+                    psd_dist = shiftDIST(psd_dist, shift_val, shift_fr) 
+                    psdtmmc_dist = shiftDIST(psdtmmc_dist, shift_val, shift_fr)
 
-                    norm_sig = sig_dist.Clone()
-                    fdata = ROOT.TFile("sig_dist.root", "recreate")
-                    norm_sig.Scale(1.0/norm_sig.Integral())
-                    norm_sig.Write()
-                    fdata.Close()
-                    
-                    simslide = psd_dist.Clone()
-                    ftmslide = ROOT.TFile("sigsimslide_dist.root", "recreate")
-                    simslide.Scale(1.0/simslide.Integral())
-                    simslide.Write()
-                    ftmslide.Close()
-                    
-                if psd_method == 'scale_distr':
-                    psd_dist = sig_dist.Clone()
-                    psd_dist.Multiply(scale_factors)
-
-                    simscale = psd_dist.Clone()
-                    ftmscale = ROOT.TFile("sigsimctscale_dist.root", "recreate")
-                    simscale.Scale(1.0/simscale.Integral())
-                    simscale.Write()
-                    ftmscale.Close()
+                    shift_emu_val = int(signon_dist.GetMean()-sim_den.GetMean())
+                    shift_emu_fr = round(signon_dist.GetMean()-sim_den.GetMean(),2) - int(signon_dist.GetMean()-sim_den.GetMean())
+                    print(" Dist shift (green) : ", round(signon_dist.GetMean()-sim_den.GetMean(),2))   
+                    psd_emu_dist = shiftDIST(psd_emu_dist, shift_emu_val, shift_emu_fr) 
                 
-                fout = ROOT.TFile(psd_method+"_dist.root", "recreate")
+                if psd_method == 'scale_distr':
+                    psd_dist.Multiply(scale_factors)
+                    psdtmmc_dist.Multiply(scale_factors)
+                    psd_emu_dist.Multiply(scale_factors_emu)
+                    #psd_dist.Scale(sig_dist.Integral()/psd_dist.Integral())
+                    #psdtmmc_dist.Scale(sim_den.Integral()/psdtmmc_dist.Integral())
+                    #psd_emu_dist.Scale(signon_dist.Integral()/psd_emu_dist.Integral())
+                
+                fpsdout = ROOT.TFile("psdsig_"+psd_method+"_dist.root", "recreate")
+                psd_dist.Scale(1.0/psd_dist.Integral())
                 psd_dist.Write()
-                fout.Close()
+                fpsdout.Close()
 
+                fpsdtmmcout = ROOT.TFile("psdtmmc_"+psd_method+"_dist.root", "recreate")
+                psdtmmc_dist.Scale(1.0/psdtmmc_dist.Integral())
+                psdtmmc_dist.Write()
+                fpsdtmmcout.Close()
+
+                fpsdemuout = ROOT.TFile("psdsig_emu_"+psd_method+"_dist.root", "recreate")
+                psd_emu_dist.Scale(1.0/psd_emu_dist.Integral())
+                psd_emu_dist.Write()
+                fpsdemuout.Close()
                 # Make the TM data and TM sim turn-on curves
-
+                none_tmdat_eff = dat_num.Integral()/dat_den.Integral()
+                none_tmmc_eff = sim_num.Integral()/sim_den.Integral()
+                pre_tmdat_dist = dat_den.Clone()
+                pre_tmmc_dist = sim_den.Clone()
+                
+                if psd_method == 'none':
+                    psdtmdat_dist = dat_den.Clone()
+                    fpsdtmdatout = ROOT.TFile("psdtmdat_"+psd_method+"_dist.root", "recreate")
+                    psdtmdat_dist.Scale(1.0/psdtmdat_dist.Integral())
+                    psdtmdat_dist.Write()
+                    fpsdtmdatout.Close()
+                
+                tmdat_dist = dat_num.Clone()
+                tmmc_dist = sim_num.Clone()
                 dat_num.Divide(dat_den)
                 sim_num.Divide(sim_den)
-                # Make the pseudodata turn-on curve
-                #temp_shift = toc_shift
-                #temp_shift *= -1
                 
-                #psd_curve = shiftTOC(temp_sig_num, temp_sig_den, int(temp_shift//1), (temp_shift % 1) )
-                # Make the signal turn-on curve
-
+                if psd_method == 'none':
+                    psdtmdat_curve = dat_num.Clone()
+                    fpsdtmdatout2 = ROOT.TFile("psdtmdat_"+psd_method+"_curve.root", "recreate")
+                    psdtmdat_curve.Write()
+                    fpsdtmdatout2.Close()
+                
+                # Make the pseudodata turn-on curve
+                
                 psd_curve = sig_curve
+                psdtmmc_curve = sim_num
+                psd_emu_curve = signon_curve
                 if psd_method == 'scale_toc':
                     psd_curve = scaledTOC(sig_curve, dat_num, sim_num)
-               
-                fout2 = ROOT.TFile(psd_method+"_curve.root", "recreate")
-                psd_curve.Write()
-                fout2.Close()
+                    psdtmmc_curve = scaledTOC(sim_num, dat_num, sim_num)
+                    psd_emu_curve = scaledTOC(signon_curve, sim_num, signon_curve)
+                    #psd_curve.Scale(sig_curve.Integral()/psd_curve.Integral())
+                    #psdtmmc_curve.Scale(sim_num.Integral()/psdtmmc_curve.Integral())
+                    #psd_emu_curve.Scale(signon_curve.Integral()/psd_emu_curve.Integral())
+                if psd_method == 'slide_toc':
+                    shift = -1*FindshiftTOC(dat_num, sim_num)
+                    shift_val = int(shift)
+                    shift_fr = round(shift,3) - int(shift)
+                    print(" TOC shift (red) : ", round(shift,2))  
+                    psd_curve = shiftDIST(psd_curve, shift_val, shift_fr) 
+                    psdtmmc_curve = shiftDIST(psdtmmc_curve, shift_val, shift_fr)
+                    
+                    
+                    shift_emu = -1*FindshiftTOC(sim_num, signon_curve)
+                    shift_val_emu = int(shift_emu)
+                    shift_fr_emu = round(shift_emu,3) - int(shift_emu)
+                    print(" TOC shift (green) : ", round(shift_emu,2))   
+                    psd_emu_curve = shiftDIST(psd_emu_curve, shift_val_emu, shift_emu_fr)
                 
+                
+                fpsdout2 = ROOT.TFile("psdsig_"+psd_method+"_curve.root", "recreate")
+                psd_curve.Write()
+                fpsdout2.Close()
+                fpsdtmmcout2 = ROOT.TFile("psdtmmc_"+psd_method+"_curve.root", "recreate")
+                psdtmmc_curve.Write()
+                fpsdtmmcout2.Close()
+                fpsdemuout2 = ROOT.TFile("psdsig_emu_"+psd_method+"_curve.root", "recreate")
+                psd_emu_curve.Write()
+                fpsdemuout2.Close()
+
                 possible_sig = sig_dist.Integral()
                 possible_signon = signon_dist.Integral()
-                possible_simtmslidedistr =  simtmslidedistr_dist.Integral()
-                possible_simtmscaledistr =  simtmscaledistr_dist.Integral()
-                possible_simtmscaletoc =  simtmscaletoc_dist.Integral()
                 possible_psd = psd_dist.Integral()
-
+                possible_psd_emu = psd_emu_dist.Integral()
+                
                 pre_sig_dist = sig_dist.Clone()
                 pre_signon_dist = signon_dist.Clone()
-                pre_simtmscaledistr_dist = simtmscaledistr_dist.Clone() 
-                pre_simtmslidedistr_dist = simtmslidedistr_dist.Clone() 
-                pre_simtmscaletoc_dist = simtmscaletoc_dist.Clone() 
                 pre_psd_dist = psd_dist.Clone()
-
+                pre_psd_emu_dist = psd_emu_dist.Clone()
+                
                 sig_dist.Multiply(sig_curve)
                 signon_dist.Multiply(signon_curve)
-                simtmscaledistr_dist.Multiply(signon_curve) 
-                simtmslidedistr_dist.Multiply(signon_curve) 
-                simtmscaletoc_dist.Multiply(sim_curve) 
-                
-
                 psd_dist.Multiply(psd_curve)
-
-                fout3 = ROOT.TFile(psd_method+"_"+mass+"_"+ctau+"_distcurve.root", "recreate")
+                psd_emu_dist.Multiply(psd_emu_curve)
+                
+                fpsdout3 = ROOT.TFile(psd_method+"_"+mass+"_"+ctau+"_distcurve.root", "recreate")
                 psd_dist.Write()
-                fout3.Close()
-
+                fpsdout3.Close()
+                fpsdemuout3 = ROOT.TFile(psd_method+"_"+mass+"_"+ctau+"_emulation_distcurve.root", "recreate")
+                psd_emu_dist.Write()
+                fpsdemuout3.Close()
+                if psd_method=="none":
+                    es = ROOT.Double(0) 
+                    inl = psd_emu_dist.IntegralAndError(0,200,es)
+                    print(inl, es)
+                
                 pass_sig = sig_dist.Integral()
                 pass_signon = signon_dist.Integral()
-                pass_simtmscaledistr = simtmscaledistr_dist.Integral() 
-                pass_simtmslidedistr = simtmslidedistr_dist.Integral() 
-                pass_simtmscaletoc = simtmscaletoc_dist.Integral() 
                 pass_psd = psd_dist.Integral()
+                pass_psd_emu = psd_emu_dist.Integral()
+                
                 
                 eff_sig = pass_sig/possible_sig
                 eff_signon = pass_signon/possible_signon
-                eff_simtmscaledistr = pass_simtmscaledistr/possible_simtmscaledistr
-                eff_simtmslidedistr = pass_simtmslidedistr/possible_simtmscaledistr
-                eff_simtmscaletoc = pass_simtmscaletoc/possible_simtmscaletoc
                 eff_psd = (pass_psd/possible_psd)
-
-                err_sig =  assessRatioEffPropagateUncerts(pre_sig_dist, sig_dist) #np.sqrt(eff_sig * (1-eff_sig)/possible_sig)
-                err_psd =   assessRatioEffPropagateUncerts(pre_psd_dist, psd_dist) #np.sqrt(eff_psd * (1-eff_psd)/possible_psd)
-                err_signon =  assessRatioEffPropagateUncerts(pre_signon_dist, signon_dist)#np.sqrt(eff_signon * (1-eff_signon)/possible_signon)
-                err_simtmscaledistr = assessRatioEffPropagateUncerts(pre_simtmscaledistr_dist, simtmscaledistr_dist) #np.sqrt(eff_simtmscaledistr * (1-eff_simtmscaledistr)/possible_simtmscaledistr)
-                err_simtmslidedistr = assessRatioEffPropagateUncerts(pre_simtmslidedistr_dist, simtmslidedistr_dist)#np.sqrt(eff_simtmslidedistr * (1-eff_simtmslidedistr)/possible_simtmslidedistr)
-                err_simtmscaletoc = assessRatioEffPropagateUncerts(pre_simtmscaletoc_dist, simtmscaletoc_dist) #np.sqrt(eff_simtmscaletoc * (1-eff_simtmscaletoc)/possible_simtmscaletoc)
+                eff_psd_emu = (pass_psd_emu/possible_psd_emu)
                 
-
+                
+                err_sig = assessSignalEffUncerts(pre_sig_dist, sig_dist)#assessRatioEffPropagateUncerts(pre_sig_dist, sig_dist) #FIXME NOW
+                err_signon = assessSignalEffUncerts(pre_signon_dist, signon_dist)#assessRatioEffPropagateUncerts(pre_signon_dist, signon_dist) #FIXME NOW
+                err_psd =   assessRatioEffPropagateUncerts(pre_psd_dist, psd_dist)
+                err_psd_emu =   assessRatioEffPropagateUncerts(pre_psd_emu_dist, psd_emu_dist)
+                
                 effArray.append(eff_psd)
                 errArray.append(err_psd)
-
-                print(" pseudo eff. "+psd_method, effArray[-1])
-                print(" pseudo err eff. "+psd_method, errArray[-1])
+                effArray_emu.append(eff_psd_emu)
+                errArray_emu.append(err_psd_emu)
+                
+                
                 if psd_method == 'none':
-                     stat_uncerts = assessRatioEffUncerts(eff_psd, err_psd, eff_sig, err_sig)
-                overlap_uncerts = round (100*overlap_right_unc,2) 
-        print("Mass: %s   Ctau: %s  1-vtx Eff: %.2f " % (mass, ctau, 100*eff_sig*eff_sig))
-        datsim_unc = assessMCToDataUncerts( effArray[1], errArray[1], effArray[2], errArray[2], effArray[3], errArray[3], 0.0, stat_uncerts, eff_sig, err_sig) #FIXME tkrescl 
-        mc_unc = assessSigToTMMCUncerts(eff_simtmslidedistr, err_simtmslidedistr, eff_simtmscaledistr, err_simtmscaledistr, eff_simtmscaletoc, err_simtmscaletoc, eff_signon, err_signon)
-        print( " 1-vtx Unc. by TMMC-to-signalMC : %.2f %%" % (mc_unc) )
-        print( " 1-vtx Unc. by SF_{GEN3DdVV, mix}: %.2f %%" % (overlap_uncerts) )
-        print( " 1-vtx Unc. by SF_{nclsedtks, mix} x SF_{GEN3DdVV, mix} / SF_{nclsedtks, non}: %.2f %%" % (tm_unc) )
-        print( " Total : %.2f %%" % (np.sqrt(datsim_unc**2 + mc_unc**2 + tm_unc**2)))
+                    none_sig_integral = round(possible_sig,2)
+                    none_signon_integral = round(possible_signon,2) 
+                    print("Mass: %s   Ctau: %s  \n" % (mass, ctau))
+                    print("1-vtx incl. Eff of total %.2f : %.2f +/- %.2f (or %.2f +/- %.2f via error propagation)\n" % (none_sig_integral, 100*eff_sig, 100*err_sig, 100*effArray[-1], 100*errArray[-1]))
+                    print("1-vtx novp Eff of total %.2f : %.2f +/- %.2f (or %.2f +/- %.2f via error propagation)\n" % (none_signon_integral, 100*eff_signon, 100*err_signon, 100*effArray_emu[-1], 100*errArray_emu[-1]))
+                    #stat_uncerts = assessRatioEffUncerts(eff_psd, err_psd, eff_sig, err_sig)
+                    overlap_uncerts = round (100*overlap_right_unc,2)
+                    es0 = ROOT.Double(0) 
+                    is0 = dat_den.IntegralAndError(0,200,es0)
+                    none_tmdat_integral = round(is0,2)
+                    err_none_tmdat_integral = round(es0,2)
+                    err_none_tmdat_eff = assessRatioEffPropagateUncerts(pre_tmdat_dist, tmdat_dist) #FIXME NOW
+                    es1 = ROOT.Double(0) 
+                    is1 = sim_den.IntegralAndError(0,200,es1)
+                    none_tmmc_integral = round(is1,2)
+                    err_none_tmmc_integral = round(es1,2)
+                    err_none_tmmc_eff = assessRatioEffPropagateUncerts(pre_tmmc_dist, tmmc_dist) #FIXME NOW
+                else:
+                    DiffeffArray.append(eff_psd - effArray[0])
+                    DifferrArray.append(assessCorrelatedDiffEffUncerts(eff_psd, effArray[0], none_sig_integral))
+                    DiffeffArray_emu.append(eff_psd_emu - effArray_emu[0])
+                    DifferrArray_emu.append(assessCorrelatedDiffEffUncerts(eff_psd_emu, effArray_emu[0], none_signon_integral))
+
+        print("Probe Data-to-MC Overall effciency difference \n")
+        print("Total TM MC %.2f +/- %.2f (w/ Eff. %.2f +/- %.2f) and Total TM Data %.2f +/- %.2f (w/ Eff. %.2f +/- %.2f)\n" % (none_tmmc_integral, err_none_tmmc_integral, 100*none_tmmc_eff, 100*err_none_tmmc_eff, none_tmdat_integral, err_none_tmdat_integral, 100*none_tmdat_eff, 100*err_none_tmdat_eff))
+        for i in range(1,len(psd_methods)):
+            print("%s pseudo eff %.2f +/- %.2f \t pseudo eff - incl. sig eff %.2f +/- %.2f \t 1-ratio %.2f +/- %.2f \n" % (psd_methods[i], 100*effArray[i], 100*errArray[i], 100*DiffeffArray[i-1], 100*DifferrArray[i-1], 100*DiffeffArray[i-1]/effArray[0], 100*DifferrArray[i-1]/effArray[0]))
+        
+        print("Probe how well TM MC emulating signal MC \n")
+        for i in range(1,len(psd_methods)):
+            print("%s pseudo emulating eff %.2f +/- %.2f \t pseudo emulating eff - novp. sig eff %.2f +/- %.2f \t 1-ratio %.2f +/- %.2f \n" % (psd_methods[i],100*effArray_emu[i], 100*errArray_emu[i], 100*DiffeffArray_emu[i-1], 100*DifferrArray_emu[i-1], 100*DiffeffArray_emu[i-1]/effArray_emu[0], 100*DifferrArray_emu[i-1]/effArray_emu[0]))
+        print("Probe the eff. difference between novp and incl. signal MC \n")
+        print("pseudo shift m3d incl. eff %.2f +/- %.2f \t pseudo shiftm3d incl. eff - incl. sig eff %.2f \t 1-ratio %.2f \n" % (100*eff_pseudo_shift_incl, 100*err_pseudo_shift_incl, 100*(eff_pseudo_shift_incl-effArray[0]), 100*(1-(eff_pseudo_shift_incl/effArray[0]))))
+        print("pseudo shift m3d novp. eff %.2f +/- %.2f\t pseudo shiftm3d novp. eff - novp. sig eff %.2f \t 1-ratio %.2f \n" % (100*(eff_pseudo_shift_novp), 100*err_pseudo_shift_novp, 100*(eff_pseudo_shift_novp-effArray_emu[0]), 100*(1-(eff_pseudo_shift_novp/effArray_emu[0]))))
+        print("additional uncertainty by quadratic-sum based is %.2f"% (math.sqrt(abs((100*(1-(eff_pseudo_shift_incl/effArray[0])))**2 - (100*(1-(eff_pseudo_shift_novp/effArray_emu[0])))**2)))) 
+        print("additional uncertainty by formula-based is %.2f"% (100*(1 - (eff_pseudo_shift_incl*effArray_emu[0]/(eff_pseudo_shift_novp*effArray[0]))))) 
+        #datsim_unc = assessMCToDataUncerts( effArray[1], errArray[1], effArray[2], errArray[2], effArray[3], errArray[3], 0.0, stat_uncerts, eff_sig, err_sig) #FIXME tkrescl 
+        #mc_unc = assessSigToTMMCUncerts(eff_simtmslidedistr, err_simtmslidedistr, eff_simtmscaledistr, err_simtmscaledistr, eff_simtmscaletoc, err_simtmscaletoc, eff_signon, err_signon)
+        #print( " 1-vtx Unc. by TMMC-to-signalMC : %.2f %%" % (mc_unc) )
+        #print( " 1-vtx Unc. by SF_{GEN3DdVV, mix}: %.2f %%" % (overlap_uncerts) )
+        #print( " 1-vtx Unc. by SF_{nclsedtks, mix} x SF_{GEN3DdVV, mix} / SF_{nclsedtks, non}: %.2f %%" % (tm_unc) )
+        #print( " Total : %.2f %%" % (np.sqrt(datsim_unc**2 + mc_unc**2 + tm_unc**2)))
         print("\n")

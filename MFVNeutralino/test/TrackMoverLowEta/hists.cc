@@ -1042,9 +1042,10 @@ int main(int argc, char** argv) {
     if ( fabs(jet_dr) < 0.4 )
        NR_loop_cont(w); 
 
-    if (fabs(jet_eta[0]) < 1.5 || fabs(jet_eta[1]) < 1.5)
+    if (fabs(jet_eta[0]) > 1.5 || fabs(jet_eta[1]) > 1.5)
        NR_loop_cont(w);
     
+
 
     int n_pass_nocuts = 0;
     int n_pass_ntracks = 0;
