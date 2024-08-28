@@ -17,17 +17,15 @@ if use_btag_triggers :
     #settings.event_filter = 'dilepton only' # for new trigger studies
     #settings.event_filter = 'leptons only' # for new trigger studies
     #settings.event_filter = 'low HT online track test' # for new trigger studies
-    settings.mode = 'bjets OR displaced dijet' # for new trigger studies
+    settings.event_filter = 'bjets OR displaced dijet' # for new trigger studies
 elif use_MET_triggers :
-    #settings.event_filter = 'met only'
-    settings.mode = 'met only'
-    #settings.mode = 'met AND iso muons'
+    settings.event_filter = 'met only'
 elif use_Muon_triggers :
-    settings.mode = 'muons only' #FIXME
+    settings.event_filter = 'muons only' #FIXME
 elif use_Electron_triggers :
-    settings.mode = 'electrons only' #FIXME
+    settings.event_filter = 'electrons only' #FIXME
 else :
-    settings.mode = 'jets only'
+    settings.event_filter = 'jets only'
 
 settings.randpars_filter = False
 # if want to test local : 
