@@ -1292,7 +1292,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
   const bool pass_min_n_seed_tracks = int(seed_tracks->size()) >= min_n_seed_tracks;
 
   //sort the seed tracks by pt
-  std::sort(seed_tracks->begin(), seed_tracks->end(), order_seed_tks_pt());
+  //std::sort(seed_tracks->begin(), seed_tracks->end(), order_seed_tks_pt());
 
   event.put(std::move(all_tracks), "all");
   event.put(std::move(seed_tracks), "seed");

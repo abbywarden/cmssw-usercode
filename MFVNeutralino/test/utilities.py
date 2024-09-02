@@ -172,7 +172,7 @@ def _background_samples(trigeff=False, year=2017, bkg_tag='others'):
         x += ['ttbarht%04i' % x for x in [600, 800, 1200, 2500]]
     return x
 
-def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=2017):
+def cmd_merge_background(permissive=bool_from_argv('permissive'), year_to_use=20161): #HERE
     cwd = os.getcwd()
     ok = True
     if year_to_use==-1:
@@ -311,7 +311,7 @@ def cmd_effsprint(year_to_use=2017):
 
 def cmd_histos():
     #cmd_report_data()
-    cmd_hadd_data()
+    #cmd_hadd_data()
     cmd_merge_background()
     #cmd_effsprint()
 

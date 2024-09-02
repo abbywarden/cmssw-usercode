@@ -5,7 +5,7 @@ from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, d
 version = 'onnormdzulv30lepmumv8'
 dataset = 'trackmover' + version
 apply_correction = True
-year = '2017p8'
+year = '20161p2'
 for nl in 2,: # 3:
     for nb in 0,: # 1, 2:
       for tau in [1000, ] : #[100, 300,1000, 3000, 30000] :

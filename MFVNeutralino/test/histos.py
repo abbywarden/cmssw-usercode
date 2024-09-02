@@ -6,6 +6,7 @@ do_track = False # this can onlky be used for ntuple with keep_tk=True
 from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_btag_triggers, use_MET_triggers, use_Muon_triggers, use_Electron_triggers
 #currently : keep histos slim -> do only Loose Vertices & NoCuts, Minntk = 3, 4, 5 
 #update : Selected Loose Vertices are changed to Tight Vertices
+input_files(process, '/uscms/home/pkotamni/work/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/ntuple.root')
 #input_files(process, '/eos/uscms/store/group/lpclonglived/pkotamni/WplusH_HToSSTodddd_WToLNu_MH-125_MS-55_ctauS-1_TuneCP5_13TeV-powheg-pythia8/NtupleOffdzULV30LepMum_2017/240131_215245/0000/ntuple_0.root')
 #max_events(process, 100)
 tfileservice(process, 'histos.root')
@@ -36,7 +37,9 @@ process.mfvEventHistosPreSel = process.mfvEventHistos.clone()
 process.mfvAnalysisCutsPreSel = process.mfvAnalysisCuts.clone(apply_vertex_cuts = False)
 process.pEventPreSel = cms.Path(common * process.mfvAnalysisCutsPreSel * process.mfvEventHistosPreSel)
 
-
+process.mfvEventHistosIsoMu27 = process.mfvEventHistos.clone()
+process.mfvAnalysisCutsIsoMu27 = process.mfvAnalysisCuts.clone(require_isomu27 = True, apply_vertex_cuts = False)
+process.pEventIsoMu27 = cms.Path(common * process.mfvAnalysisCutsIsoMu27 * process.mfvEventHistosIsoMu27)
 
 # process.mfvEventHistosExtraLoose = process.mfvEventHistos.clone()
 # process.mfvAnalysisCutsExtraLoose = process.mfvAnalysisCuts.clone(vertex_src = 'mfvSelectedVerticesExtraLoose', min_nvertex = 1)

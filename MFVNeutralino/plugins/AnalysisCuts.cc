@@ -57,6 +57,7 @@ private:
   const bool require_trigbit;
   const bool require_gen_sumdbv;
   const bool require_bjet_psel;
+  const bool require_isomu27;
   const bool study_btag_sf;
   const int  study_btag_sfvar;
   const bool dijet_agnostic;
@@ -131,6 +132,7 @@ MFVAnalysisCuts::MFVAnalysisCuts(const edm::ParameterSet& cfg)
     require_trigbit(cfg.getParameter<bool>("require_trigbit")),
     require_gen_sumdbv(cfg.getParameter<bool>("require_gen_sumdbv")),
     require_bjet_psel(cfg.getParameter<bool>("require_bjet_psel")),
+    require_isomu27(cfg.getParameter<bool>("require_isomu27")),
     study_btag_sf(cfg.getParameter<bool>("study_btag_sf")),
     study_btag_sfvar(cfg.getParameter<int>("study_btag_sfvar")),
     dijet_agnostic(cfg.getParameter<bool>("dijet_agnostic")),
@@ -461,6 +463,10 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
 
     if (require_met_filters && (!mevent->pass_metfilters))
       return false;
+    
+    if (require_isomu27 && !mevent->pass_hlt(mfv::b_HLT_IsoMu27))
+      return false;
+    
     if (apply_vertex_cuts) {
         edm::Handle<MFVVertexAuxCollection> vertices;
         event.getByToken(vertex_token, vertices);

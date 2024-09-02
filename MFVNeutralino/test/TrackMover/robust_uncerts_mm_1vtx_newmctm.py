@@ -6,22 +6,46 @@ import math
 #############################################################################################
 
 def shiftTOC(num, den, sint, fr):
-    s_num = ROOT.TH1D("shifted_num", "", 80, 0, 80)
-    s_den = ROOT.TH1D("shifted_den", "", 80, 0, 80)
-
+    s_num = num.Clone()
+    s_den = den.Clone()
+    s_curve = num.Clone()
+    
     fr = 1.0-fr
+    n_num = num.Integral()
+    n_den = den.Integral() 
 
-    for b in range(0,80):
+    for b in range(0,s_den.GetNbinsX()):
         s_num.SetBinContent(b, fr*num.GetBinContent(b+sint) + (1-fr)*num.GetBinContent(b+1+sint))
-        s_num.SetBinError(b, np.hypot(fr*num.GetBinError(b+sint), (1-fr)*num.GetBinError(b+1+sint)))
+        #new_bincontent_nhs = fr*num.GetBinContent(b+sint) + (1-fr)*num.GetBinContent(b+1+sint) 
+        #new_bincontent_nhs_err = math.sqrt(new_bincontent_nhs*(1-new_bincontent_nhs)/n_num)
+        #s_num.SetBinError(b, new_bincontent_nhs_err)
+        #s_num.SetBinError(b, np.hypot(fr*num.GetBinError(b+sint), (1-fr)*num.GetBinError(b+1+sint)))
 
         s_den.SetBinContent(b, fr*den.GetBinContent(b+sint) + (1-fr)*den.GetBinContent(b+1+sint))
-        s_den.SetBinError(b, np.hypot(fr*den.GetBinError(b+sint), (1-fr)*den.GetBinError(b+1+sint)))
+        #new_bincontent_nhb = fr*den.GetBinContent(b+sint) + (1-fr)*den.GetBinContent(b+1+sint) 
+        #new_bincontent_nhb_err = math.sqrt(new_bincontent_nhb*(1-new_bincontent_nhb)/n_den)
+        #s_den.SetBinError(b, new_bincontent_nhb_err)
+        #s_den.SetBinError(b, np.hypot(fr*den.GetBinError(b+sint), (1-fr)*den.GetBinError(b+1+sint)))
+       
+        if s_den.GetBinContent(b) == 0:
+          continue
+        if (s_num.GetBinContent(b)/s_den.GetBinContent(b) < 0.0 or s_den.GetBinContent(b) < 0.0 ) : 
+          bincontent_err = 0.0
+          bincontent = 0.0
+        elif (s_num.GetBinContent(b)/s_den.GetBinContent(b) > 1.0):
+          bincontent_err = 0.0
+          bincontent = 1.0
+        else:
+          bincontent = s_num.GetBinContent(b)/s_den.GetBinContent(b)
+          bincontent_err = math.sqrt(bincontent*(1-bincontent)/s_den.GetBinContent(b))
+        
+        s_curve.SetBinContent(b, bincontent)
+        s_curve.SetBinError(b, bincontent_err)
 
-    s_num.Divide(s_den)
-    return s_num
+    return s_curve
 
 def scaledDist(dist):
+    ### OBSOLETE ###
     s_dist = dist.Clone()
     for b in range(0,dist.GetNbinsX()):
         if (s_dist.GetBinContent(b) != 0):
@@ -37,18 +61,32 @@ def scaledDist(dist):
     return s_dist
 
 
-def scaledTOC(sig_curve, data_curve, mc_curve):
-    s_curve = sig_curve.Clone()
+def scaledTOC(sig_num, sig_den, data_curve, mc_curve):
+    s_num = sig_num.Clone()
+    s_den = sig_den.Clone()
+    s_curve = s_num.Clone()
     
-    for b in range(0,s_curve.GetNbinsX()):
-        if (mc_curve.GetBinContent(b) != 0):
+    for b in range(0,s_den.GetNbinsX()):
+        if (mc_curve.GetBinContent(b) != 0 and sig_den.GetBinContent(b) != 0 ):
             #scale = 1*(sig_curve.GetBinContent(b)*data_curve.GetBinContent(b)/mc_curve.GetBinContent(b) > 1) + (data_curve.GetBinContent(b)/mc_curve.GetBinContent(b))*( sig_curve.GetBinContent(b)*data_curve.GetBinContent(b)/mc_curve.GetBinContent(b) < 1)
             scale = data_curve.GetBinContent(b)/mc_curve.GetBinContent(b) 
-            s_curve.SetBinContent(b, sig_curve.GetBinContent(b)*scale)
-            s_curve.SetBinError(b, sig_curve.GetBinError(b)*scale)
+           
+            if (sig_num.GetBinContent(b)/sig_den.GetBinContent(b) > 1.0):
+              bincontent_err = 0.0
+              bincontent = 1.0
+            elif (sig_num.GetBinContent(b)/sig_den.GetBinContent(b) < 0.0 or sig_den.GetBinContent(b) < 0.0):
+              bincontent_err = 0.0
+              bincontent = 0.0
+            else:
+              bincontent = sig_num.GetBinContent(b)/sig_den.GetBinContent(b)
+              bincontent_err = math.sqrt(bincontent*(1-bincontent)/sig_den.GetBinContent(b));
+
+            s_curve.SetBinContent(b, bincontent*scale)
+            s_curve.SetBinError(b, bincontent_err*scale)
     return s_curve
     
 def cutZero(original, max_n):
+    ### OBSOLETE ###
     curve = original.Clone()
     for b in range(0,max_n):
         curve.SetBinContent(b, 0)
@@ -192,7 +230,7 @@ def calcTocShiftUncert(low, cent, hi):
 
 # Initialize stuff:
 
-year = '2017p8'
+year = '20161p2'
 doShift  = True
 reweight = True
 #toc_shift = 0.0   # How much to move the turn-on curve by
@@ -248,7 +286,7 @@ for mass in masses:
                     sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/background_leptonpresel_%s.root" % (int(ctau), year)
                     dat_str = "~/nobackup/crabdirs/TrackMover_SrudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/SingleMuon%s.root" % (int(ctau), year)
                 else:
-                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/background_leptonpresel_%s.root" % (int(ctau), int(mass), year)
+                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedist2jetdrllpsumpcoarse60alletaCorrection/background_leptonpresel_%s.root" % (int(ctau), int(mass), year)
                     dat_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/SingleMuon%s.root" % (int(ctau), int(mass), year)
                 tm_sim  = ROOT.TFile(sim_str)
                 tm_dat  = ROOT.TFile(dat_str)
@@ -418,18 +456,18 @@ for mass in masses:
                 # Calculate the scale factors
                 scale_factors = dat_den.Clone()
                 scale_divisor = sim_den.Clone()
-                #scale_factors.Scale(1.0/scale_factors.Integral()) #FIXME
-                #scale_divisor.Scale(1.0/scale_divisor.Integral()) #FIXME
-                scale_factors = scaledDist(scale_factors) #FIXME
-                scale_divisor = scaledDist(scale_divisor) #FIXME
+                scale_factors.Scale(1.0/scale_factors.Integral()) #FIXME
+                scale_divisor.Scale(1.0/scale_divisor.Integral()) #FIXME
+                #scale_factors = scaledDist(scale_factors) #FIXME
+                #scale_divisor = scaledDist(scale_divisor) #FIXME
                 scale_factors.Divide(scale_divisor)
 
                 scale_factors_emu = sim_den.Clone()
                 scale_divisor_emu = signon_dist.Clone()
-                #scale_factors_emu.Scale(1.0/scale_factors_emu.Integral()) #FIXME
-                #scale_divisor_emu.Scale(1.0/scale_divisor_emu.Integral()) #FIXME
-                scale_factors_emu = scaledDist(scale_factors_emu) #FIXME
-                scale_divisor_emu = scaledDist(scale_divisor_emu) #FIXME
+                scale_factors_emu.Scale(1.0/scale_factors_emu.Integral()) #FIXME
+                scale_divisor_emu.Scale(1.0/scale_divisor_emu.Integral()) #FIXME
+                #scale_factors_emu = scaledDist(scale_factors_emu) #FIXME
+                #scale_divisor_emu = scaledDist(scale_divisor_emu) #FIXME
                 scale_factors_emu.Divide(scale_divisor_emu)
 
                 # Fill pseudodata distribution
@@ -502,9 +540,9 @@ for mass in masses:
                 psdtmmc_curve = sim_num
                 psd_emu_curve = signon_curve
                 if psd_method == 'scale_toc':
-                    psd_curve = scaledTOC(sig_curve, dat_num, sim_num)
-                    psdtmmc_curve = scaledTOC(sim_num, dat_num, sim_num)
-                    psd_emu_curve = scaledTOC(signon_curve, sim_num, signon_curve)
+                    psd_curve = scaledTOC(sig_aaaaa, sig_denom, dat_num, sim_num)
+                    psdtmmc_curve = scaledTOC(tmmc_dist, pre_tmmc_dist, dat_num, sim_num)
+                    psd_emu_curve = scaledTOC(non_aaaaa, non_denom, sim_num, signon_curve)
                     #psd_curve.Scale(sig_curve.Integral()/psd_curve.Integral())
                     #psdtmmc_curve.Scale(sim_num.Integral()/psdtmmc_curve.Integral())
                     #psd_emu_curve.Scale(signon_curve.Integral()/psd_emu_curve.Integral())
@@ -513,15 +551,15 @@ for mass in masses:
                     shift_val = int(shift)
                     shift_fr = round(shift,3) - int(shift)
                     print(" TOC shift (red) : ", round(shift,2))  
-                    psd_curve = shiftDIST(psd_curve, shift_val, shift_fr) 
-                    psdtmmc_curve = shiftDIST(psdtmmc_curve, shift_val, shift_fr)
+                    psd_curve = shiftTOC(sig_aaaaa, sig_denom, shift_val, shift_fr) 
+                    psdtmmc_curve = shiftTOC(tmmc_dist, pre_tmmc_dist, shift_val, shift_fr)
                     
                     
                     shift_emu = -1*FindshiftTOC(sim_num, signon_curve)
                     shift_val_emu = int(shift_emu)
                     shift_fr_emu = round(shift_emu,3) - int(shift_emu)
                     print(" TOC shift (green) : ", round(shift_emu,2))   
-                    psd_emu_curve = shiftDIST(psd_emu_curve, shift_val_emu, shift_emu_fr)
+                    psd_emu_curve = shiftTOC(non_aaaaa, non_denom, shift_val_emu, shift_emu_fr)
                 
                 
                 fpsdout2 = ROOT.TFile("psdsig_"+psd_method+"_curve.root", "recreate")
@@ -609,17 +647,20 @@ for mass in masses:
 
         print("Probe Data-to-MC Overall effciency difference \n")
         print("Total TM MC %.2f +/- %.2f (w/ Eff. %.2f +/- %.2f) and Total TM Data %.2f +/- %.2f (w/ Eff. %.2f +/- %.2f)\n" % (none_tmmc_integral, err_none_tmmc_integral, 100*none_tmmc_eff, 100*err_none_tmmc_eff, none_tmdat_integral, err_none_tmdat_integral, 100*none_tmdat_eff, 100*err_none_tmdat_eff))
+        """
         for i in range(1,len(psd_methods)):
             print("%s pseudo eff %.2f +/- %.2f \t pseudo eff - incl. sig eff %.2f +/- %.2f \t 1-ratio %.2f +/- %.2f \n" % (psd_methods[i], 100*effArray[i], 100*errArray[i], 100*DiffeffArray[i-1], 100*DifferrArray[i-1], 100*DiffeffArray[i-1]/effArray[0], 100*DifferrArray[i-1]/effArray[0]))
-        
+        """
         print("Probe how well TM MC emulating signal MC \n")
         for i in range(1,len(psd_methods)):
             print("%s pseudo emulating eff %.2f +/- %.2f \t pseudo emulating eff - novp. sig eff %.2f +/- %.2f \t 1-ratio %.2f +/- %.2f \n" % (psd_methods[i],100*effArray_emu[i], 100*errArray_emu[i], 100*DiffeffArray_emu[i-1], 100*DifferrArray_emu[i-1], 100*DiffeffArray_emu[i-1]/effArray_emu[0], 100*DifferrArray_emu[i-1]/effArray_emu[0]))
+        """
         print("Probe the eff. difference between novp and incl. signal MC \n")
         print("pseudo shift m3d incl. eff %.2f +/- %.2f \t pseudo shiftm3d incl. eff - incl. sig eff %.2f \t 1-ratio %.2f \n" % (100*eff_pseudo_shift_incl, 100*err_pseudo_shift_incl, 100*(eff_pseudo_shift_incl-effArray[0]), 100*(1-(eff_pseudo_shift_incl/effArray[0]))))
         print("pseudo shift m3d novp. eff %.2f +/- %.2f\t pseudo shiftm3d novp. eff - novp. sig eff %.2f \t 1-ratio %.2f \n" % (100*(eff_pseudo_shift_novp), 100*err_pseudo_shift_novp, 100*(eff_pseudo_shift_novp-effArray_emu[0]), 100*(1-(eff_pseudo_shift_novp/effArray_emu[0]))))
         print("additional uncertainty by quadratic-sum based is %.2f"% (math.sqrt(abs((100*(1-(eff_pseudo_shift_incl/effArray[0])))**2 - (100*(1-(eff_pseudo_shift_novp/effArray_emu[0])))**2)))) 
         print("additional uncertainty by formula-based is %.2f"% (100*(1 - (eff_pseudo_shift_incl*effArray_emu[0]/(eff_pseudo_shift_novp*effArray[0]))))) 
+        """
         #datsim_unc = assessMCToDataUncerts( effArray[1], errArray[1], effArray[2], errArray[2], effArray[3], errArray[3], 0.0, stat_uncerts, eff_sig, err_sig) #FIXME tkrescl 
         #mc_unc = assessSigToTMMCUncerts(eff_simtmslidedistr, err_simtmslidedistr, eff_simtmscaledistr, err_simtmscaledistr, eff_simtmscaletoc, err_simtmscaletoc, eff_signon, err_signon)
         #print( " 1-vtx Unc. by TMMC-to-signalMC : %.2f %%" % (mc_unc) )

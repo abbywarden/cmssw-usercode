@@ -1,7 +1,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-
+#include "TMath.h"
 
 void MakeWeightPlots(bool Is_bkg, const char* boson, int mg, int ctau, const char* etabin, const char* year)
 {
@@ -31,9 +31,9 @@ void MakeWeightPlots(bool Is_bkg, const char* boson, int mg, int ctau, const cha
   *it = (char) tolower(*it);
 
   if (Is_bkg)
-     fnout.Form("~/nobackup/crabdirs/TM_2D_kin_weight_sim_lepton_histos/reweight_v2p4_alleta_kin_sim_vetodr_tau%06ium_M%02i_2D.root", ctau, mg);
+     fnout.Form("~/nobackup/crabdirs/TM_2D_kin_weight_sim_lepton_histos/reweight_v2p4_alletaupv3_kin_sim_vetodr_tau%06ium_M%02i_2D.root", ctau, mg);
   else
-     fnout.Form("~/nobackup/crabdirs/TM_2D_kin_weight_dat_lepton_histos/reweight_v2p4_alleta_kin_dat_vetodr_tau%06ium_M%02i_2D.root", ctau, mg);
+     fnout.Form("~/nobackup/crabdirs/TM_2D_kin_weight_dat_lepton_histos/reweight_v2p4_alletaupv3_kin_dat_vetodr_tau%06ium_M%02i_2D.root", ctau, mg);
   std::cout << "Getting weights from: " << std::endl;
   std::cout << fns << std::endl;
   std::cout << fnb << std::endl;
@@ -41,11 +41,13 @@ void MakeWeightPlots(bool Is_bkg, const char* boson, int mg, int ctau, const cha
 
 
   //std::vector<TString> hns_2d = {"nocuts_llp_sump_jetdr_den", "nocuts_llp_sump_jetdphi_den", "nocuts_nmovedseedtks0_jet0_sump_den", "nocuts_nmovedseedtks1_jet1_sump_den","nocuts_jet0_sump_jetdr_den","nocuts_jet1_sump_jetdr_den","nocuts_nmovedtks_jet_dr_den","nocuts_2logm_jetdr_den", "nocuts_jet0_sump_qrk0_dxybs_den", "nocuts_jet1_sump_qrk1_dxybs_den"}; //"nocuts_jetdr_qrk0_dxybs_den","nocuts_jetdr_qrk1_dxybs_den"};
-  std::vector<TString> hns_2d = {"nocuts_llp_sump_jetdr_den", "nocuts_llp_sump_jetdphi_den",};
+  std::vector<TString> hns_2d = {"nocuts_llp_sump_jetdr_den",}; // "nocuts_llp_sump_jetdphi_den",};
   for (const auto& hn : hns_2d){
       std::cout << hn << std::endl;
       TH2D* hb = (TH2D*)fb->Get(hn);
       TH2D* hs = (TH2D*)fs->Get(hn);
+      int hs_entries = hs->Integral();
+      int hb_entries = hb->Integral();
       //hb->RebinX(10);
       //hs->RebinX(10);
       //hb->RebinY(3);
@@ -55,8 +57,55 @@ void MakeWeightPlots(bool Is_bkg, const char* boson, int mg, int ctau, const cha
       hb->RebinY(3);
       hs->RebinY(3);
       hb->Scale(1./hb->Integral());
+      TH2D* nhb = (TH2D*)hb->Clone("nocuts_llp_sump_jetdr_den");
       hs->Scale(1./hs->Integral());
+      TH2D* nhs = (TH2D*)hs->Clone("nocuts_llp_sump_jetdr_den");
       hs->Divide(hb);
+      for (int bx = 1; bx < hs->GetNbinsX()+1; bx++){
+         for (int by = 1; by < hs->GetNbinsX()+1; by++){
+             
+             int sint = 0;
+             double fr = 0;
+             if (bx == 1){
+                fr = -0.45;//0.45 // change - or + for up or down (i.e. high-eta or low-eta)
+                sint = 0; //TMath::Nint(fr);
+                fr -= sint; 
+                fr = (1.0 - fr);  
+             }
+             else if ( bx == 2 || bx == 3) {
+                fr = -0.75;//0.75 // change - or + for up or down (i.e. high-eta or low-eta)
+                sint = -1;//1; //TMath::Nint(fr);
+                fr -= sint; 
+                fr = (1.0 - fr);  
+             }
+             else{
+                fr = -0.75;//1.6 // change - or + for up or down (i.e. high-eta or low-eta)
+                sint = -1;//2;//TMath::Nint(fr);
+                fr -= sint; 
+                fr = (1.0 - fr);  
+             }
+             double new_bincontent = fr*hs->GetBinContent(bx, by+sint) + (1-fr)*hs->GetBinContent(bx, by+1+sint); 
+             double new_bincontent_nhs = fr*nhs->GetBinContent(bx, by+sint) + (1-fr)*nhs->GetBinContent(bx, by+1+sint); 
+             double new_bincontent_nhs_err = TMath::Sqrt(new_bincontent_nhs*(1-new_bincontent_nhs)/hs_entries);
+             double new_bincontent_nhs_preverr = TMath::Hypot(fr*nhs->GetBinError(bx, by+sint), (1-fr)*nhs->GetBinError(bx, by+1+sint));
+             if (new_bincontent_nhs < 0.0) new_bincontent_nhs_err = nhs->GetBinError(bx, by+sint);  
+             std::cout << " bin " << bx << ", " << by << " content of signal : " << new_bincontent_nhs << std::endl;  
+             std::cout << " bin " << bx << ", " << by << " err of signal : " << new_bincontent_nhs_err << " or by previous err : " << new_bincontent_nhs_preverr << std::endl; 
+             double new_bincontent_nhb = fr*nhb->GetBinContent(bx, by+sint) + (1-fr)*nhb->GetBinContent(bx, by+1+sint); 
+             double new_bincontent_nhb_err = TMath::Sqrt(new_bincontent_nhb*(1-new_bincontent_nhb)/hb_entries);
+             double new_bincontent_nhb_preverr = TMath::Hypot(fr*nhb->GetBinError(bx, by+sint), (1-fr)*nhb->GetBinError(bx, by+1+sint));
+             if (new_bincontent_nhb < 0.0) new_bincontent_nhb_err = nhb->GetBinError(bx, by+sint);  
+             std::cout << " bin " << bx << ", " << by << "content of TMMC : " << new_bincontent_nhb << std::endl;  
+             std::cout << " bin " << bx << ", " << by << " err of TMMC : " << new_bincontent_nhb_err << " or by previous err : " << new_bincontent_nhb_preverr << std::endl; 
+             hs->SetBinContent(bx, by, new_bincontent);
+             double new_bincontent_err = new_bincontent*TMath::Hypot(new_bincontent_nhs_err/new_bincontent_nhs,new_bincontent_nhb_err/new_bincontent_nhb); 
+             if (new_bincontent == 0) new_bincontent_err = 0;
+             std::cout << " bin " << bx << ", " << by << " signal/TMMC ratio : " << new_bincontent << " and error : " << new_bincontent_err  << " or by previous error : " << TMath::Hypot(fr*hs->GetBinError(bx, by+sint), (1-fr)*hs->GetBinError(bx, by+1+sint)) <<  std::endl; 
+             hs->SetBinError(bx, by, new_bincontent_err);
+             //hs->SetBinError(bx, TMath::Hypot(fr*hs->GetBinError(bx, by+sint), (1-fr)*hs->GetBinError(bx, by+1+sint)));
+
+         }
+      }
       fout->WriteObject(hs,hn);
   }
   fs->Close();
