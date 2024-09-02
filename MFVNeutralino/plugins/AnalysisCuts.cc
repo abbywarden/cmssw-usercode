@@ -4,7 +4,7 @@
 #include "DataFormats/Math/interface/deltaPhi.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
-#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+//#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "FWCore/Framework/interface/EDFilter.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -293,6 +293,12 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
                 }
             }
             if(!success) return false;
+        }
+
+        if (apply_presel == 5){
+            if ( !satisfiesTrigger(mevent, mfv::b_HLT_PFMET120_PFMHT120_IDTight, setup) ){
+                return false;
+            }
         }
 
         if (apply_presel == 6) {
@@ -585,9 +591,9 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
 bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig, const edm::EventSetup& setup) {
   if(require_trigbit and !mevent->pass_hlt(trig)) return false;
 
-  edm::ESHandle<JetCorrectorParametersCollection> jet_corr;
-  setup.get<JetCorrectionsRecord>().get("AK4PF", jet_corr);
-  JetCorrectionUncertainty jec_unc((*jet_corr)["Uncertainty"]);
+  //edm::ESHandle<JetCorrectorParametersCollection> jet_corr;
+  //setup.get<JetCorrectionsRecord>().get("AK4PF", jet_corr);
+  //JetCorrectionUncertainty jec_unc((*jet_corr)["Uncertainty"]);
 
   // Container for JER/JES-corrected jet pT's
   std::vector<float> jet_pt_checks;
@@ -616,29 +622,29 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
     float cj_aeta = fabs(mevent->calo_jet_eta[ic]);
 
     // Do this loop if we want to study correction for JER
-    if (study_jer) {
-        float cj_E  = mevent->calo_jet_energy[ic];
-        float closest_pf_dR = 9.9;
-        int   closest_pf_idx = 999;
+    //if (study_jer) {
+    //    float cj_E  = mevent->calo_jet_energy[ic];
+    //    float closest_pf_dR = 9.9;
+    //    int   closest_pf_idx = 999;
 
-        for (int ip=0; ip < njets; ip++) {
-            float temp_dR = reco::deltaR(mevent->jet_eta[ip], mevent->jet_phi[ip], mevent->calo_jet_eta[ic], mevent->calo_jet_phi[ic]);
-            if (temp_dR < closest_pf_dR) {
-                closest_pf_dR = temp_dR;
-                closest_pf_idx = ip;
-            }
-        }
+    //    for (int ip=0; ip < njets; ip++) {
+    //        float temp_dR = reco::deltaR(mevent->jet_eta[ip], mevent->jet_phi[ip], mevent->calo_jet_eta[ic], mevent->calo_jet_phi[ic]);
+    //        if (temp_dR < closest_pf_dR) {
+    //            closest_pf_dR = temp_dR;
+    //            closest_pf_idx = ip;
+    //        }
+    //    }
 
-        cj_pt = jmt::UncertTools::jer_pt(mevent->jet_gen_energy[closest_pf_idx], cj_E, cj_pt, cj_aeta, jes_jer_var_up);
+    //    cj_pt = jmt::UncertTools::jer_pt(mevent->jet_gen_energy[closest_pf_idx], cj_E, cj_pt, cj_aeta, jes_jer_var_up);
 
-    }
+    //}
 
-    else if (study_jes) {
-        jec_unc.setJetEta(mevent->calo_jet_eta[ic]);
-        jec_unc.setJetPt(mevent->calo_jet_pt[ic]);
-        if (    jes_jer_var_up) { cj_pt *= (1 + jec_unc.getUncertainty(true)); }
-        if (not jes_jer_var_up) { cj_pt *= (1 - jec_unc.getUncertainty(false)); }
-    }
+    //else if (study_jes) {
+    //    jec_unc.setJetEta(mevent->calo_jet_eta[ic]);
+    //    jec_unc.setJetPt(mevent->calo_jet_pt[ic]);
+    //    if (    jes_jer_var_up) { cj_pt *= (1 + jec_unc.getUncertainty(true)); }
+    //    if (not jes_jer_var_up) { cj_pt *= (1 - jec_unc.getUncertainty(false)); }
+    //}
 
     if (cj_pt > 30.0 and cj_aeta < 2.5) alt_calo_ht += mevent->calo_jet_pt[ic];
 
@@ -655,16 +661,16 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
     float rand_y = distribution(rng);
     float pf_pt = mevent->jet_pt[j0];
 
-    if (study_jer) {
-        pf_pt = jmt::UncertTools::jer_pt_alt(mevent->jet_gen_energy[j0], mevent->jet_p4(j0), jes_jer_var_up);
-    }
+    //if (study_jer) {
+    //    pf_pt = jmt::UncertTools::jer_pt_alt(mevent->jet_gen_energy[j0], mevent->jet_p4(j0), jes_jer_var_up);
+    //}
 
-    else if (study_jes) {
-        jec_unc.setJetEta(mevent->jet_eta[j0]);
-        jec_unc.setJetPt(mevent->jet_pt[j0]);
-        if (    jes_jer_var_up) { pf_pt *= (1 + jec_unc.getUncertainty(true)); }
-        if (not jes_jer_var_up) { pf_pt *= (1 - jec_unc.getUncertainty(false)); }
-    }
+    //else if (study_jes) {
+    //    jec_unc.setJetEta(mevent->jet_eta[j0]);
+    //    jec_unc.setJetPt(mevent->jet_pt[j0]);
+    //    if (    jes_jer_var_up) { pf_pt *= (1 + jec_unc.getUncertainty(true)); }
+    //    if (not jes_jer_var_up) { pf_pt *= (1 - jec_unc.getUncertainty(false)); }
+    //}
 
     jet_pt_checks.push_back(pf_pt);
 
@@ -944,6 +950,12 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
                 }
             }
             return passed_kinematics;
+        }
+    case mfv::b_HLT_PFMET120_PFMHT120_IDTight :
+        {
+         //if(mevent->met() < 150 || njets < 2) return false; // cut on MET to avoid turn-on region, maybe cut value need to be determined
+         //if (njets < 2) return false;
+            return true;
         }
 
     default :
