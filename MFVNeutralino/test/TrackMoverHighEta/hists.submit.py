@@ -21,8 +21,8 @@ for nl in 2,: # 3:
               else:
                 samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=False, ttbar=False, diboson=False, Lepton_data=True)
                 w_fn_2d_move = "reweight_v2p4_higheta_move_dat_vetodr_tau%06ium_M%02i_%s_2D.root" % (tau, mg, year) 
-              batch_tag = "2Dmovedist3movedist2jetdrllpsumpcoarse60alletaupv3Correction"
-              w_fn_2d_kin = "reweight_v2p4_alletaupv3_kin_sim_vetodr_tau%06ium_M%02i_2D.root" % (tau, mg) 
+              batch_tag = "2Dmovedist3movedist2jetdrllpsumpcoarse60alletaupCorrection"
+              w_fn_2d_kin = "reweight_v2p4_alletaup_kin_sim_vetodr_tau%06ium_M%02i_2D.root" % (tau, mg) 
               correction_args = '--jet-decayweights true --w_fn_2d_kin "%s" --w_fn_2d_move "%s" --tm "%s"' % (w_fn_2d_kin, w_fn_2d_move, tm)
               w_fns = [w_fn_2d_kin, w_fn_2d_move]
               batch = 'TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHists' + version.capitalize() + '_%i%i_tau%06ium_M%02i_%s' % (nl, nb, tau, mg, batch_tag)

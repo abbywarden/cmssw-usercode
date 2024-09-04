@@ -31,9 +31,9 @@ void MakeWeightPlots(bool Is_bkg, const char* boson, int mg, int ctau, const cha
   *it = (char) tolower(*it);
 
   if (Is_bkg)
-     fnout.Form("~/nobackup/crabdirs/TM_2D_kin_weight_sim_lepton_histos/reweight_v2p4_alletaupv3_kin_sim_vetodr_tau%06ium_M%02i_2D.root", ctau, mg);
+     fnout.Form("~/nobackup/crabdirs/TM_2D_kin_weight_sim_lepton_histos/reweight_v2p4_alletaup_kin_sim_vetodr_tau%06ium_M%02i_2D.root", ctau, mg);
   else
-     fnout.Form("~/nobackup/crabdirs/TM_2D_kin_weight_dat_lepton_histos/reweight_v2p4_alletaupv3_kin_dat_vetodr_tau%06ium_M%02i_2D.root", ctau, mg);
+     fnout.Form("~/nobackup/crabdirs/TM_2D_kin_weight_dat_lepton_histos/reweight_v2p4_alletaup_kin_dat_vetodr_tau%06ium_M%02i_2D.root", ctau, mg);
   std::cout << "Getting weights from: " << std::endl;
   std::cout << fns << std::endl;
   std::cout << fnb << std::endl;
@@ -61,51 +61,59 @@ void MakeWeightPlots(bool Is_bkg, const char* boson, int mg, int ctau, const cha
       hs->Scale(1./hs->Integral());
       TH2D* nhs = (TH2D*)hs->Clone("nocuts_llp_sump_jetdr_den");
       hs->Divide(hb);
+      double intl_nhs = 0;
+      double intl_nhb = 0;
       for (int bx = 1; bx < hs->GetNbinsX()+1; bx++){
-         for (int by = 1; by < hs->GetNbinsX()+1; by++){
+         for (int by = 1; by < hs->GetNbinsY()+1; by++){
              
              int sint = 0;
              double fr = 0;
              if (bx == 1){
-                fr = -0.45;//0.45 // change - or + for up or down (i.e. high-eta or low-eta)
-                sint = 0; //TMath::Nint(fr);
-                fr -= sint; 
-                fr = (1.0 - fr);  
+                fr = 0.75;//-0.35;//-0.65;//0.45 // change - or + for up or down (i.e. high-eta or low-eta)
+                sint = TMath::Nint(fr) - 1;
+                fr -= sint;
              }
              else if ( bx == 2 || bx == 3) {
-                fr = -0.75;//0.75 // change - or + for up or down (i.e. high-eta or low-eta)
-                sint = -1;//1; //TMath::Nint(fr);
-                fr -= sint; 
-                fr = (1.0 - fr);  
+                fr = 1.5;//-0.35;//-0.75;//0.75 // change - or + for up or down (i.e. high-eta or low-eta)
+                sint = TMath::Nint(fr) - 1;
+                fr -= sint;
              }
              else{
-                fr = -0.75;//1.6 // change - or + for up or down (i.e. high-eta or low-eta)
-                sint = -1;//2;//TMath::Nint(fr);
-                fr -= sint; 
-                fr = (1.0 - fr);  
+                fr = 0.95;//0.0;//-0.65;//1.45 // change - or + for up or down (i.e. high-eta or low-eta)
+                sint = TMath::Nint(fr) - 1;
+                fr -= sint;
              }
-             double new_bincontent = fr*hs->GetBinContent(bx, by+sint) + (1-fr)*hs->GetBinContent(bx, by+1+sint); 
-             double new_bincontent_nhs = fr*nhs->GetBinContent(bx, by+sint) + (1-fr)*nhs->GetBinContent(bx, by+1+sint); 
+             double new_bincontent_nhs = (1-fr)*nhs->GetBinContent(bx, by-sint) + (fr)*nhs->GetBinContent(bx, by-1-sint); 
+             //double new_bincontent_nhs = (1-fr)*nhs->GetBinContent(bx, by+sint) + (fr)*nhs->GetBinContent(bx, by+1+sint); 
              double new_bincontent_nhs_err = TMath::Sqrt(new_bincontent_nhs*(1-new_bincontent_nhs)/hs_entries);
              double new_bincontent_nhs_preverr = TMath::Hypot(fr*nhs->GetBinError(bx, by+sint), (1-fr)*nhs->GetBinError(bx, by+1+sint));
-             if (new_bincontent_nhs < 0.0) new_bincontent_nhs_err = nhs->GetBinError(bx, by+sint);  
-             std::cout << " bin " << bx << ", " << by << " content of signal : " << new_bincontent_nhs << std::endl;  
-             std::cout << " bin " << bx << ", " << by << " err of signal : " << new_bincontent_nhs_err << " or by previous err : " << new_bincontent_nhs_preverr << std::endl; 
-             double new_bincontent_nhb = fr*nhb->GetBinContent(bx, by+sint) + (1-fr)*nhb->GetBinContent(bx, by+1+sint); 
+             if (new_bincontent_nhs < 0.0) new_bincontent_nhs_err = nhs->GetBinError(bx, by+sint);
+            
+             //std::cout << " bin " << bx << ", " << by << " content of signal : " << new_bincontent_nhs << std::endl;  
+             //std::cout << " bin " << bx << ", " << by << " err of signal : " << new_bincontent_nhs_err << " or by previous err : " << new_bincontent_nhs_preverr << std::endl; 
+             double new_bincontent_nhb = (1-fr)*nhb->GetBinContent(bx, by-sint) + (fr)*nhb->GetBinContent(bx, by-1-sint); 
+             //double new_bincontent_nhb = (1-fr)*nhb->GetBinContent(bx, by+sint) + (fr)*nhb->GetBinContent(bx, by+1+sint); 
              double new_bincontent_nhb_err = TMath::Sqrt(new_bincontent_nhb*(1-new_bincontent_nhb)/hb_entries);
              double new_bincontent_nhb_preverr = TMath::Hypot(fr*nhb->GetBinError(bx, by+sint), (1-fr)*nhb->GetBinError(bx, by+1+sint));
              if (new_bincontent_nhb < 0.0) new_bincontent_nhb_err = nhb->GetBinError(bx, by+sint);  
-             std::cout << " bin " << bx << ", " << by << "content of TMMC : " << new_bincontent_nhb << std::endl;  
-             std::cout << " bin " << bx << ", " << by << " err of TMMC : " << new_bincontent_nhb_err << " or by previous err : " << new_bincontent_nhb_preverr << std::endl; 
+             //std::cout << " bin " << bx << ", " << by << "content of TMMC : " << new_bincontent_nhb << std::endl;  
+             //std::cout << " bin " << bx << ", " << by << " err of TMMC : " << new_bincontent_nhb_err << " or by previous err : " << new_bincontent_nhb_preverr << std::endl; 
+             double new_bincontent = new_bincontent_nhs / new_bincontent_nhb;
+             intl_nhs += new_bincontent_nhs; 
+             intl_nhb += new_bincontent_nhb; 
+             if (new_bincontent_nhb == 0) new_bincontent = 0;
+             std::cout << " bin " << bx << ", " << by << " old content of map : " << hs->GetBinContent(bx, by) << " new content of map : " << new_bincontent << std::endl;  
              hs->SetBinContent(bx, by, new_bincontent);
              double new_bincontent_err = new_bincontent*TMath::Hypot(new_bincontent_nhs_err/new_bincontent_nhs,new_bincontent_nhb_err/new_bincontent_nhb); 
              if (new_bincontent == 0) new_bincontent_err = 0;
-             std::cout << " bin " << bx << ", " << by << " signal/TMMC ratio : " << new_bincontent << " and error : " << new_bincontent_err  << " or by previous error : " << TMath::Hypot(fr*hs->GetBinError(bx, by+sint), (1-fr)*hs->GetBinError(bx, by+1+sint)) <<  std::endl; 
+             //std::cout << " bin " << bx << ", " << by << " signal/TMMC ratio : " << new_bincontent << " and error : " << new_bincontent_err  << " or by previous error : " << TMath::Hypot(fr*hs->GetBinError(bx, by+sint), (1-fr)*hs->GetBinError(bx, by+1+sint)) <<  std::endl; 
              hs->SetBinError(bx, by, new_bincontent_err);
              //hs->SetBinError(bx, TMath::Hypot(fr*hs->GetBinError(bx, by+sint), (1-fr)*hs->GetBinError(bx, by+1+sint)));
 
          }
       }
+      std::cout << " sum new hns bins : " << intl_nhs << std::endl; 
+      std::cout << " sum new hnb bins : " << intl_nhb << std::endl; 
       fout->WriteObject(hs,hn);
   }
   fs->Close();

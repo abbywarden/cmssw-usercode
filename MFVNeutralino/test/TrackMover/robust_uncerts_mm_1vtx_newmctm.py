@@ -9,19 +9,24 @@ def shiftTOC(num, den, sint, fr):
     s_num = num.Clone()
     s_den = den.Clone()
     s_curve = num.Clone()
-    
-    fr = 1.0-fr
     n_num = num.Integral()
     n_den = den.Integral() 
-
+    s_num.Scale(1/s_num.Integral())
+    s_den.Scale(1/s_den.Integral())
     for b in range(0,s_den.GetNbinsX()):
-        s_num.SetBinContent(b, fr*num.GetBinContent(b+sint) + (1-fr)*num.GetBinContent(b+1+sint))
+      if (fr + sint + 1 < 0): 
+        s_num.SetBinContent(b, (1-fr)*num.GetBinContent(b+sint) + (fr)*num.GetBinContent(b+1+sint))
+        s_den.SetBinContent(b, (1-fr)*den.GetBinContent(b+sint) + (fr)*den.GetBinContent(b+1+sint))
+      else:
+        s_num.SetBinContent(b, (1-fr)*num.GetBinContent(b-sint) + (fr)*num.GetBinContent(b-1-sint))
+        s_den.SetBinContent(b, (1-fr)*den.GetBinContent(b-sint) + (fr)*den.GetBinContent(b-1-sint))
+        #s_num.SetBinContent(b, fr*num.GetBinContent(b+sint) + (1-fr)*num.GetBinContent(b+1+sint))
         #new_bincontent_nhs = fr*num.GetBinContent(b+sint) + (1-fr)*num.GetBinContent(b+1+sint) 
         #new_bincontent_nhs_err = math.sqrt(new_bincontent_nhs*(1-new_bincontent_nhs)/n_num)
         #s_num.SetBinError(b, new_bincontent_nhs_err)
         #s_num.SetBinError(b, np.hypot(fr*num.GetBinError(b+sint), (1-fr)*num.GetBinError(b+1+sint)))
 
-        s_den.SetBinContent(b, fr*den.GetBinContent(b+sint) + (1-fr)*den.GetBinContent(b+1+sint))
+        #s_den.SetBinContent(b, fr*den.GetBinContent(b+sint) + (1-fr)*den.GetBinContent(b+1+sint))
         #new_bincontent_nhb = fr*den.GetBinContent(b+sint) + (1-fr)*den.GetBinContent(b+1+sint) 
         #new_bincontent_nhb_err = math.sqrt(new_bincontent_nhb*(1-new_bincontent_nhb)/n_den)
         #s_den.SetBinError(b, new_bincontent_nhb_err)
@@ -97,13 +102,16 @@ def cutZero(original, max_n):
 
 def shiftDIST(den, sint, fr):
     s_den = den.Clone() #ROOT.TH1D("placeholder", "", 80, 0, 80)
-
-    fr = 1.0-fr
-
-    for b in range(0,den.GetNbinsX()):
-        s_den.SetBinContent(b, fr*den.GetBinContent(b+sint) + (1-fr)*den.GetBinContent(b+1+sint))
-        s_den.SetBinError(b, np.hypot(fr*den.GetBinError(b+sint), (1-fr)*den.GetBinError(b+1+sint)))
-
+    s_den.Scale(1/s_den.Integral())
+    for b in range(1, den.GetNbinsX()):
+        #s_den.SetBinContent(b, fr*den.GetBinContent(b+sint) + (1-fr)*den.GetBinContent(b+1+sint))
+        #s_den.SetBinError(b, np.hypot(fr*den.GetBinError(b+sint), (1-fr)*den.GetBinError(b+1+sint)))
+      if (fr + sint + 1 > 0): 
+        s_den.SetBinContent(b, (1-fr)*den.GetBinContent(b+sint) + (fr)*den.GetBinContent(b+1+sint))
+        s_den.SetBinError(b, np.hypot((1-fr)*den.GetBinError(b+sint), (fr)*den.GetBinError(b+1+sint)))
+      else:
+        s_den.SetBinContent(b, (1-fr)*den.GetBinContent(b-sint) + (fr)*den.GetBinContent(b-1-sint))
+        s_den.SetBinError(b, np.hypot((1-fr)*den.GetBinError(b-sint), (fr)*den.GetBinError(b-1-sint)))
     return s_den
 
 #############################################################################################
@@ -230,7 +238,7 @@ def calcTocShiftUncert(low, cent, hi):
 
 # Initialize stuff:
 
-year = '20161p2'
+year = '2017p8'
 doShift  = True
 reweight = True
 #toc_shift = 0.0   # How much to move the turn-on curve by
@@ -283,11 +291,11 @@ for mass in masses:
                 sig_non_str = ''
 
                 if not reweight:
-                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/background_leptonpresel_%s.root" % (int(ctau), year)
-                    dat_str = "~/nobackup/crabdirs/TrackMover_SrudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/SingleMuon%s.root" % (int(ctau), year)
+                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/background_leptonpresel_%s.root" % (int(ctau), year)
+                    dat_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/SingleMuon%s.root" % (int(ctau), year)
                 else:
-                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedist2jetdrllpsumpcoarse60alletaCorrection/background_leptonpresel_%s.root" % (int(ctau), int(mass), year)
-                    dat_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/SingleMuon%s.root" % (int(ctau), int(mass), year)
+                    sim_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/background_leptonpresel_%s.root" % (int(ctau), int(mass), year)
+                    dat_str = "~/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_M%i_2Dmovedist3movedistjetdrllpsumpcoarse60Correction/SingleMuon%s.root" % (int(ctau), int(mass), year)
                 tm_sim  = ROOT.TFile(sim_str)
                 tm_dat  = ROOT.TFile(dat_str)
                 
@@ -296,14 +304,14 @@ for mass in masses:
                 elif mass == '40':
                     sig_non_str  = '~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root'
                 else :
-                    sig_non_str  = '~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root'
+                    sig_non_str  = '~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root'
 
 
                 signal_non = ROOT.TFile(sig_non_str)
 
-                signal  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                signal  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
 
-                signal_ht  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')  
+                signal_ht  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')  
                 
                 dat_den = tm_dat.Get('all_closeseedtks_den')
                 #dat_den = cutZero(dat_den, 5)
@@ -476,17 +484,26 @@ for mass in masses:
                 psdtmmc_dist = sim_den.Clone()
                 
                 if psd_method == 'slide_distr':
-                    shift_val = int(sim_den.GetMean()-dat_den.GetMean())
-                    shift_fr = round(sim_den.GetMean()-dat_den.GetMean(),3) - int(sim_den.GetMean()-dat_den.GetMean())
-                    print(" Dist shift (red) : ", round(sim_den.GetMean()-dat_den.GetMean(),2))   
+                    shift_val = sim_den.GetMean()-dat_den.GetMean()
+                    shift_int = int(shift_val) - 1
+                    shift_fr = shift_val - shift_int
+                    print(" Dist shift (red) : ", -1*round(shift_val,2))  #negative means shifting signal distr. to the left and positive means shifting signal distr. to the right  
+                    #print(" sig mean : ", sig_dist.GetMean())
+                    #print(" TM data mean : ", dat_den.GetMean())
+                    #print(" TM MC mean : ", sim_den.GetMean())
+                    psd_dist = shiftDIST(psd_dist, shift_int, shift_fr) 
+                    #print(" psd mean : ", psd_dist.GetMean())
+                    psdtmmc_dist = shiftDIST(psdtmmc_dist, shift_int, shift_fr)
+                    #print(" psdtmmc mean : ", psdtmmc_dist.GetMean())
                     
-                    psd_dist = shiftDIST(psd_dist, shift_val, shift_fr) 
-                    psdtmmc_dist = shiftDIST(psdtmmc_dist, shift_val, shift_fr)
-
-                    shift_emu_val = int(signon_dist.GetMean()-sim_den.GetMean())
-                    shift_emu_fr = round(signon_dist.GetMean()-sim_den.GetMean(),2) - int(signon_dist.GetMean()-sim_den.GetMean())
-                    print(" Dist shift (green) : ", round(signon_dist.GetMean()-sim_den.GetMean(),2))   
-                    psd_emu_dist = shiftDIST(psd_emu_dist, shift_emu_val, shift_emu_fr) 
+                    shift_emu_val = signon_dist.GetMean()-sim_den.GetMean() 
+                    shift_emu_int = int(shift_emu_val) - 1 
+                    shift_emu_fr = shift_emu_val - shift_emu_int
+                    print(" Dist shift (green) : ", -1*round(shift_emu_val,2)) #negative means shifting signal distr. to the left and positive means shifting signal distr. to the right   
+                    #print(" novp sig mean : ", signon_dist.GetMean())
+                    #print(" TM MC mean : ", sim_den.GetMean())
+                    psd_emu_dist = shiftDIST(psd_emu_dist, shift_emu_int, shift_emu_fr) 
+                    #print(" psd emu mean : ", psd_emu_dist.GetMean())
                 
                 if psd_method == 'scale_distr':
                     psd_dist.Multiply(scale_factors)
@@ -536,9 +553,9 @@ for mass in masses:
                 
                 # Make the pseudodata turn-on curve
                 
-                psd_curve = sig_curve
-                psdtmmc_curve = sim_num
-                psd_emu_curve = signon_curve
+                psd_curve = shiftTOC(sig_aaaaa, sig_denom, 0, 0.0) #sig_curve
+                psdtmmc_curve = shiftTOC(tmmc_dist, pre_tmmc_dist, 0, 0.0) #sim_num
+                psd_emu_curve = shiftTOC(non_aaaaa, non_denom, 0, 0.0) #signon_curve
                 if psd_method == 'scale_toc':
                     psd_curve = scaledTOC(sig_aaaaa, sig_denom, dat_num, sim_num)
                     psdtmmc_curve = scaledTOC(tmmc_dist, pre_tmmc_dist, dat_num, sim_num)
@@ -547,19 +564,19 @@ for mass in masses:
                     #psdtmmc_curve.Scale(sim_num.Integral()/psdtmmc_curve.Integral())
                     #psd_emu_curve.Scale(signon_curve.Integral()/psd_emu_curve.Integral())
                 if psd_method == 'slide_toc':
-                    shift = -1*FindshiftTOC(dat_num, sim_num)
-                    shift_val = int(shift)
-                    shift_fr = round(shift,3) - int(shift)
-                    print(" TOC shift (red) : ", round(shift,2))  
-                    psd_curve = shiftTOC(sig_aaaaa, sig_denom, shift_val, shift_fr) 
-                    psdtmmc_curve = shiftTOC(tmmc_dist, pre_tmmc_dist, shift_val, shift_fr)
+                    shift = FindshiftTOC(dat_num, sim_num)
+                    shift_int = int(shift) - 1
+                    shift_fr = shift - shift_int
+                    print(" TOC shift (red) : ", round(shift,3))   #negative means shifting signal TOC. to the left and positive means shifting signal TOC. to the right because pseudo TOC should turn on before/after signal TOC 
+                    psd_curve = shiftTOC(sig_aaaaa, sig_denom, shift_int, shift_fr)   
+                    psdtmmc_curve = shiftTOC(tmmc_dist, pre_tmmc_dist, shift_int, shift_fr)
                     
                     
-                    shift_emu = -1*FindshiftTOC(sim_num, signon_curve)
-                    shift_val_emu = int(shift_emu)
-                    shift_fr_emu = round(shift_emu,3) - int(shift_emu)
-                    print(" TOC shift (green) : ", round(shift_emu,2))   
-                    psd_emu_curve = shiftTOC(non_aaaaa, non_denom, shift_val_emu, shift_emu_fr)
+                    shift_emu = FindshiftTOC(sim_num, signon_curve)
+                    shift_int_emu = int(shift_emu) - 1
+                    shift_fr_emu = shift_emu - shift_int_emu
+                    print(" TOC shift (green) : ", round(shift_emu,3))  #negative means shifting signal TOC. to the left and positive means shifting signal TOC. to the right because pseudo TOC should turn on before/after signal TOC 
+                    psd_emu_curve = shiftTOC(non_aaaaa, non_denom, shift_int_emu, shift_emu_fr)
                 
                 
                 fpsdout2 = ROOT.TFile("psdsig_"+psd_method+"_curve.root", "recreate")
