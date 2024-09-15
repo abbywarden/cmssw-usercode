@@ -38,7 +38,7 @@ namespace jmt {
     // ie if it is a general track vs. muon or electron candidate 
     TrackRescaler() : enable_(false), era_(0), which_(w_BTagDispJet), type_("") {}
     void setup(bool enable, int era, int which) { enable_ = enable; era_ = era; which_ = which; } //no need to pass track type
-    //void setup(bool enable, int era, int which, std::string type) { enable_ = enable; era_ = era; which_ = which;  type_ = type; } //when need track type
+    void setup(bool enable, int era, int which, std::string type) { enable_ = enable; era_ = era; which_ = which;  type_ = type; } //when need track type
     void enable(bool enable) { enable_ = enable; }
 
     enum { w_BTagDispJet, w_SingleLep, w_JetHT, w_max };
@@ -56,8 +56,18 @@ namespace jmt {
     void set_BTagDispJet2017(double pt, double eta);
     void set_BTagDispJet2018(double pt, double eta);
 
-    void set_SingleLep2017(double pt, double eta, std::string type);
+    // void set_SingleLep2017(double pt, double eta, std::string type);
+    void set_SingleLep2016BC(double pt, double eta, std::string type);
+    void set_SingleLep2016DEF(double pt, double eta, std::string type);
+    void set_SingleLep2016(double pt, double eta, std::string type);
+    void set_SingleLep2017B(double pt, double eta, std::string type);
+    void set_SingleLep2017C(double pt, double eta, std::string type);
+    void set_SingleLep2017D(double pt, double eta, std::string type);
+    void set_SingleLep2017E(double pt, double eta, std::string type);
+    void set_SingleLep2017F(double pt, double eta, std::string type);
     void set_SingleLep2018(double pt, double eta, std::string type);
+
+    // void set_SingleLep2017(double pt, double eta, std::string type);
 
     void set(double era, int which, double pt, double eta);
     void set(double pt, double eta) { set(era_, which_, pt, eta); }

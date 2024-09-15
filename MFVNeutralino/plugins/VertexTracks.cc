@@ -519,17 +519,17 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
   if (verbose)
     std::cout << "MFVVertexTracks " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
   
-//  const int track_rescaler_which = jmt::TrackRescaler::w_SingleLep; //FIXME Abby
-  const int track_rescaler_which = jmt::TrackRescaler::w_BTagDispJet; //FIXME Alec
+  const int track_rescaler_which = jmt::TrackRescaler::w_SingleLep; //FIXME Abby
+// const int track_rescaler_which = jmt::TrackRescaler::w_BTagDispJet; //FIXME Alec
 // const int track_rescaler_which = jmt::TrackRescaler::w_JetHT; // JMTBAD which rescaling if ever a different one
-  track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
-                       jmt::AnalysisEras::pick(event, this),
-                       track_rescaler_which);
-
   // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
   //                      jmt::AnalysisEras::pick(event, this),
-  //                      track_rescaler_which,
-  //                      "");
+  //                      track_rescaler_which);
+
+  track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
+                       jmt::AnalysisEras::pick(event, this),
+                       track_rescaler_which,
+                       "");
 
   edm::Handle<reco::BeamSpot> beamspot;
   event.getByToken(beamspot_token, beamspot);

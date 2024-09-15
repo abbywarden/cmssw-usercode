@@ -9,18 +9,15 @@ void MakeWeightPlots(bool Is_bkg, const char* boson, int mg, int ctau, const cha
   //This is for the previous signal samples
   //This is for the new signal samples
   if (ctau < 1000)
-     //fns.Form("~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_%sEta_NoQrkEtaCut_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/%sHToSSTodddd_tau%ium_M%02i_%s.root",etabin,boson,ctau,mg,year);
-     fns.Form("~/nobackup/crabdirs/%sHToSSTodddd_tau%ium_M%02i_alleta.root",boson,ctau,mg);
+     fns.Form("~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_%sEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/%sHToSSTodddd_tau%ium_M%02i_%s.root",etabin,boson,ctau,mg,year);
   else
-     //fns.Form("~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_%sEta_NoQrkEtaCut_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/%sHToSSTodddd_tau%imm_M%02i_%s.root",etabin,boson,ctau/1000,mg,year);
-     fns.Form("~/nobackup/crabdirs/%sHToSSTodddd_tau%imm_M%02i_alleta.root",boson,ctau/1000,mg);
+     fns.Form("~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_%sEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6/%sHToSSTodddd_tau%imm_M%02i_%s.root",etabin,boson,ctau/1000,mg,year);
   TString fnb;
   // This is for 10mm->1mm ntuple
   if (Is_bkg)
-     //fnb.Form("~/nobackup/crabdirs/TrackMover_StudyV2p4_%sEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/background_leptonpresel_%s.root", etabin, ctau, year);
-     fnb.Form("~/nobackup/crabdirs/background_leptonpresel_alleta.root");
-  //else
-     //fnb.Form("~/nobackup/crabdirs/TrackMover_StudyV2p4_%sEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/SingleMuon%s.root", etabin, ctau, year);
+     fnb.Form("~/nobackup/crabdirs/TrackMover_StudyV2p5_%sEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/background_leptonpresel_%s.root", etabin, ctau, year);
+  else
+     fnb.Form("~/nobackup/crabdirs/TrackMover_StudyV2p5_%sEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau%06ium_noCorrection/SingleMuon%s.root", etabin, ctau, year);
   TFile* fs = TFile::Open(fns, "read");
   TFile* fb = TFile::Open(fnb, "read");
   // This is for 10mm->1mm ntuple after sump weighting
@@ -32,10 +29,9 @@ void MakeWeightPlots(bool Is_bkg, const char* boson, int mg, int ctau, const cha
   *it = (char) tolower(*it);
   
   if (Is_bkg)
-     fnout.Form("~/nobackup/crabdirs/TM_2D_move_weight_sim_lepton_histos/reweight_v2p4_alleta_move_sim_vetodr_tau%06ium_M%02i_2D.root", ctau, mg);
+     fnout.Form("~/nobackup/crabdirs/TM_2D_move_weight_sim_lepton_histos/reweight_v2p5_%seta_move_sim_vetodr_tau%06ium_M%02i_%s_2D.root", low_etabin, ctau, mg, year);
   else 
-     fnout.Form("~/nobackup/crabdirs/TM_2D_move_weight_dat_lepton_histos/reweight_v2p4_alleta_move_dat_vetodr_tau%06ium_M%02i_2D.root", ctau, mg);
-  
+     fnout.Form("~/nobackup/crabdirs/TM_2D_move_weight_dat_lepton_histos/reweight_v2p5_%seta_move_dat_vetodr_tau%06ium_M%02i_%s_2D.root", low_etabin, ctau, mg, year);
   std::cout << "Getting weights from: " << std::endl;
   std::cout << fns << std::endl;
   std::cout << fnb << std::endl;
@@ -63,16 +59,16 @@ void WeightFiles2Dmove()
   const char* bosons[1] = { "V" };
   std::vector<int> taus = {1000,}; //{100, 300, 1000, 3000, 30000};
   std::vector<int> mgs = {55,};
-  const char* years[1] = { "20161p2",}; //, "2017p8" };
-  const char* etabins[1] = { "High" };
+  const char* years[2] = { "20161p2", "2017p8" };
+  const char* etabins[3] = { "Low","Mix","High" };
   for (int i = 0; i < 1; i++){  
-    for (int j = 0; j < 1; j++){
-      for (int k = 0; k < 1; k++){
+    for (int j = 0; j < 2; j++){
+      for (int k = 0; k < 3; k++){
         for (int& tau:taus){
           for (int& mg:mgs){
             if (tau==100 && mg==40)
               continue;
-            //MakeWeightPlots(0,bosons[i],mg,tau,etabins[k],years[j]);
+            MakeWeightPlots(0,bosons[i],mg,tau,etabins[k],years[j]);
             MakeWeightPlots(1,bosons[i],mg,tau,etabins[k],years[j]);
           }
         }

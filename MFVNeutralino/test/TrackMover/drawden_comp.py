@@ -12,7 +12,7 @@ ROOT.TH1.AddDirectory(0)
 
 #variables = ['_movedist', '_sump_', 'trk', '_npv_', '_costheta_', '_njets_', '2logm', 'miscseed', 'nseed', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
 
-variables = ['_movedist', 'movedclo', 'half', '_mv_', 'jet0_eta', 'jet1_eta', 'qrk0_dxybs', 'qrk1_dxybs', 'jet0_dxybs', 'jet1_dxybs', 'qrk0_p', 'qrk1_p', 'quark', '_sump_', 'asym', 'jet0_trk', 'jet1_trk', '_npv_', 'misc', '_dvv', 'lsp', 'lspeta', 'nvtx', 'vtxcat', 'vtxn', 'vtxbs', 'vtxun', 'vtxeta', 'vtxdbv', '_costheta_', '_njets_', 'miscseed', 'nseed', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+variables = ['_movedist', 'movedclo', 'half', '_mv_', 'jet0_eta', 'jet1_eta', 'qrk0_dxybs', 'qrk1_dxybs', 'jet0_dxybs', 'jet1_dxybs', 'qrk0_p', 'qrk1_p', 'quark', '_sump_', 'asym', 'jet0_trk', 'jet1_trk', '_npv_', 'misc', '_dvv', 'lsp', 'lspeta', 'nvtx', 'vtxcat', 'vtxbs', 'vtxun', 'vtxeta', 'vtxdbv', '_costheta_', '_njets_', 'miscseed', 'nseed', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
 
 def get_em(fn, scale=1., alpha=1-0.6827):
     f = ROOT.TFile.Open(fn)
@@ -129,7 +129,7 @@ def get_em(fn, scale=1., alpha=1-0.6827):
 
     return f, l, d, c, integ
 
-def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjets.root', fn5 = 'wjets_amcatnlo.root', fn6 = 'qcdmu15.root', Isshort='dummy', whichlep='Muon'):
+def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjets.root', fn5 = 'wjets_amcatnlo.root', fn6 = 'qcdmu15.root', Isshort='dummy', whicheta='low'):
     assert ex
     ps = plot_saver(plot_dir('TrackMover_' + ex), size=(600,600), log=True)
 
@@ -169,11 +169,7 @@ def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjet
             print(name) 
             ROOT.gStyle.SetOptStat("iouRMen") 
 
-            #mc.SetName("mixed signal MC 1mm 15GeV")
-            #mc.SetName("TM MC wjets 2017")
-            #mc.SetName("TM MC 2017 via jet dr") #high-eta")
-            #mc.SetName("raw TM MC 2017+2018 (mixed-eta)")
-            mc.SetName("MC VSS4d 1mm 55GeV (by high-#eta jet)")
+            mc.SetName("REWEIGHTED TM MC 2017+2018")
             mc.ClearUnderflowAndOverflow()
             mc.SetLineWidth(3)
             mc.SetMarkerColor(ROOT.kRed)
@@ -181,43 +177,34 @@ def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjet
             mc.SetFillColor(ROOT.kRed)
             mc.Scale(1.0/mc.Integral())
 
-            #mc2.SetName("TM BTagDisplacedJet 2017")
-            #mc2.SetName("signal LLP 1mm 55GeV MC") #high-eta")
-            mc2.SetName("MC VSS4d 1mm 55GeV (by high-#eta quark)")
-            #mc2.SetName("TM MC 2016 preVFP")
-            #mc2.SetName("MC WSS4d 300um 55GeV (minijet)")
+            mc2.SetName("REWEIGHTED TM SingleMuon data 2017+2018")
             mc2.ClearUnderflowAndOverflow()
             mc2.SetLineWidth(3)
-            mc2.SetMarkerColor(ROOT.kBlue)
-            mc2.SetLineColor(ROOT.kBlue)
-            mc2.SetFillColor(ROOT.kBlue)
+            mc2.SetMarkerColor(ROOT.kBlack)
+            mc2.SetLineColor(ROOT.kBlack)
+            mc2.SetFillColor(ROOT.kBlack)
             mc2.Scale(1.0/mc2.Integral())
 
-            #mc3.SetName("Z(HSS4d) 1mm 55GeV 2016 postVFP")
-            mc3.SetName("TM MC 2016 postVFP")
+            mc3.SetName("V(HSS4d) 1mm 55GeV 2017+2018")
+            #mc3.SetName("RAW TM MC 2017+2018")
             mc3.ClearUnderflowAndOverflow()
             mc3.SetLineWidth(3)
-            mc3.SetMarkerColor(ROOT.kGreen+3)
-            mc3.SetLineColor(ROOT.kGreen+3)
-            mc3.SetFillColor(ROOT.kGreen+3)
+            mc3.SetMarkerColor(ROOT.kBlue)#kRed-9)
+            mc3.SetLineColor(ROOT.kBlue)#kRed-9)
+            mc3.SetFillColor(ROOT.kBlue)#kRed-9)
             mc3.Scale(1.0/mc3.Integral())
 
-            #mc4.SetName("Z(HSS4d) 1mm 55GeV 2017")
-            #mc4.SetName("V(HSS4d) 1mm 55GeV 2017+2018 (low-eta)")
-            #mc4.SetName("MC Stop->dbardbar 1mm 800GeV (RECOjet)")
-            mc4.SetName("TM Data 2017+2018 (low-eta)")
-            #mc4.ClearUnderflowAndOverflow()
+            mc4.SetName("V(HSS4d) 1mm 55GeV 2017+2018 dVV > 1mm")
+            #mc4.SetName("RAW TM SingleMuon data 2017+2018")
+            mc4.ClearUnderflowAndOverflow()
             mc4.SetLineWidth(3)
-            mc4.SetMarkerColor(ROOT.kBlue)
-            mc4.SetLineColor(ROOT.kBlue)
-            mc4.SetFillColor(ROOT.kBlue)
+            mc4.SetMarkerColor(ROOT.kGreen+3)#Gray+1)
+            mc4.SetLineColor(ROOT.kGreen+3)#Gray+1)
+            mc4.SetFillColor(ROOT.kGreen+3)#Gray+1)
             mc4.Scale(1.0/mc4.Integral())
 
-            #mc5.SetName("Z(HSS4d) 1mm 55GeV 2018")
             mc5.SetName("TM Data 2017+2018 (mix-eta)")
-            #mc5.SetName("V(HSS4d) 1mm 55GeV 2017+2018 (mix-eta)")
-            #mc5.SetName("TM MC 2017 1D weight 2logm") #low-eta")
-            #mc5.ClearUnderflowAndOverflow()
+            mc5.ClearUnderflowAndOverflow()
             mc5.SetLineWidth(3)
             mc5.SetMarkerColor(ROOT.kGreen)
             mc5.SetLineColor(ROOT.kGreen)
@@ -225,9 +212,7 @@ def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjet
             mc5.Scale(1.0/mc5.Integral())
 
             mc6.SetName("TM Data 2017+2018 (high-eta)")
-            #mc6.SetName("V(HSS4d) 1mm 55GeV 2017+2018 (high-eta)")
-            #mc6.SetName("TM MC 2017 2D weight sum p bins=10")
-            #mc6.ClearUnderflowAndOverflow()
+            mc6.ClearUnderflowAndOverflow()
             mc6.SetLineWidth(3)
             mc6.SetMarkerColor(ROOT.kRed)
             mc6.SetLineColor(ROOT.kRed)
@@ -236,7 +221,7 @@ def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjet
             
             x_range = None
             y_range = None
-            hist_objs = [mc, mc2] # mc2, mc3]
+            hist_objs = [mc, mc2, mc3, mc4] 
             statbox_size = (0.20,0.15)
             if name.endswith('_den'): #FIXME
                 for g in tot:
@@ -252,7 +237,7 @@ def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjet
             if "_vtx_unc_" in name:
                 x_range = (0,0.03)
             if "closeseed" in name:
-                x_range = (0,40.0)
+                x_range = (0,45.0)
              
             ratios_plot(name,
                         hist_objs,
@@ -265,7 +250,7 @@ def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjet
                         res_divide_opt={'confint': propagate_ratio, 'force_le_1': False, 'allow_subset': True}, #name in ('all_jetsumntracks_rat', )},
                         res_lines=1.,
                         statbox_size=statbox_size,
-                        
+                        text = whicheta+" |#eta| Quarks(Jets) from LLP" 
                         )
             
              
@@ -283,7 +268,7 @@ if __name__ == '__main__':
     fn5 = sys.argv[6]
     fn6 = sys.argv[7]
     Isshort = sys.argv[8]
-    whichlep = sys.argv[9]
+    whicheta = sys.argv[9]
     if len(sys.argv) > 10:
         mc_scale_factor = float(sys.argv[10])
-    comp(ex, fn1, fn2, fn3, fn4, fn5, fn6, Isshort, whichlep)
+    comp(ex, fn1, fn2, fn3, fn4, fn5, fn6, Isshort, whicheta)

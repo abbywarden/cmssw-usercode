@@ -1,30 +1,32 @@
 set -e
-sigpth="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
-sigpth2="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_MixEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
-sigpth3="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p4_HighEta_ExtraJetCuts_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
-pth="/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_StudyV2p4_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau001000um_M55_2Dmovedist3movedistjetdrllpsumpcoarse60Correction"
-pth2="/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_StudyV2p4_MixEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau001000um_M55_2Dmovedist3movedistjetdrllpsumpcoarse60Correction"
-pth3="/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_StudyV2p4_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau001000um_M55_2Dmovedist3movedistjetdrllpsumpcoarse60Correction"
-spl="SingleMuon"
-
-for year in 2017
+pth1="/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_StudyV2p5_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau001000um_M55_2Dmovedist3movedist2jetdrllpsumpcoarse60alletaCorrection"
+pth2="/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_StudyV2p5_MixEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau001000um_M55_2Dmovedist3movedist2jetdrllpsumpcoarse60alletaCorrection"
+pth3="/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_StudyV2p5_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau001000um_M55_2Dmovedist3movedist2jetdrllpsumpcoarse60alletaCorrection"
+sigpth1="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+sigpth2="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_MixEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+sigpth3="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+incsigpthlow="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_VtxUnc20umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+incsigpthhigh="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_VtxUnc30to50umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+incsigpth1="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+incsigpth2="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_MixEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+incsigpth3="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+#spl="VHToSSTodddd_tau1mm_M55_2017p8.root" 
+spl0="VHToSSTodddd_tau1mm_M55_2017p8.root" 
+spl="VHToSSTodddd_tau1mm_M55_2017p8.root" 
+data="SingleMuon2017p8.root"
+bkg="background_leptonpresel_2017p8.root"
+for year in "2017p8"
 do
-  for tau in 0001000 #001000 030000 #000000100 000000300 000001000 000003000 000010000 000030000 000100000
+  for tau in 001000 #001000 030000 #000000100 000000300 000001000 000003000 000010000 000030000 000100000
   do
-    python draw2.py TM_config20_TMData_compare_1mm_by_eta_2017p8 ${pth}/SingleMuon2017p8.root  ${pth}/${spl}2017p8.root ${pth}/background_leptonpresel_2017p8.root  ${pth2}/${spl}2017p8.root ${pth3}/${spl}2017p8.root  
+    for mass in 55 
+    do
+      #python draw2.py TM_TOC_Mu_year${year}_ctau${tau}um_mass${mass}_loweta_VHSS4d_ONLYTM ${pth1}/${bkg} ${pth1}/${data} ${incsigpth1}/${spl} ${sigpth1}/${spl} ${pth1}/${bkg} Low
+      #python draw2.py TM_TOC_Mu_year${year}_ctau${tau}um_mass${mass}_mixeta_VHSS4d ${pth2}/${bkg} ${pth2}/${data} ${incsigpth2}/${spl} ${sigpth2}/${spl} ${pth2}/${bkg} Mix
+      #python draw2.py TM_TOC_Mu_year${year}_ctau${tau}um_mass${mass}_higheta_VHSS4d ${pth3}/${bkg} ${pth3}/${data} ${incsigpth3}/${spl} ${sigpth3}/${spl} ${pth3}/${bkg} High
+      python draw2.py TM_TOC_Mu_year2017p8_ctau${tau}um_mass${mass}_byvtxuncnclsedtk3to5_VHSS4d ${incsigpthlow}/${spl} ${incsigpthlow}/${spl} ${incsigpthhigh}/${spl} ${incsigpthlow}/${spl} ${incsigpthlow}/${spl} All
+    done
 
-    #python draw.py TM_config20_VH_compare_1mm_M55_mixeta_by_2017p8_by_typeclsed ${pth}/background_leptonpresel_2017p8.root  ${sigpth}/VHToSSTodddd_tau1mm_M55_2017p8.root ${sigpth2}/VHToSSTodddd_tau1mm_M55_2017p8.root 
-
-    
-    #python draw2.py TM_config20_WplusH_compare_1mm_study_mixeta_studyalt ${pth}/background_leptonpresel_${year}.root  ${pth2}/background_leptonpresel_${year}.root ${sigpth}/WplusHToSSTodddd_tau1mm_M55_2017.root  ${sigpth}/WplusHToSSTodddd_tau1mm_M55_2017.root ${pth3}/background_leptonpresel_${year}.root  
-
-    #python draw.py TM_config20_WplusH_compare_1mm_studyvtxunc_v2 ${sigpth}/WplusHToSSTodddd_tau1mm_M55_2017.root  ${sigpth2}/WplusHToSSTodddd_tau1mm_M55_2017.root ${sigpth3}/WplusHToSSTodddd_tau1mm_M55_2017.root 
-
-    #python draw.py TM_config20_M55_tau000${tau}um_all_2djetdrllpsump_studyv2p3 ${pth}/background_leptonpresel_${year}.root ${pth}/background_leptonpresel_${year}.root ${sigpth}/WplusHToSSTodddd_tau1mm_M55_2017.root  
-
-    #python draw.py TM_config20_M0800_tau000${tau}um_Stopdbardbar_normdzv6 ${pth}/BTagDisplacedJet${year}.root  ${pth}/background_btagpresel_${year}.root  ${pthdata}/mfv_stopdbardbar_tau001000um_M0800_2017.root 
-    
-    #python draw.py TM_config20_M55_tau000${tau}um_studytk ${pth}/SingleMuon${year}.root ${pth}/background_leptonpresel_${year}.root ${pth}/background_leptonpresel_${year}.root 
-    
   done
+
 done

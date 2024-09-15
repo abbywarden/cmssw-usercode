@@ -7,7 +7,9 @@ from JMTucker.Tools.ROOTTools import *
 set_style()
 ROOT.TH1.AddDirectory(0)
 
-variables = ['_movedist', 'misccloseseed', 'lsp', '_mv_', '_npv_', 'nvtx', '_dvv', 'vtxunc', 'vtxbs2d', 'vtxeta', 'vtxdbv', '_sump_', 'tks', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+#variables = ['_movedist', 'misccloseseed', 'lsp', '_npv_', 'nvtx', 'dvv', 'tkunc', 'vtxunc', 'vtxbs2d', 'vtxeta', 'vtxdbv', '_sump_', 'tks', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+
+variables = ['_npv_','_dvv', '_vtxunc', 'closeseedtks']
 
 def get_em(fn, scale=1., alpha=1-0.6827):
     #f = ROOT.TFile(fn)
@@ -91,8 +93,10 @@ def get_em(fn, scale=1., alpha=1-0.6827):
               num = num.Rebin(2)
               den = den.Rebin(2)
             if 'dvv' in name:
-              num = num.Rebin(4)
-              den = den.Rebin(4)
+              num.Rebin(4)
+              den.Rebin(4)
+              num.GetXaxis().SetRangeUser(0.0,0.5)
+              den.GetXaxis().SetRangeUser(0.0,0.5)
             g = histogram_divide(num, den, confint_params=(alpha,), use_effective=use_effective)
             print(name)
             g.SetTitle('')
@@ -133,7 +137,7 @@ def get_em(fn, scale=1., alpha=1-0.6827):
 
     return f, l, d, c, integ
 
-def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.root', fn5='signalnon.root'):
+def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.root', fn5='signalnon.root', whicheta='low'):
     assert ex
     ps = plot_saver(plot_dir('TrackMover_' + ex), size=(600,600), log=False)
 
@@ -170,32 +174,37 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.r
 
         if name.endswith('_rat') or (not name.endswith('_num') and not name.endswith('_den')):
             
-            data.SetName("SingleMuon")
-            data.SetMarkerSize(0.8)
-            data.SetMarkerColor(ROOT.kBlack)
-            data.SetLineColor(ROOT.kBlack)
-            data.SetFillColor(ROOT.kBlack)
-
             mc.SetName("MC bkg")
             mc.SetMarkerSize(0.8)
-            mc.SetMarkerColor(ROOT.kBlue)
-            mc.SetLineColor(ROOT.kBlue)
-            mc.SetFillColor(ROOT.kBlue)
+            mc.SetLineWidth(3)
+            mc.SetMarkerColor(ROOT.kRed)
+            mc.SetLineColor(ROOT.kRed)
+            mc.SetFillColor(ROOT.kRed)
+
+            data.SetName("SingleMuon")
+            data.SetMarkerSize(0.8)
+            data.SetLineWidth(3)
+            data.SetMarkerColor(ROOT.kGreen+3)#Black)
+            data.SetLineColor(ROOT.kGreen+3)#Black)
+            data.SetFillColor(ROOT.kGreen+3)#Black)
             
             signal.SetName("MC signal")
             signal.SetMarkerSize(0.8)
-            signal.SetMarkerColor(ROOT.kRed+3)
-            signal.SetLineColor(ROOT.kRed+3)
-            signal.SetFillColor(ROOT.kRed+3)
+            signal.SetLineWidth(3)
+            signal.SetMarkerColor(ROOT.kBlue)#Red-9)
+            signal.SetLineColor(ROOT.kBlue)#Red-9)
+            signal.SetFillColor(ROOT.kBlue)#Red-9)
             
             signalmid.SetName("MC signal mid")
             signalmid.SetMarkerSize(0.8)
-            signalmid.SetMarkerColor(ROOT.kGreen)
-            signalmid.SetLineColor(ROOT.kGreen)
-            signalmid.SetFillColor(ROOT.kGreen)
+            signalmid.SetLineWidth(3)
+            signalmid.SetMarkerColor(ROOT.kGreen+3)#Gray+1)
+            signalmid.SetLineColor(ROOT.kGreen+3)#Gray+1)
+            signalmid.SetFillColor(ROOT.kGreen+3)#Gray+1)
 
             signalnon.SetName("MC signal non")
             signalnon.SetMarkerSize(0.8)
+            signalnon.SetLineWidth(3)
             signalnon.SetMarkerColor(ROOT.kRed)
             signalnon.SetLineColor(ROOT.kRed)
             signalnon.SetFillColor(ROOT.kRed)
@@ -207,14 +216,14 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.r
             if name.endswith('_rat'):
                 for g in both:
                     g.GetYaxis().SetTitle('efficiency')
-                objs = [(mc, 'P'),(signalmid, 'P') ,(signalnon, 'P'),] # (signalmid, 'P')]
+                #objs = [(mc, 'P'),(data, 'P') ,(signal, 'P'), (signalmid, 'P')]
+                objs = [(data, 'P'),(signal, 'P'),] # (signalmid, 'P'), (signalnon, 'P')]
                 y_range = (0, 1.05)
-                statbox_size = None
+                #statbox_size = None
             if 'bs2derr' in name:
                 x_range = (0, 0.01)
             if 'movedist' in name:
                 x_range = (0.0, 0.2)
-            
             ratios_plot(name,
                         objs,
                         plot_saver=ps,
@@ -227,6 +236,7 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.r
                         res_divide_opt={'confint': propagate_ratio, 'force_le_1': False, 'allow_subset': True}, #name in ('all_jetsumntracks_rat', )},
                         res_lines=1.,
                         statbox_size=statbox_size,
+                        text = whicheta+" |#eta| Quarks(Jets) from LLP" 
                         )
 
 if __name__ == '__main__':
@@ -240,6 +250,7 @@ if __name__ == '__main__':
     fn3 = sys.argv[4]
     fn4 = sys.argv[5]
     fn5 = sys.argv[6]
-    if len(sys.argv) > 7:
-        mc_scale_factor = float(sys.argv[7])
-    comp(ex, fn1, fn2, fn3, fn4, fn5)
+    whicheta = sys.argv[7]
+    if len(sys.argv) > 8:
+        mc_scale_factor = float(sys.argv[8])
+    comp(ex, fn1, fn2, fn3, fn4, fn5, whicheta)

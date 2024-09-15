@@ -1100,7 +1100,7 @@ int main(int argc, char** argv) {
     }
     
 
-    if (dist2move > 0.0400) //FIXME 
+    if (dist2move > 0.0400 && dist2move < 100) //FIXME 
       NR_loop_cont(w);
 
     // w now final and can count event toward denominator
