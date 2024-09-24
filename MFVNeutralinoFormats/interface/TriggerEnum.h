@@ -147,37 +147,21 @@ namespace mfv {
     //displaced dijet triggers 2016
     mfv::b_HLT_HT350_DisplacedDijet40_DisplacedTrack, mfv::b_HLT_HT650_DisplacedDijet80_Inclusive
   };
- 
-  //For Lepton Trigger Studies; the following depends on years 
-  // 2016
+
   static const std::vector<size_t> ElectronTriggers = {
-    //electron triggers
-    mfv::b_HLT_Ele27_WPTight_Gsf,
-    mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT, mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
+   //electron triggers
+   mfv::b_HLT_Ele27_WPTight_Gsf, //2016
+   mfv::b_HLT_Ele35_WPTight_Gsf, //2017
+   mfv::b_HLT_Ele32_WPTight_Gsf, //2018
+   mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT, mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
   }; 
   static const std::vector<size_t> MuonTriggers = {
-    //muon triggers
-     mfv::b_HLT_IsoMu27, mfv::b_HLT_Mu50,
-   };
-  //2017
-  //static const std::vector<size_t> ElectronTriggers = {
-  //  //electron triggers
-  //  mfv::b_HLT_Ele35_WPTight_Gsf,
-  //  mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT, mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
-  //};
-  //static const std::vector<size_t> MuonTriggers = {
-  //  //muon triggers
-  //  mfv::b_HLT_IsoMu27, mfv::b_HLT_Mu50,
-  //};
-  //2018
-  //static const std::vector<size_t> ElectronTriggers = {
-  //  //electron triggers 
-  //  mfv::b_HLT_Ele32_WPTight_Gsf, mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT, mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
-  //};
-  //static const std::vector<size_t> MuonTriggers = {
-  //  mfv::b_HLT_IsoMu24, mfv::b_HLT_Mu50,
-  //};
-
+   //muon triggers
+    mfv::b_HLT_IsoMu27, //2016 and 2017
+    mfv::b_HLT_IsoMu24, //2018
+    mfv::b_HLT_Mu50,
+  };
+  
   //displaced dilepton triggers 
   static const std::vector<size_t> DisplacedLeptonTriggers = {
     mfv::b_HLT_Mu43NoFiltersNoVtx_Photon43_CaloIdL, mfv::b_HLT_Diphoton30_22_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90,

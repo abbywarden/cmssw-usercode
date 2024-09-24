@@ -46,7 +46,6 @@ def doit(name):
     obj = getattr(process, name)
     setattr(process, '%sJetTriggered'    % name, obj.clone())
     setattr(process, '%sJetPreSel'       % name, obj.clone())
-<<<<<<< HEAD
     setattr(process, '%sMuonTriggered' % name, obj.clone())
     setattr(process, '%sMuonPreSel'    % name, obj.clone())
     setattr(process, '%sElectronTriggered' % name, obj.clone())
@@ -57,15 +56,6 @@ def doit(name):
     setattr(process, 'p%sMu' % name, cms.Path(process.mfvTriggerFilterMuonsOnly * process.preSeq * getattr(process, '%sMuonTriggered' % name) * process.mfvAnalysisCutsMuon * getattr(process, '%sMuonPreSel' % name)))
     setattr(process, 'p%sEle' % name, cms.Path(process.mfvTriggerFilterElectronsOnly * process.preSeq * getattr(process, '%sElectronTriggered' % name) * process.mfvAnalysisCutsElectron * getattr(process, '%sElectronPreSel' % name)))
     setattr(process, 'p%sBJetDispJetVetoHT' % name, cms.Path(process.mfvTriggerFilterBjetsORDisplacedDijetVetoHT * process.preSeq * getattr(process, '%sBJetDispJetVetoHTTriggered'    % name) * process.mfvAnalysisCutsBJetDispJetVetoHT * getattr(process, '%sBJetDispJetVetoHTPreSel'    % name)))
-=======
-    setattr(process, '%sLeptonTriggered' % name, obj.clone())
-    setattr(process, '%sLeptonPreSel'    % name, obj.clone())
-    setattr(process, '%sDisplacedTriggered'    % name, obj.clone())
-    setattr(process, '%sDisplacedPreSel'       % name, obj.clone())
-    setattr(process, 'p%sJet' % name, cms.Path(process.mfvTriggerFilterJetsOnly    * process.preSeq * getattr(process, '%sJetTriggered'    % name) * process.mfvAnalysisCutsJet    * getattr(process, '%sJetPreSel'    % name)))
-    setattr(process, 'p%sLep' % name, cms.Path(process.mfvTriggerFilterLeptonsOnly * process.preSeq * getattr(process, '%sLeptonTriggered' % name) * process.mfvAnalysisCutsLepton * getattr(process, '%sLeptonPreSel' % name)))
-    setattr(process, 'p%sDisplaced' % name, cms.Path(process.mfvTriggerFilterBjetsORDisplacedDijet * process.preSeq * getattr(process, '%sDisplacedTriggered'    % name) * process.mfvAnalysisCutsDisplaced * getattr(process, '%sDisplacedPreSel'    % name)))
->>>>>>> 6d36ca4c0ccf0e9028496610c65c095b11fadb56
 
 doit('mfvEventHistos')
 if not settings.is_mc:

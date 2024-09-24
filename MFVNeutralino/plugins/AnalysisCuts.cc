@@ -4,7 +4,7 @@
 #include "DataFormats/Math/interface/deltaPhi.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
-//#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "FWCore/Framework/interface/EDFilter.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -224,6 +224,7 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
     if (apply_presel == 2) {
       bool success = false;
       bool pass_muon_events = false;
+      bool pass_ele_events = false;
       for(size_t trig : mfv::MuonTriggers){
 	if(satisfiesLepTrigger(mevent, trig, setup)) { 
 	  success = true;
@@ -232,19 +233,19 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
 	}
       }
       
-      if (apply_electrons_only && !pass_muon_events){ // to avoid event-events that already pass muon triggers being double-counted
-        if (success){  
-          success = false;
-        }
-        else{
-          for(size_t trig : mfv::ElectronTriggers){
-            if(satisfiesLepTrigger(mevent, trig, setup)) { 
-	      success = true;
-              break;
-	    }
-          }
-        }
+      if (!pass_muon_events) {  
+        for(size_t trig : mfv::ElectronTriggers){
+          if(satisfiesLepTrigger(mevent, trig, setup)) { 
+            pass_ele_events = true;
+            break;
+           }
+         }
+        //now section into categories 
+        if (apply_electrons_only) success = pass_ele_events; //electron veto mu 
+        else if (apply_muons_only) success = pass_muon_events; //muons only 
+        else success = (pass_muon_events || pass_ele_events); // both 
       }
+
       if (apply_displacedlepton_triggers) {
 	for(size_t trig : mfv::DisplacedLeptonTriggers){
 	  if(satisfiesDispLepTrigger(mevent, trig, setup)) { 
@@ -591,9 +592,9 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
 bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig, const edm::EventSetup& setup) {
   if(require_trigbit and !mevent->pass_hlt(trig)) return false;
 
-  //edm::ESHandle<JetCorrectorParametersCollection> jet_corr;
-  //setup.get<JetCorrectionsRecord>().get("AK4PF", jet_corr);
-  //JetCorrectionUncertainty jec_unc((*jet_corr)["Uncertainty"]);
+  edm::ESHandle<JetCorrectorParametersCollection> jet_corr;
+  setup.get<JetCorrectionsRecord>().get("AK4PF", jet_corr);
+  JetCorrectionUncertainty jec_unc((*jet_corr)["Uncertainty"]);
 
   // Container for JER/JES-corrected jet pT's
   std::vector<float> jet_pt_checks;
@@ -622,29 +623,29 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
     float cj_aeta = fabs(mevent->calo_jet_eta[ic]);
 
     // Do this loop if we want to study correction for JER
-    //if (study_jer) {
-    //    float cj_E  = mevent->calo_jet_energy[ic];
-    //    float closest_pf_dR = 9.9;
-    //    int   closest_pf_idx = 999;
+    if (study_jer) {
+        float cj_E  = mevent->calo_jet_energy[ic];
+        float closest_pf_dR = 9.9;
+        int   closest_pf_idx = 999;
 
-    //    for (int ip=0; ip < njets; ip++) {
-    //        float temp_dR = reco::deltaR(mevent->jet_eta[ip], mevent->jet_phi[ip], mevent->calo_jet_eta[ic], mevent->calo_jet_phi[ic]);
-    //        if (temp_dR < closest_pf_dR) {
-    //            closest_pf_dR = temp_dR;
-    //            closest_pf_idx = ip;
-    //        }
-    //    }
+        for (int ip=0; ip < njets; ip++) {
+            float temp_dR = reco::deltaR(mevent->jet_eta[ip], mevent->jet_phi[ip], mevent->calo_jet_eta[ic], mevent->calo_jet_phi[ic]);
+            if (temp_dR < closest_pf_dR) {
+                closest_pf_dR = temp_dR;
+                closest_pf_idx = ip;
+            }
+        }
 
-    //    cj_pt = jmt::UncertTools::jer_pt(mevent->jet_gen_energy[closest_pf_idx], cj_E, cj_pt, cj_aeta, jes_jer_var_up);
+        cj_pt = jmt::UncertTools::jer_pt(mevent->jet_gen_energy[closest_pf_idx], cj_E, cj_pt, cj_aeta, jes_jer_var_up);
 
-    //}
+    }
 
-    //else if (study_jes) {
-    //    jec_unc.setJetEta(mevent->calo_jet_eta[ic]);
-    //    jec_unc.setJetPt(mevent->calo_jet_pt[ic]);
-    //    if (    jes_jer_var_up) { cj_pt *= (1 + jec_unc.getUncertainty(true)); }
-    //    if (not jes_jer_var_up) { cj_pt *= (1 - jec_unc.getUncertainty(false)); }
-    //}
+    else if (study_jes) {
+        jec_unc.setJetEta(mevent->calo_jet_eta[ic]);
+        jec_unc.setJetPt(mevent->calo_jet_pt[ic]);
+        if (    jes_jer_var_up) { cj_pt *= (1 + jec_unc.getUncertainty(true)); }
+        if (not jes_jer_var_up) { cj_pt *= (1 - jec_unc.getUncertainty(false)); }
+    }
 
     if (cj_pt > 30.0 and cj_aeta < 2.5) alt_calo_ht += mevent->calo_jet_pt[ic];
 
@@ -661,16 +662,16 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
     float rand_y = distribution(rng);
     float pf_pt = mevent->jet_pt[j0];
 
-    //if (study_jer) {
-    //    pf_pt = jmt::UncertTools::jer_pt_alt(mevent->jet_gen_energy[j0], mevent->jet_p4(j0), jes_jer_var_up);
-    //}
+    if (study_jer) {
+        pf_pt = jmt::UncertTools::jer_pt_alt(mevent->jet_gen_energy[j0], mevent->jet_p4(j0), jes_jer_var_up);
+    }
 
-    //else if (study_jes) {
-    //    jec_unc.setJetEta(mevent->jet_eta[j0]);
-    //    jec_unc.setJetPt(mevent->jet_pt[j0]);
-    //    if (    jes_jer_var_up) { pf_pt *= (1 + jec_unc.getUncertainty(true)); }
-    //    if (not jes_jer_var_up) { pf_pt *= (1 - jec_unc.getUncertainty(false)); }
-    //}
+    else if (study_jes) {
+        jec_unc.setJetEta(mevent->jet_eta[j0]);
+        jec_unc.setJetPt(mevent->jet_pt[j0]);
+        if (    jes_jer_var_up) { pf_pt *= (1 + jec_unc.getUncertainty(true)); }
+        if (not jes_jer_var_up) { pf_pt *= (1 - jec_unc.getUncertainty(false)); }
+    }
 
     jet_pt_checks.push_back(pf_pt);
 
@@ -971,6 +972,7 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
 bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t trig, const edm::EventSetup& setup) { 
   if(!mevent->pass_hlt(trig)) return false;
 
+  int year = int(MFVNEUTRALINO_YEAR);
   int nmuons     = mevent->nmuons();
   int nelectrons = mevent->nelectrons();
   int njets      = mevent->njets(20);
@@ -978,12 +980,41 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
   bool passed_kinematics = false;
 
   switch(trig){
-  case mfv::b_HLT_Ele35_WPTight_Gsf : //For 2017
-  //case mfv::b_HLT_Ele32_WPTight_Gsf : //For 2018
+  case mfv::b_HLT_Ele27_WPTight_Gsf : //for 2016
     {
+    if (year != 20161 || year !=20162) return false;
+    for(int ie =0; ie < nelectrons; ++ie){
+      if (mevent->electron_pt[ie] < 30) continue; //for 2016
+      if (mevent->electron_ID[ie][3] == 1) {
+        if (abs(mevent->electron_eta[ie]) < 2.4) { 
+          if (mevent->electron_iso[ie] < 0.10) {
+            passed_kinematics = true;
+          } 
+        }
+      }
+    }
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_Ele35_WPTight_Gsf : //for 2017
+    {
+    if (year != 2017) return false;
+    for(int ie =0; ie < nelectrons; ++ie){
+      if (mevent->electron_pt[ie] < 38) continue; //for 2017
+      if (mevent->electron_ID[ie][3] == 1) {
+        if (abs(mevent->electron_eta[ie]) < 2.4) { 
+          if (mevent->electron_iso[ie] < 0.10) {
+            passed_kinematics = true;
+          } 
+        }
+      }
+    }
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_Ele32_WPTight_Gsf : //for 2018
+    {
+      if (year != 2018) return false;
       for(int ie =0; ie < nelectrons; ++ie){
-        //if (mevent->electron_pt[ie] < 35) continue; //For 2018
-	if (mevent->electron_pt[ie] < 38) continue; //For 2017
+        if (mevent->electron_pt[ie] < 35) continue; //for 2018
 	      if (mevent->electron_ID[ie][3] == 1) {
 	        if (abs(mevent->electron_eta[ie]) < 2.4) { 
 	          if (mevent->electron_iso[ie] < 0.10) {
@@ -994,12 +1025,27 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
       }
       return passed_kinematics;
     }
-  case mfv::b_HLT_IsoMu27 : //For 2017
-  //case mfv::b_HLT_IsoMu24 : //For 2018
+                    
+  case mfv::b_HLT_IsoMu27 : //for 2016,2017
     {
+    if (year != 2016 || year != 2017) return false;
+    for(int im =0; im < nmuons; ++im) {
+      if (mevent->muon_pt[im] < 30) continue; //for 2016,2017
+      if (mevent->muon_ID[im][1] == 1) {
+        if (abs(mevent->muon_eta[im]) < 2.4) {
+          if (mevent->muon_iso[im] < 0.15) {
+            passed_kinematics = true;
+          }
+        }
+      }
+    }
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_IsoMu24 : //for 2018
+    {
+      if (year != 2018) return false;
       for(int im =0; im < nmuons; ++im) {
-	//if (mevent->muon_pt[im] < 27) continue; //For 2018
-          if (mevent->muon_pt[im] < 30) continue; //For 2017
+        if (mevent->muon_pt[im] < 27) continue; //for 2018
 	      if (mevent->muon_ID[im][1] == 1) {
 	        if (abs(mevent->muon_eta[im]) < 2.4) {
 	          if (mevent->muon_iso[im] < 0.15) {
@@ -1067,7 +1113,7 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
   return false;
 
 }
-
+                    
 //displaced lepton trigger & per trigger preselection 
 bool MFVAnalysisCuts::satisfiesDispLepTrigger(edm::Handle<MFVEvent> mevent, size_t trig, const edm::EventSetup& setup) { 
   if(!mevent->pass_hlt(trig)) return false;
