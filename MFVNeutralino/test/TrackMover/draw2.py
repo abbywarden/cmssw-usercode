@@ -97,7 +97,11 @@ def get_em(fn, scale=1., alpha=1-0.6827):
               den.Rebin(4)
               num.GetXaxis().SetRangeUser(0.0,0.5)
               den.GetXaxis().SetRangeUser(0.0,0.5)
-            g = histogram_divide(num, den, confint_params=(alpha,), use_effective=use_effective)
+            if 'close' in name:
+              num.GetXaxis().SetRangeUser(0.0,45.0)
+              den.GetXaxis().SetRangeUser(0.0,45.0)
+            num.Divide(num,den, 1, 1,"B")#histogram_divide(num, den, confint_params=(alpha,), use_effective=use_effective)
+            g = num.Clone()
             print(name)
             g.SetTitle('')
             g.GetXaxis().SetTitle(num.GetXaxis().GetTitle())
@@ -184,9 +188,9 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.r
             data.SetName("SingleMuon")
             data.SetMarkerSize(0.8)
             data.SetLineWidth(3)
-            data.SetMarkerColor(ROOT.kGreen+3)#Black)
-            data.SetLineColor(ROOT.kGreen+3)#Black)
-            data.SetFillColor(ROOT.kGreen+3)#Black)
+            data.SetMarkerColor(ROOT.kBlack)
+            data.SetLineColor(ROOT.kBlack)
+            data.SetFillColor(ROOT.kBlack)
             
             signal.SetName("MC signal")
             signal.SetMarkerSize(0.8)
@@ -217,7 +221,8 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.r
                 for g in both:
                     g.GetYaxis().SetTitle('efficiency')
                 #objs = [(mc, 'P'),(data, 'P') ,(signal, 'P'), (signalmid, 'P')]
-                objs = [(data, 'P'),(signal, 'P'),] # (signalmid, 'P'), (signalnon, 'P')]
+                #objs = [(signalmid, 'P'),(mc, 'P'),(data, 'P')] # (signalmid, 'P'), (signalnon, 'P')]
+                objs = [(mc, 'P'),(signalmid, 'P')] # (signalmid, 'P'), (signalnon, 'P')]
                 y_range = (0, 1.05)
                 #statbox_size = None
             if 'bs2derr' in name:
@@ -236,7 +241,7 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.r
                         res_divide_opt={'confint': propagate_ratio, 'force_le_1': False, 'allow_subset': True}, #name in ('all_jetsumntracks_rat', )},
                         res_lines=1.,
                         statbox_size=statbox_size,
-                        text = whicheta+" |#eta| Quarks(Jets) from LLP" 
+                        text = whicheta+" Jets (|#eta| < 1.5) decaying from LLP" 
                         )
 
 if __name__ == '__main__':

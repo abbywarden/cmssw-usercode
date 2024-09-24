@@ -12,7 +12,9 @@ ROOT.TH1.AddDirectory(0)
 
 #variables = ['_movedist', '_sump_', 'trk', '_npv_', '_costheta_', '_njets_', '2logm', 'miscseed', 'nseed', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
 
-variables = ['_movedist', 'movedclo', 'half', '_mv_', 'jet0_eta', 'jet1_eta', 'qrk0_dxybs', 'qrk1_dxybs', 'jet0_dxybs', 'jet1_dxybs', 'qrk0_p', 'qrk1_p', 'quark', '_sump_', 'asym', 'jet0_trk', 'jet1_trk', '_npv_', 'misc', '_dvv', 'lsp', 'lspeta', 'nvtx', 'vtxcat', 'vtxbs', 'vtxun', 'vtxeta', 'vtxdbv', '_costheta_', '_njets_', 'miscseed', 'nseed', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+variables = ['_vtx', '_movedist', 'movedclo', 'half', '_mv_', 'jet0_eta', 'jet1_eta', 'qrk0_dxybs', 'qrk1_dxybs', 'jet0_dxybs', 'jet1_dxybs', 'qrk0_p', 'qrk1_p', 'quark', '_sump_', 'asym', 'jet0_trk', 'jet1_trk', '_npv_', 'misc', '_dvv', 'lsp', 'lspeta', 'nvtx', 'vtxcat', 'vtxbs', 'vtxun', 'vtxeta', 'vtxdbv', 'vtxntk', 'vtxnm1', '_costheta_', '_njets_', 'miscseed', 'nseed', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+
+#variables = ['npv', 'closeseedtks', 'dvv', 'dbv', 'chi2', 'eta', 'bs2derr', 'ntk', 'vtxunc']
 
 def get_em(fn, scale=1., alpha=1-0.6827):
     f = ROOT.TFile.Open(fn)
@@ -64,7 +66,7 @@ def get_em(fn, scale=1., alpha=1-0.6827):
            if var in name:
              Isnametoplot = True
              break
-        if not Isnametoplot or name.startswith('h_') or 'which' in name:
+        if not Isnametoplot or name.startswith('h_') or 'which' in name or '6tk' in name:
            continue
         if 'llp_sump' in name:
             obj.Rebin(10)
@@ -169,7 +171,8 @@ def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjet
             print(name) 
             ROOT.gStyle.SetOptStat("iouRMen") 
 
-            mc.SetName("REWEIGHTED TM MC 2017+2018")
+            #mc.SetName("REWEIGHTED TM MC")
+            mc.SetName("signal MC 10-30um vtxunc")
             mc.ClearUnderflowAndOverflow()
             mc.SetLineWidth(3)
             mc.SetMarkerColor(ROOT.kRed)
@@ -177,7 +180,7 @@ def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjet
             mc.SetFillColor(ROOT.kRed)
             mc.Scale(1.0/mc.Integral())
 
-            mc2.SetName("REWEIGHTED TM SingleMuon data 2017+2018")
+            mc2.SetName("REWEIGHTED TM data")
             mc2.ClearUnderflowAndOverflow()
             mc2.SetLineWidth(3)
             mc2.SetMarkerColor(ROOT.kBlack)
@@ -185,22 +188,23 @@ def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjet
             mc2.SetFillColor(ROOT.kBlack)
             mc2.Scale(1.0/mc2.Integral())
 
-            mc3.SetName("V(HSS4d) 1mm 55GeV 2017+2018")
-            #mc3.SetName("RAW TM MC 2017+2018")
+            #mc3.SetName("V(HSS4d) 1mm 55GeV 2017+2018")
+            mc3.SetName("TM MC")
             mc3.ClearUnderflowAndOverflow()
             mc3.SetLineWidth(3)
-            mc3.SetMarkerColor(ROOT.kBlue)#kRed-9)
-            mc3.SetLineColor(ROOT.kBlue)#kRed-9)
-            mc3.SetFillColor(ROOT.kBlue)#kRed-9)
+            mc3.SetMarkerColor(ROOT.kRed-9)
+            mc3.SetLineColor(ROOT.kRed-9)
+            mc3.SetFillColor(ROOT.kRed-9)
             mc3.Scale(1.0/mc3.Integral())
 
-            mc4.SetName("V(HSS4d) 1mm 55GeV 2017+2018 dVV > 1mm")
-            #mc4.SetName("RAW TM SingleMuon data 2017+2018")
+            #mc4.SetName("V(HSS4d) 1mm 55GeV MC")
+            #mc4.SetName("TM data")
+            mc4.SetName("signal MC 15-35um vtxunc")
             mc4.ClearUnderflowAndOverflow()
             mc4.SetLineWidth(3)
-            mc4.SetMarkerColor(ROOT.kGreen+3)#Gray+1)
-            mc4.SetLineColor(ROOT.kGreen+3)#Gray+1)
-            mc4.SetFillColor(ROOT.kGreen+3)#Gray+1)
+            mc4.SetMarkerColor(ROOT.kGreen+3)#ay+1)
+            mc4.SetLineColor(ROOT.kGreen+3)#ay+1)
+            mc4.SetFillColor(ROOT.kGreen+3)#ay+1)
             mc4.Scale(1.0/mc4.Integral())
 
             mc5.SetName("TM Data 2017+2018 (mix-eta)")
@@ -221,7 +225,7 @@ def comp(ex, fn1='data.root', fn2='ttbar.root', fn3='mergedqcd.root', fn4='dyjet
             
             x_range = None
             y_range = None
-            hist_objs = [mc, mc2, mc3, mc4] 
+            hist_objs = [mc, mc4]#[mc, mc2, mc3, mc4] 
             statbox_size = (0.20,0.15)
             if name.endswith('_den'): #FIXME
                 for g in tot:

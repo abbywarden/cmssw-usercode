@@ -5,8 +5,8 @@ pth3="/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_StudyV2p5_HighEta_NoPreS
 sigpth1="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
 sigpth2="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_MixEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
 sigpth3="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkVetoOdVVJetByMiniJetHistsOnnormdzUlv30lepmumv6"
-incsigpthlow="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_VtxUnc20umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
-incsigpthhigh="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_VtxUnc30to50umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+incsigpthlow="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_VtxUnc10to30umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
+incsigpthhigh="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_VtxUnc15to35umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
 incsigpth1="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
 incsigpth2="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_MixEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
 incsigpth3="/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_HighEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6"
@@ -21,10 +21,10 @@ do
   do
     for mass in 55 
     do
-      #python draw2.py TM_TOC_Mu_year${year}_ctau${tau}um_mass${mass}_loweta_VHSS4d_ONLYTM ${pth1}/${bkg} ${pth1}/${data} ${incsigpth1}/${spl} ${sigpth1}/${spl} ${pth1}/${bkg} Low
+      #python draw2.py TM_TOC_Mu_year${year}_ctau${tau}um_mass${mass}_loweta_VHSS4d_ONLYREWEIGHT ${pth1}/${bkg} ${pth1}/${data} ${incsigpth1}/${spl} ${sigpth1}/${spl} ${pth1}/${bkg} Barrel
       #python draw2.py TM_TOC_Mu_year${year}_ctau${tau}um_mass${mass}_mixeta_VHSS4d ${pth2}/${bkg} ${pth2}/${data} ${incsigpth2}/${spl} ${sigpth2}/${spl} ${pth2}/${bkg} Mix
       #python draw2.py TM_TOC_Mu_year${year}_ctau${tau}um_mass${mass}_higheta_VHSS4d ${pth3}/${bkg} ${pth3}/${data} ${incsigpth3}/${spl} ${sigpth3}/${spl} ${pth3}/${bkg} High
-      python draw2.py TM_TOC_Mu_year2017p8_ctau${tau}um_mass${mass}_byvtxuncnclsedtk3to5_VHSS4d ${incsigpthlow}/${spl} ${incsigpthlow}/${spl} ${incsigpthhigh}/${spl} ${incsigpthlow}/${spl} ${incsigpthlow}/${spl} All
+      python draw2.py TM_TOC_Mu_year2017p8_ctau${tau}um_mass${mass}_byvtxuncnclsedtk3to_by5um_VHSS4d ${incsigpthlow}/${spl} ${incsigpthlow}/${spl} ${incsigpthlow}/${spl} ${incsigpthhigh}/${spl} ${incsigpthlow}/${spl} All
     done
 
   done

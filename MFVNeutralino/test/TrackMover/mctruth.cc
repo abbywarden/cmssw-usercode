@@ -6,7 +6,7 @@ int main(int argc, char** argv) {
 
   jmt::NtupleReader<mfv::MovedTracksNtuple> nr;
   namespace po = boost::program_options;
-  nr.init_options("mfvMovedTreeMCTruth/t", "TrackMoverMCTruth_StudyMinijetsV2p5_VtxUnc50to70umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6", "trackmovermctruthonnormdzulv30lepmumv6", "all_signal = True")
+  nr.init_options("mfvMovedTreeMCTruth/t", "TrackMoverMCTruth_StudyMinijetsV2p5_VtxBs2derr10to30umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6", "trackmovermctruthonnormdzulv30lepmumv6", "all_signal = True")
     ("min-lspdist3", po::value<double>(&min_lspdist3)->default_value(0.00), "min distance between LSP decays to use event") //FIXME 0.02
     ;
 
@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
     numdens("all")
   };
 
-  enum { k_decay_x, k_decay_y, k_decay_z, k_decay_xy, k_lspdphi, k_lspdeta, k_lspdr, k_lspasymdecay, k_lspcostheta, k_lspdist2, k_lspdist3, k_lspdist3symmath, k_ratlspdist3, k_2sinhalftheta, k_lspdistz, k_movedist2, k_movedist3, k_lspeta, k_lsppt, k_lspgammabeta, k_lspctau, k_npv, k_pvz, k_dist2dpvbs, k_pvrho, k_pvntracks, k_pvscore, k_ht, k_njets, k_nmuons, k_muon_pT, k_muon_abseta, k_muon_iso, k_muon_absdxybs, k_muon_absdz, k_muon_nsigmadxybs, k_neles, k_ele_pT, k_ele_abseta, k_ele_iso, k_ele_absdxybs, k_ele_absdz, k_ele_nsigmadxybs, k_met_pT, k_w_pT, k_w_mT, k_z_pT, k_z_m, k_lnu_absphi, k_ljet_absdr, k_ljet0_absdr, k_ljet1_absdr, k_nujet0_absphi, k_nujet1_absphi, k_wjet_dphi, k_zjet_dphi, k_jet_asymm, k_jet0_eta, k_jet1_eta, k_jet_dr, k_jet_costheta, k_jet_asymsump, k_jet_deta, k_jet_dphi, k_jet_dind, k_pt0, k_pt1, k_ntks_j0, k_ntks_j1, k_jet_dr_minj0_q0, k_jet_dr_minj1_q1, k_ntk0_ntk1, k_boost0_boost1, k_movedseedinvtx_trk_whichjet, k_miscclose_trk_whichjet, k_miscclose_trk_p, k_miscclose_trk_eta, k_miscclose_trk_dzerr, k_movedseedinvtx_trk_dsz, k_miscclose_trk_dsz, k_movedseedoutvtx_trk_eta, k_movedseedinvtx_trk_eta, k_movedseedoutvtx_trk_p, k_movedseedinvtx_trk_p, k_movedseedoutvtx_trk_dz, k_movedseedinvtx_trk_dz, k_movedseedoutvtx_trk_gennsigma, k_movedseedinvtx_trk_gennsigma, k_movedseedoutvtx_trk_dr, k_movedseedinvtx_trk_dr, k_movedseedoutvtx_trk_dxyerr, k_movedseedinvtx_trk_dxyerr, k_movedseedoutvtx_trk_dzerr, k_movedseedinvtx_trk_dzerr, k_movedseedoutvtx_trk_whichpv, k_movedseedinvtx_trk_whichpv, k_jet0_trk_pt, k_jet1_trk_pt, k_jet0_trk_p, k_jet1_trk_p, k_jet0_trk_dr, k_jet1_trk_dr, k_jet0_trk_dr_gennsigma, k_jet1_trk_dr_gennsigma, k_jet0_trk_dr_genmissdist, k_jet1_trk_dr_genmissdist, k_jet0_trk_dr_gendz, k_jet1_trk_dr_gendz, k_jet0_trk_eta_gennsigma, k_jet1_trk_eta_gennsigma, k_jet0_trk_eta_gendz, k_jet1_trk_eta_gendz, k_jet0_trk_dz, k_jet1_trk_dz, k_jet0_trk_vtxdxy, k_jet1_trk_vtxdxy, k_jet0_trk_vtxdz, k_jet1_trk_vtxdz, k_jet0_trk_nsigmavtxdz, k_jet1_trk_nsigmavtxdz, k_jet0_trk_nsigmavtxdxy, k_jet1_trk_nsigmavtxdxy, k_jet0_trk_nsigmavtx, k_jet1_trk_nsigmavtx, k_jet0_trk_dzerr, k_jet1_trk_dzerr, k_jet0_trk_nsigmadz, k_jet1_trk_nsigmadz, k_jet0_trk_dxyerr, k_jet1_trk_dxyerr, k_jet0_trk_eta, k_jet1_trk_eta, k_jet0_sump, k_jet1_sump, k_jetdr_qrk0_dxybs, k_jetdr_qrk1_dxybs, k_jetdphi_qrk0_dxybs, k_jetdphi_qrk1_dxybs, k_closeseedtks_qrk0_dxybs, k_closeseedtks_qrk1_dxybs, k_nmovedtks_jet_dr,  k_nmovedtks0_qrk0_dxybs, k_nmovedtks1_qrk1_dxybs, k_nmovedseedtks0_qrk0_dxybs, k_nmovedseedtks1_qrk1_dxybs, k_nmovedtks0_jet0_sump, k_nmovedtks1_jet1_sump, k_nmovedseedtks0_jet0_sump, k_nmovedseedtks1_jet1_sump, k_nmovedtks_movedist3, k_nmovedseedtks_movedist3, k_jet1_sump_movedist3, k_jet0_sump_movedist3, k_jet1_sump_qrk1_dxybs, k_jet0_sump_qrk0_dxybs, k_llp_sump,  k_llp_sump_jetdphi, k_llp_sump_jetdr, k_jet0_sump_jetdr, k_jet1_sump_jetdr, k_2logm_jetdr, k_2logm_costheta, k_jet1_sump_jet_costheta, k_movedist3_movedist2, k_movedist3_jetdr, k_movedist3_jet1_sump, k_movedist3_angle2d, k_angle2d_jetdr, k_angle2d_jet1_sump, k_movedist2_jetdr, k_movedist2_jet1_sump,  k_movedist3_tightcloseseedtks, k_jet_costheta_tightcloseseedtks, k_jet_dr_tightcloseseedtks, k_movedist3_closeseedtks, k_movedist3_nmovedseedtks, k_movedist3_nmovedtks, k_movedist3_nmovedcloseseedtks, k_movedist3_nmisccloseseedtks, k_movedist2_closeseedtks, k_movedist2_nmovedseedtks, k_movedist2_nmovedtks, k_movedist2_nmovedcloseseedtks, k_movedist2_nmisccloseseedtks, k_jet_costheta_closeseedtks, k_jet_dr_closeseedtks, k_lspdist3_movedcloseseedtks, k_lspdist3_movedist3, k_lspdist3_movedist2, k_lspdist3_qrk0_dxybs, k_lspdist3_qrk1_dxybs, k_qrk0_phi_genqrk0_phi, k_qrk1_phi_genqrk1_phi, k_jet1_sump_jetdphi, k_jet1_ntks_jetdphi, k_jet0_maxeta_jet1_maxeta, k_jet0_sump_jet1_sump, k_qrk1_matchthres, k_qrk0_matchthres, k_qrk1_p, k_qrk0_p, k_qrk1_dxybs, k_qrk0_dxybs, k_jet1_dxybs, k_jet0_dxybs, k_qrk1_mingendxy, k_qrk0_mingendxy, k_qrktosump_j0, k_qrktosump_j1, k_qrktosump_sumpj0, k_qrktosump_sumpj1, k_2p0p1_1mgencos, k_2sump0sump1_1mcos, k_1mcosto1mgencos, k_2genlogm, k_2logm, k_asymjet_jetdr,k_closeseed_trk_gendz, k_closeseed_trk_genmissdist, k_closeseed_trk_gennsigmadz, k_jet0_trk_gennsigma, k_jet1_trk_gennsigma, k_jet0_trk_gennsigmamissdist, k_jet1_trk_gennsigmamissdist, k_jet0_trk_genmissdist, k_jet1_trk_genmissdist, k_jet0_trk_gennsigmadz, k_jet1_trk_gennsigmadz, k_jet0_trk_gendz, k_jet1_trk_gendz, k_jet0_trk_whichpv, k_jet1_trk_whichpv, k_jet0_trk_dsz, k_jet1_trk_dsz, k_jet0_trk_nsigmadsz, k_jet1_trk_nsigmadsz, k_jet0_trk_dxy, k_jet1_trk_dxy, k_jet0_trk_nsigmadxy, k_jet1_trk_nsigmadxy, k_nmovedtracks, k_dphi_sum_j_mv, k_deta_sum_j_mv, k_dphi_sum_q_mv, k_jetpt0_asymm, k_jetpt1_asymm, k_jeteta0_asymm, k_jeteta1_asymm, k_jetdr_asymm, k_jetdravg, k_angle0, k_angle1, k_dphi_j0_mv, k_dphi_j1_mv, k_deta_j0_mv, k_deta_j1_mv, k_dphi_q0_mv, k_dphi_q1_mv, k_nseedtracks, k_miscseedtracks, k_misccloseseedtracks, k_closeseedtks, k_sharedcloseseedtks, k_tightcloseseedtks, k_movedseedtks, k_movedcloseseedtks, k_movedvtxseedtks, k_rat_moved_to_closetks, k_rat_moved_to_vtxtks, k_rat_movedvtxtks_to_movedtks, k_rat_movedclosetks_to_movedtks, k_jetdphimax, k_jetdetamax, k_qrkdphimax, k_jetdphi_mveta, k_jetmovea3d01, k_jeteta01, k_jetpt01, k_pt_angle0, k_pt_angle1, k_eta_angle0, k_eta_angle1, k_nvtx, k_vtxcat, k_vtxbs2derr, k_vtxunc, k_vtxeta, k_vtxz, k_vtxdbv, k_vtx3dbv, k_vtxntk, k_dr, k_dvv, k_dvv2d, k_vtxnm1_dbv, k_vtxnm1_ntk, k_vtxnm1_bs2derr, k_vtx3tkchi2, k_vtx3tkdbv, k_vtx3tkdvv, k_vtx3tkzdbv, k_vtx3tkunc, k_vtx4tkchi2, k_vtx4tkdbv, k_vtx4tkdvv, k_vtx4tkzdbv, k_vtx4tkunc, k_vtx5tkchi2, k_vtx5tkdbv, k_vtx5tkdvv, k_vtx5tkzdbv, k_vtx5tkunc, k_vtx6tkchi2, k_vtx6tkdbv, k_vtx6tkdvv, k_vtx6tkzdbv, k_vtx6tkunc};
+  enum { k_decay_x, k_decay_y, k_decay_z, k_decay_xy, k_lspdphi, k_lspdeta, k_lspdr, k_lspasymdecay, k_lspcostheta, k_lspdist2, k_lspdist3, k_lspdist3symmath, k_ratlspdist3, k_2sinhalftheta, k_lspdistz, k_movedist2, k_movedist3, k_lspeta, k_lsppt, k_lspgammabeta, k_lspctau, k_npv, k_pvz, k_dist2dpvbs, k_pvrho, k_pvntracks, k_pvscore, k_ht, k_njets, k_nmuons, k_muon_pT, k_muon_abseta, k_muon_iso, k_muon_absdxybs, k_muon_absdz, k_muon_nsigmadxybs, k_neles, k_ele_pT, k_ele_abseta, k_ele_iso, k_ele_absdxybs, k_ele_absdz, k_ele_nsigmadxybs, k_met_pT, k_w_pT, k_w_mT, k_z_pT, k_z_m, k_lnu_absphi, k_ljet_absdr, k_ljet0_absdr, k_ljet1_absdr, k_nujet0_absphi, k_nujet1_absphi, k_wjet_dphi, k_zjet_dphi, k_jet_asymm, k_jet0_eta, k_jet1_eta, k_jet_dr, k_jet_costheta, k_jet_asymsump, k_jet_deta, k_jet_dphi, k_jet_dind, k_pt0, k_pt1, k_ntks_j0, k_ntks_j1, k_jet_dr_minj0_q0, k_jet_dr_minj1_q1, k_ntk0_ntk1, k_boost0_boost1, k_movedseedinvtx_trk_whichjet, k_miscclose_trk_whichjet, k_miscclose_trk_p, k_miscclose_trk_eta, k_miscclose_trk_dzerr, k_movedseedinvtx_trk_dsz, k_miscclose_trk_dsz, k_movedseedoutvtx_trk_eta, k_movedseedinvtx_trk_eta, k_movedseedoutvtx_trk_p, k_movedseedinvtx_trk_p, k_movedseedoutvtx_trk_dz, k_movedseedinvtx_trk_dz, k_movedseedoutvtx_trk_gennsigma, k_movedseedinvtx_trk_gennsigma, k_movedseedoutvtx_trk_dr, k_movedseedinvtx_trk_dr, k_movedseedoutvtx_trk_dxyerr, k_movedseedinvtx_trk_dxyerr, k_movedseedoutvtx_trk_dzerr, k_movedseedinvtx_trk_dzerr, k_movedseedoutvtx_trk_whichpv, k_movedseedinvtx_trk_whichpv, k_jet0_trk_pt, k_jet1_trk_pt, k_jet0_trk_p, k_jet1_trk_p, k_jet0_trk_dr, k_jet1_trk_dr, k_jet0_trk_dr_gennsigma, k_jet1_trk_dr_gennsigma, k_jet0_trk_dr_genmissdist, k_jet1_trk_dr_genmissdist, k_jet0_trk_dr_gendz, k_jet1_trk_dr_gendz, k_jet0_trk_eta_gennsigma, k_jet1_trk_eta_gennsigma, k_jet0_trk_eta_gendz, k_jet1_trk_eta_gendz, k_jet0_trk_dz, k_jet1_trk_dz, k_jet0_trk_vtxdxy, k_jet1_trk_vtxdxy, k_jet0_trk_vtxdz, k_jet1_trk_vtxdz, k_jet0_trk_nsigmavtxdz, k_jet1_trk_nsigmavtxdz, k_jet0_trk_nsigmavtxdxy, k_jet1_trk_nsigmavtxdxy, k_jet0_trk_nsigmavtx, k_jet1_trk_nsigmavtx, k_jet0_trk_dzerr, k_jet1_trk_dzerr, k_jet0_trk_nsigmadz, k_jet1_trk_nsigmadz, k_jet0_trk_dxyerr, k_jet1_trk_dxyerr, k_jet0_trk_eta, k_jet1_trk_eta, k_jet0_sump, k_jet1_sump, k_jetdr_qrk0_dxybs, k_jetdr_qrk1_dxybs, k_jetdphi_qrk0_dxybs, k_jetdphi_qrk1_dxybs, k_closeseedtks_qrk0_dxybs, k_closeseedtks_qrk1_dxybs, k_nmovedtks_jet_dr,  k_nmovedtks0_qrk0_dxybs, k_nmovedtks1_qrk1_dxybs, k_nmovedseedtks0_qrk0_dxybs, k_nmovedseedtks1_qrk1_dxybs, k_nmovedtks0_jet0_sump, k_nmovedtks1_jet1_sump, k_nmovedseedtks0_jet0_sump, k_nmovedseedtks1_jet1_sump, k_nmovedtks_movedist3, k_nmovedseedtks_movedist3, k_jet1_sump_movedist3, k_jet0_sump_movedist3, k_jet1_sump_qrk1_dxybs, k_jet0_sump_qrk0_dxybs, k_llp_sump,  k_llp_sump_jetdphi, k_llp_sump_jetdr, k_jet0_sump_jetdr, k_jet1_sump_jetdr, k_2logm_jetdr, k_2logm_costheta, k_jet1_sump_jet_costheta, k_movedist3_movedist2, k_movedist3_jetdr, k_movedist3_jet1_sump, k_movedist3_angle2d, k_angle2d_jetdr, k_angle2d_jet1_sump, k_movedist2_jetdr, k_movedist2_jet1_sump,  k_movedist3_tightcloseseedtks, k_jet_costheta_tightcloseseedtks, k_jet_dr_tightcloseseedtks, k_movedist3_closeseedtks, k_movedist3_nmovedseedtks, k_movedist3_nmovedtks, k_movedist3_nmovedcloseseedtks, k_movedist3_nmisccloseseedtks, k_movedist2_closeseedtks, k_movedist2_nmovedseedtks, k_movedist2_nmovedtks, k_movedist2_nmovedcloseseedtks, k_movedist2_nmisccloseseedtks, k_jet_costheta_closeseedtks, k_jet_dr_closeseedtks, k_lspdist3_movedcloseseedtks, k_lspdist3_movedist3, k_lspdist3_movedist2, k_lspdist3_qrk0_dxybs, k_lspdist3_qrk1_dxybs, k_qrk0_phi_genqrk0_phi, k_qrk1_phi_genqrk1_phi, k_jet1_sump_jetdphi, k_jet1_ntks_jetdphi, k_jet0_maxeta_jet1_maxeta, k_jet0_sump_jet1_sump, k_qrk1_matchthres, k_qrk0_matchthres, k_qrk1_p, k_qrk0_p, k_qrk1_dxybs, k_qrk0_dxybs, k_jet1_dxybs, k_jet0_dxybs, k_qrk1_mingendxy, k_qrk0_mingendxy, k_qrktosump_j0, k_qrktosump_j1, k_qrktosump_sumpj0, k_qrktosump_sumpj1, k_2p0p1_1mgencos, k_2sump0sump1_1mcos, k_1mcosto1mgencos, k_2genlogm, k_2logm, k_asymjet_jetdr,k_closeseed_trk_gendz, k_closeseed_trk_genmissdist, k_closeseed_trk_gennsigmadz, k_jet0_trk_gennsigma, k_jet1_trk_gennsigma, k_jet0_trk_gennsigmamissdist, k_jet1_trk_gennsigmamissdist, k_jet0_trk_genmissdist, k_jet1_trk_genmissdist, k_jet0_trk_gennsigmadz, k_jet1_trk_gennsigmadz, k_jet0_trk_gendz, k_jet1_trk_gendz, k_jet0_trk_whichpv, k_jet1_trk_whichpv, k_jet0_trk_dsz, k_jet1_trk_dsz, k_jet0_trk_nsigmadsz, k_jet1_trk_nsigmadsz, k_jet0_trk_dxy, k_jet1_trk_dxy, k_jet0_trk_nsigmadxy, k_jet1_trk_nsigmadxy, k_nmovedtracks, k_dphi_sum_j_mv, k_deta_sum_j_mv, k_dphi_sum_q_mv, k_jetpt0_asymm, k_jetpt1_asymm, k_jeteta0_asymm, k_jeteta1_asymm, k_jetdr_asymm, k_jetdravg, k_angle0, k_angle1, k_dphi_j0_mv, k_dphi_j1_mv, k_deta_j0_mv, k_deta_j1_mv, k_dphi_q0_mv, k_dphi_q1_mv, k_nseedtracks, k_miscseedtracks, k_misccloseseedtracks, k_closeseedtks, k_sharedcloseseedtks, k_tightcloseseedtks, k_movedseedtks, k_movedcloseseedtks, k_movedvtxseedtks, k_rat_moved_to_closetks, k_rat_moved_to_vtxtks, k_rat_movedvtxtks_to_movedtks, k_rat_movedclosetks_to_movedtks, k_jetdphimax, k_jetdetamax, k_qrkdphimax, k_jetdphi_mveta, k_jetmovea3d01, k_jeteta01, k_jetpt01, k_pt_angle0, k_pt_angle1, k_eta_angle0, k_eta_angle1, k_nvtx, k_vtxcat, k_vtxbs2derr, k_vtxunc, k_vtxeta, k_vtxz, k_vtxdbv, k_vtx3dbv, k_vtxntk, k_dr, k_dvv, k_dvv2d, k_vtxnm1_dbv, k_vtxnm1_ntk, k_vtxnm1_bs2derr, k_vtx3tkchi2, k_vtx3tkdbv, k_vtx3tkbs2derr, k_vtx3tkdvv, k_vtx3tkzdbv, k_vtx3tkunc, k_vtx4tkchi2, k_vtx4tkdbv,  k_vtx4tkbs2derr, k_vtx4tkdvv, k_vtx4tkzdbv, k_vtx4tkunc, k_vtx5tkchi2, k_vtx5tkdbv,  k_vtx5tkbs2derr, k_vtx5tkdvv, k_vtx5tkzdbv, k_vtx5tkunc, k_vtx6tkchi2, k_vtx6tkdbv, k_vtx6tkdvv, k_vtx6tkzdbv,  k_vtx6tkbs2derr, k_vtx6tkunc};
 
   for (numdens& nd : nds) {
     nd.book(k_decay_x,  "decay_x" , ";SV Decay X-pos [cm]; arb. units", 100, -4, 4);
@@ -338,16 +338,19 @@ int main(int argc, char** argv) {
     nd.book(k_vtxnm1_bs2derr, "vtxnm1_bs2derr", ";bs2derr of n-1-vertex;events", 500, 0, 0.05);
     nd.book(k_vtx3tkchi2, "vtx3tkchi2", ";norm-chi2/3tk-vtx;events", 20, 0, 5.0);
     nd.book(k_vtx3tkdbv, "vtx3tkdbv", ";2D-displacement of a vtx/3tk-vtx cm. ;events", 200, 0, 0.2);
+    nd.book(k_vtx3tkbs2derr, "vtx3tkbs2derr", ";bs2derr of 3tk-vertex;events", 500, 0, 0.05);
     nd.book(k_vtx3tkdvv, "vtx3tkdvv", "; 3D separation of LLP decay points;events", 200, 0, 0.5);
     nd.book(k_vtx3tkzdbv, "vtx3tkzdbv", ";z-displacement of a vtx/3tk-vtx cm. ;events", 200, 0, 0.2);
     nd.book(k_vtx3tkunc, "vtx3tkunc", ";3D-distance of a vtx to an LLP/3tk-vtx cm. ;events", 100, 0, 0.04);
     nd.book(k_vtx4tkchi2, "vtx4tkchi2", ";norm-chi2/4tk-vtx;events", 20, 0, 5.0);
     nd.book(k_vtx4tkdbv, "vtx4tkdbv", ";2D-displacement of a vtx/4tk-vtx cm. ;events", 200, 0, 0.2);
+    nd.book(k_vtx4tkbs2derr, "vtx4tkbs2derr", ";bs2derr of 4tk-vertex;events", 500, 0, 0.05);
     nd.book(k_vtx4tkdvv, "vtx4tkdvv", "; 3D separation of LLP decay points;events", 200, 0, 0.5);
     nd.book(k_vtx4tkzdbv, "vtx4tkzdbv", ";z-displacement of a vtx/4tk-vtx cm. ;events", 200, 0, 0.2);
     nd.book(k_vtx4tkunc, "vtx4tkunc", ";3D-distance of a vtx to an LLP/4tk-vtx cm. ;events", 100, 0, 0.04);
     nd.book(k_vtx5tkchi2, "vtx5tkchi2", ";norm-chi2/5tk-vtx;events", 20, 0, 5.0);
     nd.book(k_vtx5tkdbv, "vtx5tkdbv", ";2D-displacement of a vtx/5tk-vtx cm. ;events", 200, 0, 0.2);
+    nd.book(k_vtx5tkbs2derr, "vtx5tkbs2derr", ";bs2derr of 5tk-vertex;events", 500, 0, 0.05);
     nd.book(k_vtx5tkdvv, "vtx5tkdvv", "; 3D separation of LLP decay points;events", 200, 0, 0.5);
     nd.book(k_vtx5tkzdbv, "vtx5tkzdbv", ";z-displacement of a vtx/5tk-vtx cm. ;events", 200, 0, 0.2);
     nd.book(k_vtx5tkunc, "vtx5tkunc", ";3D-distance of a vtx to an LLP/5tk-vtx cm. ;events", 100, 0, 0.04);
@@ -886,7 +889,7 @@ int main(int argc, char** argv) {
       for (size_t i = 0; i < nvtx; ++i) {
         dist2move = (gen.decay(ilsp, bs) - vs.pos(i)).Mag();
         dist2min(i, dist2move);
-        if (!(dist2move < 0.0070 && dist2move > 0.0050)) //FIXME
+        if (dist2move > 0.04) //FIXME
           continue;
       
         vtx_bs2derr = vs.bs2derr(i); // JMTBAD ???
@@ -896,6 +899,7 @@ int main(int argc, char** argv) {
         vtx_3dbv    = vs.pos(i).Mag();
         vtx_ntk     = vs.ntracks(i);
         vtx_chi2    = vs.chi2(i)/vs.ndof(i);
+        vtx_bs2derr    = vs.bs2derr(i);
         const bool pass_beams = vtx_dbv >= 0.0100 && vtx_dbv < 2.0;
         const bool pass_ntracks = vs.ntracks(i) >= 5 && pass_beams;
         const bool pass_bs2derr = vs.bs2derr(i) < 0.0050 && pass_beams; // JMTBAD rescale_bs2derr // FIXME
@@ -915,6 +919,7 @@ int main(int argc, char** argv) {
         vtx_3dbv    = vs.pos(mindist2move_iv).Mag();
         vtx_ntk     = vs.ntracks(mindist2move_iv);
         vtx_chi2    = vs.chi2(mindist2move_iv)/vs.ndof(mindist2move_iv);
+        vtx_bs2derr    = vs.bs2derr(mindist2move_iv);
         
         if (vtx_dbv > 0.0100 && dist2move < 0.0200) vtx_cat = 1.0;
         if (vtx_dbv < 0.0100 && dist2move > 0.0200) vtx_cat = 2.0;
@@ -937,8 +942,15 @@ int main(int argc, char** argv) {
         }
       }
 
-      if (!(dist2move < 0.0070 && dist2move > 0.0050) && dist2move < 100) //FIXME
+      //if (!(dist2move < 0.0035 && dist2move > 0.0015) && dist2move < 100) //FIXME
+      //  continue;
+
+      if (dist2move > 0.0400 && dist2move < 100) //FIXME
         continue;
+
+      if (!(vtx_bs2derr > 0.0010 && vtx_bs2derr < 0.0030))
+        continue;
+
 
       den += w;
 
@@ -1297,6 +1309,10 @@ int main(int argc, char** argv) {
         if (vtx_ntk == 4) nd.den(k_vtx4tkdbv, vtx_dbv);
         if (vtx_ntk == 5) nd.den(k_vtx5tkdbv, vtx_dbv);
         if (vtx_ntk == 6) nd.den(k_vtx6tkdbv, vtx_dbv);
+        if (vtx_ntk == 3) nd.den(k_vtx3tkbs2derr, vtx_bs2derr);
+        if (vtx_ntk == 4) nd.den(k_vtx4tkbs2derr, vtx_bs2derr);
+        if (vtx_ntk == 5) nd.den(k_vtx5tkbs2derr, vtx_bs2derr);
+        if (vtx_ntk == 6) nd.den(k_vtx6tkbs2derr, vtx_bs2derr);
         if (vtx_ntk == 3) nd.den(k_vtx3tkdvv, dvv);
         if (vtx_ntk == 4) nd.den(k_vtx4tkdvv, dvv);
         if (vtx_ntk == 5) nd.den(k_vtx5tkdvv, dvv);
@@ -1690,6 +1706,10 @@ int main(int argc, char** argv) {
         if (vtx_ntk == 4) nd.num(k_vtx4tkdbv, vtx_dbv);
         if (vtx_ntk == 5) nd.num(k_vtx5tkdbv, vtx_dbv);
         if (vtx_ntk == 6) nd.num(k_vtx6tkdbv, vtx_dbv);
+        if (vtx_ntk == 3) nd.num(k_vtx3tkbs2derr, vtx_bs2derr);
+        if (vtx_ntk == 4) nd.num(k_vtx4tkbs2derr, vtx_bs2derr);
+        if (vtx_ntk == 5) nd.num(k_vtx5tkbs2derr, vtx_bs2derr);
+        if (vtx_ntk == 6) nd.num(k_vtx6tkbs2derr, vtx_bs2derr);
         if (vtx_ntk == 3) nd.num(k_vtx3tkdvv, dvv);
         if (vtx_ntk == 4) nd.num(k_vtx4tkdvv, dvv);
         if (vtx_ntk == 5) nd.num(k_vtx5tkdvv, dvv);

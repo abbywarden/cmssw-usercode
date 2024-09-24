@@ -310,8 +310,8 @@ for mass in masses:
 
                 signal_ht  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_LowEta_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')  
 
-                signal_vtxunc20um  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_VtxUnc20umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
-                signal_vtxunc30to50um  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_VtxUnc30to50umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                signal_vtxunc10to30um  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_VtxUnc10to30umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
+                signal_vtxunc15to35um  = ROOT.TFile('~/nobackup/crabdirs/TrackMoverMCTruth_StudyMinijetsV2p5_VtxUnc15to35umClSed3to5_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6/VHToSSTodddd_tau'+str(int(ctau)/1000)+'mm_M'+ mass +'_'+ year +'.root')
                 
                 dat_den = tm_dat.Get('all_closeseedtks_den')
                 #dat_den = cutZero(dat_den, 5)
@@ -372,23 +372,23 @@ for mass in masses:
                 sig_dvv_curve_tm2 = sig_dvv_curve.Clone()
                 sig_dvv_denom_tm2 = sig_dvv_denom.Clone()
                 sig_dvv_denom_copy = sig_dvv_denom.Clone()
-                sig20um_gendvv_denom = signal_vtxunc20um.Get('all_dvv_den') #FIXME 
-                sig20um_gendvv_num = signal_vtxunc20um.Get('all_dvv_num') #FIXME
-                sig30to50um_gendvv_denom = signal_vtxunc30to50um.Get('all_dvv_den') #FIXME 
-                sig30to50um_gendvv_num = signal_vtxunc30to50um.Get('all_dvv_num') #FIXME
+                sig10to30um_gendvv_denom = signal_vtxunc10to30um.Get('all_dvv_den') #FIXME 
+                sig10to30um_gendvv_num = signal_vtxunc10to30um.Get('all_dvv_num') #FIXME
+                sig15to35um_gendvv_denom = signal_vtxunc15to35um.Get('all_dvv_den') #FIXME 
+                sig15to35um_gendvv_num = signal_vtxunc15to35um.Get('all_dvv_num') #FIXME
                
-                sig20um_curve = shiftTOC(sig20um_gendvv_num, sig20um_gendvv_denom, 0, 0.0) #shiftDIST(sig_non_m3d_curve, 0, 0.0)
-                sig20um_curvedist = sig20um_gendvv_denom.Clone()
-                sig20um_curvedist.Scale(1/sig20um_curvedist.Integral())
-                sig20um_curvedist.Multiply(sig20um_curve)
-                eff_sig20um = sig20um_curvedist.Integral()
+                sig10to30um_curve = shiftTOC(sig10to30um_gendvv_num, sig10to30um_gendvv_denom, 0, 0.0) #shiftDIST(sig_non_m3d_curve, 0, 0.0)
+                sig10to30um_curvedist = sig10to30um_gendvv_denom.Clone()
+                sig10to30um_curvedist.Scale(1/sig10to30um_curvedist.Integral())
+                sig10to30um_curvedist.Multiply(sig10to30um_curve)
+                eff_sig10to30um = sig10to30um_curvedist.Integral()
                
-                sig30to50um_curve = shiftTOC(sig30to50um_gendvv_num, sig30to50um_gendvv_denom, 0, 0.0) #shiftDIST(sig_non_m3d_curve, 0, 0.0)
-                sig30to50um_curvedist = sig30to50um_gendvv_denom.Clone() #FIXME
-                sig30to50um_curvedist.Scale(1/sig30to50um_curvedist.Integral())
-                sig30to50um_curvedist.Multiply(sig30to50um_curve) 
-                eff_sig30to50um = sig30to50um_curvedist.Integral()
-                err_eff_shift = assessRatioEffPropagateUncerts(shiftDIST(sig30to50um_gendvv_num,0,0.0),shiftDIST(sig30to50um_gendvv_denom,0,0.0))
+                sig15to35um_curve = shiftTOC(sig15to35um_gendvv_num, sig15to35um_gendvv_denom, 0, 0.0) #shiftDIST(sig_non_m3d_curve, 0, 0.0)
+                sig15to35um_curvedist = sig15to35um_gendvv_denom.Clone() #FIXME
+                sig15to35um_curvedist.Scale(1/sig15to35um_curvedist.Integral())
+                sig15to35um_curvedist.Multiply(sig15to35um_curve) 
+                eff_sig15to35um = sig15to35um_curvedist.Integral()
+                err_eff_shift = assessRatioEffPropagateUncerts(shiftDIST(sig15to35um_gendvv_num,0,0.0),shiftDIST(sig15to35um_gendvv_denom,0,0.0))
                 """
                 sig_non_m3d_curve = shiftTOC(sig_non_m3d_num, sig_non_m3d_denom, 0, 0.0) #shiftDIST(sig_non_m3d_curve, 0, 0.0)
                 fout_non0 = ROOT.TFile("nonm3d_none_curve.root", "recreate")
@@ -467,9 +467,11 @@ for mass in masses:
 
                 overlap_right_unc = abs((1.0 - (eff_tm2/eff)))
                 overlap_left_unc = abs((1.0 - (eff_tm/eff)))
-                eff_pseudo_shift_incl = eff_sig30to50um    
+                eff_pseudo_shift_incl = eff_sig15to35um    
+                print("eff 15to35",eff_sig15to35um)
                 #eff_pseudo_shift_novp = eff_non_shift 
-                eff_pseudo_noshift_incl = eff_sig20um    
+                eff_pseudo_noshift_incl = eff_sig10to30um    
+                print("eff 10to30",eff_sig10to30um)
                 #eff_pseudo_noshift_novp = eff_non_noshift 
                 err_pseudo_shift_incl = err_eff_shift    
                 #err_pseudo_shift_novp = err_eff_non_shift
