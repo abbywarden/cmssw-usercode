@@ -5,7 +5,8 @@ ntuple_version_ = 'OnnormdzULV30'
 lsp_id = -1 #1000009 # should do that in a smarter way; currently for stop if not -1
 use_btag_triggers = False
 use_MET_triggers = False
-use_Muon_triggers = True
+use_Lepton_triggers = True
+use_Muon_triggers = False
 use_Electron_triggers = False
 use_DisplacedLepton_triggers = False
 if use_btag_triggers : 
@@ -13,6 +14,8 @@ if use_btag_triggers :
 elif use_MET_triggers :
     lsp_id = 1000021 # should do that in a smarter way would be -1 if not MET
     ntuple_version_ += "MET"
+elif use_Lepton_triggers :
+    ntuple_version_ += 'Lep'
 elif use_Muon_triggers :
     ntuple_version_ += "LepMu"
 elif use_Electron_triggers :
@@ -311,7 +314,7 @@ def miniaod_ntuple_process(settings):
     process.mfvEvent.pileup_info_src = 'slimmedAddPileupInfo'
     process.mfvEvent.met_src = cms.InputTag('slimmedMETs', '', 'Ntuple') 
     
-    # MET correction and filtersi 
+    # MET correction and filters 
     # https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription#PF_MET
     from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
     process.load("Configuration.StandardSequences.GeometryRecoDB_cff") 
@@ -375,6 +378,9 @@ def signals_no_event_filter_modifier(sample):
         print("is signal")
         if use_btag_triggers :
             magic = "event_filter = 'bjets OR displaced dijet veto HT'"
+        elif use_Lepton_triggers :
+            magic ="event_filter = 'leptons only'"
+            print("signal : turn on lepton trig")
         elif use_Muon_triggers :
             magic ="event_filter = 'muons only'"
             print("signal : turn on muon trig")

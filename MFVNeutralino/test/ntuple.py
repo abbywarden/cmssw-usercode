@@ -20,10 +20,12 @@ if use_btag_triggers :
     settings.event_filter = 'bjets OR displaced dijet' # for new trigger studies
 elif use_MET_triggers :
     settings.event_filter = 'met only'
+elif use_Lepton_triggers :
+    settings.event_filter = 'leptons only'
 elif use_Muon_triggers :
-    settings.event_filter = 'muons only' #FIXME
+    settings.event_filter = 'muons only' 
 elif use_Electron_triggers :
-    settings.event_filter = 'electrons only' #FIXME
+    settings.event_filter = 'electrons only' 
 else :
     settings.event_filter = 'jets only'
 
@@ -38,7 +40,7 @@ dataset = 'miniaod' if settings.is_miniaod else 'main'
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WplusH_HToSSTodddd_WToLNu_MH-125_MS-55_ctauS-1_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/40000/DC0DDB54-E968-A948-B805-FCCDA9CDB11A.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/120001/A8C3978F-4BE4-A844-BEE8-8DEE129A02B7.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/120000/8ABE7321-B876-E248-951A-02BA0140B498.root')
-max_events(process, 5000)
+max_events(process, 100)
 #input_files(process, '~/nobackup/crabdirs/TTJets_UL2017_MINIAOD.root')
 #input_files(process, '~/nobackup/crabdirs/WplsuH_HToSSTodddd_WToLNu_MH-125_MS-55_ctauS-1_UL2017_MINIAOD.root')
 #input_files(process, '~/nobackup/crabdirs/TTJets_UL2017_MINIAOD.root')
