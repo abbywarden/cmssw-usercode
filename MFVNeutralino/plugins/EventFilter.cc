@@ -18,9 +18,9 @@ private:
   bool filter(edm::Event&, const edm::EventSetup&) override;
   bool trigger_veto(edm::Event& event, const std::vector<std::string> trigger_list);
   struct Mode {
-    enum mode_t { either, jets_only, muons_only, electrons_only_veto_muons, HT_OR_bjets_OR_displaced_dijet, bjets_OR_displaced_dijet_veto_HT, MET_only, lep_OR_displaced_lep};
+    enum mode_t { either, jets_only, muons_only, electrons_only_veto_muons, leptons_only, HT_OR_bjets_OR_displaced_dijet, bjets_OR_displaced_dijet_veto_HT, MET_only, lep_OR_displaced_lep};
     const mode_t mode;
-    Mode(const std::string& m) : mode(m == "MET only" ? MET_only : m == "bjets_OR_displaced_dijet_veto_HT" ? bjets_OR_displaced_dijet_veto_HT : m == "HT OR bjets OR displaced dijet" ? HT_OR_bjets_OR_displaced_dijet : m == "muons only" ? muons_only : m == "electrons only veto muons" ? electrons_only_veto_muons : m == "lep or displaced lep" ? lep_OR_displaced_lep : m == "jets only" ? jets_only : either) {}
+    Mode(const std::string& m) : mode(m == "MET only" ? MET_only : m == "bjets_OR_displaced_dijet_veto_HT" ? bjets_OR_displaced_dijet_veto_HT : m == "HT OR bjets OR displaced dijet" ? HT_OR_bjets_OR_displaced_dijet : m == "muons only" ? muons_only : m == "electrons only veto muons" ? electrons_only_veto_muons : m == "leptons only" ? leptons_only : m == "lep or displaced lep" ? lep_OR_displaced_lep : m == "jets only" ? jets_only : either) {}
     bool operator==(mode_t m) const { return mode == m; }
   };
   const Mode mode;
@@ -132,13 +132,12 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
 
   int nmuons = 0, nelectrons = 0;
   bool leptons_pass = nmuons + nelectrons >= min_nleptons;
-  
+  bool muons_pass = false; //to safeguard against double counting of events that fires both muon trigger and electron trigger 
+
   for (const pat::Muon& muon : *muons) {
-    //if (muon_selector(muon) && muon.pt() > min_muon_pt)
     reco::TrackRef mtk = muon.track();
-    if (mtk.isNull()){
-      continue;
-    }
+    if (mtk.isNull()) continue;
+ 
     if (muon.pt() > min_muon_pt && abs(muon.eta()) < 2.4) {
       bool isMedMuon = muon.passed(reco::Muon::CutBasedIdMedium);
       const float iso = (muon.pfIsolationR04().sumChargedHadronPt + std::max(0., muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt -0.5*muon.pfIsolationR04().sumPUPt))/muon.pt();
@@ -147,45 +146,38 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
       } 
     } 
     leptons_pass = nmuons + nelectrons >= min_nleptons;
-    if (leptons_pass)
+    if (leptons_pass) {
+      muons_pass = true;
       break;
+    }
   } 
-  if (leptons_pass && mode == Mode::muons_only ) return true; //avoid double counting an event that fires both lepton triggers and keep it in muon selection  
-  
-  if (mode == Mode::electrons_only_veto_muons){
-    if (leptons_pass){ //double-count event
-      leptons_pass = false;
-    }
-    else{
-      for (const pat::Electron& electron : *electrons) {
-        // if (electron_selector(electron) && electron.pt() > min_electron_pt)
-        //new electron selector : is cut based tight & iso < 0.10
-        reco::GsfTrackRef etk = electron.gsfTrack();
-        
-        if (etk.isNull()){
-          continue;
-        }
-        if (electron.pt() > min_electron_pt && abs(electron.eta()) < 2.4) {
-      
-          bool isTightEl = electron.electronID("cutBasedElectronID-Fall17-94X-V1-tight");
-          const auto pfIso = electron.pfIsolationVariables();
-          const float eA = electron_effective_areas.getEffectiveArea(fabs(electron.superCluster()->eta()));
-          const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - *rho*eA)) / electron.pt();
-          const bool passveto = electron.passConversionVeto();
 
-          if (isTightEl && passveto && iso < 0.10) {
-  	        ++nelectrons;
-          } 
-        }
-        leptons_pass = nmuons + nelectrons >= min_nleptons;
-        if (leptons_pass)
-          break;
-      }
-    }
-  }
-    
   if (debug) printf("MFVEventFilter: nmuons: %i nelectrons: %i pass? %i\n", nmuons, nelectrons, leptons_pass);
+   
+  for (const pat::Electron& electron : *electrons) {
+    reco::GsfTrackRef etk = electron.gsfTrack();
+    if (etk.isNull()) continue;
 
+    if (electron.pt() > min_electron_pt && abs(electron.eta()) < 2.4) {
+      bool isTightEl = electron.electronID("cutBasedElectronID-Fall17-94X-V1-tight");
+      const auto pfIso = electron.pfIsolationVariables();
+      const float eA = electron_effective_areas.getEffectiveArea(fabs(electron.superCluster()->eta()));
+      const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - *rho*eA)) / electron.pt();
+      const bool passveto = electron.passConversionVeto();
+
+      if (isTightEl && passveto && iso < 0.10) {
+  	    ++nelectrons;
+      } 
+    } 
+    leptons_pass = nmuons + nelectrons >= min_nleptons;
+    if (leptons_pass) {
+      break;
+    }
+  } 
+
+  if (debug) printf("MFVEventFilter: nmuons: %i nelectrons: %i pass? %i electron veto mu pass? %i \n", nmuons, nelectrons, leptons_pass, (leptons_pass && !(muons_pass)));
+
+  
   if (mode == Mode::jets_only)
     return jets_pass;
   else if (mode == Mode::either && jets_pass)
@@ -194,9 +186,11 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
     return true;
   else if (mode == Mode::MET_only)
     return true;
-  else if (mode == Mode::muons_only || mode == Mode::electrons_only_veto_muons)
+  //these two else if's must be in this order 
+  else if (mode == Mode::muons_only || mode == Mode::leptons_only)  //avoid double counting an event that fires both lepton triggers and keep it in muon selection 
     return leptons_pass && jets_pass;
+  else if (mode == Mode::electrons_only_veto_muons || mode == Mode::leptons_only) 
+    return leptons_pass && jets_pass && !(muons_pass);
   else return true; // catch-all
-
 } 
 DEFINE_FWK_MODULE(MFVEventFilter);

@@ -240,11 +240,12 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
             break;
            }
          }
-        //now section into categories 
-        if (apply_electrons_only) success = pass_ele_events; //electron veto mu 
-        else if (apply_muons_only) success = pass_muon_events; //muons only 
-        else success = (pass_muon_events || pass_ele_events); // both 
       }
+
+      //now section into categories 
+      if (apply_electrons_only) success = pass_ele_events; //electron veto mu 
+      else if (apply_muons_only) success = pass_muon_events; //muons only 
+      else success = (pass_muon_events || pass_ele_events); // both 
 
       if (apply_displacedlepton_triggers) {
 	for(size_t trig : mfv::DisplacedLeptonTriggers){
