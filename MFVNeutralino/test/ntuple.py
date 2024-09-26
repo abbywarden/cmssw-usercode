@@ -59,6 +59,8 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
        samples = Samples.DisplacedJet_data_samples_2017 + Samples.qcd_samples_2017
     elif use_MET_triggers :
        samples = pick_samples(dataset, qcd=True, ttbar=False, data=False, leptonic=True, splitSUSY=True, Zvv=True, met=True, span_signal=False)
+    elif use_Lepton_triggers :
+        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=True, leptonic=True, diboson=True, Lepton_data=False)
     elif use_Muon_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=True, leptonic=True, met=True, diboson=True, Lepton_data=True)
         #samples = [getattr(Samples, 'wjetstolnu_2j_2017')]

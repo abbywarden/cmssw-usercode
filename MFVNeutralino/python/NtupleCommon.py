@@ -1,7 +1,7 @@
 from JMTucker.Tools.CMSSWTools import *
 from JMTucker.Tools.Year import year
 
-ntuple_version_ = 'OnnormdzULV30'
+ntuple_version_ = 'ULV100'
 lsp_id = -1 #1000009 # should do that in a smarter way; currently for stop if not -1
 use_btag_triggers = False
 use_MET_triggers = False
@@ -375,23 +375,18 @@ def signal_uses_random_pars_modifier(sample): # Used for samples stored in inclu
 
 def signals_no_event_filter_modifier(sample):
     if sample.is_signal:
-        print("is signal")
         if use_btag_triggers :
             magic = "event_filter = 'bjets OR displaced dijet veto HT'"
         elif use_Lepton_triggers :
             magic ="event_filter = 'leptons only'"
-            print("signal : turn on lepton trig")
         elif use_Muon_triggers :
             magic ="event_filter = 'muons only'"
-            print("signal : turn on muon trig")
         elif use_Electron_triggers :
             magic ="event_filter = 'electrons only veto muons'"
-            print("signal : turn on ele trig")
         else :
             magic = "event_filter = 'jets only'"
         to_replace = [(magic, 'event_filter = False', 'tuple template does not contain the magic string "%s"' % magic)]
     else:
-        print("not signal")
         to_replace = []
     return [], to_replace
 

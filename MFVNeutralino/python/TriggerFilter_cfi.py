@@ -48,7 +48,7 @@ muoniso_paths = [
 ]
 
 electron_paths = [
-    "HLT_Ele37_WPTight_Gsf_v*", #2016
+    "HLT_Ele27_WPTight_Gsf_v*", #2016
     "HLT_Ele35_WPTight_Gsf_v*", #2017
     "HLT_Ele32_WPTight_Gsf_v*", #2018
     "HLT_Ele115_CaloIdVT_GsfTrkIdT_v*",
