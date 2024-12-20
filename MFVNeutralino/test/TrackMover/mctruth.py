@@ -6,9 +6,9 @@ settings = NtupleSettings()
 settings.is_mc = True
 settings.is_miniaod = True
 #settings.event_filter = 'electrons only novtx'
-settings.event_filter = 'muons only novtx' #FIXME miss leading because there is no process.mfvEventFilterSequence applied nor signals_no_event_filter_modifier  
-#settings.event_filter = 'bjets OR displaced dijet novtx'
-version = settings.version + 'awdv6'
+#settings.event_filter = 'muons only novtx' #FIXME miss leading because there is no process.mfvEventFilterSequence applied nor signals_no_event_filter_modifier  
+settings.event_filter = 'bjets OR displaced dijet novtx'
+version = settings.version + 'v6'
 
 process = ntuple_process(settings)
 tfileservice(process, 'mctruth.root')
@@ -59,9 +59,9 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     #samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=False)
     #samples = pick_samples(dataset, all_signal='only')
     
-    samples = [getattr(Samples, 'ZHToSSTodddd_tau1mm_M55_20161')] 
-    #samples = [getattr(Samples, 'mfv_stopdbardbar_tau001000um_M0800_2017')] 
-    #samples = [getattr(Samples, 'WminusHToSSTodddd_tau1mm_M55_20161')]
+    #samples = [getattr(Samples, 'ZHToSSTodddd_tau1mm_M55_20161')] 
+    samples = [getattr(Samples, 'mfv_stopbbarbbar_tau001000um_M0200_20161')] 
+    #samples = [getattr(Samples, 'ggHToSSTodddd_tau1mm_M55_20161')]
     set_splitting(samples, dataset, 'ntuple')
     ms = MetaSubmitter('TrackMoverMCTruth' + version, dataset=dataset)
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, per_sample_pileup_weights_modifier())

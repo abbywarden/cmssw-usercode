@@ -519,8 +519,8 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
   if (verbose)
     std::cout << "MFVVertexTracks " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
   
-  const int track_rescaler_which = jmt::TrackRescaler::w_SingleLep; //FIXME Abby
-// const int track_rescaler_which = jmt::TrackRescaler::w_BTagDispJet; //FIXME Alec
+//  const int track_rescaler_which = jmt::TrackRescaler::w_SingleLep; //FIXME Abby
+    const int track_rescaler_which = jmt::TrackRescaler::w_BTagDispJet; //FIXME Alec
 // const int track_rescaler_which = jmt::TrackRescaler::w_JetHT; // JMTBAD which rescaling if ever a different one
   // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
   //                      jmt::AnalysisEras::pick(event, this),
@@ -661,7 +661,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
     std::random_shuffle(all_tracks->begin(), all_tracks->end(), random_converter);
   }
 
-  TRandom3 *r3 = new TRandom3(); //Alec added
+  //TRandom3 *r3 = new TRandom3(); //Alec added
   for (size_t i = 0, ie = all_tracks->size(); i < ie; ++i) {
     const reco::TrackRef& tk = (*all_tracks)[i];
     const auto rs = (track_rescaler_which == 1) ? track_rescaler.scale(*tk, "")
@@ -683,8 +683,8 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
     const int nsthits = tk->hitPattern().numberOfValidStripHits();
     const int npxlayers = tk->hitPattern().pixelLayersWithMeasurement();
     const int nstlayers = tk->hitPattern().stripLayersWithMeasurement();
-    const double track_recon_eff = 1-1.11786*fabs(dxybs)*fabs(dxybs); //Alec added
-    if (r3->Uniform(0,1) > track_recon_eff) continue; //Alec added
+    //const double track_recon_eff = 1-1.11786*fabs(dxybs)*fabs(dxybs); //Alec added
+    //if (r3->Uniform(0,1) > track_recon_eff) continue; //Alec added
     int min_r = 2000000000;
     for (int i = 1; i <= 4; ++i)
       if (tk->hitPattern().hasValidHitInPixelLayer(PixelSubdetector::PixelBarrel,i)) {

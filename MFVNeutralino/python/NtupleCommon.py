@@ -1,7 +1,7 @@
 from JMTucker.Tools.CMSSWTools import *
 from JMTucker.Tools.Year import year
 
-ntuple_version_ = 'ULV100'
+ntuple_version_ = 'OnnormdzULV30'
 lsp_id = -1 #1000009 # should do that in a smarter way; currently for stop if not -1
 use_btag_triggers = False
 use_MET_triggers = False
@@ -20,7 +20,7 @@ elif use_Muon_triggers :
     ntuple_version_ += "LepMu"
 elif use_Electron_triggers :
     ntuple_version_ += "LepEle"
-ntuple_version_use = ntuple_version_ + 'm'
+ntuple_version_use = ntuple_version_ + 'm_noef'
 dataset = 'ntuple' + ntuple_version_use.lower()
 
 def run_n_tk_seeds(process, mode, settings, output_commands):
@@ -102,6 +102,7 @@ def minitree_only(process, mode, settings, output_commands):
 #updated event_filter : takes in two modes, the default/original and the rp_mode, indexed at 0 and 1 respectfully
 def event_filter(process, mode, settings, output_commands, **kwargs):
     if mode[0] or mode[1]:
+        print(mode[0])
         from JMTucker.MFVNeutralino.EventFilter import setup_event_filter
         setup_event_filter(process, input_is_miniaod=settings.is_miniaod, mode=mode[0], event_filter_require_vertex = False, rp_mode=mode[1], **kwargs)
         
@@ -178,7 +179,7 @@ def make_output_commands(process, settings):
     if settings.keep_tk:
         output_commands += ['keep *_jmtRescaledTracks_*_*']
 
-    if settings.keep_all:
+    if settings.keep_all: #FIXME
         def dedrop(l):
             return [x for x in l if not x.strip().startswith('drop')]
         our_output_commands = output_commands

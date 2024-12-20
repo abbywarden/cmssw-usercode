@@ -13,7 +13,6 @@ double ntks_weight(int i) {
 }
 
 int main(int argc, char** argv) {
-  int itau = 10000;
   bool btagsf_weights = false;
   bool ntks_weights = false;
   bool jet_decay_weights = false;
@@ -25,7 +24,6 @@ int main(int argc, char** argv) {
 
   namespace po = boost::program_options;
   nr.init_options("mfvMovedTree20/t", "TrackMoverHistsV27m", "nr_trackmoverv27mv1")
-    ("tau",           po::value<int>   (&itau)          ->default_value(10000),   "tau in microns, for reweighting") //FIXME
     ("btagsf",        po::value<bool>  (&btagsf_weights)->default_value(false),   "whether to use b-tag SF weights")
     ("ntks-weights",  po::value<bool>  (&ntks_weights)  ->default_value(false),   "whether to use ntracks weights")
     ("jet-decayweights",po::value<bool>  (&jet_decay_weights)->default_value(true),   "whether to use jet decay weights")
@@ -56,12 +54,6 @@ int main(int argc, char** argv) {
 
   ////
 
-  const int itau_original = 10000; // FIXME JMTBAD keep in sync with value in ntuple.py
-  if (itau != itau_original)
-    std::cout << "reweighting tau distribution from " << itau_original << " um to " << itau << " um\n";
-  const double o_tau_from = 10000./itau_original;
-  const double o_tau_to = 10000./itau;
-  auto tau_weight = [&](double tau) { return o_tau_to/o_tau_from * exp((o_tau_from - o_tau_to) * tau); };
 
   std::unique_ptr<BTagSFHelper> btagsfhelper;
   if (btagsf_weights) btagsfhelper.reset(new BTagSFHelper);
@@ -90,8 +82,6 @@ int main(int argc, char** argv) {
   if (use_extra_weights) printf("using extra weights from reweight.root\n");
   if (jet_decay_weights) std::cout << "using extra weights from " << w_fn_2d_move << " and " << w_fn_2d_kin << std::endl;
 
-  TH1D* h_tau = new TH1D("h_tau", ";tau (cm);events/10 #mum", 10000, 0,10);
-  TH2D* h_tau_tw = new TH2D("h_tau_tw", ";tau (cm); weight from ctau=10mm", 25, 0, 10, 50, 0, 10);
   TH1D* h_btagsfweight = new TH1D("h_btagsfweight", ";weight;events/0.01", 200, 0, 2);
 
   const int num_numdens = 3;
@@ -536,14 +526,6 @@ int main(int argc, char** argv) {
 
   auto fcn = [&]() {
     double w = nr.weight();
-
-    if (itau != 10000) {
-      const double tau = nt.move_tau();
-      const double tw = tau_weight(tau);
-      h_tau->Fill(tau, tw);
-      h_tau_tw->Fill(tau, tw, 1.0);
-      //w *= tw; // Old procedure did reweight by 10mm to a desire ctau 
-    }
 
     if (nr.use_weights()) {
       if (nr.is_mc() && btagsf_weights) {
@@ -1042,10 +1024,6 @@ int main(int argc, char** argv) {
     if ( fabs(jet_dr) < 0.4 )
        NR_loop_cont(w); 
 
-    //if (fabs(jet_eta[0]) > 1.5 || fabs(jet_eta[1]) > 1.5)
-    //if (fabs(jet_eta[0]) < 1.5 || fabs(jet_eta[1]) < 1.5)
-    //   NR_loop_cont(w);
-    
     if ((fabs(jet_eta[0]) > 1.5 && fabs(jet_eta[1]) > 1.5) || (fabs(jet_eta[0]) < 1.5 && fabs(jet_eta[1]) < 1.5))
        NR_loop_cont(w);
 

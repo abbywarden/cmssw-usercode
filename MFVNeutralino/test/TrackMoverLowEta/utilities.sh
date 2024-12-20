@@ -1,14 +1,27 @@
 set -e
-for year in 2017
+for tau in 030000
 do
-  for tau in 003000 #000100 000300 003000
-  do
-    for mass in 15
+    for mass in 55
     do
-      cd "/uscms/home/pkotamni/nobackup/crabdirs/TrackMoverNoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv7_20_tau${tau}um_M${mass}_2Dmovedist3movedist2jetdrjet1sumpCorrection"
+      cd "/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_MoveGrid_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHistsOnnormdzulv30lepmumv8_20_tau${tau}um_M${mass}_2DCorrection"
       #mhadd . --ignore-done & 
-      ~/work/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/utilities.py leptonpresel histos &
-      #hadd.py background_leptonpresel_2017.root wjetstolnu_leptonpresel_2017.root dyjets_leptonpresel_2017.root others_leptonpresel_2017.root
+      ~/work/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/utilities.py leptonpresel histos 2017 &
+      ~/work/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/utilities_2018.py leptonpresel histos 2018 &
+      #hadd.py background_leptonpresel_2017p8.root background_leptonpresel_2017.root background_leptonpresel_2018.root
+      #hadd.py SingleMuon2017p8.root SingleMuon2017.root SingleMuon2018.root
     done
-  done
 done
+
+
+#for tau in 000100 000300
+#do
+#    for mass in 15 40 55
+#    do
+#      cd "/uscms/home/pkotamni/nobackup/crabdirs/TrackMover_LowEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHists0p03onnormdzulv30lepmumv8_20_tau${tau}um_M${mass}_2DCorrection"
+#      #mhadd . --ignore-done & 
+#      #~/work/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/utilities.py leptonpresel histos 2017 &
+#      #~/work/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/utilities_2018.py leptonpresel histos 2018 &
+#      hadd.py background_leptonpresel_2017p8.root background_leptonpresel_2017.root background_leptonpresel_2018.root
+#      hadd.py SingleMuon2017p8.root SingleMuon2017.root SingleMuon2018.root
+#    done
+#done

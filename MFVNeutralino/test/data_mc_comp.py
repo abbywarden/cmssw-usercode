@@ -6,12 +6,6 @@ import JMTucker.MFVNeutralino.AnalysisConstants as ac
 from JMTucker.Tools.ROOTTools import *
 from JMTucker.Tools import Samples
 
-#year = '2018'
-#version = 'ULV5Lepm_SingleLep'
-
-#root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/HistosULV5Lepm_SingleLep'
-#root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV1_Lepm_cut0_etagt1p5_2017_wsellep/'
-
 year = 'run2'
 version = 'ULV11'
 root_file_dir = '/uscms_data/d3/shogan/crab_dirs/Histos_FixWP_ULV11Bm_BkgOops_May17'
@@ -40,7 +34,7 @@ if year == '2018':
     background_samples = ttbar_samples + qcd_samples
     lumi = ac.int_lumi_2018 * ac.scale_factor_2018
     lumi_nice = ac.int_lumi_nice_2018
-    
+
 if year == '2017p8':
     qcd_samples = Samples.qcd_samples_2018[4:] + Samples.qcd_samples_2017[2:]
     ttbar_samples = Samples.ttbar_pl_samples_2017 + Samples.ttbar_pl_samples_2018
@@ -60,17 +54,9 @@ if year == 'run2':
     lumi_nice = ac.int_lumi_nice_run2
 
 for s in qcd_samples:
-    s.join_info = True, 'QCD lept enriched', ROOT.kMagenta+3
+    s.join_info = True, 'Multijet events', ROOT.kBlue-9
 for s in ttbar_samples:
-    s.join_info = True, 't#bar{t}', ROOT.kBlue-3
-for s in dyjet_samples:
-    s.join_info = True, 'DY+jets', ROOT.kMagenta-3
-for s in wjet_samples:
-    s.join_info = True, 'W+jets', ROOT.kPink-3
-    
-for sample in background_samples : 
-  join, nice_name, color = sample.join_info 
-  print(color)
+    s.join_info = True, 't#bar{t}', ROOT.kBlue-7
 
 signal_samples = [signal_sample]
 signal_sample.nice_name = 'Signal: #sigma = 1 fb, c#tau = 1 mm, M = 300 GeV'
@@ -79,9 +65,7 @@ signal_sample.color = 8
 C = partial(data_mc_comparison,
             background_samples = background_samples,
             signal_samples = signal_samples,
-            #signal_samples = [],
             data_samples = [],
-            #data_samples = data_samples,
             plot_saver = ps,
             file_path = os.path.join(root_file_dir, '%(name)s.root'),
             int_lumi = lumi,
@@ -156,48 +140,120 @@ C = partial(data_mc_comparison,
 # y_range = (1, 1e8),
 # )
 #
-
 #C('presel_htall',
-#  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_jet_ht',
+#  histogram_path = 'mfvEventHistosPreSel/h_jet_ht',
 #  )
 #
 #C('presel_jetpt1',
-#  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_jetpt1',
+#  histogram_path = 'mfvEventHistosPreSel/h_jetpt1',
 #  y_range = (1,1e6),
 #  )
 #
 #C('presel_jetpt4',
-#  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_jetpt4',
+#  histogram_path = 'mfvEventHistosPreSel/h_jetpt4',
 #  y_range = (1,5e6),
 #  )
 #
 #C('presel_jetpt',
-#  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_jet_pt',
+#  histogram_path = 'mfvEventHistosPreSel/h_jet_pt',
 #  y_range = (1,5e7),
 #  )
 #
 #C('presel_jeteta',
-#  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_jet_eta',
+#  histogram_path = 'mfvEventHistosPreSel/h_jet_eta',
 #  )
 #
 #C('presel_jetphi',
-#  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_jet_phi',
+#  histogram_path = 'mfvEventHistosPreSel/h_jet_phi',
 #  )
 #
 #C('presel_jetpairdphi',
-#  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_jet_pairdphi',
+#  histogram_path = 'mfvEventHistosPreSel/h_jet_pairdphi',
 #  )
 #
 #C('presel_met',
-#  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_met',
+#  histogram_path = 'mfvEventHistosPreSel/h_met',
 #  )
 #
 #C('presel_metphi',
-#  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_metphi',
+#  histogram_path = 'mfvEventHistosPreSel/h_metphi',
 #  )
 #
 #C('presel_nbtags_tight',
-#  histogram_path = 'mfvEventHistosExtraLooseMinOneVtx/h_nbtags_tight',
+#  histogram_path = 'mfvEventHistosPreSel/h_nbtags_tight',
+#  )
+#
+#C('presel_nmuons_any',
+#  histogram_path = 'mfvEventHistosPreSel/h_nmuons_any',
+#  )
+#
+#C('presel_nmuons_selected',
+#  histogram_path = 'mfvEventHistosPreSel/h_nmuons_selected',
+#  )
+#
+#C('presel_nelectrons_any',
+#  histogram_path = 'mfvEventHistosPreSel/h_nelectrons_any',
+#  )
+#
+#C('presel_nelectrons_selected',
+#  histogram_path = 'mfvEventHistosPreSel/h_nelectrons_selected',
+#  )
+#
+#C('presel_npv',
+#  histogram_path = 'mfvEventHistosPreSel/h_npv',
+#  y_range = (1,1e6),
+#  )
+#
+#C('presel_pvntracks',
+#  histogram_path = 'mfvEventHistosPreSel/h_pvntracks',
+#  )
+#
+#C('presel_pvscore',
+#  histogram_path = 'mfvEventHistosPreSel/h_pvscore',
+#  )
+#
+#C('presel_pvrho',
+#  histogram_path = 'mfvEventHistosPreSel/h_pvrho',
+#  )
+#
+#C('presel_nseedtracks',
+#  histogram_path = 'mfvEventHistosPreSel/h_n_vertex_seed_tracks',
+#  y_range = (1,1e7)
+#  )
+#
+#C('presel_seedtrack_npxlayers',
+#  histogram_path = 'mfvEventHistosPreSel/h_vertex_seed_track_npxlayers',
+#  y_range = (1,1e8),
+#  )
+#
+#C('presel_seedtrack_nstlayers',
+#  histogram_path = 'mfvEventHistosPreSel/h_vertex_seed_track_nstlayers',
+#  y_range = (1,1e8),
+#  )
+#
+#C('presel_seedtrack_chi2dof',
+#  histogram_path = 'mfvEventHistosPreSel/h_vertex_seed_track_chi2dof',
+#  y_range = (1,1e8),
+#  )
+#
+#C('presel_seedtrack_pt',
+#  histogram_path = 'mfvEventHistosPreSel/h_vertex_seed_track_pt',
+#  y_range = (1,1e8),
+#  )
+#
+#C('presel_seedtrack_eta',
+#  histogram_path = 'mfvEventHistosPreSel/h_vertex_seed_track_eta',
+#  y_range = (1,6e6),
+#  )
+#
+#C('presel_seedtrack_phi',
+#  histogram_path = 'mfvEventHistosPreSel/h_vertex_seed_track_phi',
+#  y_range = (1,6e6),
+#  )
+#
+#C('presel_seedtrack_dxy',
+#  histogram_path = 'mfvEventHistosPreSel/h_vertex_seed_track_dxy',
+#  y_range = (1,1e6),
 #  )
 #
 #C('presel_seedtrack_dz',
@@ -334,6 +390,7 @@ if year == '2018':
       y_range = (1, 1e10),
       cut_line = ((4, 0, 4, 2.8e10), 2, 5, 1),
       )
+
 
 
 #C('100pc_3t1v_ntracks',

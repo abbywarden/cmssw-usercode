@@ -4,13 +4,13 @@ from JMTucker.Tools.general import named_product
 from JMTucker.MFVNeutralino.NtupleCommon import *
 
 settings = NtupleSettings()
-settings.is_mc = True
+settings.is_mc = False
 settings.is_miniaod = True
 #settings.event_filter= 'electrons only novtx'
-settings.event_filter = 'muons only novtx'
-#settings.event_filter = 'bjets OR displaced dijet novtx'
+#settings.event_filter = 'muons only novtx'
+settings.event_filter = 'bjets OR displaced dijet novtx'
 
-version = settings.version + 'awdv8' #v8 : [2,0], v9 : [0,2], v10 : [3,2]
+version = settings.version + 'offtossv8' #v8 : [2,0], v9 : [0,2], v10 : [3,2]
 
 # for stat extension
 #version = settings.version + 'ext1'
@@ -124,8 +124,8 @@ for icfg, cfg in enumerate(cfgs):
                             min_jet_ntracks = cms.uint32(2), 
                             njets = cms.uint32(cfg.njets),
                             nbjets = cms.uint32(cfg.nbjets),
-                            tau = cms.double(1.), #FIXME default 1.
-                            halftoss = cms.bool(True), #FIXME True for exotic-Higgs and False otherwise
+                            tau = cms.double(1.), #FIXME 1. or 0.03 cm.
+                            halftoss = cms.bool(False), #FIXME True for exotic-Higgs and False otherwise
                             sig_theta = cms.double(cfg.angle),
                             sig_phi = cms.double(cfg.angle),
                             )
@@ -160,9 +160,12 @@ random_service(process, random_dict)
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
-    samples = pick_samples(dataset, qcd=False, data=False, all_signal=False, qcd_lep=False, leptonic=True, ttbar=False, diboson=True, Lepton_data=False, BTagCSV_data=False, DisplacedJet_data=False)
+    #samples = pick_samples(dataset, qcd=False, data=False, all_signal=False, qcd_lep=False, leptonic=True, ttbar=False, diboson=True, Lepton_data=False, BTagCSV_data=False, DisplacedJet_data=False)
     #samples = pick_samples(dataset, qcd=False, data=False, all_signal=False, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=True, BTagCSV_data=False, DisplacedJet_data=False)
-    #samples = [getattr(Samples, 'ttbar_2018')]
+    
+    samples = pick_samples(dataset, qcd=False, data=False, all_signal=False, qcd_lep=False, leptonic=False, ttbar=False, diboson=False, Lepton_data=False, BTagCSV_data=False, DisplacedJet_data=True)
+    #samples = pick_samples(dataset, qcd=True, data=False, all_signal=False, qcd_lep=False, leptonic=False, ttbar=False, diboson=False, Lepton_data=False, BTagCSV_data=False, DisplacedJet_data=False)
+    #samples = [getattr(Samples, 'qcdht2000_2017')]
     set_splitting(samples, dataset, 'trackmover', data_json=json_path('ana_2016.json' if year in [20161, 20162] else 'ana_2017p8.json'), limit_ttbar=True)
     ms = MetaSubmitter('TrackMover' + version, dataset=dataset)
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, per_sample_pileup_weights_modifier())

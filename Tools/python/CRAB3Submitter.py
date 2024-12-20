@@ -15,7 +15,7 @@ from multiprocessing import Process
 
 class CRABSubmitter:
     batch_name_allowed = string.ascii_letters + string.digits + '_'
-    get_proxy = False
+    get_proxy = True
     aaa_locations = [
         #'T1_US_FNAL',
         'T2_US_Caltech',
