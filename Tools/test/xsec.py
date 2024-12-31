@@ -14,7 +14,7 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
 
     if year == 2017:
         samples = Samples.qcd_samples_2017 + Samples.ttbar_samples_2017 + Samples.leptonic_samples_2017
-    
+
     for s in samples:
         s.datasets['miniaod'].split_by = 'events'
         s.datasets['miniaod'].events_per = 1000000

@@ -3,20 +3,22 @@ from JMTucker.Tools.BasicAnalyzer_cfg import *
 is_mc = True # for blinding
 
 from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_btag_triggers, use_MET_triggers, use_Muon_triggers, use_Electron_triggers, use_Lepton_triggers
-#dataset += '_wgen'
+dataset += '_wgen'
 #sample_files(process, 'qcdht0200_2017' if is_mc else 'JetHT2017B', dataset, 1)
-sample_files(process, 'mfv_stopld_tau010000um_M0800_2018' if is_mc else 'JetHT2017B', dataset, 5)
-#sample_files(process, 'ttbar_semilep_2018' if is_mc else 'JetHT2017B', dataset, 5)
+sample_files(process, 'mfv_stopld_tau010000um_M0800_2018' if is_mc else 'JetHT2017B', dataset, 2)
+#sample_files(process, 'qcdmupt15_2018', dataset, 10)
+#sample_files(process, 'ttbar_semilep_2018' if is_mc else 'JetHT2017B', dataset, 2)
 #sample_files(process, 'test' if is_mc else 'JetHT2017B', dataset, 1)
 
 
 tfileservice(process, 'minitree.root')
 cmssw_from_argv(process)
+#genmatch == true
 
-process.load('JMTucker.MFVNeutralino.MiniTree_cff')
+#process.load('JMTucker.MFVNeutralino.MiniTree_cff')
 #load the mini tree specific for bdt : (apply trigger, event preselection, require at least 1 vertex passing : bs2derr <= 50um and bs2ddist >= 100um)
 #TODO : add BDT specific minitree  
-#process.load('JMTucker.MFVNeutralino.MiniTree_BDT_cff')
+process.load('JMTucker.MFVNeutralino.MiniTree_BDT_cff')
 
 # blind btag triggered events
 #comment out for bdt 
@@ -41,17 +43,17 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep = True, leptonic=True, met=True, diboson=True)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     elif use_Electron_triggers :
-        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep = True, leptonic=True, met=True, diboson=True)
+        samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep = False, leptonic=True, met=True, diboson=True)
     elif use_Lepton_triggers :
-        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, ttbar = True, qcd_lep = False, leptonic=False, met=False, diboson=False)
+        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, ttbar = False, qcd_lep = False, leptonic=False, met=False, diboson=False, Lepton_data = False)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     else :
         samples = pick_samples(dataset, qcd=True, ttbar=True, all_signal=False, data=False, splitSUSY=True)
         #samples = pick_samples(dataset)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
-    set_splitting(samples, dataset, 'minitree', data_json=json_path('ana_2017p8.json'))
+    set_splitting(samples, dataset, 'minitree', data_json=json_path('ana_SingleLept_2017_20pc.json'))
 
-    cs = CondorSubmitter('MiniTree' + version + '_BjetAgnostic_P1p00',
+    cs = CondorSubmitter('MiniTree' + version,
                          ex = year,
                          dataset = dataset,
                          pset_modifier = pset_modifier,

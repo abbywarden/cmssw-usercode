@@ -7,13 +7,13 @@ set_style()
 
 ##TODO : major cleanup needed
 
-do_fits = True
+do_fits = False
 compare_rescaled = False
 
 #year = '2018'
-#year = '2017'
+year = '2017'
 #year = '20161'
-year = '20162'
+#year = '20162'
 cov = ['dxyerr', 'dszerr', 'absdxydszcov']
 #cov = ['dxyerr', 'dszerr']
 
@@ -50,6 +50,7 @@ seltracks_bins_gt1p5 += [x for x in range(140,260,60)]
 
 ps = plot_saver(plot_dir('cov_v_pt_ratio_rescaledbyera_v2_%s' % year), size=(600,600), pdf=True, log=False)
 
+
 eras = ['B', 'C', 'D', 'E', 'F']
 era_lc = ['b', 'c', 'd', 'e', 'f'] #for dxydszcov fitting
 if year == '2018':
@@ -84,8 +85,12 @@ is_seltracks = False
 
 
 
-fn_string = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV2_Lepm_cut0_eta%s_2016/%s.root'
-fn_scale_string = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV2_Lepm_eta%s_rescaled_2016/%s.root'
+fn_string = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV2_Lepm_cut0_eta%s_2017/%s.root'
+fn_scale_string = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV2_Lepm_eta%s_rescaled_2017/%s.root'
+
+#location once they are moved outside of my afs area : (doesn't work)
+#fn_string = '/nfs_scratch/acwarden/Lepton_Histos_MiniTrees/TrackingTreerULV2_Lepm_cut0_eta%s_2017/%s.root'
+#fn_scale_string = '/nfs_scratch/acwarden/Lepton_Histos_MiniTres/TrackingTreerULV2_Lepm_eta%s_rescaled_2017/%s.root'
 #fn_scale_string = ''
 
 buff = []
@@ -140,7 +145,7 @@ if compare_rescaled:
   #era = eras[idata]
   var = 'dxyerr'
   for idata, data in enumerate(datasets):
-    era = era[idata] #iff 2017 : era_lc
+    era = era_lc[idata] #iff 2017 : era_lc, otherwise just era[idata]
     for etabin in etabins:
         leg = ROOT.TLegend(0.65,0.7,0.9,0.9)
 
@@ -215,18 +220,18 @@ for var in cov:
             else :
                 bins = seltracks_bins_gt1p5
         
-        #mc = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % era) #-> iff absdxydszcov
-        mc = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), hn % var)
+        mc = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % era) #-> iff absdxydszcov
+        #mc = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), hn % var)
         newmc = mc.Rebin(len(bins)-1, 'newmc', array('d', bins))
         newmc.SetLineColor(ROOT.kBlack)
         newmc.SetLineWidth(2)
         newmc.SetFillColor(0)
         newmc.SetStats(0)
-        newmc.GetYaxis().SetRangeUser(0, 0.01)
+        #newmc.GetYaxis().SetRangeUser(0, 0.01)
         #for absdxydszcov muon (2018)
         #newmc.GetYaxis().SetRangeUser(0, 0.00000035)
         #for ele absdxydszcov 
-        #newmc.GetYaxis().SetRangeUser(0, 0.000003)
+        newmc.GetYaxis().SetRangeUser(0, 0.000003)
         newmc.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var))
                    
         newmc.Draw('hist e')
@@ -252,8 +257,8 @@ for var in cov:
         for idata, data in enumerate(datasets):
             num = get_profile(fn_string % (etabin, data), hn % var)
             #den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, eras[idata], bkgr), hn % var)
-            den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), hn % var) #no era argument (for dxyerr and dszerr)
-            #den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % eras[idata]) #for absdxydszerr; if 2017 era_lc
+            #den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), hn % var) #no era argument (for dxyerr and dszerr)
+            den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % eras_lc[idata]) #for absdxydszerr; if 2017 era_lc, not era
 
             if etabin == 'lt1p5':
                 if is_muon or is_ele: 
@@ -579,8 +584,8 @@ if do_fits:
             for idata, data in enumerate(datasets):
                 #print data
                 num = get_profile(fn_string % (etabin, data), hn % var)
-                #den = get_profile(fn_string % (etabin, bkgr) if 'dxydszcov' not in var else fn_scale_string % (etabin, eras[idata], bkgr), hn % var)
-                den = get_profile(fn_string % (etabin, bkgr) if 'dxydszcov' not in var else fn_scale_string % (etabin, bkgr), hn % var) #no need to separate by eta
+                den = get_profile(fn_string % (etabin, bkgr) if 'dxydszcov' not in var else fn_scale_string % (etabin, era_lc[idata], bkgr), hn % var) #iff 2017 eras_lc
+                #den = get_profile(fn_string % (etabin, bkgr) if 'dxydszcov' not in var else fn_scale_string % (etabin, bkgr), hn % var) #no need to separate by eta
                 # if 'dxydszcov' not in var : 
                 #     den = get_profile(fn_string % (etabin, bkgr), hn % var)
                 # else :

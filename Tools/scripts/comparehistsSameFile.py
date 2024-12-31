@@ -15,11 +15,12 @@ parser.add_argument("--plots", nargs='+')
 # parser.add_argument("--norm", action='store_true')
 # parser.add_argument("--x_range", nargs='+', type=float, default = [0,2])
 parser.add_argument("--color", default = [2,4])
-parser.add_argument("--legend", default = ["comparison_before_dz_lep20", "comparison_after_dz_lep20"])
+parser.add_argument("--legend", nargs= '+', default = ["ntracks/sv == 3", "ntracks/sv >= 4"])
 parser.add_argument("--norm", action='store_true')
-parser.add_argument("--x_range", default = [0,2])
-parser.add_argument("--output", default = "comparison_before_after_dz_lep20.png")
+parser.add_argument("--x_range", default = [])
+parser.add_argument("--output", default = "3vs4_ntrackspersv.png")
 args = parser.parse_args()
+
 
 R.gROOT.SetBatch(R.kTRUE)
 f = R.TFile(args.input)
@@ -29,13 +30,15 @@ for i in range(0,len(args.plots)):
   print(h)
   h.SetName(args.legend[i])
   h.SetLineColor(args.color[i])
-  if args.norm:
-    h.Scale(1.0/h.Integral())
+  h.SetLineWidth(2)
+  #h.Rebin(5)
+  #if args.norm:
+  h.Scale(1.0/h.Integral())
   h_list.append(h)
 
 for ih in range(len(h_list)):
   if ih==0:
-    h_list[ih].SetTitle("");
+    h_list[ih].SetTitle("")
     h_list[ih].Draw()
     if not len(args.x_range)==0:
       assert(len(args.x_range)==2)

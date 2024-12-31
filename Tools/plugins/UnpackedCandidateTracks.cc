@@ -18,8 +18,8 @@ private:
   const edm::EDGetTokenT<pat::MuonCollection> muons_token;
   const edm::EDGetTokenT<pat::ElectronCollection> electrons_token;
   const bool separate_leptons;
-  const bool add_lost_candidates;
-  const edm::EDGetTokenT<pat::PackedCandidateCollection> lost_candidates_token;
+  // const bool add_lost_candidates;
+  // const edm::EDGetTokenT<pat::PackedCandidateCollection> lost_candidates_token;
   const int cut_level;
   const int lep_pt_cutoff;
   const bool skip_weirdos;
@@ -90,22 +90,22 @@ JMTUnpackedCandidateTracks::JMTUnpackedCandidateTracks(const edm::ParameterSet& 
     muons_token(consumes<pat::MuonCollection>(cfg.getParameter<edm::InputTag>("muons_src"))),
     electrons_token(consumes<pat::ElectronCollection>(cfg.getParameter<edm::InputTag>("electrons_src"))),
     separate_leptons(cfg.getParameter<bool>("separate_leptons")),
-    add_lost_candidates(cfg.getParameter<bool>("add_lost_candidates")),
-    lost_candidates_token(consumes<pat::PackedCandidateCollection>(cfg.getParameter<edm::InputTag>("lost_candidates_src"))),
+    // add_lost_candidates(cfg.getParameter<bool>("add_lost_candidates")),
+    // lost_candidates_token(consumes<pat::PackedCandidateCollection>(cfg.getParameter<edm::InputTag>("lost_candidates_src"))),
     cut_level(cfg.getParameter<int>("cut_level")),
     lep_pt_cutoff(cfg.getParameter<double>("lep_pt_cutoff")),
     skip_weirdos(cfg.getParameter<bool>("skip_weirdos")),
     debug(cfg.getUntrackedParameter<bool>("debug", false))
 {
   produces<reco::TrackCollection>();
-  produces<reco::TrackCollection>("lost");
+  // produces<reco::TrackCollection>("lost");
   produces<jmt::UnpackedCandidateTracksMap>();
   produces<reco::TrackCollection>("electrons");
   produces<reco::TrackCollection>("muons");
   produces<jmt::UnpackedCandidateTracksMap>("elemap");
   produces<jmt::UnpackedCandidateTracksMap>("mumap");
   produces<std::vector<unsigned>>(); // which PV
-  produces<std::vector<unsigned>>("lost");
+  // produces<std::vector<unsigned>>("lost");
   produces<reco::TrackCollection>("tightele");
   produces<reco::TrackCollection>("medmu");
 }
@@ -116,8 +116,8 @@ void JMTUnpackedCandidateTracks::produce(edm::Event& event, const edm::EventSetu
   edm::Handle<pat::PackedCandidateCollection> packed_candidates;
   event.getByToken(packed_candidates_token, packed_candidates);
 
-  edm::Handle<pat::PackedCandidateCollection> lost_candidates;
-  event.getByToken(lost_candidates_token, lost_candidates);
+  // edm::Handle<pat::PackedCandidateCollection> lost_candidates;
+  // event.getByToken(lost_candidates_token, lost_candidates);
 
   edm::Handle<pat::MuonCollection> muons;
   event.getByToken(muons_token, muons);
@@ -165,8 +165,8 @@ void JMTUnpackedCandidateTracks::produce(edm::Event& event, const edm::EventSetu
 
   std::vector<int> eidx_toremove;
   std::vector<int> midx_toremove;
-  std::vector<int> eidx_lost_toremove;
-  std::vector<int> midx_lost_toremove;
+  // std::vector<int> eidx_lost_toremove;
+  // std::vector<int> midx_lost_toremove;
   std::vector<int> tight_eidx_toremove;
   std::vector<int> med_midx_toremove;
 

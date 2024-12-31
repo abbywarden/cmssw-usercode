@@ -12,8 +12,9 @@ study_new_triggers = True
 if study_new_triggers :
 
     root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrigFiltCheckV3/'
-    trigs = ['TriggerLeptons', 'TriggerEMu_35_27', 'TriggerEMu_35_50', 'TriggerEMu_50_27', 'TriggerEMu_50_50']
-    nice = ['SingleLep', 'EMu_35_27', 'EMu_35_50', 'EMu_50_27', 'EMu_50_50']
+    trigs = ['TriggerLeptons', 'TriggerJets']
+    nice = ['SingleLep', 'PFHT1050']
+
 
     #root_file_dir = '/uscms/home/ali/nobackup/LLP/crabdir/TrigFiltCheckV3/'
     #trigs = ['Trigger','TriggerBjets','TriggerDispDijet','TriggerMET']

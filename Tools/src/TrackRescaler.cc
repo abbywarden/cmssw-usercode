@@ -841,6 +841,7 @@ namespace jmt {
   void TrackRescaler::set_SingleLep2018(double x, double eta, std::string type) {
     if (fabs(eta) < 1.5) {
       if (type == "") {
+        // std::cout << "scaling general track" << std::endl;
         const double p_dxy[7] = {1.03112461560515, 0.027939954186664222, -0.0024777135470085247, 1.1198254046663294, -0.0013579297509143465, 1.0600577441006154, 6.09296042624434e-05};
         const double p_dsz[7] = {1.0800117878149493, 0.013423192619346155, 1.1340111602074219, -0.0013106472963789876, 1.1196923400312397, 3.2650883372812786e-05, -7.481787581617157e-07};
         const double p_dxydsz[9] = {1.1423316786920164, -0.025569852427499856, -0.004756678626186833, 0.0006733460884134249, 0.9520196829959118, -0.001750557944344104, 0.0003240758473373313, 1.0499787839829393, 6.349483450061242e-05};
@@ -852,6 +853,7 @@ namespace jmt {
 
       }
       if (type == "electron") {
+        // std::cout << "scaling electron track" << std::endl;
         const double p_dxy[2] = {1.099165067126334, 0.00018389219215817973};
         const double p_dsz[2] = {1.082789131643491, 3.772593088459831e-05};
         const double p_dxydsz[5] = {1.7127876374625464, -0.034731212907271755, 0.0003816857926977358, 0.896242742480523, 0.0013219868022166306}; 
@@ -862,6 +864,7 @@ namespace jmt {
         );
       }
       if (type == "muon") {
+        // std::cout << "scaling muon track" << std::endl;
         const double p_dxy[2] = {1.0771137416042647, -0.0002944517341002609};
         const double p_dsz[2] = {1.0980008599346949, -4.3607720433033736e-05};
         const double p_dxydsz[5] = {0.8873675573834777, 0.00651830296147308, -6.333660048737822e-05, 1.0357490911388614, 0.000291023640918533};
@@ -923,7 +926,6 @@ namespace jmt {
       else if (era == jmt::AnalysisEras::e_2018A || era == jmt::AnalysisEras::e_2018B || era == jmt::AnalysisEras::e_2018C || era == jmt::AnalysisEras::e_2018D) set_BTagDispJet2018(pt, eta);
       else if (era == jmt::AnalysisEras::e_20161B1 || era == jmt::AnalysisEras::e_20161B2 || era == jmt::AnalysisEras::e_20161C || era == jmt::AnalysisEras::e_20161D || era == jmt::AnalysisEras::e_20161E || era == jmt::AnalysisEras::e_20161F) set_BTagDispJet20161(pt, eta);
       else if (era == jmt::AnalysisEras::e_20162F || era == jmt::AnalysisEras::e_20162G || era == jmt::AnalysisEras::e_20162H) set_BTagDispJet20162(pt, eta);
-
       else throw std::out_of_range("bad era");
     }
     else
@@ -933,6 +935,7 @@ namespace jmt {
   void TrackRescaler::set(double era, int /*which*/, double pt, double eta, std::string type) {
     if (enable()) {
       if       (era ==jmt::AnalysisEras::e_20161B1 || era==jmt::AnalysisEras::e_20161B2 || era == jmt::AnalysisEras::e_20161C) set_SingleLep2016BC(pt, eta, type);
+      else if  (era == jmt::AnalysisEras::e_20161D || era == jmt::AnalysisEras::e_20161E || era == jmt::AnalysisEras::e_20161F) set_SingleLep2016DEF(pt, eta, type);
       else if  (era ==jmt::AnalysisEras::e_20162F || era == jmt::AnalysisEras::e_20162G || era == jmt::AnalysisEras::e_20162H) set_SingleLep2016(pt, eta, type);
       else if  (era == jmt::AnalysisEras::e_2017B) set_SingleLep2017B(pt, eta, type);
       else if  (era == jmt::AnalysisEras::e_2017C) set_SingleLep2017C(pt, eta, type);
