@@ -37,7 +37,7 @@ namespace jmt {
     //track rescaler takes in not only a track's pt and eta, but also the type 
     // ie if it is a general track vs. muon or electron candidate 
     TrackRescaler() : enable_(false), era_(0), which_(w_BTagDispJet), type_("") {}
-    void setup(bool enable, int era, int which) { enable_ = enable; era_ = era; which_ = which; } //no need to pass track type
+    void setup(bool enable, int era, int which) { enable_ = enable; era_ = era; which_ = which; }
     void setup(bool enable, int era, int which, std::string type) { enable_ = enable; era_ = era; which_ = which;  type_ = type; } //when need track type
     void enable(bool enable) { enable_ = enable; }
 

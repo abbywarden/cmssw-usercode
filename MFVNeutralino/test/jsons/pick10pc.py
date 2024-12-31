@@ -32,10 +32,13 @@ def doit(*x):
     print 'tot = %f, picked %i lumis' % (tot, len(out_ll))
     LumiList(lumis=out_ll).writeJSON(out_fn)
 
-for year, intlumi in (2016, 36.3138), (2018, 59.832):
-   for pc in 10, 1:
+#for year, intlumi in (2016, 36.3137), (2017, 41.4796), (2018, 59.827879505):
+for year, intlumi in (2017, 41.4796), (2018, 59.83247):
+
+   #for pc in 10, 1:
        #doit('ana_%s.json' % year, '/uscms/home/ali/nobackup/LLP/CornellCode/mfv_10_6_20/src/JMTucker/MFVNeutralino/test/jsons/json_UL/%s.byls.csv.gz' % year, intlumi, pc/100., 'ana_%s_%spc.json' % (year, pc))
-       doit('ana_%s_SingleLept.json' % year, '/afs/hep.wisc.edu/home/acwarden/work/llp/mfv_1068p1/src/JMTucker/MFVNeutralino/test/jsons/json_UL/SingleLep/%s/%s.byls.csv.gz' % (year, year), intlumi, pc/100., 'ana_SingleLept_%s_%spc.json' % (year, pc))
+       #doit('ana_%s_SingleLept.json' % year, '/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/jsons/json_UL/SingleLep/%s/%s.byls.csv.gz' % (year, year), intlumi, pc/100., 'ana_SingleLept_%s_%spc.json' % (year, pc))
+    doit('ana_%s_SingleLept.json' % year, '/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/jsons/json_UL/SingleLep/%s/%s.byls.csv.gz' % (year, year), intlumi, 20/100., 'ana_SingleLept_%s_%spc.json' % (year, 20))
 
 #for year, intlumi in (2017, 41.480):
 # for pc in 10, 1:

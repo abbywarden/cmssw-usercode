@@ -3,9 +3,11 @@ from array import array
 from JMTucker.Tools.ROOTTools import *
 ROOT.gErrorIgnoreLevel = 1001 # Suppress TCanvas::SaveAs messages.
 
-which = '2017p8' if '2017p8' in sys.argv else 'run2'
-intlumi = 120 if which == 'run2' else 101
-path = plot_dir('pretty_limits_1d_May2024_%s' % which, make=True)
+#which = '2017p8' if '2017p8' in sys.argv else '2017' if '2017' in sys.argv else 'run2'
+which = "run2"
+intlumi = 100.3 if which == 'run2' else 59.8 #41.48 # 2017 : 41.48 #2017 + 2018 : 101.3
+path = plot_dir('pretty_limits_1d_Dec2024_%s' % which, make=True)
+draw_observed = False
 
 ts = tdr_style()
 
@@ -17,30 +19,44 @@ def write(font, size, x, y, text):
     w.DrawLatex(x, y, text)
     return w
 
-f = ROOT.TFile('limits_1d_%s.root' % which)
+f = ROOT.TFile('limits_1d_%s_test.root' % which)
 
 kinds = [
-    'multijet_M0200',
-    'multijet_M0300',
-    'multijet_M0400',
-    'multijet_M0600',
-    'multijet_tau300um',
-    'multijet_tau1mm',
-    'multijet_tau10mm',
-    'dijet_M0200',
-    'dijet_M0300',
-    'dijet_M0400',
-    'dijet_M0600',
-    'dijet_tau300um',
-    'dijet_tau1mm',
-    'dijet_tau10mm',
-    'dijet_bb_tau300um',
-    'dijet_bb_tau1mm',
-    'dijet_bb_tau10mm',
-    'dijet_bb_M0200',
-    'dijet_bb_M0300',
-    'dijet_bb_M0400',
-    'dijet_bb_M0600',
+    # 'multijet_M0200',
+    # 'multijet_M0300',
+    # 'multijet_M0400',
+    # 'multijet_M0600',
+    # 'multijet_tau300um',
+    # 'multijet_tau1mm',
+    # 'multijet_tau10mm',
+    # 'dijet_M0200',
+    # 'dijet_M0300',
+    # 'dijet_M0400',
+    # 'dijet_M0600',
+    # 'dijet_tau300um',
+    # 'dijet_tau1mm',
+    # 'dijet_tau10mm',
+    # 'dijet_bb_tau300um',
+    # 'dijet_bb_tau1mm',
+    # 'dijet_bb_tau10mm',
+    # 'dijet_bb_M0200',
+    # 'dijet_bb_M0300',
+    # 'dijet_bb_M0400',
+    # 'dijet_bb_M0600',
+    # 'stopld_tau100um',
+    # 'stopld_tau300um',
+    # 'stopld_tau1mm',
+    # 'stopld_tau10mm',
+    # 'stopld_tau30mm',
+    # 'stoplb_tau100um',
+    # 'stoplb_tau300um',
+    # 'stoplb_tau1mm',
+    # 'stoplb_tau10mm',
+    # 'stoplb_tau30mm',
+    'stopld_M800',
+    'stopld_M1600',
+    'stoplb_M800',
+    'stoplb_M1600',
     ]
 
 def tau(tau):
@@ -66,7 +82,18 @@ def nice_leg(kind):
         return '#tilde{t} #rightarrow #bar{d}#kern[0.1]{#bar{d}}', 'c#tau = ' + tau(kind.replace('dijet_tau', ''))
     elif kind.startswith('dijet_bb_tau'):
         return '#tilde{t} #rightarrow #bar{b}#kern[0.1]{#bar{b}}', 'c#tau = ' + tau(kind.replace('dijet_bb_tau', ''))
+    elif kind.startswith('stopld_M'):
+        return '#tilde{t} #rightarrow #bar{l}#kern[0.1]{#bar{d}}', 'm = %i GeV' % int(kind.replace('stopld_M', ''))
+    elif kind.startswith('stoplb_M'):
+        return '#tilde{t} #rightarrow #bar{l}#kern[0.1]{#bar{b}}', 'm = %i GeV' % int(kind.replace('stoplb_M', ''))
+    elif kind.startswith('stopld'):
+        print(kind)
+        return '#tilde{t} #rightarrow #bar{l}#kern[0.1]{#bar{d}}', 'c#tau = ' + tau(kind.replace('stopld_tau', ''))
+    elif kind.startswith('stoplb'):
+        print(kind)
+        return '#tilde{t} #rightarrow #bar{l}#kern[0.1]{#bar{d}}', 'c#tau = ' + tau(kind.replace('stoplb_tau', ''))
 
+      
 def nice_theory(kind, idx=1):
     if kind.startswith('multijet') and idx == 1:
         return '#tilde{g}#tilde{g} production'
@@ -74,22 +101,30 @@ def nice_theory(kind, idx=1):
         return '#tilde{#chi}^{0}#tilde{#chi}^{0} production'
     elif kind.startswith('dijet'):
         return '#tilde{t}#kern[0.9]{#tilde{t}}* production'
+    elif kind.startswith('stopld'):
+        return '#tilde{t}#kern[0.9]{#tilde{t}}* production'
+    elif kind.startswith('stoplb'):
+        return '#tilde{t}#kern[0.9]{#tilde{t}}* production'
 
 for kind in kinds:
-    versus_tau = kind[-5] == 'M'
+    #versus_tau = kind[-5] == 'M'
+    versus_tau = kind[7] == 'M'
     versus_mass = 'tau' in kind
     assert int(versus_tau) + int(versus_mass) == 1
 
     c = ROOT.TCanvas('c', '', 800, 800)
     c.SetLogy()
-    if kind[-5] == 'M':
+    #if kind[-5] == 'M':
+    if kind[7] == 'M':
+
         c.SetLogx()
     c.SetTopMargin(0.1)
     c.SetBottomMargin(0.12)
     c.SetLeftMargin(0.125)
     c.SetRightMargin(0.085)
 
-    observed = f.Get('%s/observed' % kind)
+    if draw_observed :
+        observed = f.Get('%s/observed' % kind)
     expect16 = f.Get('%s/expect16' % kind)
     expect50 = f.Get('%s/expect50' % kind)
     expect68 = f.Get('%s/expect68' % kind)
@@ -144,7 +179,8 @@ for kind in kinds:
                 for jjj in 1,2,3:
                     g.SetPointEYlow(g.GetN()-jjj,0.18+1e-3*jjj)
 
-    particle = '#tilde{t}' if 'dijet' in kind else '#tilde{#chi}^{0} / #tilde{g}'
+    #particle = '#tilde{t}' if 'stopld' in kind else '#tilde{#chi}^{0} / #tilde{g}'
+    particle = '#tilde{t}'
     if versus_mass:
         xtitle = 'm_{%s} (GeV)' % particle
     elif versus_tau:
@@ -176,7 +212,8 @@ for kind in kinds:
         xax.SetLimits(0.068, 130)
         yax.SetRangeUser(0.001, 100000 if versus_tau else 130) #(versus_tau and draw_theory) else 130)
 
-    observed.SetLineWidth(2)
+    if draw_observed:
+        observed.SetLineWidth(2)
     expect50.SetLineWidth(2)
     expect50.SetLineStyle(2)
     theory.SetLineWidth(2)
@@ -185,6 +222,9 @@ for kind in kinds:
         theory2_color = 96
     elif kind.startswith('dijet'):
         theory_color = ROOT.kViolet
+    elif kind.startswith('stopld'):
+        theory_color = 46
+        
     theory.SetLineColor(theory_color)
     #theory.SetFillColorAlpha(theory_color, 0.5)
     theory.SetFillColorAlpha(theory_color, 1.0)
@@ -207,7 +247,7 @@ for kind in kinds:
     expect68.Draw('3')
 #    if draw_theory:
 #        theory.Draw('L3')
-    theory.Draw('L3')
+#    theory.Draw('L3')
     if theory2 :
         theory2.Draw('L3')
     expect50.Draw('L')
@@ -265,9 +305,9 @@ for kind in kinds:
     c.SaveAs(fn + '.root')
 
     if "_M" in kind or 'dijet' in kind :
-        pre = write(52, 0.047, 0.265, 0.825, 'Preliminary')
+        pre = write(52, 0.047, 0.285, 0.825, 'Preliminary')
     else :
-        pre = write(52, 0.047, 0.230, 0.913, 'Preliminary')
+        pre = write(52, 0.047, 0.285, 0.825, 'Preliminary')
 
     c.SaveAs(fn + '_prelim.pdf')
     c.SaveAs(fn + '_prelim.png')

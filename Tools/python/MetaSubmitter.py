@@ -209,11 +209,12 @@ class secondary_files_modifier:
 
 ####
 
-def set_splitting(samples, dataset, jobtype='default', data_json=None, default_files_per=20, limit_ttbar=False):
+def set_splitting(samples, dataset, jobtype='default', data_json=None, default_files_per=10, limit_ttbar=False):
     if jobtype == 'histos' or jobtype == 'minitree':
         d = {
-            'SingleMuon': 3,
+            # 'SingleMuon': 8,
             'MuonEG': 4,
+            'SingleElectron': 8,
             'DisplacedJet': 4,
             'ttbar_20161': 3,
             'ttbar_ll_20161': 3,
@@ -252,8 +253,14 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
             'qcdht1500_2017': 11,
             'qcdht2000_2017': 11,
             'ttbar_2017': 3,
+            'ttbar_semilep_2017': 10,
+            'ttbar_had_2017': 10,
+            'ttbar_lep_2017': 10,
             'ttbar_ll_2017': 3,
             'wjetstolnu_2017': 3,
+            'wjetstolnu_0j_2017':10,
+            'wjetstolnu_1j_2017':10,
+            'wjetstolnu_2j_2017':10,
             'ttbarht0600_2017': 8,
             'ttbarht0800_2017': 8,
             'ttbarht1200_2017': 8,
@@ -263,10 +270,26 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
             'qcdht2000_2018': 11,
             'ttbar_2018': 8,
             'ttbar_ll_2018': 8,
-#            'SingleMuon2018A': 8,
-#            'SingleMuon2018B': 8,
-#            'SingleMuon2018C': 8,
-#            'SingleMuon2018D': 8,
+            'wjetstolnu_0j_2018':6,
+            'wjetstolnu_1j_2018':6,
+            'wjetstolnu_2j_2018':6,
+            'zjetstoqqht0200_2018':10,
+            'zjetstoqqht0400_2018':10,
+            'zjetstoqqht0600_2018':10,
+            'zjetstoqqht0800_2018':10,
+            'wjetstoqqht0200_2018':10,
+            'wjetstoqqht0400_2018':10,
+            'wjetstoqqht0600_2018':10,
+            'wjetstoqqht0800_2018':10,
+            'dyjetstollM50_2018':10,
+            'SingleMuon2018A': 8,
+            'SingleMuon2018B': 8,
+            'SingleMuon2018C': 8,
+            'SingleMuon2018D': 8,
+            'EGamma2018A': 8,
+            'EGamma2018B': 8,
+            'EGamma2018C': 8,
+            'EGamma2018D': 8,
 #            'MuonEG2018A': 4,
 #            'MuonEG2018B': 4,
 #            'MuonEG2018C': 4,
@@ -275,9 +298,9 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
             'ttbarht0800_2018': 8,
             'ttbarht1200_2018': 8,
             'ttbarht2500_2018': 8,
-            'ttbar_semilep_2018': 10,
-            'ttbar_had_2018': 10,
-            'ttbar_lep_2018': 10
+            'ttbar_semilep_2018': 6,
+            'ttbar_had_2018': 8,
+            'ttbar_lep_2018': 6
             }
         for sample in samples:
             sample.set_curr_dataset(dataset)
@@ -291,9 +314,13 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
     elif jobtype == 'ntuple' or jobtype == 'trackmover':
         # Shed/presel_splitting.py
         d = {'miniaod': {
-                'signal':           ( 5,    7500),
+                #'signal':           ( 5,    7500),
+                'signal':           (1,      200),
                 'JetHT':            (15, 1350000),
                 'MET':              (15, 1350000),
+                'SingleMuon':       (7, 1350000),
+                'EGamma':           (7, 1350000),
+                'SingleElectron':   (7, 1350000),
                 'Lepton':           (15, 1350000),
                 'qcdht0300_2017':   (5, 3130000),
                 'qcdht0500_2017':   (3, 3130000),
@@ -338,6 +365,12 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
                 name = 'MET'
             elif 'Lepton' in name:
                 name = 'Lepton'
+            elif 'SingleMuon' in name:
+                name = 'SingleMuon'
+            elif 'EGamma' in name:
+                name = 'EGamma'
+            elif 'SingleElectron' in name:
+                name = 'SingleElectron'
             elif sample.is_signal:
                 name = 'signal'
                 sample.split_by = 'events'
@@ -390,13 +423,13 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
 
 def pick_samples(dataset, both_years=False,
                  qcd=False, qcd_lep=False, ttbar=False, all_signal=False, span_signal=False, data=False, BTagCSV_data=False, Lepton_data=False, JetHT_data=False, DisplacedJet_data=False, leptonic=False, bjet=False,  
-                 splitSUSY=False, Zvv=False, met=False, diboson=False):
+                 splitSUSY=False, Zvv=False, met=False, diboson=False, Zqq=False):
 
     if span_signal:
         print 'cannot use both span and all_signal, turning off the latter'
         all_signal = False
 
-    argnames = 'qcd', 'qcd_lep', 'ttbar', 'all_signal', 'span_signal', 'data', 'BTagCSV_data', 'Lepton_data', 'JetHT_data', 'DisplacedJet_data', 'leptonic', 'bjet', 'splitSUSY', 'Zvv', 'met', 'diboson'
+    argnames = 'qcd', 'qcd_lep', 'ttbar', 'all_signal', 'span_signal', 'data', 'BTagCSV_data', 'Lepton_data', 'JetHT_data', 'DisplacedJet_data', 'leptonic', 'bjet', 'splitSUSY', 'Zvv', 'met', 'diboson', 'Zqq'
     args = dict([(a,eval(a)) for a in argnames])
     if not set(args.values()).issubset([True, False, 'only']):
         raise ValueError('arg must be one of True, False, "only"')

@@ -1,7 +1,9 @@
 from JMTucker.Tools.CMSSWTools import *
 from JMTucker.Tools.Year import year
 
+#ntuple_version_ = 'ULV12_ogdeltaz'
 ntuple_version_ = 'ULV12'
+
 lsp_id = 1000006 # should do that in a smarter way; currently for stop
 use_btag_triggers = False
 use_MET_triggers = False
@@ -104,7 +106,7 @@ def event_filter(process, mode, settings, output_commands, **kwargs):
     if mode[0] or mode[1]:
         from JMTucker.MFVNeutralino.EventFilter import setup_event_filter
         setup_event_filter(process, input_is_miniaod=settings.is_miniaod, mode=mode[0], event_filter_require_vertex = False, rp_mode=mode[1], **kwargs)
-        
+
 ########################################################################
 
 class NtupleSettings(CMSSWSettings):
@@ -166,7 +168,7 @@ def make_output_commands(process, settings):
         'keep *_mcStat_*_*',
         'keep MFVVertexAuxs_mfvVerticesAux_*_*',
         'keep MFVEvent_mfvEvent__*',
-        'keep MFVSeedTracks_mfvSeedTracks__*',
+        #'keep MFVSeedTracks_mfvSeedTracks__*',
         ]
 
     if settings.keep_gen:
@@ -276,7 +278,7 @@ def miniaod_ntuple_process(settings):
     process.load('JMTucker.MFVNeutralino.TriggerFilter_cfi')
     process.load('JMTucker.MFVNeutralino.TriggerFloats_cff')
     process.load('JMTucker.MFVNeutralino.EventProducer_cfi')
-    process.load('JMTucker.MFVNeutralino.SeedTracks_cfi')
+    #process.load('JMTucker.MFVNeutralino.SeedTracks_cfi') #buggy ?
     process.load('JMTucker.MFVNeutralino.TrackTree_cfi')
 
     process.goodOfflinePrimaryVertices.input_is_miniaod = True
@@ -322,9 +324,27 @@ def miniaod_ntuple_process(settings):
                                isData = not settings.is_mc,
                                )
 
+    # #EGamma scales and smearings 
+    # #https://twiki.cern.ch/twiki/bin/view/CMS/EgammaUL2016To2018#SFs_for_Electrons_UL_2018 
+    # from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+    
+    # if year == '2017' or year == '2018':
+    #     era = '%s-UL'%year
+    # elif year == '20161':
+    #     era = '2016preVFP-UL'
+    # elif year == '20162':
+    #     era = '2016postVFP-UL'
+    # setupEgammaPostRecoSeq(process,
+    #                        runEnergyCorrections=True,
+    #                        runVID=True, #saves CPU time by not needlessly re-running VID, if you want the Fall17V2 IDs, set this to True or remove (default is True)
+    #                        eleIDModules=['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff'],
+    #                        era='2018-UL'
+    #                        )
+        
+#a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
     process.p = cms.Path(process.goodOfflinePrimaryVertices *
                          process.updatedJetsSeqMiniAOD *
-                         process.BadPFMuonFilterUpdateDz *
+                        process.BadPFMuonFilterUpdateDz *
                          process.fullPatMetSequence *
                          process.selectedPatJets *
                          process.selectedPatMuons *
@@ -333,8 +353,8 @@ def miniaod_ntuple_process(settings):
                          process.jmtUnpackedCandidateTracks *
                          process.mfvVertexSequence *
                          process.prefiringweight *
-                         process.mfvEvent *
-                         process.mfvSeedTracks)
+                         process.mfvEvent) # *
+                         #process.mfvSeedTracks) #Buggy 
 
     output_commands = make_output_commands(process, settings)
 

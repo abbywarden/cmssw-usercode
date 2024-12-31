@@ -37,12 +37,13 @@ settings.randpars_filter = False
 
 process = ntuple_process(settings)
 dataset = 'miniaod' if settings.is_miniaod else 'main'
-#sample_files(process, 'ttbar_semilep_2017', dataset, 1)
-sample_files(process, 'mfv_stopld_tau010000um_M0800_2017', dataset, 1)
-#sample_files(process, 'mfv_neu_tau010000um_M0800_2018', dataset, 1)
-#sample_files(process, 'mfv_stopld_tau010000um_M0800_2018', dataset, 5)
+#sample_files(process, 'ttbar_semilep_2018', dataset, 3)
+sample_files(process, 'mfv_stopld_tau000100um_M1400_20162', dataset, 1)
+#sample_files(process, 'SingleMuon2018A', dataset, 2)
+#sample_files(process, 'qcdbctoept030_2017', dataset, 4)
+#sample_files(process, 'mfv_stopld_tau010000um_M0800_20161', dataset, 1)
 
-max_events(process, 5000)
+max_events(process, 17000)
 cmssw_from_argv(process)
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
@@ -61,12 +62,12 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     elif use_Electron_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=True, leptonic=True, met=True, diboson=True, Lepton_data=False)
     elif use_Lepton_triggers :
-        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=True, met=False, leptonic=True, ttbar=True, diboson=False, Lepton_data=False)
+        samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, met=False, leptonic=False, ttbar=False, diboson=False, Zqq=False, Lepton_data=True)
     else :
         samples = pick_samples(dataset, qcd=False, ttbar=False, data=False, all_signal=not settings.run_n_tk_seeds)
         
         
-    set_splitting(samples, dataset, 'ntuple', data_json=json_path('ana_SingleLept_2017_10pc.json'), limit_ttbar=True)
+    set_splitting(samples, dataset, 'ntuple', data_json=json_path('ana_2018_SingleLept.json'), limit_ttbar=False)
 
     ms = MetaSubmitter(settings.batch_name(), dataset=dataset)
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, npu_filter_modifier(settings.is_miniaod), signals_no_event_filter_modifier)#, bjet_trigger_veto_modifier)

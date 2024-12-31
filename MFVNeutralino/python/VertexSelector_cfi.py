@@ -100,6 +100,7 @@ mfvSelectedVertices = cms.EDProducer('MFVVertexSelector',
 mfvSelectedVerticesExtraLoose = mfvSelectedVertices.clone(
     mevent_src = 'mfvEvent',
     min_ntracks = 3,
+    max_ntracks = 3
     #min_bsbs2ddist = 0.005,
     #max_rescale_bs2derr = 0.0025,
     )
@@ -110,6 +111,16 @@ mfvSelectedVerticesLoose = mfvSelectedVertices.clone(
     min_ntracks = 3,
     min_bsbs2ddist = 0.01,
     max_rescale_bs2derr = 0.005,
+    )
+
+#Control Region : 3 tracks 
+mfvSelectedVerticesCRLoose = mfvSelectedVertices.clone(
+    mevent_src = 'mfvEvent',
+    exclude_beampipe = True,
+    min_ntracks = 3,
+    max_ntracks = 3,
+    min_bsbs2ddist = 0.01,
+    min_rescale_bs2derr = 0.005,
     )
 
 mfvSelectedVerticesTight = mfvSelectedVertices.clone(
@@ -136,6 +147,7 @@ mfvSelectedVerticesTightMinNtk4 = mfvSelectedVerticesTight.clone(min_ntracks = 4
 mfvSelectedVerticesSeq = cms.Sequence(
     mfvSelectedVerticesExtraLoose *
     mfvSelectedVerticesLoose *
+    mfvSelectedVerticesCRLoose *
     mfvSelectedVerticesLooseNtk3 * 
     mfvSelectedVerticesLooseNtk4 *
     mfvSelectedVerticesLooseMinNtk3 *
