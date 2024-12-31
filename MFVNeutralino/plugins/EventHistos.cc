@@ -27,6 +27,7 @@ class MFVEventHistos : public edm::EDAnalyzer {
   const edm::EDGetTokenT<MFVEvent> mevent_token;
   const edm::EDGetTokenT<double> weight_token;
   const edm::EDGetTokenT<MFVVertexAuxCollection> vertex_token;
+  const edm::EDGetTokenT<bool> show_gen_token;
   
 
   TH1F* h_w;
@@ -38,6 +39,7 @@ class MFVEventHistos : public edm::EDAnalyzer {
 
   TH1F* h_eventid;
 
+  //GEN 
   TH2F* h_gen_decay;
   TH1F* h_gen_flavor_code;
   TH1F* h_gen_leptons;
@@ -73,7 +75,7 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_minlspdist2d;
   TH1F* h_lspdist2d;
   TH1F* h_lspdist3d;
-  TH1F* h_gen_bs2ddist;
+  TH1F* h_gen_bs2ddist; //GEN 
   TH1F* h_llp_dphi;
   TH1F* h_nmatchjet_llp;
   TH1F* h_llp_pt_vecsum;
@@ -212,27 +214,48 @@ class MFVEventHistos : public edm::EDAnalyzer {
 
   TH2F* h_lepton_nsigma_v_pt;
   TH2F* h_sellepton_nsigma_v_pt;
-  TH1F* h_selele_dxybs;
-  TH1F* h_selmu_dxybs;
-  TH1F* h_selele_dxyerr;
-  TH1F* h_selmu_dxyerr;
-  TH1F* h_selele_nsigmadxy;
-  TH1F* h_selmu_nsigmadxy;
-  TH1F* h_selele_pt;
-  TH1F* h_selmu_pt;
-  TH1F* h_selmu_absdz;
-  TH1F* h_selele_absdz;
+
+  TH2F* h_medmu_iso_v_pt;
+  TH2F* h_tightele_iso_v_pt;
+
+  //now in pt bins 
+  TH1F* h_selele_dxybs_ptlt50;
+  TH1F* h_selmu_dxybs_ptlt50;
+  TH1F* h_selele_dxyerr_ptlt50;
+  TH1F* h_selmu_dxyerr_ptlt50;
+  TH1F* h_selele_nsigmadxy_ptlt50;
+  TH1F* h_selmu_nsigmadxy_ptlt50;
+  TH1F* h_selele_pt_ptlt50;
+  TH1F* h_selmu_pt_ptlt50;
+  TH1F* h_selmu_absdz_ptlt50;
+  TH1F* h_selele_absdz_ptlt50;
+
+  TH1F* h_selele_dxybs_ptgt50;
+  TH1F* h_selmu_dxybs_ptgt50;
+  TH1F* h_selele_dxyerr_ptgt50;
+  TH1F* h_selmu_dxyerr_ptgt50;
+  TH1F* h_selele_nsigmadxy_ptgt50;
+  TH1F* h_selmu_nsigmadxy_ptgt50;
+  TH1F* h_selele_pt_ptgt50;
+  TH1F* h_selmu_pt_ptgt50;
+  TH1F* h_selmu_absdz_ptgt50;
+  TH1F* h_selele_absdz_ptgt50;
+
+
 
   // this is the dxy of the gen-matched reco leptons
-  TH1F* h_genmatch_recomu_dBV;
+  TH1F* h_genmatch_recomu_dBV; //GEN 
   TH1F* h_genmatch_recoele_dBV;
 
   //the two highest pt leptons in the event
   TH2F* h_leadinglep_dxy_vs_pt;
+  // TH2F* h_leadinglep_dxyerr_vs_pt;
   TH2F* h_subleadinglep_dxy_vs_pt;
   TH2F* h_leadinglep_sigmadxy_vs_pt;
 
-  TH1F* h_genmatchmu_dBV;
+  
+  //GEN 
+  TH1F* h_genmatchmu_dBV; 
   TH1F* h_genmatchele_dBV;
   TH1F* h_dau_genmu_dBV;
   TH1F* h_dau_genele_dBV;
@@ -266,7 +289,8 @@ class MFVEventHistos : public edm::EDAnalyzer {
 MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   : mevent_token(consumes<MFVEvent>(cfg.getParameter<edm::InputTag>("mevent_src"))),
     weight_token(consumes<double>(cfg.getParameter<edm::InputTag>("weight_src"))),
-	vertex_token(consumes<MFVVertexAuxCollection>(cfg.getParameter<edm::InputTag>("vertex_src")))
+	  vertex_token(consumes<MFVVertexAuxCollection>(cfg.getParameter<edm::InputTag>("vertex_src"))),
+    show_gen_token(consumes<bool>(cfg.getParameter<edm::InputTag>("show_gen")))
 
 {
   edm::Service<TFileService> fs;
@@ -279,6 +303,7 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
 
   h_eventid = fs->make<TH1F>("h_eventid", ";eventid", 10000, 0, 10000);
 
+  //GEN
   h_gen_decay = fs->make<TH2F>("h_gen_decay", "0-2=e,mu,tau, 3=h;decay code #0;decay code #1", 4, 0, 4, 4, 0, 4);
   h_gen_flavor_code = fs->make<TH1F>("h_gen_flavor_code", ";quark flavor composition;events", 3, 0, 3);
   h_gen_leptons = fs->make<TH1F>("h_gen_leptons", ";gen level leptons; events", 10, 0, 10);
@@ -312,7 +337,7 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   h_minlspdist2d = fs->make<TH1F>("h_minlspdist2d", ";min dist2d(gen vtx #i) (cm);events/0.1 mm", 200, 0, 2);
   h_lspdist2d = fs->make<TH1F>("h_lspdist2d", ";dist2d(gen vtx #0, #1) (cm);events/0.1 mm", 200, 0, 2);
   h_lspdist3d = fs->make<TH1F>("h_lspdist3d", ";dist3d(gen vtx #0, #1) (cm);events/0.1 mm", 200, 0, 2);
-  h_gen_bs2ddist = fs->make<TH1F>("h_gen_bs2ddist", ";dist2d(gen vtx, beamspot) (cm);arb. units", 500, 0, 2.5);
+  h_gen_bs2ddist = fs->make<TH1F>("h_gen_bs2ddist", ";dist2d(gen vtx, beamspot) (cm);arb. units", 500, 0, 2.5); //GEN 
   h_llp_dphi = fs->make<TH1F>("h_llp_dphi", ";delta #phi (rad); arb. unit", 100, -3.1416, 3.1416);
   h_nmatchjet_llp = fs->make<TH1F>("h_nmatchjet_llp", ";# matched jet/LLP; arb. unit", 10,0,10);
   h_llp_pt_vecsum = fs->make<TH1F>("h_llp_pt_vecsum", ";vector sum of LLP p_{T}; arb. unit", 100, 0, 1000);
@@ -457,22 +482,39 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   h_lepton_nsigma_v_pt = fs->make<TH2F>("h_lepton_nsigma_v_pt", ";lepton dxy significance;lepton pt", 20, 0, 20, 200, 0, 200);
 
   h_leadinglep_dxy_vs_pt = fs->make<TH2F>("h_leadinglep_dxy_vs_pt", ";leading lepton pt; leading lepton dxy", 200, 50, 2000, 200, 0, 0.2);
+  // h_leadinglep_dxyerr_vs_pt = fs->make<TH2F>("h_leadinglep_dxyerr_vs_pt", ";leading lepton pt; leading lepton dxyerr", 200, 50, 2000, 200, 0, 0.05);
   h_subleadinglep_dxy_vs_pt = fs->make<TH2F>("h_subleadinglep_dxy_vs_pt", ";subleading lepton pt; subleading lepton dxy", 200, 50, 2000, 200, 0, 0.2);
   h_leadinglep_sigmadxy_vs_pt = fs->make<TH2F>("h_leadinglep_sigmadxy_vs_pt", ";leading lepton pt; leading lepton sigmadxy", 200, 50, 2000, 200, 0, 100);
 
-  h_selele_dxybs = fs->make<TH1F>("h_selele_dxybs", "; absdxybs of tight electron w/ pt >= 50 GeV", 400, 0, 2);
-  h_selmu_dxybs = fs->make<TH1F>("h_selmu_dxybs", "; absdxybs of med muon w/ pt >= 50 GeV", 400, 0, 2);
-  h_selele_dxyerr = fs->make<TH1F>("h_selele_dxyerr", "; dxy uncert. of tight electron w/ pt >= 20 GeV", 400, 0, 0.2);
-  h_selmu_dxyerr = fs->make<TH1F>("h_selmu_dxyerr", "; dxy uncert. of med muon w/ pt >= 20 GeV", 400, 0, 0.2);
-  h_selele_nsigmadxy = fs->make<TH1F>("h_selele_nsigmadxy", "; nsigmadxy of tight electron w/ pt >= 20 GeV", 100, 0, 50);
-  h_selmu_nsigmadxy = fs->make<TH1F>("h_selmu_nsigmadxy", "; nsigmadxy of med muon w/ pt >= 20 GeV", 100, 0, 50);
-  h_selele_pt = fs->make<TH1F>("h_selele_pt", "; pt of tight electron w/ pt >= 20 GeV", 200, 0, 1000);
-  h_selmu_pt = fs->make<TH1F>("h_selmu_pt", "; pt of med muon w/ pt >= 20 GeV & iso", 200, 0, 1000);
-  h_selele_absdz = fs->make<TH1F>("h_selele_absdz", "; abs dz of tight electron w/ pt >= 20 GeV", 200, 0, 2.0);
-  h_selmu_absdz = fs->make<TH1F>("h_selmu_absdz", "; abs dz of med muon w/ pt >= 20 GeV & iso", 200, 0, 2.0);
+  h_medmu_iso_v_pt = fs->make<TH2F>("h_medmu_iso_v_pt", ";med. mu pt; med. mu iso", 250, 0, 500, 100, 0, 0.5);
+  h_tightele_iso_v_pt = fs->make<TH2F>("h_tightele_iso_v_pt", ";tight ele pt; tight ele iso", 250, 0, 500, 100, 0, 0.5);
+
+  h_selele_dxybs_ptlt50 = fs->make<TH1F>("h_selele_dxybs_ptlt50", "; absdxybs of sel electron w/ pt < 50 GeV", 100, 0, 0.2);
+  h_selmu_dxybs_ptlt50 = fs->make<TH1F>("h_selmu_dxybs_ptlt50", "; absdxybs of sel muon w/ pt < 50 GeV", 100, 0, 0.2);
+  h_selele_dxyerr_ptlt50 = fs->make<TH1F>("h_selele_dxyerr_ptlt50", "; dxy uncert. of sel electron w/ pt < 50 GeV", 100, 0, 0.02);
+  h_selmu_dxyerr_ptlt50 = fs->make<TH1F>("h_selmu_dxyerr_ptlt50", "; dxy uncert. of sel muon w/ pt < 50 GeV", 100, 0, 0.02);
+  h_selele_nsigmadxy_ptlt50 = fs->make<TH1F>("h_selele_nsigmadxy_ptlt50", "; nsigmadxy of sel electron w/ pt < 50 GeV", 100, 0, 50);
+  h_selmu_nsigmadxy_ptlt50 = fs->make<TH1F>("h_selmu_nsigmadxy_ptlt50", "; nsigmadxy of sel muon w/ pt < 50 GeV", 100, 0, 50);
+  h_selele_pt_ptlt50 = fs->make<TH1F>("h_selele_pt_ptlt50", "; pt of sel electron w/ pt < 50 GeV", 100, 0, 100);
+  h_selmu_pt_ptlt50 = fs->make<TH1F>("h_selmu_pt_ptlt50", "; pt of sel muon w/ pt < 50 GeV", 100, 0, 100);
+  h_selele_absdz_ptlt50 = fs->make<TH1F>("h_selele_absdz_ptlt50", "; abs dz of sel electron w/ pt < 50 GeV", 100, 0, 0.5);
+  h_selmu_absdz_ptlt50 = fs->make<TH1F>("h_selmu_absdz_ptlt50", "; abs dz of sel muon w/ pt < 50 GeV", 100, 0, 0.5);
+  
+  h_selele_dxybs_ptgt50 = fs->make<TH1F>("h_selele_dxybs_ptgt50", "; absdxybs of sel electron w/ pt >= 50 GeV", 100, 0, 0.2);
+  h_selmu_dxybs_ptgt50 = fs->make<TH1F>("h_selmu_dxybs_ptgt50", "; absdxybs of sel muon w/ pt >=  50 GeV", 100, 0, 0.2);
+  h_selele_dxyerr_ptgt50 = fs->make<TH1F>("h_selele_dxyerr_ptgt50", "; dxy uncert. of sel electron w/ pt >= 50 GeV", 100, 0, 0.02);
+  h_selmu_dxyerr_ptgt50 = fs->make<TH1F>("h_selmu_dxyerr_ptgt50", "; dxy uncert. of sel muon w/ pt >= 50 GeV", 100, 0, 0.02);
+  h_selele_nsigmadxy_ptgt50 = fs->make<TH1F>("h_selele_nsigmadxy_ptgt50", "; nsigmadxy of sel electron w/ pt >= 50 GeV", 100, 0, 50);
+  h_selmu_nsigmadxy_ptgt50 = fs->make<TH1F>("h_selmu_nsigmadxy_ptgt50", "; nsigmadxy of sel muon w/ pt >= 50 GeV", 100, 0, 50);
+  h_selele_pt_ptgt50 = fs->make<TH1F>("h_selele_pt_ptgt50", "; pt of sel electron w/ pt >= 50 GeV", 100, 0, 500);
+  h_selmu_pt_ptgt50 = fs->make<TH1F>("h_selmu_pt_ptgt50", "; pt of sel muon w/ pt >= 50 GeV", 100, 0, 500);
+  h_selele_absdz_ptgt50 = fs->make<TH1F>("h_selele_absdz_ptgt50", "; abs dz of sel electron w/ pt >= 50 GeV", 100, 0, 0.5);
+  h_selmu_absdz_ptgt50 = fs->make<TH1F>("h_selmu_absdz_ptgt50", "; abs dz of sel muon w/ pt >= 50 GeV", 100, 0, 0.5);
+  
   h_sellepton_nsigma_v_pt = fs->make<TH2F>("h_sellepton_nsigma_v_pt", ";sellepton dxy significance;sellepton pt", 20, 0, 20, 200, 0, 200);
 
   //only fill histo if there is a gen level mu/ele
+  //GEN 
   h_genmatch_recomu_dBV = fs->make<TH1F>("h_genmatch_recomu_dBV", "; gen-matched muon dBV", 400, 0, 2);
   h_genmatch_recoele_dBV = fs->make<TH1F>("h_genmatch_recoele_dBV", "; gen-matched ele dBV", 400, 0, 2);
 
@@ -543,98 +585,103 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   h_nsv->Fill(nsv, w);
   h_eventid->Fill(event.id().event());
 
+  edm::Handle<bool> show_gen;
+  event.getByToken(show_gen_token, show_gen);
+
   //////////////////////////////////////////////////////////////////////////////
-  /*
-  h_gen_decay->Fill(mevent->gen_decay_type[0], mevent->gen_decay_type[1], w);
-  h_gen_flavor_code->Fill(mevent->gen_flavor_code, w);
-
-  const size_t ngenlep = mevent->gen_leptons.size();
-  h_gen_leptons->Fill(ngenlep, w);
-
- const size_t ngenele = mevent->gen_electrons.size();
-  h_gen_electrons->Fill(ngenele, w);
-
-  int ecounter = 0;
-  for (auto ele : mevent->gen_electrons) {
-    h_gen_ele_pt->Fill(ele.Pt(), w);
-    h_gen_ele_dxy->Fill(mevent->gen_ele_dxy[ecounter], w);
-    h_gen_ele_pt_vs_dxy->Fill(ele.Pt(), mevent->gen_ele_dxy[ecounter], w);
-
-    h_gen_ele_dxybs->Fill(mevent->gen_ele_dxybs[ecounter], w);
-    h_gen_ele_pt_vs_dxybs->Fill(ele.Pt(), mevent->gen_ele_dxybs[ecounter], w);
-    ecounter +=1;
-  }
-
-  const size_t ngenmu = mevent->gen_muons.size();
-  h_gen_muons->Fill(ngenmu, w);
- 
-  int mcounter = 0;
-  for (auto mu : mevent->gen_muons) {
-    h_gen_mu_pt->Fill(mu.Pt(), w);
-    h_gen_mu_dxy->Fill(mevent->gen_mu_dxy[mcounter], w);
-    h_gen_mu_pt_vs_dxy->Fill(mu.Pt(), mevent->gen_mu_dxy[mcounter], w);
-
-    h_gen_mu_dxybs->Fill(mevent->gen_mu_dxybs[mcounter], w);
-    h_gen_mu_pt_vs_dxybs->Fill(mu.Pt(), mevent->gen_mu_dxybs[mcounter], w);
-    mcounter +=1;
-  }
-
-  const size_t ngenjet = mevent->gen_jets.size();
-  h_gen_jets->Fill(ngenjet, w);
+  if (show_gen) { 
   
+    h_gen_decay->Fill(mevent->gen_decay_type[0], mevent->gen_decay_type[1], w);
+    h_gen_flavor_code->Fill(mevent->gen_flavor_code, w);
 
-  const size_t ngendaughter = mevent->gen_daughters.size();
-  h_gen_daughters->Fill(ngendaughter, w);
-  for (size_t i = 0; i < ngendaughter; ++i) {
-    h_gen_daughter_id->Fill(mevent->gen_daughter_id[i], w);
+    const size_t ngenlep = mevent->gen_leptons.size();
+    h_gen_leptons->Fill(ngenlep, w);
 
-    if (abs(mevent->gen_daughter_id[i]) == 11) {
-      double gd_eta = mevent->gen_daughters[i].Eta();
-      double gd_phi = mevent->gen_daughters[i].Phi();
+  const size_t ngenele = mevent->gen_electrons.size();
+    h_gen_electrons->Fill(ngenele, w);
 
-      std::vector<double> mindR2;
-      for (int ie=0; ie<mevent->nelectrons(); ++ie){
-        double dR2 = reco::deltaR2(mevent->nth_ele_eta(ie), mevent->nth_ele_phi(ie), gd_eta, gd_phi);
-        mindR2.push_back(dR2);
-      }
-      if (mevent->nelectrons() !=0)
-        h_gen_ele_closestdR->Fill(*min_element(mindR2.begin(), mindR2.end()), w);
+    int ecounter = 0;
+    for (auto ele : mevent->gen_electrons) {
+      h_gen_ele_pt->Fill(ele.Pt(), w);
+      h_gen_ele_dxy->Fill(mevent->gen_ele_dxy[ecounter], w);
+      h_gen_ele_pt_vs_dxy->Fill(ele.Pt(), mevent->gen_ele_dxy[ecounter], w);
+
+      h_gen_ele_dxybs->Fill(mevent->gen_ele_dxybs[ecounter], w);
+      h_gen_ele_pt_vs_dxybs->Fill(ele.Pt(), mevent->gen_ele_dxybs[ecounter], w);
+      ecounter +=1;
     }
 
-    else if (abs(mevent->gen_daughter_id[i]) == 13 ) {
-      double gd_eta = mevent->gen_daughters[i].Eta();
-      double gd_phi = mevent->gen_daughters[i].Phi();
-      std::vector<double> mindR2;
-      for (int im=0; im<mevent->nmuons(); ++im){
-        double dR2 = reco::deltaR2(mevent->nth_mu_eta(im), mevent->nth_mu_phi(im), gd_eta, gd_phi);
-        mindR2.push_back(dR2);
-      }
-      if (mevent->nmuons() !=0)
-        h_gen_mu_closestdR->Fill(*min_element(mindR2.begin(), mindR2.end()), w);
+    const size_t ngenmu = mevent->gen_muons.size();
+    h_gen_muons->Fill(ngenmu, w);
+  
+    int mcounter = 0;
+    for (auto mu : mevent->gen_muons) {
+      h_gen_mu_pt->Fill(mu.Pt(), w);
+      h_gen_mu_dxy->Fill(mevent->gen_mu_dxy[mcounter], w);
+      h_gen_mu_pt_vs_dxy->Fill(mu.Pt(), mevent->gen_mu_dxy[mcounter], w);
+
+      h_gen_mu_dxybs->Fill(mevent->gen_mu_dxybs[mcounter], w);
+      h_gen_mu_pt_vs_dxybs->Fill(mu.Pt(), mevent->gen_mu_dxybs[mcounter], w);
+      mcounter +=1;
     }
-  }
 
-  const size_t nbquarks = mevent->gen_bquarks.size();
-  h_nbquarks->Fill(nbquarks, w);
-  for (size_t i = 0; i < nbquarks; ++i) {
-    h_bquark_pt->Fill(mevent->gen_bquarks[i].Pt(), w);
-    h_bquark_eta->Fill(mevent->gen_bquarks[i].Eta(), w);
-    h_bquark_phi->Fill(mevent->gen_bquarks[i].Phi(), w);
-    h_bquark_energy->Fill(mevent->gen_bquarks[i].E(), w);
-    for (size_t j = i+1; j < nbquarks; ++j)
-      h_bquark_pairdphi->Fill(reco::deltaPhi(mevent->gen_bquarks[i].Phi(), mevent->gen_bquarks[j].Phi()), w);
-  }
+    const size_t ngenjet = mevent->gen_jets.size();
+    h_gen_jets->Fill(ngenjet, w);
+    
 
-  for (int igenv = 0; igenv < 2; ++igenv) {
-    double genx = mevent->gen_lsp_decay[igenv*3+0];
-    double geny = mevent->gen_lsp_decay[igenv*3+1];
-    double genz = mevent->gen_lsp_decay[igenv*3+2];
-    double genbs2ddist = mevent->mag(genx - mevent->bsx_at_z(genz),
-                                     geny - mevent->bsy_at_z(genz) 
-        );
-    h_gen_bs2ddist->Fill(genbs2ddist, w);
-  }
-  */
+    const size_t ngendaughter = mevent->gen_daughters.size();
+    h_gen_daughters->Fill(ngendaughter, w);
+    for (size_t i = 0; i < ngendaughter; ++i) {
+      h_gen_daughter_id->Fill(mevent->gen_daughter_id[i], w);
+
+      if (abs(mevent->gen_daughter_id[i]) == 11) {
+        double gd_eta = mevent->gen_daughters[i].Eta();
+        double gd_phi = mevent->gen_daughters[i].Phi();
+
+        std::vector<double> mindR2;
+        for (int ie=0; ie<mevent->nelectrons(); ++ie){
+          double dR2 = reco::deltaR2(mevent->nth_ele_eta(ie), mevent->nth_ele_phi(ie), gd_eta, gd_phi);
+          mindR2.push_back(dR2);
+        }
+        if (mevent->nelectrons() !=0)
+          h_gen_ele_closestdR->Fill(*min_element(mindR2.begin(), mindR2.end()), w);
+      }
+
+      else if (abs(mevent->gen_daughter_id[i]) == 13 ) {
+        double gd_eta = mevent->gen_daughters[i].Eta();
+        double gd_phi = mevent->gen_daughters[i].Phi();
+        std::vector<double> mindR2;
+        for (int im=0; im<mevent->nmuons(); ++im){
+          double dR2 = reco::deltaR2(mevent->nth_mu_eta(im), mevent->nth_mu_phi(im), gd_eta, gd_phi);
+          mindR2.push_back(dR2);
+        }
+        if (mevent->nmuons() !=0)
+          h_gen_mu_closestdR->Fill(*min_element(mindR2.begin(), mindR2.end()), w);
+      }
+    }
+
+    const size_t nbquarks = mevent->gen_bquarks.size();
+    h_nbquarks->Fill(nbquarks, w);
+    for (size_t i = 0; i < nbquarks; ++i) {
+      h_bquark_pt->Fill(mevent->gen_bquarks[i].Pt(), w);
+      h_bquark_eta->Fill(mevent->gen_bquarks[i].Eta(), w);
+      h_bquark_phi->Fill(mevent->gen_bquarks[i].Phi(), w);
+      h_bquark_energy->Fill(mevent->gen_bquarks[i].E(), w);
+      for (size_t j = i+1; j < nbquarks; ++j)
+        h_bquark_pairdphi->Fill(reco::deltaPhi(mevent->gen_bquarks[i].Phi(), mevent->gen_bquarks[j].Phi()), w);
+    }
+
+    for (int igenv = 0; igenv < 2; ++igenv) {
+      double genx = mevent->gen_lsp_decay[igenv*3+0];
+      double geny = mevent->gen_lsp_decay[igenv*3+1];
+      double genz = mevent->gen_lsp_decay[igenv*3+2];
+      double genbs2ddist = mevent->mag(genx - mevent->bsx_at_z(genz),
+                                      geny - mevent->bsy_at_z(genz) 
+          );
+      h_gen_bs2ddist->Fill(genbs2ddist, w);
+    }
+  } 
+
   h_minlspdist2d->Fill(mevent->minlspdist2d(), w);
   h_lspdist2d->Fill(mevent->lspdist2d(), w);
   h_lspdist3d->Fill(mevent->lspdist3d(), w);
@@ -642,181 +689,185 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
 
   //h_llp_pt_vecsum->Fill((mevent->gen_lsp_p4(0)+mevent->gen_lsp_p4(1)).Pt(), w);
   //h_llp0pt_llp1pt->Fill(std::max(mevent->gen_lsp_pt[0], mevent->gen_lsp_pt[1]), std::min(mevent->gen_lsp_pt[0], mevent->gen_lsp_pt[1]), w);
-  double decay_quarks0_pt[2] = {-1,-1};
-  double decay_quarks1_pt[2] = {-1,-1};
-  double decaylsp0_pt = -1;
-  double decaylsp1_pt = -1;
-  double decay_jets0_pt[2] = {-1,-1};
-  double decay_jets1_pt[2] = {-1,-1};
-  double nmatched_0 = 0;
-  double nmatched_1 = 0;
+  
+  //GEN
+  if (show_gen) { 
+    double decay_quarks0_pt[2] = {-1,-1};
+    double decay_quarks1_pt[2] = {-1,-1};
+    double decaylsp0_pt = -1;
+    double decaylsp1_pt = -1;
+    double decay_jets0_pt[2] = {-1,-1};
+    double decay_jets1_pt[2] = {-1,-1};
+    double nmatched_0 = 0;
+    double nmatched_1 = 0;
 
-  double nelematched_0 = 0;
-  double nelematched_1 = 0;
-  double nmumatched_0 = 0;
-  double nmumatched_1 = 0;
-  double genele_0 = 0;
-  double genele_1 = 0;
-  double genmu_0 = 0;
-  double genmu_1 = 0;
+    double nelematched_0 = 0;
+    double nelematched_1 = 0;
+    double nmumatched_0 = 0;
+    double nmumatched_1 = 0;
+    double genele_0 = 0;
+    double genele_1 = 0;
+    double genmu_0 = 0;
+    double genmu_1 = 0;
 
-  for (size_t i=0; i<mevent->gen_daughters.size(); ++i){
-    if (abs(mevent->gen_daughter_id[i])==1000006){
-      // FIXME: this part only works for DispSUSY because of the pdgID and the number of daughters from each LLP
-      // get pT for neutralinos from the decay of gluino --ignoring for now
-      // this only works for splitSUSY samples because it's looking for stop(1000006) as gen_daughter
-      // see vertex histos for the lepton distributions
-      if (decaylsp0_pt>0){
-        decaylsp1_pt = mevent->gen_daughters[i].Pt();
+    for (size_t i=0; i<mevent->gen_daughters.size(); ++i){
+      if (abs(mevent->gen_daughter_id[i])==1000006){
+        // FIXME: this part only works for DispSUSY because of the pdgID and the number of daughters from each LLP
+        // get pT for neutralinos from the decay of gluino --ignoring for now
+        // this only works for splitSUSY samples because it's looking for stop(1000006) as gen_daughter
+        // see vertex histos for the lepton distributions
+        if (decaylsp0_pt>0){
+          decaylsp1_pt = mevent->gen_daughters[i].Pt();
+        }
+        else{
+          decaylsp0_pt = mevent->gen_daughters[i].Pt();
+        }
       }
       else{
-        decaylsp0_pt = mevent->gen_daughters[i].Pt();
-      }
-    }
-    else{
-      // match jets to gen quarks from LLP decay
-      double gd_eta = mevent->gen_daughters[i].Eta();
-      double gd_phi = mevent->gen_daughters[i].Phi();
-      int n_matched = 0;
-      double pt_sum = 0;
-      for (int ij = 0; ij<MAX_NJETS; ++ij){
-        double dR2 = (mevent->nth_jet_eta(ij)-gd_eta)*(mevent->nth_jet_eta(ij)-gd_eta)+(mevent->nth_jet_phi(ij)-gd_phi)*(mevent->nth_jet_phi(ij)-gd_phi);
-        if (dR2<0.16){
-          n_matched += 1;
-          pt_sum += mevent->nth_jet_pt(ij);
-        }
-      }
-
-      if (abs(mevent->gen_daughter_id[i]) == 11) {
-        std::vector<int> matched_ele_indx;
-        std::vector<double> mindR;
-        if (i < 2 ) genele_0 +=1;
-        else if (i > 2) genele_1 +=1;
-
-        for (int ie=0; ie<mevent->nelectrons(); ++ie){
-          double dR = reco::deltaR(mevent->nth_ele_eta(ie), mevent->nth_ele_phi(ie), gd_eta, gd_phi);
-          mindR.push_back(dR);
-          matched_ele_indx.push_back(ie);
-        }
-        if (mindR.size() !=0) {
-          h_gen_ele_closestdR->Fill(*min_element(mindR.begin(), mindR.end()), w);
-          float best_dR = *min_element(mindR.begin(), mindR.end());
-          int best_idx = std::min_element(mindR.begin(), mindR.end()) - mindR.begin();
-          //since the electrons are ordered; the best mindR index can be used for all electron variables
-          int bestele_idx = matched_ele_indx[best_idx];
-
-          if (best_dR < 0.2) {
-            float ele_dBV = mag(mevent->electron_x[bestele_idx] - mevent->bsx_at_z(mevent->electron_z[bestele_idx]), mevent->electron_y[bestele_idx] - mevent->bsy_at_z(mevent->electron_z[bestele_idx]));
-            h_genmatch_recoele_dBV->Fill(ele_dBV, w);
-            if (mevent->electron_pt[bestele_idx] >= 20) {
-              if (mevent->electron_ID[bestele_idx][3] == 1) {
-                if (i < 2) {
-                  nelematched_0 +=1;
-                }
-                else if (i > 2) {
-                  nelematched_1 +=1;
-                }
-              }
-            }
+        // match jets to gen quarks from LLP decay
+        double gd_eta = mevent->gen_daughters[i].Eta();
+        double gd_phi = mevent->gen_daughters[i].Phi();
+        int n_matched = 0;
+        double pt_sum = 0;
+        for (int ij = 0; ij<MAX_NJETS; ++ij){
+          double dR2 = (mevent->nth_jet_eta(ij)-gd_eta)*(mevent->nth_jet_eta(ij)-gd_eta)+(mevent->nth_jet_phi(ij)-gd_phi)*(mevent->nth_jet_phi(ij)-gd_phi);
+          if (dR2<0.16){
+            n_matched += 1;
+            pt_sum += mevent->nth_jet_pt(ij);
           }
         }
-      }
-      else if (abs(mevent->gen_daughter_id[i]) == 13 ) {
-        std::vector<double> mindR;
-        std::vector<double> matched_mu_idx;
-        if (i < 2 ) genmu_0 +=1;
-        else if (i > 2) genmu_1 +=1;
 
-        for (int im=0; im<mevent->nmuons(); ++im){
-          double dR = reco::deltaR(mevent->nth_mu_eta(im), mevent->nth_mu_phi(im), gd_eta, gd_phi);
-          mindR.push_back(dR);
-          matched_mu_idx.push_back(im);
-        }
-        if (mindR.size() !=0) {
-          h_gen_mu_closestdR->Fill(*min_element(mindR.begin(), mindR.end()), w);
-          float best_dR = *min_element(mindR.begin(), mindR.end());
-          int best_idx = std::min_element(mindR.begin(), mindR.end()) - mindR.begin();
-          int bestmu_idx = matched_mu_idx[best_idx];
+        if (abs(mevent->gen_daughter_id[i]) == 11) {
+          std::vector<int> matched_ele_indx;
+          std::vector<double> mindR;
+          if (i < 2 ) genele_0 +=1;
+          else if (i > 2) genele_1 +=1;
 
-          if (best_dR < 0.2) {
-            float mu_dBV = mag(mevent->muon_x[bestmu_idx] - mevent->bsx_at_z(mevent->muon_z[bestmu_idx]), mevent->muon_y[bestmu_idx] - mevent->bsy_at_z(mevent->muon_z[bestmu_idx]));
-            h_genmatch_recomu_dBV->Fill(mu_dBV, w);
-            if (mevent->muon_pt[bestmu_idx] >= 20) {
-              if (mevent->muon_ID[bestmu_idx][1] == 1) {
-                if (mevent->muon_iso[bestmu_idx] < 0.15) {
+          for (int ie=0; ie<mevent->nelectrons(); ++ie){
+            double dR = reco::deltaR(mevent->nth_ele_eta(ie), mevent->nth_ele_phi(ie), gd_eta, gd_phi);
+            mindR.push_back(dR);
+            matched_ele_indx.push_back(ie);
+          }
+          if (mindR.size() !=0) {
+            h_gen_ele_closestdR->Fill(*min_element(mindR.begin(), mindR.end()), w);
+            float best_dR = *min_element(mindR.begin(), mindR.end());
+            int best_idx = std::min_element(mindR.begin(), mindR.end()) - mindR.begin();
+            //since the electrons are ordered; the best mindR index can be used for all electron variables
+            int bestele_idx = matched_ele_indx[best_idx];
+
+            if (best_dR < 0.2) {
+              float ele_dBV = mag(mevent->electron_x[bestele_idx] - mevent->bsx_at_z(mevent->electron_z[bestele_idx]), mevent->electron_y[bestele_idx] - mevent->bsy_at_z(mevent->electron_z[bestele_idx]));
+              h_genmatch_recoele_dBV->Fill(ele_dBV, w);
+              if (mevent->electron_pt[bestele_idx] >= 20) {
+                if (mevent->electron_ID[bestele_idx][3] == 1) {
                   if (i < 2) {
-                    nmumatched_0 +=1;
+                    nelematched_0 +=1;
                   }
                   else if (i > 2) {
-                    nmumatched_1 +=1;
+                    nelematched_1 +=1;
                   }
                 }
               }
             }
+          }
+        }
+        else if (abs(mevent->gen_daughter_id[i]) == 13 ) {
+          std::vector<double> mindR;
+          std::vector<double> matched_mu_idx;
+          if (i < 2 ) genmu_0 +=1;
+          else if (i > 2) genmu_1 +=1;
 
+          for (int im=0; im<mevent->nmuons(); ++im){
+            double dR = reco::deltaR(mevent->nth_mu_eta(im), mevent->nth_mu_phi(im), gd_eta, gd_phi);
+            mindR.push_back(dR);
+            matched_mu_idx.push_back(im);
+          }
+          if (mindR.size() !=0) {
+            h_gen_mu_closestdR->Fill(*min_element(mindR.begin(), mindR.end()), w);
+            float best_dR = *min_element(mindR.begin(), mindR.end());
+            int best_idx = std::min_element(mindR.begin(), mindR.end()) - mindR.begin();
+            int bestmu_idx = matched_mu_idx[best_idx];
+
+            if (best_dR < 0.2) {
+              float mu_dBV = mag(mevent->muon_x[bestmu_idx] - mevent->bsx_at_z(mevent->muon_z[bestmu_idx]), mevent->muon_y[bestmu_idx] - mevent->bsy_at_z(mevent->muon_z[bestmu_idx]));
+              h_genmatch_recomu_dBV->Fill(mu_dBV, w);
+              if (mevent->muon_pt[bestmu_idx] >= 20) {
+                if (mevent->muon_ID[bestmu_idx][1] == 1) {
+                  if (mevent->muon_iso[bestmu_idx] < 0.15) {
+                    if (i < 2) {
+                      nmumatched_0 +=1;
+                    }
+                    else if (i > 2) {
+                      nmumatched_1 +=1;
+                    }
+                  }
+                }
+              }
+
+            }
+          }
+        }
+
+
+        if (i<2){
+          // daughter from the first LLP
+          nmatched_0 += n_matched;
+          if (decay_quarks0_pt[0]>=0){
+            decay_quarks0_pt[1] = mevent->gen_daughters[i].Pt();
+            decay_jets0_pt[1] = pt_sum;
+          }
+          else{
+            decay_quarks0_pt[0] = mevent->gen_daughters[i].Pt();
+            decay_jets0_pt[0] = pt_sum;
+          }
+        }
+        else{
+          // daughters from the second LLP
+          nmatched_1 += n_matched;
+          if (decay_quarks1_pt[0]>=0){
+            decay_quarks1_pt[1] = mevent->gen_daughters[i].Pt();
+            decay_jets1_pt[1] = pt_sum;
+          }
+          else{
+            decay_quarks1_pt[0] = mevent->gen_daughters[i].Pt();
+            decay_jets1_pt[0] = pt_sum;
+          }
+        }
+      }
+    }
+    h_decay_lsp0pt_lsp1pt->Fill(std::max(decaylsp0_pt, decaylsp1_pt), std::min(decaylsp0_pt, decaylsp1_pt), w);
+    h_decay_llp0_llp1_quark_sumpt->Fill(std::max(decay_quarks0_pt[0]+decay_quarks0_pt[1], decay_quarks1_pt[0]+decay_quarks1_pt[1]), std::min(decay_quarks0_pt[0]+decay_quarks0_pt[1], decay_quarks1_pt[0]+decay_quarks1_pt[1]), w);
+    h_nmatchjet_llp->Fill(nmatched_0, w);
+    h_nmatchjet_llp->Fill(nmatched_1, w);
+    h_sum_matched_jetpt_llp->Fill(std::max(decay_jets0_pt[0]+decay_jets0_pt[1], decay_jets1_pt[0]+decay_jets1_pt[1]), std::min(decay_jets0_pt[0]+decay_jets0_pt[1], decay_jets1_pt[0]+decay_jets1_pt[1]), w);
+
+
+    for (int igenv = 0; igenv < 2; ++igenv) {
+      double genx = mevent->gen_lsp_decay[igenv*3+0];
+      double geny = mevent->gen_lsp_decay[igenv*3+1];
+      double genz = mevent->gen_lsp_decay[igenv*3+2];
+      float genvtx_dBV = mag(genx- mevent->bsx_at_z(genz), geny - mevent->bsy_at_z(genz));
+      double genbs2ddist = mevent->mag(genx - mevent->bsx_at_z(genz),
+                                      geny - mevent->bsy_at_z(genz)
+          );
+      h_gen_bs2ddist->Fill(genbs2ddist, w);
+      if (mevent->gen_daughters.size() != 0) {
+        int genvtx_fl = abs(mevent->gen_daughter_id[igenv*2+1]);
+        if (genvtx_fl == 11) {
+          h_dau_genele_dBV->Fill(genvtx_dBV, w);
+          if ( (genele_0 == 1 && nelematched_0 == 1) || (genele_1 == 1 && nelematched_1 == 1) ) {
+            h_genmatchele_dBV->Fill(genvtx_dBV, w);
+          }
+        }
+        else if (genvtx_fl == 13) {
+          h_dau_genmu_dBV->Fill(genvtx_dBV, w);
+          if ( (genmu_0 == 1 && nmumatched_0 == 1) || (genmu_1 == 1 && nmumatched_1 == 1) ) {
+            h_genmatchmu_dBV->Fill(genvtx_dBV, w);
           }
         }
       }
 
-
-      if (i<2){
-        // daughter from the first LLP
-        nmatched_0 += n_matched;
-        if (decay_quarks0_pt[0]>=0){
-          decay_quarks0_pt[1] = mevent->gen_daughters[i].Pt();
-          decay_jets0_pt[1] = pt_sum;
-        }
-        else{
-          decay_quarks0_pt[0] = mevent->gen_daughters[i].Pt();
-          decay_jets0_pt[0] = pt_sum;
-        }
-      }
-      else{
-        // daughters from the second LLP
-        nmatched_1 += n_matched;
-        if (decay_quarks1_pt[0]>=0){
-          decay_quarks1_pt[1] = mevent->gen_daughters[i].Pt();
-          decay_jets1_pt[1] = pt_sum;
-        }
-        else{
-          decay_quarks1_pt[0] = mevent->gen_daughters[i].Pt();
-          decay_jets1_pt[0] = pt_sum;
-        }
-      }
     }
-  }
-  h_decay_lsp0pt_lsp1pt->Fill(std::max(decaylsp0_pt, decaylsp1_pt), std::min(decaylsp0_pt, decaylsp1_pt), w);
-  h_decay_llp0_llp1_quark_sumpt->Fill(std::max(decay_quarks0_pt[0]+decay_quarks0_pt[1], decay_quarks1_pt[0]+decay_quarks1_pt[1]), std::min(decay_quarks0_pt[0]+decay_quarks0_pt[1], decay_quarks1_pt[0]+decay_quarks1_pt[1]), w);
-  h_nmatchjet_llp->Fill(nmatched_0, w);
-  h_nmatchjet_llp->Fill(nmatched_1, w);
-  h_sum_matched_jetpt_llp->Fill(std::max(decay_jets0_pt[0]+decay_jets0_pt[1], decay_jets1_pt[0]+decay_jets1_pt[1]), std::min(decay_jets0_pt[0]+decay_jets0_pt[1], decay_jets1_pt[0]+decay_jets1_pt[1]), w);
-
-
-  for (int igenv = 0; igenv < 2; ++igenv) {
-    double genx = mevent->gen_lsp_decay[igenv*3+0];
-    double geny = mevent->gen_lsp_decay[igenv*3+1];
-    double genz = mevent->gen_lsp_decay[igenv*3+2];
-    float genvtx_dBV = mag(genx- mevent->bsx_at_z(genz), geny - mevent->bsy_at_z(genz));
-    double genbs2ddist = mevent->mag(genx - mevent->bsx_at_z(genz),
-                                     geny - mevent->bsy_at_z(genz)
-        );
-    h_gen_bs2ddist->Fill(genbs2ddist, w);
-    if (mevent->gen_daughters.size() != 0) {
-      int genvtx_fl = abs(mevent->gen_daughter_id[igenv*2+1]);
-      if (genvtx_fl == 11) {
-        h_dau_genele_dBV->Fill(genvtx_dBV, w);
-        if ( (genele_0 == 1 && nelematched_0 == 1) || (genele_1 == 1 && nelematched_1 == 1) ) {
-          h_genmatchele_dBV->Fill(genvtx_dBV, w);
-        }
-      }
-      else if (genvtx_fl == 13) {
-        h_dau_genmu_dBV->Fill(genvtx_dBV, w);
-        if ( (genmu_0 == 1 && nmumatched_0 == 1) || (genmu_1 == 1 && nmumatched_1 == 1) ) {
-          h_genmatchmu_dBV->Fill(genvtx_dBV, w);
-        }
-      }
-    }
-
   }
   //////////////////////////////////////////////////////////////////////////////
 
@@ -947,19 +998,27 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     all_lep_pt.push_back(mevent->muon_pt[imu]);
 
     if (mevent->muon_ID[imu][1] == 1) {
-      if (mevent->muon_pt[imu] >= 50) {
-        if (mevent->muon_iso[imu] < 0.15) {
+      h_medmu_iso_v_pt->Fill(mevent->muon_pt[imu], mevent->muon_iso[imu], w);
+      if (mevent->muon_iso[imu] < 0.10) {
+        if (mevent->muon_pt[imu] >= 50) {
           nselmu += 1;
-          h_selmu_pt->Fill(mevent->muon_pt[imu], w);
-          h_selmu_dxybs->Fill(fabs(mevent->muon_dxybs[imu]), w);
-          h_selmu_dxyerr->Fill(mevent->muon_dxyerr[imu], w);
-          h_selmu_nsigmadxy->Fill(fabs(mevent->muon_dxybs[imu]) / mevent->muon_dxyerr[imu], w);
-          h_selmu_absdz->Fill(fabs(mevent->muon_dz[imu]));
+          h_selmu_pt_ptgt50->Fill(mevent->muon_pt[imu], w);
+          h_selmu_dxybs_ptgt50->Fill(fabs(mevent->muon_dxybs[imu]), w);
+          h_selmu_dxyerr_ptgt50->Fill(mevent->muon_dxyerr[imu], w);
+          h_selmu_nsigmadxy_ptgt50->Fill(fabs(mevent->muon_dxybs[imu]) / mevent->muon_dxyerr[imu], w);
+          h_selmu_absdz_ptgt50->Fill(fabs(mevent->muon_dz[imu]));
           if ((fabs(mevent->muon_dxybs[imu]) / mevent->muon_dxyerr[imu]) > 3) {
             nselmu_nsigma +=1;
           }
           all_sellep_sigmadxy.push_back((fabs(mevent->muon_dxybs[imu]) / mevent->muon_dxyerr[imu]));
           all_sellep_pt.push_back(mevent->muon_pt[imu]);
+        }
+        else if (mevent->muon_pt[imu] < 50) {
+          h_selmu_pt_ptlt50->Fill(mevent->muon_pt[imu], w);
+          h_selmu_dxybs_ptlt50->Fill(fabs(mevent->muon_dxybs[imu]), w);
+          h_selmu_dxyerr_ptlt50->Fill(mevent->muon_dxyerr[imu], w);
+          h_selmu_nsigmadxy_ptlt50->Fill(fabs(mevent->muon_dxybs[imu]) / mevent->muon_dxyerr[imu], w);
+          h_selmu_absdz_ptlt50->Fill(fabs(mevent->muon_dz[imu]));
         }
       }
     }
@@ -1007,19 +1066,30 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     all_lep_pt.push_back(mevent->electron_pt[iel]);
 
     if (mevent->electron_ID[iel][3] == 1) {
-      if (mevent->electron_pt[iel] >= 50) {
-        nselele += 1;
-        h_selele_pt->Fill(mevent->electron_pt[iel], w);
-        h_selele_dxybs->Fill(fabs(mevent->electron_dxybs[iel]), w);
-        h_selele_dxyerr->Fill(mevent->electron_dxyerr[iel], w);
-        h_selele_nsigmadxy->Fill(fabs(mevent->electron_dxybs[iel]) / mevent->electron_dxyerr[iel], w);
-        h_selele_absdz->Fill(fabs(mevent->electron_dz[iel]));
-        if ((fabs(mevent->electron_dxybs[iel]) / mevent->electron_dxyerr[iel]) > 3) {
-          nselele_nsigma +=1;
+      h_tightele_iso_v_pt->Fill(mevent->electron_pt[iel], mevent->electron_iso[iel], w);
+      if (mevent->electron_iso[iel] < 0.10) {
+        if (mevent->electron_pt[iel] >= 50) {
+          nselele += 1;
+          h_selele_pt_ptgt50->Fill(mevent->electron_pt[iel], w);
+          h_selele_dxybs_ptgt50->Fill(fabs(mevent->electron_dxybs[iel]), w);
+          h_selele_dxyerr_ptgt50->Fill(mevent->electron_dxyerr[iel], w);
+          h_selele_nsigmadxy_ptgt50->Fill(fabs(mevent->electron_dxybs[iel]) / mevent->electron_dxyerr[iel], w);
+          h_selele_absdz_ptgt50->Fill(fabs(mevent->electron_dz[iel]));
+          if ((fabs(mevent->electron_dxybs[iel]) / mevent->electron_dxyerr[iel]) > 3) {
+            nselele_nsigma +=1;
+          }
+          all_sellep_sigmadxy.push_back((fabs(mevent->electron_dxybs[iel]) / mevent->electron_dxyerr[iel]));
+          all_sellep_pt.push_back(mevent->electron_pt[iel]);
         }
-        all_sellep_sigmadxy.push_back((fabs(mevent->electron_dxybs[iel]) / mevent->electron_dxyerr[iel]));
-        all_sellep_pt.push_back(mevent->electron_pt[iel]);
+        else if (mevent->electron_pt[iel] < 50) {
+          h_selele_pt_ptlt50->Fill(mevent->electron_pt[iel], w);
+          h_selele_dxybs_ptlt50->Fill(fabs(mevent->electron_dxybs[iel]), w);
+          h_selele_dxyerr_ptlt50->Fill(mevent->electron_dxyerr[iel], w);
+          h_selele_nsigmadxy_ptlt50->Fill(fabs(mevent->electron_dxybs[iel]) / mevent->electron_dxyerr[iel], w);
+          h_selele_absdz_ptlt50->Fill(fabs(mevent->electron_dz[iel]));
+        }
       }
+
     }
 
     for (int j = 0; j < 4; ++j) {
@@ -1094,14 +1164,14 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     h_lepton_nsigma_v_pt->Fill(-999.0, -999.0, w);
   if (!all_lep_sigmadxy.empty()) {
     for(unsigned int i = 0; i < all_lep_sigmadxy.size(); i++){
-      h_lepton_nsigma_v_pt->Fill(all_lep_pt[i], all_lep_sigmadxy[i]);
+      h_lepton_nsigma_v_pt->Fill(all_lep_pt[i], all_lep_sigmadxy[i], w);
     }
   }
   if (all_sellep_sigmadxy.empty())
     h_sellepton_nsigma_v_pt->Fill(-999.0, -999.0,w);
   if (!all_sellep_sigmadxy.empty()) {
     for(unsigned int i = 0; i < all_sellep_sigmadxy.size(); i++){
-      h_sellepton_nsigma_v_pt->Fill(all_sellep_pt[i], all_sellep_sigmadxy[i]);
+      h_sellepton_nsigma_v_pt->Fill(all_sellep_pt[i], all_sellep_sigmadxy[i], w);
     }
   }
   
@@ -1153,7 +1223,8 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
 
   for (int i = 0; i < 3; ++i) {
     h_nbtags[i]->Fill(mevent->nbtags(i), w);
-    h_nbtags_v_bquark_code[i]->Fill(mevent->gen_flavor_code, mevent->nbtags(i), w);
+    if (show_gen)
+      h_nbtags_v_bquark_code[i]->Fill(mevent->gen_flavor_code, mevent->nbtags(i), w); //GEN
   }
   const int ibtag = 2; // tight only
   for (size_t ijet = 0; ijet < mevent->jet_id.size(); ++ijet) {

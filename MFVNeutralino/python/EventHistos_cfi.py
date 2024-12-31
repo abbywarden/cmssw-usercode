@@ -4,4 +4,5 @@ mfvEventHistos = cms.EDAnalyzer('MFVEventHistos',
                                 mevent_src = cms.InputTag('mfvEvent'),
                                 weight_src = cms.InputTag('mfvWeight'),
                                 vertex_src = cms.InputTag('mfvVerticesAux'),
+                                show_gen = cms.bool(False)
                                 )
