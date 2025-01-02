@@ -57,6 +57,7 @@ private:
   const bool require_trigbit;
   const bool require_gen_sumdbv;
   const bool require_bjet_psel;
+  const bool require_isomu27;
   const bool study_btag_sf;
   const int  study_btag_sfvar;
   const bool dijet_agnostic;
@@ -131,6 +132,7 @@ MFVAnalysisCuts::MFVAnalysisCuts(const edm::ParameterSet& cfg)
     require_trigbit(cfg.getParameter<bool>("require_trigbit")),
     require_gen_sumdbv(cfg.getParameter<bool>("require_gen_sumdbv")),
     require_bjet_psel(cfg.getParameter<bool>("require_bjet_psel")),
+    require_isomu27(cfg.getParameter<bool>("require_isomu27")),
     study_btag_sf(cfg.getParameter<bool>("study_btag_sf")),
     study_btag_sfvar(cfg.getParameter<int>("study_btag_sfvar")),
     dijet_agnostic(cfg.getParameter<bool>("dijet_agnostic")),
@@ -229,14 +231,16 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
 	        break;
 	      }
       }
+      
       if (!pass_muon_events) {  
         for(size_t trig : mfv::ElectronTriggers){
           if(satisfiesLepTrigger(mevent, trig, setup)) { 
             pass_ele_events = true;
             break;
-          }
-        }
+           }
+         }
       }
+
       //now section into categories 
       if (apply_electrons_only) success = pass_ele_events; //electron veto mu 
       else if (apply_muons_only) success = pass_muon_events; //muons only 
@@ -282,6 +286,12 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
                 }
             }
             if(!success) return false;
+        }
+
+        if (apply_presel == 5){
+            if ( !satisfiesTrigger(mevent, mfv::b_HLT_PFMET120_PFMHT120_IDTight, setup) ){
+                return false;
+            }
         }
 
         if (apply_presel == 6) {
@@ -452,6 +462,10 @@ bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
 
     if (require_met_filters && (!mevent->pass_metfilters))
       return false;
+    
+    if (require_isomu27 && !mevent->pass_hlt(mfv::b_HLT_IsoMu27))
+      return false;
+    
     if (apply_vertex_cuts) {
         edm::Handle<MFVVertexAuxCollection> vertices;
         event.getByToken(vertex_token, vertices);
@@ -579,6 +593,7 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
 
   // Get a shorthand for the current year
   int year = int(MFVNEUTRALINO_YEAR);
+  assert(year == 20161 || year == 20162 || year == 2017 || year == 2018); // in case of race conditions where the compiled macro is invalid...
 
   // note that if these weren't pT ordered, we'd have to be more careful in the loops...
   int njets     = mevent->njets(20);
@@ -930,6 +945,12 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
             }
             return passed_kinematics;
         }
+    case mfv::b_HLT_PFMET120_PFMHT120_IDTight :
+        {
+         //if(mevent->met() < 150 || njets < 2) return false; // cut on MET to avoid turn-on region, maybe cut value need to be determined
+         //if (njets < 2) return false;
+            return true;
+        }
 
     default :
         {
@@ -945,6 +966,8 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
   if(!mevent->pass_hlt(trig)) return false;
 
   int year = int(MFVNEUTRALINO_YEAR);
+  assert(year == 20161 || year == 20162 || year == 2017 || year == 2018); // in case of race conditions where the compiled macro is invalid...
+
   int nmuons     = mevent->nmuons();
   int nelectrons = mevent->nelectrons();
   int njets      = mevent->njets(20);
@@ -1085,7 +1108,7 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
   return false;
 
 }
-
+                    
 //displaced lepton trigger & per trigger preselection 
 bool MFVAnalysisCuts::satisfiesDispLepTrigger(edm::Handle<MFVEvent> mevent, size_t trig, const edm::EventSetup& setup) { 
   if(!mevent->pass_hlt(trig)) return false;

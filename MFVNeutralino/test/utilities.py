@@ -84,9 +84,9 @@ def cmd_hadd_data():
 
         have = []
         year_eras = [
-            #('20161', 'BCDEF'), #FIXME B2->B 
-            #('20162', 'FGH'),  
-            ('2017', 'BCDFE'), #HERE 
+            #('20161', 'BCDEF'), #FIXME B2->B #HERE SingleMuon BCDEF 
+            ('20162', 'FGH'),  
+            #('2017', 'BCDF'), #HERE BCDEF
             #('2018', 'ABCD'),
             ]
 
@@ -173,8 +173,9 @@ def _background_samples(year=2018):
     #         x = ['ww', 'wz', 'zz',] # 'ttbar'] 
     elif _btagpresel:
         #x = ['qcdht%04i' % x for x in [100, 200, 300, 500, 700, 1000, 1500, 2000]]
-        x = ['qcdht%04i' % x for x in [500, 700, 1000, 1500, 2000]]
-        x += ['ttbar']
+        #x = ['qcdht%04i' % x for x in [500, 700, 1000, 1500, 2000]]
+        x = []
+        x += ['ttbar',]
     elif _metpresel:
         x = ['ttbar', 'wjetstolnu']
         x += ['qcdht%04i' % x for x in [200, 300, 500, 700, 1000, 1500, 2000]]
@@ -353,7 +354,7 @@ def cmd_effsprint(year_to_use=2018):
 def cmd_histos():
     #cmd_report_data()
     cmd_hadd_data()
-    cmd_merge_background()
+    #cmd_merge_background()
     #cmd_effsprint()
 
 def cmd_presel():

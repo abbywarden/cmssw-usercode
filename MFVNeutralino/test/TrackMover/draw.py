@@ -7,9 +7,8 @@ from JMTucker.Tools.ROOTTools import *
 set_style()
 ROOT.TH1.AddDirectory(0)
 
-#variables = ['_movedist', 'lsp', '_npv_', '_dvv', '_sump_', 'tks', '_vtx', '_trk_', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
 
-variables = ['_movedist', 'lsp', '_npv_', 'half', 'qrk0_dxybs', 'qrk1_dxybs', '_dvv', '_misccloseseedtracks_', '_sump_', '_tks_', '_npv_', '_costheta_', '_njets_', 'movedseedtks', 'closeseedtks', 'jet0_eta', 'jet1_eta', 'closedseed', '_w_mT_', '_jet_dr_','_jet_deta_','_jet_dphi_','_ntks_j0_','_ntks_j1_','_pt0_','_pt1_', '_nmovedtracks_' ] 
+variables = ['_npv_', 'pt', '_deta_', '_dvv', '_jet_d', '_vtxunc', 'closeseedtks']
 
 def get_em(fn, scale=1., alpha=1-0.6827):
     #f = ROOT.TFile(fn)
@@ -21,7 +20,7 @@ def get_em(fn, scale=1., alpha=1-0.6827):
 
     def skip(name, obj):
         return not obj.Class().GetName().startswith('TH1') or obj.GetName() in ('h_norm', 'h_weight', 'h_npu') #or name in ('nlep')
-    
+
     def rebin(name, obj):
         return obj
         if 'jetdravg' == name or \
@@ -39,11 +38,10 @@ def get_em(fn, scale=1., alpha=1-0.6827):
              'pvscore' == name or \
              'pvx' == name or \
              'pvy' == name or \
-             'lsp' == name or \
              'pvz' == name:
             obj.Rebin(4)
         return obj
-    
+
     hdummy = f.Get('h_weight')
     integ = hdummy.Integral(0,hdummy.GetNbinsX()+2)
     print 'integral:', integ
@@ -84,22 +82,25 @@ def get_em(fn, scale=1., alpha=1-0.6827):
         if name.endswith('_num'):
             num = d[name]
             den = d[name.replace('_num', '_den')]
+            if 'tkunc' in name:
+              num = num.Rebin(2)
+              den = den.Rebin(2)
+            #if 'lsp' in name:
+            #  num = num.Rebin(8)
+            #  den = den.Rebin(8)
             if 'movedist' in name:
               num = num.Rebin(2)
               den = den.Rebin(2)
-            if 'lsp' in name:
-              num = num.Rebin(4)
-              den = den.Rebin(4)
             if 'dvv' in name:
-              num = num.Rebin(4)
-              den = den.Rebin(4)
-            if 'tkunc' in name:
-              num = num.Rebin(4)
-              den = den.Rebin(4)
-            if 'tkdbv' in name:
-              num = num.Rebin(8)
-              den = den.Rebin(8)
-            g = histogram_divide(num, den, confint_params=(alpha,), use_effective=use_effective)
+              num.Rebin(8)
+              den.Rebin(8)
+              num.GetXaxis().SetRangeUser(0.0,0.5)
+              den.GetXaxis().SetRangeUser(0.0,0.5)
+            if 'close' in name:
+              num.GetXaxis().SetRangeUser(0.0,45.0)
+              den.GetXaxis().SetRangeUser(0.0,45.0)
+            num.Divide(num,den, 1, 1,"B")#histogram_divide(num, den, confint_params=(alpha,), use_effective=use_effective)
+            g = num.Clone()
             print(name)
             g.SetTitle('')
             g.GetXaxis().SetTitle(num.GetXaxis().GetTitle())
@@ -139,9 +140,9 @@ def get_em(fn, scale=1., alpha=1-0.6827):
 
     return f, l, d, c, integ
 
-def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root'):
+def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.root', fn5='signalnon.root', whicheta='low'):
     assert ex
-    ps = plot_saver(plot_dir('TrackMover_' + ex), size=(600,600), log=False)
+    ps = plot_saver(plot_dir('TrackMover_' + ex), size=(600,600), pdf = True, log=False)
 
     print ex
     print 'fn1:', fn1
@@ -150,6 +151,10 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root'):
     f_2, l_2, d_2, c_2, integ_2 = get_em(fn2, scale=mc_scale_factor)
     print 'fn3:', fn3
     f_3, l_3, d_3, c_3, integ_3 = get_em(fn3)
+    print 'fn4:', fn4
+    f_4, l_4, d_4, c_4, integ_4 = get_em(fn4)
+    print 'fn5:', fn5
+    f_5, l_5, d_5, c_5, integ_5 = get_em(fn5)
     #assert l_1 == l_2
     #assert len(d_1) == len(d_2)
     l = l_1
@@ -163,72 +168,93 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root'):
        print '%40s %5.2f +- %5.2f' % (cutset, eff_2 - eff_1, (eeff_2**2 + eeff_1**2)**0.5)
 
     for name in l:
-        data = d_1[name]
-        mc   = d_2[name]
+        mc = d_1[name]
+        data   = d_2[name]
         signal   = d_3[name]
+        signalmid   = d_4[name]
+        signalnon   = d_5[name]
         both = (data, mc)
 
         if name.endswith('_rat') or (not name.endswith('_num') and not name.endswith('_den')):
             
-            data.SetName("TM MC bkg")
-            data.SetMarkerSize(0.8)
-            data.SetMarkerColor(ROOT.kRed)
-            data.SetLineColor(ROOT.kRed)
-            data.SetFillColor(ROOT.kRed)
-
-            mc.SetName("MC signal")
+            mc.SetName("REWEIGHTED TM MC")
             mc.SetMarkerSize(0.8)
-            mc.SetMarkerColor(ROOT.kBlue)
-            mc.SetLineColor(ROOT.kBlue)
-            mc.SetFillColor(ROOT.kBlue)
+            mc.SetLineWidth(3)
+            mc.SetMarkerColor(ROOT.kRed)
+            mc.SetLineColor(ROOT.kRed)
+            mc.SetFillColor(ROOT.kRed)
             
-            signal.SetName("TM data")
+            data.SetName("REWEIGHTED TM data")
+            data.SetMarkerSize(0.8)
+            data.SetLineWidth(3)
+            data.SetMarkerColor(ROOT.kBlack) 
+            data.SetLineColor(ROOT.kBlack)
+            data.SetFillColor(ROOT.kBlack)
+            
+            signal.SetName("V(HSS4d) 1mm 55GeV MC")
             signal.SetMarkerSize(0.8)
-            signal.SetMarkerColor(ROOT.kAzure+8)
-            signal.SetLineColor(ROOT.kAzure+8)
-            signal.SetFillColor(ROOT.kAzure+8)
+            signal.SetLineWidth(3)
+            signal.SetMarkerColor(ROOT.kBlue)
+            signal.SetLineColor(ROOT.kBlue)
+            signal.SetFillColor(ROOT.kBlue)
+            
+            signalmid.SetName("REWEIGHTED TM data")
+            signalmid.SetMarkerSize(0.8)
+            signalmid.SetLineWidth(3)
+            signalmid.SetMarkerColor(ROOT.kGray+2)
+            signalmid.SetLineColor(ROOT.kGray+2)
+            signalmid.SetFillColor(ROOT.kGray+2)
+
+            signalnon.SetName("REWEIGHTED TM data")
+            signalnon.SetMarkerSize(0.8)
+            signalnon.SetLineWidth(3)
+            signalnon.SetMarkerColor(ROOT.kAzure+8)
+            signalnon.SetLineColor(ROOT.kAzure+8)
+            signalnon.SetFillColor(ROOT.kAzure+8)
             
             x_range = None
             y_range = None
-            res_x_range = None
-            objs = [signal, mc]
-            statbox_size = (0.2,0.2)
+            objs = [] 
+            statbox_size = (0.30,0.15)
             if name.endswith('_rat'):
                 for g in both:
                     g.GetYaxis().SetTitle('efficiency')
-                #objs = [(signal, 'P'), (mc, 'P'), (data, 'P'),]
-                objs = [(mc, 'P'), (data, 'P'), (signal, 'P'),]
+                objs = [(mc, 'P'),(data, 'P'),(signal, 'P')]
                 y_range = (0, 1.05)
-                statbox_size = None
             if 'bs2derr' in name:
                 x_range = (0, 0.01)
-            #if 'movedist' in name:
-            #    x_range = (0.0, 0.2)
-                #res_x_range = (0.07,0.12)
-            
+            if 'movedist' in name:
+                x_range = (0.0, 0.2)
+            if 'dvv' in name:
+                x_range = (0.0, 0.5)
+            if 'close' in name:
+                x_range = (0.0, 45.0)
             ratios_plot(name,
                         objs,
                         plot_saver=ps,
                         x_range=x_range,
                         y_range=y_range,
-                        #res_y_range=0.10,
-                        res_y_range=(0.4,1.5),
-                        res_y_title='data/MC',
+                        res_y_range=(0.4,1.6),
+                        res_y_title='ratio',
                         res_fit=False,
                         res_divide_opt={'confint': propagate_ratio, 'force_le_1': False, 'allow_subset': True}, #name in ('all_jetsumntracks_rat', )},
                         res_lines=1.,
                         statbox_size=statbox_size,
+                        text = whicheta+" |#eta| Quarks(Jets) from LLP" 
                         )
 
 if __name__ == '__main__':
     import sys
-    if len(sys.argv) < 5:
+    if len(sys.argv) < 7:
         sys.exit('usage: python draw.py tag_for_plots fn1 fn2 f3 [fn2 scale factor]')
 
     ex = sys.argv[1]
     fn1 = sys.argv[2]
     fn2 = sys.argv[3]
     fn3 = sys.argv[4]
-    if len(sys.argv) > 5:
-        mc_scale_factor = float(sys.argv[5])
-    comp(ex, fn1, fn2, fn3)
+    fn4 = sys.argv[5]
+    fn5 = sys.argv[6]
+    whicheta = sys.argv[7]
+    if len(sys.argv) > 8:
+        mc_scale_factor = float(sys.argv[8])
+    comp(ex, fn1, fn2, fn3, fn4, fn5, whicheta)

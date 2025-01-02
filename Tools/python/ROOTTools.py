@@ -463,7 +463,6 @@ def compare_hists(ps, samples, **kwargs):
     sort_names     = kwargs.get('sort_names',     False)
     show_progress  = kwargs.get('show_progress',  10)
     only_n_first   = kwargs.get('only_n_first',   -1)
-    only_select    = kwargs.get('only_select',    [])
     raise_on_incompatibility = kwargs.get('raise_on_incompatibility', False)
 
     def _get(arg, default):
@@ -483,7 +482,7 @@ def compare_hists(ps, samples, **kwargs):
     y_range        = _get('y_range',        None)
     move_overflows = _get('move_overflows', 'under over')
     profile        = _get('profile',        None)
-    move_stat_box  = _get('move_stat_box', (0.15,0.15,0.55,0.25))
+
     ###
 
     proto_dir = samples[0][1]
@@ -497,13 +496,8 @@ def compare_hists(ps, samples, **kwargs):
 
     if sort_names:
         names.sort()
-    #have to do this above only_n_first to overwrite only_n_first
-    if len(only_select) != 0:
-        only_n_first = 0
-        names = [i for i in only_select]
     if only_n_first > 0:
         names = names[:only_n_first]
-
 
     def all_same(l, msg):
         if len(set(l)) != 1:
@@ -594,10 +588,6 @@ def compare_hists(ps, samples, **kwargs):
         m_o = False if (is2d or profiled) else move_overflows(name, hist_list, None)
 
         if len(hists) > 1 and ratio(name, hist_list, None) and (not is2d or profiled):
-            for hist in hists:
-                if y_r:
-                    hist.SetMinimum(y_r[0]+((y_r[0]==0)*1e-12))
-                    hist.SetMaximum(y_r[1])
             ratios_plot(name_clean,
                         hists,
                         plot_saver=ps,
@@ -605,7 +595,6 @@ def compare_hists(ps, samples, **kwargs):
                         res_divide_opt={'confint': propagate_ratio, 'force_le_1': False},
                         statbox_size=stat_size(name, hist_list, None),
                         res_y_range=0.15,
-                        #res_y_range=(0,5.0),
                         x_range = x_r,
                         move_overflows = m_o,
                         )
@@ -618,9 +607,6 @@ def compare_hists(ps, samples, **kwargs):
                 if not is2d or profiled:
                     if x_r:
                         hist.GetXaxis().SetRangeUser(*x_r)
-                    if y_r:
-                        hist.SetMinimum(y_r[0]+((y_r[0]==0)*1e-12))
-                        hist.SetMaximum(y_r[1])
                     move_overflows_into_visible_bins(hist, m_o)
                 elif is2d:
                     if x_r:
@@ -1176,8 +1162,7 @@ def differentiate_stat_box(hist, movement=1, new_color=None, new_size=None, colo
     s = hist.FindObject('stats')
     if not s:
         return
-    ROOT.gStyle.SetOptStat(2211)
-    
+
     if color_from_hist:
         new_color = hist.GetLineColor()
 
@@ -1597,27 +1582,8 @@ def plot_dir(x='', make=False, temp=False):
     hostname = os.environ['HOSTNAME']
     username = os.environ['USER']
     d = None
-    #if 'fnal.gov' in hostname and username == 'tucker':
-    #    if temp:
-    #        d = '/publicweb/t/tucker/asdf/tempplots'
-    #    else:
-    #        d = '/publicweb/t/tucker/asdf/plots'
-    #elif 'fnal.gov' in hostname and username == 'jchu':
-    #    d = '/publicweb/j/jchu/plots'
-    #elif 'fnal.gov' in hostname and username == 'dquach':
-    #    d = '/publicweb/d/dquach/plots'
-    #elif 'fnal.gov' in hostname and username == 'shogan':
-    #    d = '/publicweb/s/shogan/images'
-    #elif 'fnal.gov' in hostname and username == 'joeyr':
-    #    d = '/publicweb/j/joeyr/plots'
-    #elif 'fnal.gov' in hostname and username == 'ali':
-    #    d = '/publicweb/a/ali/'
-    #elif 'fnal.gov' in hostname and username == 'pkotamni':
-    #    d = '~/nobackup/crabdirs/'
-    #elif 'fnal.gov' in hostname and username == 'alecduqu':
-    #    d = '~/crab_dirs/'        Alec removed this and added the two lines below
     if 'fnal.gov' in hostname :
-        d = '~/crab_dirs/'
+        d = os.environ['HOME']+'/nobackup/DVplots/'
     if d:
         x = os.path.join(d,x)
     elif 'wisc.edu' in hostname and username == 'acwarden':
@@ -1634,7 +1600,7 @@ def plot_dir(x='', make=False, temp=False):
 class plot_saver:
     i = 0
     
-    def __init__(self, plot_dir=None, html=True, log=True, root=True, root_log=False, pdf=False, pdf_log=False, C=False, C_log=False, size=(820,630), per_page=-1, canvas_margins=(0.05,0.10,0.10,0.20)):#canvas_margins=(0.05,0.10,0.10,0.20)
+    def __init__(self, plot_dir=None, html=True, log=True, root=True, root_log=False, pdf=False, pdf_log=False, C=False, C_log=False, size=(820,630), per_page=-1, canvas_margins=None):
         self.c = ROOT.TCanvas('c%i' % plot_saver.i, '', *size)
         if canvas_margins is not None:
             if type(canvas_margins) == int or type(canvas_margins) == float:
@@ -1866,11 +1832,9 @@ def ratios_plot(name,
                 res_fcns = [],
                 legend = None,
                 move_overflows = 'under over',
-                move_stat_box = (0.15,0.15,0.55,0.25),
                 draw_normalized = False,
                 statbox_size = None,
                 which_ratios = 'first', # 'first' or 'pairs'
-                logx=None,
                 ):
     '''With n hists/graphs, draw them and the n-1 ratios to hists[0].
     hists can be a list of just the hists/graphs, or it can be a list
@@ -1916,8 +1880,6 @@ def ratios_plot(name,
     canvas.SetBottomMargin(canvas_bottom_margin)
     canvas.SetLeftMargin(canvas_left_margin)
     canvas.SetRightMargin(canvas_right_margin)
-    if logx:
-        canvas.SetLogx()
 
     if plot_saver is not None:
         plot_saver.old_c = plot_saver.c
@@ -1999,8 +1961,6 @@ def ratios_plot(name,
     ratio_pad.SetFillColor(0)
     ratio_pad.SetFillStyle(0)
     ratio_pad.Draw()
-    if logx:
-        ratio_pad.SetLogx()
     ratio_pad.cd(0)
 
     ratios = []
@@ -2016,7 +1976,7 @@ def ratios_plot(name,
         min_r, max_r = 1e99, -1e99
         for h0,h in pairs_for_ratios:
             v1, v2 = histogram_divide_values(h, h0, True)
-            xa, xb = h.GetXaxis().GetBinLowEdge(h.GetXaxis().GetFirst()), h.GetXaxis().GetBinLowEdge(h.GetXaxis().GetLast()) #FIXME: this doesn't work for TGraph without GetXaxis
+            xa, xb = h.GetBinLowEdge(h.GetXaxis().GetFirst()), h.GetBinLowEdge(h.GetXaxis().GetLast())
             rs = [v1.y[i] / v2.y[i] for i in xrange(v2.n) if v2.y[i] != 0. and xa < v1.x[i] < xb]
             if rs:
                 min_r = min(min_r, min(rs))
@@ -2160,7 +2120,7 @@ def real_hist_min(h, return_bin=False, user_range=None):
         return m
 
 def root_fns_from_argv():
-  return [x for x in sys.argv[1:] if (os.path.isfile(x) or x.startswith('root://')) and x.endswith('.root')]
+    return [x for x in sys.argv[1:] if os.path.isfile(x) and x.endswith('.root')]
 
 def set_style(date_pages=False):
     ROOT.TH1.SetDefaultSumw2() # when would we ever not want to?

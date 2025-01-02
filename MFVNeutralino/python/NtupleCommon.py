@@ -16,12 +16,12 @@ if use_btag_triggers :
 elif use_MET_triggers :
     lsp_id = 1000021 # should do that in a smarter way would be -1 if not MET
     ntuple_version_ += "MET"
+elif use_Lepton_triggers :
+    ntuple_version_ += 'Lep'
 elif use_Muon_triggers :
     ntuple_version_ += "LepMu"
 elif use_Electron_triggers :
     ntuple_version_ += "LepEle"
-elif use_Lepton_triggers :
-    ntuple_version_ += 'Lep'
 ntuple_version_use = ntuple_version_ + 'm'
 dataset = 'ntuple' + ntuple_version_use.lower()
 
@@ -104,6 +104,7 @@ def minitree_only(process, mode, settings, output_commands):
 #updated event_filter : takes in two modes, the default/original and the rp_mode, indexed at 0 and 1 respectfully
 def event_filter(process, mode, settings, output_commands, **kwargs):
     if mode[0] or mode[1]:
+        print(mode[0])
         from JMTucker.MFVNeutralino.EventFilter import setup_event_filter
         setup_event_filter(process, input_is_miniaod=settings.is_miniaod, mode=mode[0], event_filter_require_vertex = False, rp_mode=mode[1], **kwargs)
 
@@ -180,7 +181,7 @@ def make_output_commands(process, settings):
     if settings.keep_tk:
         output_commands += ['keep *_jmtRescaledTracks_*_*']
 
-    if settings.keep_all:
+    if settings.keep_all: #FIXME
         def dedrop(l):
             return [x for x in l if not x.strip().startswith('drop')]
         our_output_commands = output_commands
@@ -316,7 +317,7 @@ def miniaod_ntuple_process(settings):
     process.mfvEvent.pileup_info_src = 'slimmedAddPileupInfo'
     process.mfvEvent.met_src = cms.InputTag('slimmedMETs', '', 'Ntuple') 
     
-    # MET correction and filters
+    # MET correction and filters 
     # https://twiki.cern.ch/twiki/bin/view/CMS/MissingETUncertaintyPrescription#PF_MET
     from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
     process.load("Configuration.StandardSequences.GeometryRecoDB_cff") 
@@ -361,7 +362,7 @@ def miniaod_ntuple_process(settings):
     mods = [
         (prepare_vis,    settings.prepare_vis),
         (run_n_tk_seeds, settings.run_n_tk_seeds),
-        (event_filter,    [settings.mode, settings.randpars_filter]),
+        (event_filter,    [settings.event_filter, settings.randpars_filter]),
         #(event_filter,   settings.event_filter),
         (minitree_only,  settings.minitree_only),
         ]
@@ -395,23 +396,18 @@ def signal_uses_random_pars_modifier(sample): # Used for samples stored in inclu
 
 def signals_no_event_filter_modifier(sample):
     if sample.is_signal:
-        print("is signal")
         if use_btag_triggers :
             magic = "event_filter = 'bjets OR displaced dijet veto HT'"
-        elif use_Muon_triggers :
-            magic ="event_filter = 'muons only'"
-            print("signal : turn on muon trig")
-        elif use_Electron_triggers :
-            magic ="event_filter = 'electrons only veto muons'"
-            print("signal : turn on ele trig")
         elif use_Lepton_triggers :
             magic ="event_filter = 'leptons only'"
-            print("signal : turn on lepton trig")
+        elif use_Muon_triggers :
+            magic ="event_filter = 'muons only'"
+        elif use_Electron_triggers :
+            magic ="event_filter = 'electrons only veto muons'"
         else :
             magic = "event_filter = 'jets only'"
         to_replace = [(magic, 'event_filter = False', 'tuple template does not contain the magic string "%s"' % magic)]
     else:
-        print("not signal")
         to_replace = []
     return [], to_replace
 

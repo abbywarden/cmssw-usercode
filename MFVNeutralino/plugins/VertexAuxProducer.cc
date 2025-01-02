@@ -277,7 +277,7 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
         ttks.push_back(tt_builder->build(**it));
         //need to double check track ids w/ types
         reco::TrackRef tk = it->castTo<reco::TrackRef>();
-
+        
         // using generalized function to separate into track types (#FIXME : tk.id's change based on CMSSW)
         if (track_rescaler_which == 1){
           if ((tk.id().id() == 166) & (tk->pt() >= 20.0)) {

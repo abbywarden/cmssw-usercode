@@ -12,18 +12,18 @@ mfvSelectedVertices = cms.EDProducer('MFVVertexSelector',
                                      match_to_vertices_src = cms.InputTag(''), # cms.InputTag('mfvGenParticles','genVertex') ,
                                      max_match_distance = cms.double(0.0120),
                                      min_match_distance = cms.double(0),
-                                     exclude_beampipe = cms.bool(True), #FIXME true by default
+                                     exclude_beampipe = cms.bool(True),
                                      min_ntracks          = cms.int32(0),
                                      max_ntracks          = cms.int32(1000000),
                                      min_ntracksptgt2     = cms.int32(0),
                                      min_ntracksptgt3     = cms.int32(0),
                                      min_ntracksptgt5     = cms.int32(0),
                                      min_ntracksptgt10    = cms.int32(0),
-                                     min_ntracknsigma4    = cms.int32(0), 
                                      min_njetsntks        = cms.int32(0),
-                                     max_njetsntks        = cms.int32(1000000),
+                                     min_ntracknsigma4    = cms.int32(0), 
                                      min_nlep20_inSV      = cms.int32(0),
                                      max_nlep20_inSV      = cms.int32(1000000),
+                                     max_njetsntks        = cms.int32(1000000),
                                      max_chi2dof          = cms.double(1e9),
                                      min_tkonlypt         = cms.double(0),
                                      max_abstkonlyeta     = cms.double(1e9),
@@ -158,4 +158,3 @@ mfvSelectedVerticesSeq = cms.Sequence(
     mfvSelectedVerticesTightMinNtk3 *
     mfvSelectedVerticesTightMinNtk4 
     )
-

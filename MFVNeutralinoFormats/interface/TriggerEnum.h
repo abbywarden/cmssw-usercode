@@ -147,7 +147,6 @@ namespace mfv {
     //displaced dijet triggers 2016
     mfv::b_HLT_HT350_DisplacedDijet40_DisplacedTrack, mfv::b_HLT_HT650_DisplacedDijet80_Inclusive
   };
- 
   static const std::vector<size_t> ElectronTriggers = {
    //electron triggers
    mfv::b_HLT_Ele27_WPTight_Gsf, //2016
@@ -161,7 +160,7 @@ namespace mfv {
     mfv::b_HLT_IsoMu24, //2018
     mfv::b_HLT_Mu50,
   };
-
+  
   //displaced dilepton triggers 
   static const std::vector<size_t> DisplacedLeptonTriggers = {
     mfv::b_HLT_Mu43NoFiltersNoVtx_Photon43_CaloIdL, mfv::b_HLT_Diphoton30_22_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90,

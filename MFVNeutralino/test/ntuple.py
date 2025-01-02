@@ -17,19 +17,19 @@ if use_btag_triggers :
     #settings.event_filter = 'dilepton only' # for new trigger studies
     #settings.event_filter = 'leptons only' # for new trigger studies
     #settings.event_filter = 'low HT online track test' # for new trigger studies
-    settings.mode = 'bjets OR displaced dijet' # for new trigger studies
+    settings.event_filter = 'bjets OR displaced dijet' # for new trigger studies
 elif use_MET_triggers :
-    #settings.event_filter = 'met only'
-    settings.mode = 'met only'
-    #settings.mode = 'met AND iso muons'
+    settings.event_filter = 'met only'
+elif use_Lepton_triggers :
+    settings.event_filter = 'leptons only'
 elif use_Muon_triggers :
-    settings.mode = 'muons only' #FIXME
+    settings.event_filter = 'muons only' 
 elif use_Electron_triggers :
     settings.mode = 'electrons only' #FIXME
 elif use_Lepton_triggers :
     settings.mode = 'leptons only'
 else :
-    settings.mode = 'jets only'
+    settings.event_filter = 'jets only'
 
 settings.randpars_filter = False
 # if want to test local : 
@@ -38,12 +38,12 @@ settings.randpars_filter = False
 process = ntuple_process(settings)
 dataset = 'miniaod' if settings.is_miniaod else 'main'
 #sample_files(process, 'ttbar_semilep_2018', dataset, 3)
-sample_files(process, 'mfv_stopld_tau000100um_M1400_20162', dataset, 1)
+sample_files(process, 'mfv_stoplb_tau000300um_M0800_2018', dataset, 1)
 #sample_files(process, 'SingleMuon2018A', dataset, 2)
 #sample_files(process, 'qcdbctoept030_2017', dataset, 4)
 #sample_files(process, 'mfv_stopld_tau010000um_M0800_20161', dataset, 1)
 
-max_events(process, 17000)
+max_events(process, 1000)
 cmssw_from_argv(process)
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
@@ -51,13 +51,19 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
 
     if use_btag_triggers :
        #samples = pick_samples(dataset, qcd=True, ttbar=False, data=False) # no data currently; no sliced ttbar since inclusive is used
-       samples = Samples.DisplacedJet_data_samples_2017 + Samples.qcd_samples_2017
+       #samples = Samples.DisplacedJet_data_samples_2017 + Samples.qcd_samples_2017
+       samples = [getattr(Samples, 'ggHToSSTodddd_tau1mm_M55_2017')] 
     elif use_MET_triggers :
        samples = pick_samples(dataset, qcd=True, ttbar=False, data=False, leptonic=True, splitSUSY=True, Zvv=True, met=True, span_signal=False)
+    elif use_Lepton_triggers :
+        #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=True, leptonic=True, diboson=True, Lepton_data=False)
+        #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=True, leptonic=False, diboson=False, Lepton_data=False)
+        #samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=False, leptonic=False, diboson=False, Lepton_data=False)
+        samples = [getattr(Samples, 'WplusHToSSTodddd_tau1mm_M40_2018')] 
     elif use_Muon_triggers :
-        #samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=False)
-        samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
-        #samples = [getattr(Samples, 'WplusHToSSTodddd_tau300um_M55_2017')] 
+        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=True, leptonic=True, met=True, diboson=True, Lepton_data=True)
+        #samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
+        #samples = [getattr(Samples, 'WplusHToSSTodddd_tau1mm_M55_2017')] 
         #samples = [getattr(Samples, 'mfv_stoplb_tau001000um_M0400_2017')] 
     elif use_Electron_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=True, leptonic=True, met=True, diboson=True, Lepton_data=False)

@@ -82,11 +82,15 @@ namespace {
 void MFVTriggerFloats::produce(edm::Event& event, const edm::EventSetup& setup) {
     if (prints) std::cout << "TriggerFloats run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
     //std::cout << "Starting TriggerFloats.cc" << std::endl;
-    std::vector<std::string> metfilternames = {"Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_eeBadScFilter"};
     edm::Handle<edm::TriggerResults> metFilters;
     event.getByToken(met_filters_token, metFilters);
     const edm::TriggerNames &names = event.triggerNames(*metFilters); 
 
+    std::vector<std::string> metfilternames = {"Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_eeBadScFilter", "Flag_ecalBadCalibFilter"};
+    if ((year==20161) || (year==20162) ){
+      metfilternames = {"Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_eeBadScFilter"};
+    }
+    
     edm::Handle<edm::TriggerResults> trigger_results;
     event.getByToken(trigger_results_token, trigger_results);
     const edm::TriggerNames& trigger_names = event.triggerNames(*trigger_results);
@@ -117,59 +121,35 @@ void MFVTriggerFloats::produce(edm::Event& event, const edm::EventSetup& setup) 
     double met_px = met_pt*std::cos(met_phi);
     double met_py = met_pt*std::sin(met_phi);
     for (const pat::Muon& muon : *muons) {
-        double muon_px = muon.px();
-        double muon_py = muon.py();
-        //if (muon_selector(muon)){
-        if (muon.passed(reco::Muon::CutBasedIdTight)) {
+      double muon_px = muon.px();
+      double muon_py = muon.py();
+      //if (muon_selector(muon)){
+      if (muon.passed(reco::Muon::CutBasedIdTight)) {
         met_px = met_px + muon_px;
         met_py = met_py + muon_py;
-        }
+      }
     }
     double met_nomu_pt = hypotf(met_px,met_py);
-    double met_nomu_phi = atan2(met_px,met_py);
+    double met_nomu_phi = atan2(met_py,met_px);
+    
 
     // check met filters
     std::vector<bool> pass_met_filters(metfilternames.size(), false);
     for (unsigned int i = 0, n = metFilters->size(); i < n; ++i) {
-        for (unsigned int j = 0; j<metfilternames.size(); ++j){
-            if ( names.triggerName(i) == metfilternames[j] ){
-                pass_met_filters[j] = metFilters->accept(i);
-                if (prints)
-                std::cout << metfilternames[j] << " " << metFilters->accept(i) <<std::endl;
-            }
+      for (unsigned int j = 0; j<metfilternames.size(); ++j){
+        if ( names.triggerName(i) == metfilternames[j] ){
+          pass_met_filters[j] = metFilters->accept(i);
+          if (prints)
+            std::cout << metfilternames[j] << " " << metFilters->accept(i) <<std::endl;
         }
+      }
     }
-
-    // edm::Handle<bool> passecalBadCalibFilterUpdate;
-    // event.getByToken(ecalBadCalibFilterUpdate_token,passecalBadCalibFilterUpdate);
-    // bool _passecalBadCalibFilterUpdate = (*passecalBadCalibFilterUpdate );
-    // bool pass_all_metfilters = _passecalBadCalibFilterUpdate;
-    // for (const auto& pf:pass_met_filters){
-    //     pass_all_metfilters = pass_all_metfilters && pf;
-    // }
-    // if (prints){
-    //     std::cout << "Total results: ";
-    //     for (const auto& fr:pass_met_filters){
-    //     std::cout << fr << " ";
-    //     }
-    //     std::cout << _passecalBadCalibFilterUpdate << std::endl;
-    //     std::cout << std::endl;
-    // }
-
     edm::Handle<bool> passBadPFMuonFilterUpdateDz;
     event.getByToken(badPFMuonFilterUpdateDz_token,passBadPFMuonFilterUpdateDz);
     bool _passBadPFMuonFilterUpdateDz = (*passBadPFMuonFilterUpdateDz );
     bool pass_all_metfilters = _passBadPFMuonFilterUpdateDz;
     for (const auto& pf:pass_met_filters){
-        pass_all_metfilters = pass_all_metfilters && pf;
-    }
-    if (prints){
-        std::cout << "Total results: ";
-        for (const auto& fr:pass_met_filters){
-        std::cout << fr << " ";
-        }
-        std::cout << _passBadPFMuonFilterUpdateDz << std::endl;
-        std::cout << std::endl;
+      pass_all_metfilters = pass_all_metfilters && pf;
     }
 
     short int npass_filter[mfv::n_filter_paths] = {0};
@@ -585,12 +565,12 @@ void MFVTriggerFloats::produce(edm::Event& event, const edm::EventSetup& setup) 
     floats->l1htt = etsumhelper.TotalHt();
     floats->myhtt = my_htt;
     floats->myhttwbug = my_htt_wbug;
-     floats->met_pt = met_pt;
-     floats->met_phi = met_phi;
-     floats->met_pt_calo = met.caloMETPt();
-     floats->met_pt_nomu = met_nomu_pt;
-     floats->met_phi_nomu = met_nomu_phi;
-     floats->pass_metfilters = pass_all_metfilters;
+    floats->met_pt = met_pt;
+    floats->met_phi = met_phi;
+    floats->met_pt_calo = met.caloMETPt();
+    floats->met_pt_nomu = met_nomu_pt;
+    floats->met_phi_nomu = met_nomu_phi;
+    floats->pass_metfilters = pass_all_metfilters;
 
     if (prints)
         printf("TriggerFloats: hltht = %f\n", floats->hltht);

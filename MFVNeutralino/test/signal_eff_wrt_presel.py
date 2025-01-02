@@ -6,12 +6,12 @@ from JMTucker.Tools import Samples
 from JMTucker.MFVNeutralino.PerSignal import PerSignal
 
 set_style()
-version = 'ULV30LepMum_SingleLep'
-ps = plot_saver(plot_dir('sigeff_wrt_presel_beampipe_origin_%s_correct_release_2017' % version), size=(600,600), pdf=True, log=False)
+version = 'OnnormdzULV30LepMum'
+ps = plot_saver(plot_dir('sigeff_wrt_presel_beampipe_origin_%s_correct_release_2018_Nov10_24' % version), size=(600,600), pdf=True, log=False)
 
-WplusH = Samples.WplusHToSSTodddd_samples_2017
-WminusH = Samples.WminusHToSSTodddd_samples_2017
-ZH = Samples.ZHToSSTodddd_samples_2017
+WplusH = Samples.WplusHToSSTodddd_samples_2018
+WminusH = Samples.WminusHToSSTodddd_samples_2018
+ZH = Samples.ZHToSSTodddd_samples_2018
 
 for sample in WplusH + WminusH + ZH:
     fn = os.path.join('/uscms/home/pkotamni/nobackup/crabdirs/Histos%s' % version, sample.name + '.root')
@@ -32,9 +32,9 @@ for sample in WplusH + WminusH + ZH:
     sample.y, sample.yl, sample.yh = clopper_pearson(num, den) # ignore integral != entries, just get central value right
     print '%26s: efficiency = %.3f (%.3f, %.3f)' % (sample.name, sample.y, sample.yl, sample.yh)
 
-per = PerSignal('efficiency', y_range=(0.,1.05)) 
+per = PerSignal('efficiency', y_range=(0.,0.1)) 
 per.add(WplusH, title='Wplus(#rightarrow #mu #nu) H #rightarrow SS #rightarrow d#bar{d}d#bar{d}', color=ROOT.kAzure+8)
 per.add(WminusH, title='Wminus(#rightarrow #mu #nu) H #rightarrow SS #rightarrow d#bar{d}d#bar{d}', color=ROOT.kRed-9)
-per.add(ZH, title='Z(#rightarrow #mu bar{#mu}) H #rightarrow SS #rightarrow d#bar{d}d#bar{d}', color=ROOT.kGreen-3)
+per.add(ZH, title='Z(#rightarrow #mu #bar{#mu}) H #rightarrow SS #rightarrow d#bar{d}d#bar{d}', color=ROOT.kGreen-3)
 per.draw(canvas=ps.c)
 ps.save('sigeff')

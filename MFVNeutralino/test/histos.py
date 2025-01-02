@@ -1,4 +1,5 @@
 from JMTucker.Tools.BasicAnalyzer_cfg import *
+from JMTucker.Tools.Year import year
 
 is_mc = True # for blinding
 do_track = False # this can onlky be used for ntuple with keep_tk=True
@@ -19,6 +20,7 @@ sample_files(process, 'mfv_stoplb_tau000300um_M0300_2018' if is_mc else 'SingleM
 #sample_files(process, 'SingleMuon2018B', dataset, 1)
 
 tfileservice(process, 'histos.root')
+global_tag(process)
 cmssw_from_argv(process)
 
 process.load('JMTucker.MFVNeutralino.VertexSelector_cfi')
@@ -26,6 +28,8 @@ process.load('JMTucker.MFVNeutralino.WeightProducer_cfi')
 process.load('JMTucker.MFVNeutralino.VertexHistos_cfi')
 process.load('JMTucker.MFVNeutralino.EventHistos_cfi')
 process.load('JMTucker.MFVNeutralino.TrackHistos_cfi')
+process.load('JMTucker.MFVNeutralino.FilterHistos_cfi')
+process.load('JMTucker.MFVNeutralino.JetTksHistos_cfi')
 process.load('JMTucker.MFVNeutralino.AnalysisCuts_cfi')
 process.load('JMTucker.MFVNeutralino.CutFlowHistos_cfi')
 
@@ -33,7 +37,6 @@ import JMTucker.Tools.SimpleTriggerResults_cfi as SimpleTriggerResults
 SimpleTriggerResults.setup_endpath(process, weight_src='mfvWeight')
 
 common = cms.Sequence(process.mfvSelectedVerticesSeq * process.mfvWeight)
-common_a = cms.Sequence(process.mfvWeight)
 
 process.CutFlowHistos = cms.Path(common_a * process.mfvCutFlowHistos)
 
@@ -163,13 +166,14 @@ for name, cut in nm1s:
         setattr(process, vtx_hst_name, vtx_hst)
         setattr(process, '%sp%iV' % (EX1, nv) + name, cms.Path(process.mfvWeight * vtx * ana * evt_hst * vtx_hst))
 
-
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
 
     if use_btag_triggers :
-        samples = pick_samples(dataset, qcd=True, ttbar=False, all_signal=True, data=False, bjet=True) # no data currently; no sliced ttbar since inclusive is used
-        pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier(), half_mc_modifier())
+        #samples = Samples.DisplacedJet_data_samples_2016APV + Samples.qcd_samples_2016APV
+        #samples = Samples.ttbar_alt_samples_2016APV + Samples.MuonEG_data_samples_2016APV + Samples.ttbar_samples_2016APV + Samples.DisplacedJet_data_samples_2016APV + Samples.SingleMuon_data_samples_2016APV + Samples.qcd_samples_2016APV
+        samples = Samples.all_signal_samples_2016
+        pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     elif use_MET_triggers:
         #samples = pick_samples(dataset, qcd=True, ttbar=False, data=False, leptonic=True, splitSUSY=True, Zvv=True, met=True, span_signal=False)
         samples = [getattr(Samples, 'wjetstolnu_2j_2017')]

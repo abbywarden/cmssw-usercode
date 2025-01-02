@@ -7,7 +7,7 @@ def setup_event_filter(process,
                        event_filter = False,
                        event_filter_jes_mult = 2,
                        event_filter_name = 'mfvEventFilter',
-                       event_filter_require_vertex = True, #FIXME
+                       event_filter_require_vertex = False, #FIXME
                        rp_filter = False,
                        rp_mode = None,
                        rp_mass = -1,
@@ -149,7 +149,7 @@ def setup_event_filter(process,
     elif trigger_filter is True:
         from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilter as triggerFilter
     elif trigger_filter is not False:
-        raise ValueError('trigger_filter %r bad: must be one of ("jets only", "muons only", "electrons only", "dilepton only", "bjets only", "met only", "displaced dijet only", "met AND iso muon", "HT OR bjets OR displaced dijet", "bjets OR displaced dijet veto HT", "displaced dijet veto bjets", "low HT online track test", True, False)' % trigger_filter)
+        raise ValueError('trigger_filter %r bad: must be one of ("jets only", "leptons only", "muons only", "electrons only", "dilepton only", "bjets only", "met only", "displaced dijet only", "met AND iso muon", "HT OR bjets OR displaced dijet", "bjets OR displaced dijet veto HT", "displaced dijet veto bjets", "low HT online track test", True, False)' % trigger_filter)
 
     overall = cms.Sequence()
 
@@ -184,8 +184,12 @@ def setup_event_filter(process,
         elif event_filter is True:
             from JMTucker.MFVNeutralino.EventFilter_cfi import mfvEventFilter as eventFilter
         elif event_filter is not False:
-            raise ValueError('event_filter must be one of ("jets only", "muons only", "electrons only veto muons", "HT OR bjets OR displaced dijet", "bjets OR displaced dijet", "bjets OR displaced dijet veto HT", "displaced dijet veto bjets", "low HT online track test", True, False)')
+            raise ValueError('event_filter must be one of ("jets only", "leptons only", "muons only", "electrons only veto muons", "HT OR bjets OR displaced dijet", "bjets OR displaced dijet", "bjets OR displaced dijet veto HT", "displaced dijet veto bjets", "low HT online track test", True, False)')
 
+        print("mode: "+mode)
+        print("events_filter: "+event_filter)
+        print("trigger_filter: "+trigger_filter)
+        
         eventFilter = eventFilter.clone()
         if input_is_miniaod:
             process.load('JMTucker.Tools.UpdatedJets_cff')

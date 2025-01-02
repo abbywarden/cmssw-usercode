@@ -926,6 +926,7 @@ namespace jmt {
       else if (era == jmt::AnalysisEras::e_2018A || era == jmt::AnalysisEras::e_2018B || era == jmt::AnalysisEras::e_2018C || era == jmt::AnalysisEras::e_2018D) set_BTagDispJet2018(pt, eta);
       else if (era == jmt::AnalysisEras::e_20161B1 || era == jmt::AnalysisEras::e_20161B2 || era == jmt::AnalysisEras::e_20161C || era == jmt::AnalysisEras::e_20161D || era == jmt::AnalysisEras::e_20161E || era == jmt::AnalysisEras::e_20161F) set_BTagDispJet20161(pt, eta);
       else if (era == jmt::AnalysisEras::e_20162F || era == jmt::AnalysisEras::e_20162G || era == jmt::AnalysisEras::e_20162H) set_BTagDispJet20162(pt, eta);
+
       else throw std::out_of_range("bad era");
     }
     else

@@ -176,6 +176,7 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
 
   if (debug) printf("MFVEventFilter: nmuons: %i nelectrons: %i pass? %i electron veto mu pass? %i \n", nmuons, nelectrons, leptons_pass, (leptons_pass && !(muons_pass)));
 
+  
   if (mode == Mode::jets_only)
     return jets_pass;
   else if (mode == Mode::either && jets_pass)
@@ -190,6 +191,5 @@ bool MFVEventFilter::filter(edm::Event& event, const edm::EventSetup&) {
   else if (mode == Mode::electrons_only_veto_muons || mode == Mode::leptons_only) 
     return leptons_pass && jets_pass && !(muons_pass);
   else return true; // catch-all
-
 } 
 DEFINE_FWK_MODULE(MFVEventFilter);

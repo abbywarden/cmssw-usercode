@@ -97,6 +97,11 @@ mfvTriggerFilterLeptonsOnly = mfvTriggerFilter.clone(
 )
 mfvTriggerFilterMuonsOnly = mfvTriggerFilter.clone(HLTPaths = muon_paths)
 mfvTriggerFilterElectronsOnly = mfvTriggerFilter.clone(HLTPaths = electron_paths)
+mfvTriggerFilterLeptonsOnly = mfvTriggerFilter.clone(
+    HLTPaths = electron_paths + muon_paths,
+    andOr = True, # OR
+    throw = False,
+)
 mfvTriggerFilterDileptonOnly = mfvTriggerFilter.clone(
         HLTPaths = dilepton_paths,
         andOr = True, # OR
