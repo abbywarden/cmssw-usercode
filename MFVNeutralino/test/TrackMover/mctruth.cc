@@ -511,6 +511,11 @@ int main(int argc, char** argv) {
       if (movedist2 > 2.4) //FIXME
         continue;
 
+      for (int j = 0, je = jets.n(); j < je; ++j) {
+        // std::cout << jets.pt(j)<<std::endl;
+        std::cout << jets.ntracks(j)<<std::endl;
+      }
+
       if (dijet) {
         //assert(abs(gen.id(ilsp)) == 1000006); // stop pair production
 
@@ -624,7 +629,6 @@ int main(int argc, char** argv) {
           jmt::MinValue m(0.4);
           for (int j = 0, je = jets.n(); j < je; ++j)
             m(j, gen.p4(iq).DeltaR(jets.p4(j)));
-
           closest_jets[i] = m.i();
           quark_assoc[i] = iq;
         }

@@ -335,9 +335,9 @@ namespace jmt {
         pvs_filler_(nt.pvs(), cfg, std::move(cc2), p.pvs_filter(), p.pvs_first_only()),
         jets_filler_(nt.jets(), cfg, std::move(cc3), p.jets_cut()),
         pf_filler_(nt.pf(), cfg, std::move(cc4)),
-	muons_filler_(nt.muons(), cfg, std::move(cc5)),
-	electrons_filler_(nt.electrons(), cfg, std::move(cc6)),
-	tracks_filler_(nt.tracks(), cfg, std::move(cc7), p.tracks_cut_level(), p.tracks_cut())
+	      muons_filler_(nt.muons(), cfg, std::move(cc5)),
+	      electrons_filler_(nt.electrons(), cfg, std::move(cc6)),
+	      tracks_filler_(nt.tracks(), cfg, std::move(cc7), p.tracks_cut_level(), p.tracks_cut())
     {}
     
     BaseSubNtupleFiller base_filler() { return base_filler_; }

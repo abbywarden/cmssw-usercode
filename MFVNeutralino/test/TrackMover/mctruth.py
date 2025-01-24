@@ -7,17 +7,21 @@ settings.is_mc = True
 settings.is_miniaod = True
 #settings.event_filter = 'electrons only novtx'
 #settings.event_filter = 'muons only novtx' #FIXME miss leading because there is no process.mfvEventFilterSequence applied nor signals_no_event_filter_modifier  
-settings.event_filter = 'bjets OR displaced dijet novtx'
+#settings.event_filter = 'bjets OR displaced dijet novtx'
+settings.event_filter = 'leptons only novtx'
 version = settings.version + 'v6'
 
 process = ntuple_process(settings)
 tfileservice(process, 'mctruth.root')
 dataset = 'miniaod' if settings.is_miniaod else 'main'
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WplusH_HToSSTodddd_WToLNu_MH-125_MS-55_ctauS-1_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/40000/0BD790C6-883F-0147-A66E-8EC9DC53750F.root')
-#max_events(process, 100)
+max_events(process, 1000)
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/StopStopbarTo2Dbar2D_M-800_CTau-1mm_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/50000/B5C839E5-8F24-C344-B539-9915B1A6F90C.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/ggH_HToSSTo4l_lowctau_MH-800_MS-350_ctauS-1_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/2550000/36A34C5C-7F31-7E4F-A8C7-43A72226A91D.root')
 #input_files(process, '/store/mc/RunIISummer20UL16MiniAODAPVv2/GluinoGluinoToNeutralinoNeutralinoTo2T2B2S_M-800_CTau-1mm_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/50000/91C7124F-ED8D-A441-B7D1-1B2A04EC78EC.root')
+#input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/30000/1140EC5A-A7C4-794C-9557-D64D8D5AFFC1.root')
+input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/30000/0A2EBAF3-6609-7C44-A775-5912EE87CD3E.root')
+
 cmssw_from_argv(process)
 
 
@@ -40,12 +44,15 @@ process.p = cms.Path(process.mfvEventFilterSequence *process.mfvGenParticles*pro
 tree = cms.EDAnalyzer('MFVMovedTracksTreer',
                                              jmtNtupleFiller_pset(settings.is_miniaod, True, False),
                                              sel_tracks_src = cms.InputTag('mfvVertexTracks','all'),
+                                            #  sel_mutracks_src = cms.InputTag('mfvVertexTracks', 'allmu'),
+                                            #  sel_eletracks_src = cms.InputTag('mfvVertexTracks', 'allele'),
                                              mover_src = cms.string(''),
                                              vertices_src = cms.InputTag('mfvVerticesAux'),
                                              max_dist2move = cms.double(-1),
                                              apply_presel = cms.bool(False), #not a usual preselection cuts -- TM moved-jet cuts 
                                              njets_req = cms.uint32(0),
                                              nbjets_req = cms.uint32(0),
+                                            #  nlep_req = cms.uint32(0),
                                              for_mctruth = cms.bool(True),
                                              )
 

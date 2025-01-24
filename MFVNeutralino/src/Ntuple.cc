@@ -250,8 +250,12 @@ namespace mfv {
   void MovedTracksSubNtuple::clear() {
     nalltracks_ = 0;
     nmovedtracks_ = 0;
+    // nmovedeletracks_ = 0;
+    // nmovedmutracks_ = 0;
     npreseljets_ = 0;
     npreselbjets_ = 0;
+    // npreselmu_ = 0;
+    // npreselele_ = 0;
     move_x_ = 0;
     move_y_ = 0;
     move_z_ = 0;
@@ -260,8 +264,12 @@ namespace mfv {
   void MovedTracksSubNtuple::write_to_tree(TTree* t) {
     t->Branch("nalltracks", &nalltracks_);
     t->Branch("nmovedtracks", &nmovedtracks_);
+    // t->Branch("nmovedeletracks", &nmovedeletracks_);
+    // t->Branch("nmovedmutracks", &nmovedmutracks_);
     t->Branch("npreseljets", &npreseljets_);
     t->Branch("npreselbjets", &npreselbjets_);
+    // t->Branch("npreselmu", &npreselmu_);
+    // t->Branch("npreselele", &npreselele_);
     t->Branch("move_x", &move_x_);
     t->Branch("move_y", &move_y_);
     t->Branch("move_z", &move_z_);
@@ -270,8 +278,12 @@ namespace mfv {
   void MovedTracksSubNtuple::read_from_tree(TTree* t) {
     t->SetBranchAddress("nalltracks", &nalltracks_);
     t->SetBranchAddress("nmovedtracks", &nmovedtracks_);
+    // t->SetBranchAddress("nmovedeletracks", &nmovedeletracks_);
+    // t->SetBranchAddress("nmovedmutracks", &nmovedmutracks_);
     t->SetBranchAddress("npreseljets", &npreseljets_);
     t->SetBranchAddress("npreselbjets", &npreselbjets_);
+    // t->SetBranchAddress("npreselmu", &npreselmu_);
+    // t->SetBranchAddress("npreselele", &npreselele_);
     t->SetBranchAddress("move_x", &move_x_);
     t->SetBranchAddress("move_y", &move_y_);
     t->SetBranchAddress("move_z", &move_z_);
