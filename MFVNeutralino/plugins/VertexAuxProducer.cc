@@ -28,6 +28,7 @@
 #include "JMTucker/Tools/interface/Math.h"
 #include "JMTucker/Tools/interface/TrackRefGetter.h"
 #include "JMTucker/Tools/interface/TrackRescaler.h"
+#include "JMTucker/MFVNeutralinoFormats/interface/TriggerFloats.h"
 
 #include "JMTucker/Tools/interface/StatCalculator.h"
 #include "JMTucker/Tools/interface/Utilities.h"
@@ -45,6 +46,7 @@ class MFVVertexAuxProducer : public edm::EDProducer {
   const edm::EDGetTokenT<std::vector<double> > gen_vertices_token;
   const edm::EDGetTokenT<reco::VertexCollection> vertex_token;
   const edm::EDGetTokenT<reco::TrackCollection> vertex_seed_tracks_token;
+  const edm::EDGetTokenT<mfv::TriggerFloats> triggerfloats_token;
   const std::string sv_to_jets_src;
   edm::EDGetTokenT<mfv::JetVertexAssociation> sv_to_jets_token[mfv::NJetsByUse];
   jmt::TrackRefGetter track_ref_getter;
@@ -67,14 +69,49 @@ class MFVVertexAuxProducer : public edm::EDProducer {
   std::pair<bool, Measurement1D> track_dist(const reco::TransientTrack & t, const reco::Vertex & v);
 };
 
+bool cutBasedIDHelper(pat::ElectronRef el, double sigmaietaieta, double detain, double dphiin,  double hovere, double ooemoop, int expectedmissinginnerhits) {
+
+  float dEtaIn_ = el->superCluster().isNonnull() && el->superCluster()->seed().isNonnull() ? el->deltaEtaSuperClusterTrackAtVtx() - el->superCluster()->eta() + el->superCluster()->seed()->eta() : std::numeric_limits<float>::max();
+  float dPhiIn_ = el->deltaPhiSuperClusterTrackAtVtx();
+  float full5x5_sigmaIetaIeta_ = el->full5x5_sigmaIetaIeta();
+  float HoverE_ = el->hadronicOverEm();
+
+  //if statements protects against cases in which ecalEnergy == inf or zero (always
+  // the case for electrons below 5 GeV in miniAOD) 
+  float ooEmooP_ = 0;
+  if (el->ecalEnergy() == 0){
+    ooEmooP_ = 1e30;
+  }
+  else if (!std::isfinite(el->ecalEnergy())){
+    ooEmooP_ = 1e30;
+  }
+  else {
+    ooEmooP_ = 1.0/el->ecalEnergy() - el->eSuperClusterOverP()/el->ecalEnergy();
+  }
+  
+  int expectedMissingInnerHits_ = el->gsfTrack()->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS);
+  const bool passveto = el->passConversionVeto();
+
+  return ( 
+    full5x5_sigmaIetaIeta_ < sigmaietaieta
+    && fabs(dEtaIn_) < detain
+	  && fabs(dPhiIn_) < dphiin
+    && HoverE_ < hovere
+	  && fabs(ooEmooP_) < ooemoop
+	  && expectedMissingInnerHits_ <= expectedmissinginnerhits
+    && passveto
+    );
+}
+
 MFVVertexAuxProducer::MFVVertexAuxProducer(const edm::ParameterSet& cfg)
   : kv_reco(new KalmanVertexFitter(cfg.getParameter<edm::ParameterSet>("kvr_params"), cfg.getParameter<edm::ParameterSet>("kvr_params").getParameter<bool>("doSmoothing"))),
     beamspot_token(consumes<reco::BeamSpot>(cfg.getParameter<edm::InputTag>("beamspot_src"))),
     primary_vertex_token(consumes<reco::VertexCollection>(cfg.getParameter<edm::InputTag>("primary_vertex_src"))),
     gen_vertices_token(consumes<std::vector<double> >(cfg.getParameter<edm::InputTag>("gen_vertices_src"))),
     vertex_token(consumes<reco::VertexCollection>(cfg.getParameter<edm::InputTag>("vertex_src"))),
-	vertex_seed_tracks_token(consumes<reco::TrackCollection>(cfg.getParameter<edm::InputTag>("vertex_seed_tracks_src"))),
-	sv_to_jets_src(cfg.getParameter<std::string>("sv_to_jets_src")),
+	  vertex_seed_tracks_token(consumes<reco::TrackCollection>(cfg.getParameter<edm::InputTag>("vertex_seed_tracks_src"))),
+	  triggerfloats_token(consumes<mfv::TriggerFloats>(cfg.getParameter<edm::InputTag>("triggerfloats_src"))),
+    sv_to_jets_src(cfg.getParameter<std::string>("sv_to_jets_src")),
     //sv_to_jets_token(consumes<mfv::JetVertexAssociation>(edm::InputTag("sv_to_jets_src"))),
     track_ref_getter(cfg.getParameter<std::string>("@module_label"),
                          cfg.getParameter<edm::ParameterSet>("track_ref_getter"),
@@ -138,17 +175,8 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
 
   track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
                        jmt::AnalysisEras::pick(event, this),
-                       track_rescaler_which);
-
-  // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
-  //                      jmt::AnalysisEras::pick(event, this),
-  //                      track_rescaler_which,
-  //                      "");
-
-  // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1,
-  //                      jmt::AnalysisEras::pick(event, this),
-  //                      track_rescaler_which,
-  //                      "");
+                       track_rescaler_which,
+                       "");
 
   edm::ESHandle<TransientTrackBuilder> tt_builder;
   setup.get<TransientTrackRecord>().get("TransientTrackBuilder", tt_builder);
@@ -176,6 +204,9 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
     for (const auto& p : track_ref_getter.tracks(event, reco::VertexRef(primary_vertices, i)))
       tracks_in_pvs[p.first] = i;
   }
+
+  edm::Handle<mfv::TriggerFloats> triggerfloats;
+  event.getByToken(triggerfloats_token, triggerfloats);
 
   //////////////////////////////////////////////////////////////////////
  const bool use_sv_to_muons = sv_to_muons_src != "dummy";
@@ -501,8 +532,12 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
         const edm::RefVector<pat::ElectronCollection>& electronref = (*sv_to_ele)[svref];
         for (int iel = 0; iel < nele; ++iel) {
           reco::GsfTrackRef etk = electronref[iel]->gsfTrack();
+
           if (!etk.isNull()) {
-            matchedele_ttracks.push_back(tt_builder->build(etk));    
+            matchedele_ttracks.push_back(tt_builder->build(etk));
+            //warning : works for track_rescaler_which == 1     
+            //interesting some of these tracks are associated to a high pT electron candidate when have pT < 20 
+            const auto rs = (etk->pt() >= 20.0) ? track_rescaler.scale(*etk, "electron") :  track_rescaler.scale(*etk, "");
             const auto pfIso = electronref[iel]->pfIsolationVariables();
             const float eA = electron_effective_areas.getEffectiveArea(fabs(electronref[iel]->superCluster()->eta()));
             const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - *rho*eA)) / electronref[iel]->pt();
@@ -519,11 +554,69 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
             eleID.push_back(isMedEl);
             eleID.push_back(isTightEl);
             aux.electron_ID.push_back(eleID);
+
+            bool VetoEl_noiso = false;
+            bool LooseEl_noiso = false;
+            bool MedEl_noiso = false;
+            bool TightEl_noiso = false;
+
+            if (fabs(electronref[iel]->superCluster()->eta()) <= 1.479) { 
+              double  he_veto =  0.05 + 1.16/electronref[iel]->superCluster()->energy() + 0.0324 * *rho/electronref[iel]->superCluster()->energy();
+              double he_loose =  0.05 + 1.16/electronref[iel]->superCluster()->energy() + 0.0324 * *rho/electronref[iel]->superCluster()->energy();
+              double   he_med = 0.046 + 1.16/electronref[iel]->superCluster()->energy() + 0.0324 * *rho/electronref[iel]->superCluster()->energy();
+              double he_tight = 0.026 + 1.15/electronref[iel]->superCluster()->energy() + 0.0324 * *rho/electronref[iel]->superCluster()->energy();
+              
+              VetoEl_noiso = cutBasedIDHelper(electronref[iel], 0.0126, 0.00463,   0.148,  he_veto, 0.209, 2);
+              LooseEl_noiso = cutBasedIDHelper(electronref[iel], 0.0112, 0.00377,  0.0884, he_loose, 0.193, 1);
+              MedEl_noiso = cutBasedIDHelper(electronref[iel], 0.0106,  0.0032,  0.0547,   he_med, 0.184, 1);
+              TightEl_noiso = cutBasedIDHelper(electronref[iel], 0.0104, 0.00255,   0.022, he_tight, 0.159, 1);
+            }
+            else if (fabs(electronref[iel]->superCluster()->eta()) > 1.479) {
+
+              double  he_veto =   0.05 + 2.54/electronref[iel]->superCluster()->energy() + 0.183 * *rho/electronref[iel]->superCluster()->energy();
+              double he_loose = 0.0441 + 2.54/electronref[iel]->superCluster()->energy() + 0.183 * *rho/electronref[iel]->superCluster()->energy();
+              double   he_med = 0.0275 + 2.52/electronref[iel]->superCluster()->energy() + 0.183 * *rho/electronref[iel]->superCluster()->energy();
+              double he_tight = 0.0188 + 2.06/electronref[iel]->superCluster()->energy() + 0.183 * *rho/electronref[iel]->superCluster()->energy();
+
+              VetoEl_noiso = cutBasedIDHelper(electronref[iel], 0.0457, 0.00814,   0.19,  he_veto, 0.132,  3);
+              LooseEl_noiso = cutBasedIDHelper(electronref[iel], 0.0425, 0.00674,  0.169, he_loose, 0.111,  1);
+              MedEl_noiso = cutBasedIDHelper(electronref[iel], 0.0387, 0.00632, 0.0394,   he_med, 0.0721, 1);
+              TightEl_noiso = cutBasedIDHelper(electronref[iel], 0.0353, 0.00501, 0.0236, he_tight, 0.0197, 1);
+            }
+            
+            std::vector<int> eleID_noiso;
+            eleID_noiso.push_back(VetoEl_noiso);
+            eleID_noiso.push_back(LooseEl_noiso);
+            eleID_noiso.push_back(MedEl_noiso);
+            eleID_noiso.push_back(TightEl_noiso);
+            aux.electron_ID_noiso.push_back(eleID_noiso);
+
             aux.electron_pt.push_back(electronref[iel]->pt());
 
             if (electronref[iel]->pt() >= 20.0) aux.neleptgt20 += 1;
             aux.electron_eta.push_back(electronref[iel]->eta());
             aux.electron_phi.push_back(electronref[iel]->phi());
+
+            // do hlt matching 
+            double hltmatchdist2 = 0.1;
+            double best_hltmatchdR = 5.;
+            TLorentzVector hltmatch;
+            for (auto hlt : triggerfloats->hltelectrons) {
+              const double dist2 = reco::deltaR2(electronref[iel]->eta(), electronref[iel]->phi(), hlt.Eta(), hlt.Phi());
+              if (dist2 < best_hltmatchdR) best_hltmatchdR = dist2;
+              if (dist2 < hltmatchdist2) {
+                hltmatchdist2 = dist2;
+                hltmatch = hlt;
+              }
+            }
+            aux.ele_besthltmatchdR.push_back(best_hltmatchdR);
+            aux.ele_hlt_pt.push_back(hltmatch.Pt());
+            aux.ele_hlt_eta.push_back(hltmatch.Eta());
+            aux.ele_hlt_phi.push_back(hltmatch.Phi());
+            aux.ele_hlt_energy.push_back(hltmatch.E());
+            if (hltmatch.Pt() > 0) aux.ele_is_hltmatched.push_back(true);
+            else aux.ele_is_hltmatched.push_back(false);
+
             aux.electron_x.push_back(etk->vx());
             aux.electron_y.push_back(etk->vy());
             aux.electron_z.push_back(etk->vz());
@@ -533,6 +626,8 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
             }
             aux.electron_dxybs.push_back(etk->dxy(beamspot->position()));
             aux.electron_dxyerr.push_back(etk->dxyError());
+            aux.rescaled_electron_dxyerr.push_back(rs.rescaled_tk.dxyError());
+            if (rs.rescaled_tk.dxyError() == 0) std::cout << etk->pt() << " " << electronref[iel]->pt() << std::endl;
             aux.electron_dzerr.push_back(etk->dzError());
           }
         }
@@ -555,7 +650,8 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
           reco::TrackRef mtk = muonref[imu]->innerTrack();
           if (!mtk.isNull()) {
             matchedmu_ttracks.push_back(tt_builder->build(mtk));    
-          
+            const auto rs = (muonref[imu]->pt() >= 20) ? track_rescaler.scale(*mtk, "muon") :  track_rescaler.scale(*mtk, "");
+
             const float iso = (muonref[imu]->pfIsolationR04().sumChargedHadronPt + std::max(0., muonref[imu]->pfIsolationR04().sumNeutralHadronEt + muonref[imu]->pfIsolationR04().sumPhotonEt -0.5*muonref[imu]->pfIsolationR04().sumPUPt))/muonref[imu]->pt();
             aux.muon_iso.push_back(iso);
 
@@ -573,6 +669,28 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
             if (muonref[imu]->pt() >= 20.0) aux.nmuptgt20 += 1;
             aux.muon_eta.push_back(muonref[imu]->eta());
             aux.muon_phi.push_back(muonref[imu]->phi());
+
+            // do hlt matching 
+            double hltmatchdist2 = 0.1;
+            double best_hltmatchdR = 5.;
+            TLorentzVector hltmatch;
+            for (auto hlt : triggerfloats->hltmuons) {
+              const double dist2 = reco::deltaR2(muonref[imu]->eta(), muonref[imu]->phi(), hlt.Eta(), hlt.Phi());
+              if (dist2 < best_hltmatchdR) best_hltmatchdR = dist2;
+              if (dist2 < hltmatchdist2) {
+                hltmatchdist2 = dist2;
+                hltmatch = hlt;
+              }
+            }
+
+            aux.mu_besthltmatchdR.push_back(best_hltmatchdR);
+            aux.mu_hlt_pt.push_back(hltmatch.Pt());
+            aux.mu_hlt_eta.push_back(hltmatch.Eta());
+            aux.mu_hlt_phi.push_back(hltmatch.Phi());
+            aux.mu_hlt_energy.push_back(hltmatch.E());
+            if (hltmatch.Pt() > 0) aux.mu_is_hltmatched.push_back(true);
+            else aux.mu_is_hltmatched.push_back(false);
+
             aux.muon_x.push_back(mtk->vx());
             aux.muon_y.push_back(mtk->vy());
             aux.muon_z.push_back(mtk->vz());
@@ -582,6 +700,7 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
             }
             aux.muon_dxybs.push_back(mtk->dxy(beamspot->position()));
             aux.muon_dxyerr.push_back(mtk->dxyError());
+            aux.rescaled_muon_dxyerr.push_back(rs.rescaled_tk.dxyError());
             aux.muon_dzerr.push_back(mtk->dzError());
           }
         }
@@ -654,6 +773,7 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
       aux.track_injet.push_back(track_in_a_jet(mfv::JByNtracks, trref)); // JMTBAD multiple jet assoc types
       aux.track_inpv.push_back(pv_for_track == tracks_in_pvs.end() ? -1 : pv_for_track->second);
       aux.track_dxy.push_back(fabs(tri->dxy(beamspot->position())));
+      aux.track_dxyerr.push_back(tri->dxyError()); //not rescaled
       aux.track_dz.push_back(primary_vertex ? fabs(tri->dz(primary_vertex->position())) : 0); // JMTBAD not the previous behavior when no PV
       aux.track_vx.push_back(tri->vx());
       aux.track_vy.push_back(tri->vy());

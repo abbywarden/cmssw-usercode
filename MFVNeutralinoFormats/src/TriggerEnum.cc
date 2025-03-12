@@ -3,8 +3,6 @@
 namespace mfv {
   // be sure these end in _v
   const char* hlt_paths[mfv::n_hlt_paths] = {
-    "HLT_PFHT1050_v",
-
     // lepton triggers 
     "HLT_Ele27_WPTight_Gsf_v",
     "HLT_Ele32_WPTight_Gsf_v",
@@ -14,6 +12,10 @@ namespace mfv {
     "HLT_IsoMu24_v",
     "HLT_IsoMu27_v",
     "HLT_Mu50_v",
+    "HLT_Photon175_v",
+    "HLT_Photon200_v",
+    
+    "HLT_PFHT1050_v",
 
     // // displaced lepton triggers 
     "HLT_Mu43NoFiltersNoVtx_Photon43_CaloIdL_v",
@@ -60,6 +62,20 @@ namespace mfv {
     "HLT_HT325_v",
 
   };
+
+  //separated singlelepton hlt paths : 
+  // const char* SingleLep_hlt_paths[mfv::n_lep_hlt_paths] = {
+  //   "HLT_Ele27_WPTight_Gsf_v",
+  //   "HLT_Ele32_WPTight_Gsf_v",
+  //   "HLT_Ele35_WPTight_Gsf_v",
+  //   "HLT_Ele115_CaloIdVT_GsfTrkIdT_v",
+  //   "HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v",
+  //   "HLT_IsoMu24_v",
+  //   "HLT_IsoMu27_v",
+  //   "HLT_Mu50_v",
+  //   "HLT_Photon175_v",
+  //   "HLT_Photon200_v",
+  // };
 
   const char* l1_paths[mfv::n_l1_paths] = {
     "L1_HTT120er",

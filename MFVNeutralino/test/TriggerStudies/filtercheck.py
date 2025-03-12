@@ -12,7 +12,8 @@ randpars_filter = False
 #for testing local :
 #randpars_filter = 'randpar HToSSTobbbb M15_ct10-'
 
-sample_files(process, 'qcdht1000_2017', 'miniaod')
+#sample_files(process, 'qcdht1000_2017', 'miniaod')
+sample_files(process, 'mfv_stopld_tau010000um_M0800_2018', 'miniaod')
 #sample_files(process, 'mfv_stopbbarbbar_tau001000um_M1600_2018', 'miniaod')
 
 geometry_etc(process, settings)
@@ -32,6 +33,7 @@ sef('pTriggerMET', mode = 'trigger met only', name_ex = 'met')
 #sef('pFull',    mode = 'jets only',         name_ex = 'Full') # uncomment to get efficiency of ntuple-level vertex filter
 sef('pTriggerMuons', mode = 'trigger muons only',name_ex = 'muons')
 sef('pTriggerLeptons', mode = 'trigger leptons only',name_ex = 'leptons')
+sef('pTriggerLeptons_noPhoton', mode = 'trigger leptons no photon', name_ex = 'leptons_nophoton')
 sef('pTriggerLeptonsORDispLep', mode = 'trigger leptons OR displaced leptons',name_ex = 'leptons_OR_displep')
 
 #if len(process.mfvTriggerFilter.HLTPaths) > 1:

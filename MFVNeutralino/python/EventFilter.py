@@ -40,6 +40,8 @@ def setup_event_filter(process,
         trigger_filter = 'bjets OR displaced dijet veto HT'
     elif mode == 'trigger leptons only':
         trigger_filter = 'leptons only'
+    elif mode == 'trigger leptons no photon' :
+        trigger_filter = 'leptons no photon'
     elif mode == 'trigger leptons OR displaced leptons':
         trigger_filter = 'lep OR displaced lep'
     elif mode == 'trigger muons only':
@@ -88,6 +90,10 @@ def setup_event_filter(process,
     elif mode == 'jets only novtx':
         trigger_filter = event_filter = 'jets only'
         event_filter_require_vertex = False
+    elif mode == 'leptons only novtx':
+        trigger_filter = 'leptons only'
+        event_filter = 'leptons only'
+        event_filter_require_vertex = False
     elif mode == 'muons only novtx':
         trigger_filter = 'muons only'
         event_filter = 'muons only'
@@ -130,6 +136,8 @@ def setup_event_filter(process,
         from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilterBjetsORDisplacedDijetVetoHT as triggerFilter
     elif trigger_filter == 'leptons only':
         from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilterLeptonsOnly as triggerFilter
+    elif trigger_filter == 'leptons no photon':
+        from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilterLeptonsNoPhoton as triggerFilter
     elif trigger_filter == 'muons only':
         from JMTucker.MFVNeutralino.TriggerFilter_cfi import mfvTriggerFilterMuonsOnly as triggerFilter
     elif trigger_filter == 'electrons only':

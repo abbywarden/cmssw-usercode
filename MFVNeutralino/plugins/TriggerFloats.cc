@@ -81,7 +81,6 @@ namespace {
 
 void MFVTriggerFloats::produce(edm::Event& event, const edm::EventSetup& setup) {
     if (prints) std::cout << "TriggerFloats run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
-    //std::cout << "Starting TriggerFloats.cc" << std::endl;
     edm::Handle<edm::TriggerResults> metFilters;
     event.getByToken(met_filters_token, metFilters);
     const edm::TriggerNames &names = event.triggerNames(*metFilters); 
@@ -91,6 +90,7 @@ void MFVTriggerFloats::produce(edm::Event& event, const edm::EventSetup& setup) 
       metfilternames = {"Flag_goodVertices", "Flag_globalSuperTightHalo2016Filter", "Flag_HBHENoiseFilter", "Flag_HBHENoiseIsoFilter", "Flag_EcalDeadCellTriggerPrimitiveFilter", "Flag_BadPFMuonFilter", "Flag_eeBadScFilter"};
     }
     
+
     edm::Handle<edm::TriggerResults> trigger_results;
     event.getByToken(trigger_results_token, trigger_results);
     const edm::TriggerNames& trigger_names = event.triggerNames(*trigger_results);
@@ -423,15 +423,18 @@ void MFVTriggerFloats::produce(edm::Event& event, const edm::EventSetup& setup) 
             // HT object. there can be many trigger electrons/muons, only store
             // those that were used in the decision, i.e. those that were used
             // in a path we care about.
+
             obj.unpackNamesAndLabels(event, *trigger_results);
             const std::vector<std::string>& pathNamesAll  = obj.pathNames(false);
             int ipath = -1;
             for (const std::string& p : pathNamesAll) {
-                for (int i = 0; i < mfv::n_hlt_paths; ++i)
+                for (int i = 0; i < mfv::n_hlt_paths; ++i) {
+                    if (i > 9) break; // WARNING!!! change to only take lep hlt paths : requires singlelepton triggers to be first in TriggerEnum
                     if (helper.path_same_without_version(p, mfv::hlt_paths[i])) {
                         ipath = i;
                         break;
                     }
+                }
                 if (ipath != -1) break;
             }
 
@@ -442,8 +445,21 @@ void MFVTriggerFloats::produce(edm::Event& event, const edm::EventSetup& setup) 
                         floats->hltelectrons.push_back(p4(obj.pt(), obj.eta(), obj.phi(), obj.energy()));
                 }
                 else if (is_muon) {
-                    if (obj.collection() == "hltIterL3MuonCandidates::HLT")
-                        floats->hltmuons.push_back(p4(obj.pt(), obj.eta(), obj.phi(), obj.energy()));
+                    // if (obj.collection() == "hltIterL3MuonCandidates::HLT")
+                    //from : https://github.com/cms-sw/cmssw/blob/master/PhysicsTools/NanoAOD/python/triggerObjects_cff.py 
+                    
+                    if (year == 20161 || year == 20162) {
+                        if ( (obj.pt() > 5 && obj.collection() == "hltL3MuonCandidates::HLT") || 
+                            obj.collection() == "hltGlbDiTrkMuonCands::HLT"  || obj.collection() == "hltHighPtTkMuonCands::HLT" || obj.collection() == "hltGlbTrkMuonCands::HLT" || 
+                            obj.collection() == "hltL2MuonCandidatesNoVtx::HLT" || obj.collection() == "hltL2MuonCandidates::HLT") {
+                            floats->hltmuons.push_back(p4(obj.pt(), obj.eta(), obj.phi(), obj.energy()));
+                        }
+                    }
+                    else { 
+                        if ( (obj.pt() > 5 && obj.collection() == "hltIterL3MuonCandidates::HLT") || (obj.pt() > 45 && obj.collection() == "hltHighPtTkMuonCands::HLT") || obj.collection() == "hltIterL3MuonCandidates::HLT" ) { 
+                            floats->hltmuons.push_back(p4(obj.pt(), obj.eta(), obj.phi(), obj.energy()));
+                        }
+                    }
                 }
 
                 if (prints) {

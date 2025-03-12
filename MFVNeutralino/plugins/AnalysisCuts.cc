@@ -212,7 +212,6 @@ namespace {
 
 bool MFVAnalysisCuts::filter(edm::Event& event, const edm::EventSetup& setup) {
     edm::Handle<MFVEvent> mevent;
-
     if (use_mevent) {
         event.getByToken(mevent_token, mevent);
 
@@ -977,7 +976,7 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
   switch(trig){
   case mfv::b_HLT_Ele27_WPTight_Gsf : //for 2016
     {
-    if (year != 20161 || year !=20162) return false;
+    if (year != 20161 and year !=20162) return false;
     for(int ie =0; ie < nelectrons; ++ie){
       if (mevent->electron_pt[ie] < 30) continue; //for 2016
       if (mevent->electron_ID[ie][3] == 1) {
@@ -1020,6 +1019,36 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
       }
       return passed_kinematics;
     }
+  case mfv::b_HLT_Photon175 : //for 2016 
+  {
+    if (year != 20161 and year != 20162) return false;
+    for (int ie=0; ie < nelectrons; ++ie){
+      if (mevent->electron_pt[ie] < 180) continue; //for 2018
+	    if (mevent->electron_ID[ie][3] == 1) {
+	      if (abs(mevent->electron_eta[ie]) < 2.4) { 
+	        if (mevent->electron_iso[ie] < 0.10) {
+	          passed_kinematics = true;
+	        } 
+	      }
+	    }
+    }
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_Photon200 : //for 2018, 2017
+  {
+    if (year != 2018 and year != 2017) return false;
+    for (int ie=0; ie < nelectrons; ++ie){
+      if (mevent->electron_pt[ie] < 205) continue; //for 2018
+	    if (mevent->electron_ID[ie][3] == 1) {
+	      if (abs(mevent->electron_eta[ie]) < 2.4) { 
+	        if (mevent->electron_iso[ie] < 0.10) {
+	          passed_kinematics = true;
+	        } 
+	      }
+	    }
+    }
+    return passed_kinematics;
+  }
 
   case mfv::b_HLT_IsoMu27 : //for 2017
     {
@@ -1038,7 +1067,7 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
   }
   case mfv::b_HLT_IsoMu24 : //for 2018, 2016
     {
-      if (year != 2016 || year != 2018) return false;
+      if (year == 2017) return false;
       for(int im =0; im < nmuons; ++im) {
         if (mevent->muon_pt[im] < 27) continue;
 	      if (mevent->muon_ID[im][1] == 1) {
@@ -1101,7 +1130,7 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
     }
   default :
     {
-      throw std::invalid_argument(std::string(mfv::hlt_paths[trig]) + " not implemented in satisfiesTrigger");
+      throw std::invalid_argument(std::string(mfv::hlt_paths[trig]) + " not implemented in satisfiesLepTrigger");
     }
   }
 
@@ -1191,7 +1220,7 @@ bool MFVAnalysisCuts::satisfiesDispLepTrigger(edm::Handle<MFVEvent> mevent, size
    }
   default :
     {
-      throw std::invalid_argument(std::string(mfv::hlt_paths[trig]) + " not implemented in satisfiesTrigger");
+      throw std::invalid_argument(std::string(mfv::hlt_paths[trig]) + " not implemented in satisfiesDispLepTrigger");
     }
   }
 

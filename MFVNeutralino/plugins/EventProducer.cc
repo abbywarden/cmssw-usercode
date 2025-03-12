@@ -74,11 +74,12 @@ namespace {
   }
 }
 
-bool cutBasedIDHelper(pat::Electron el, double dEtaIn, double dPhiIn, double full5x5_sigmaIetaIeta, double ooEmooP, int expectedMissingInnerHits) {
+bool cutBasedIDHelper(pat::Electron el, double sigmaietaieta, double detain, double dphiin,  double hovere, double ooemoop, int expectedmissinginnerhits) {
 
-  float dEtaIn_ = el.deltaEtaSuperClusterTrackAtVtx();
+  float dEtaIn_ = el.superCluster().isNonnull() && el.superCluster()->seed().isNonnull() ? el.deltaEtaSuperClusterTrackAtVtx() - el.superCluster()->eta() + el.superCluster()->seed()->eta() : std::numeric_limits<float>::max();
   float dPhiIn_ = el.deltaPhiSuperClusterTrackAtVtx();
   float full5x5_sigmaIetaIeta_ = el.full5x5_sigmaIetaIeta();
+  float HoverE_ = el.hadronicOverEm();
 
   //if statements protects against cases in which ecalEnergy == inf or zero (always
   // the case for electrons below 5 GeV in miniAOD) 
@@ -90,16 +91,21 @@ bool cutBasedIDHelper(pat::Electron el, double dEtaIn, double dPhiIn, double ful
     ooEmooP_ = 1e30;
   }
   else {
-    ooEmooP_ = fabs(1.0/el.ecalEnergy() - el.eSuperClusterOverP()/el.ecalEnergy() );
+    ooEmooP_ = 1.0/el.ecalEnergy() - el.eSuperClusterOverP()/el.ecalEnergy();
   }
   
   int expectedMissingInnerHits_ = el.gsfTrack()->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS);
-  
-  return (fabs(dEtaIn_) < dEtaIn
-	  && fabs(dPhiIn_) < dPhiIn
-	  && full5x5_sigmaIetaIeta_ < full5x5_sigmaIetaIeta
-	  && fabs(ooEmooP_) < ooEmooP
-	  && expectedMissingInnerHits_ <= expectedMissingInnerHits);
+  const bool passveto = el.passConversionVeto();
+
+  return ( 
+    full5x5_sigmaIetaIeta_ < sigmaietaieta
+    && fabs(dEtaIn_) < detain
+	  && fabs(dPhiIn_) < dphiin
+    && HoverE_ < hovere
+	  && fabs(ooEmooP_) < ooemoop
+	  && expectedMissingInnerHits_ <= expectedmissinginnerhits
+    && passveto
+    );
 }
 
 
@@ -539,6 +545,8 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
 				   muon.pfIsolationR04().sumPhotonEt,
 				   muon.pfIsolationR04().sumPUPt);
       
+      mevent->mu_hlt_push_back(muon, triggerfloats->hltmuons);
+
     }
   }
 
@@ -552,13 +560,25 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
   for (const pat::Electron& electron : *electrons) {
     if (electron.pt() > 5 && abs(electron.eta()) < 2.4) {
     
-      bool h_Escaled = electron.hadronicOverEm() < (electron.isEB() ? 0.05 + 1.12 + 0.0368 * *rho : 0.0414 + 0.5 + 0.201 * *rho) / electron.superCluster()->energy();
-      float ooEmooP = fabs(1.0/electron.ecalEnergy() - electron.eSuperClusterOverP()/electron.ecalEnergy() );
+      //for calculating cutbased ID 
+      // float sigmaIetaIeta = electron.full5x5_sigmaIetaIeta();
+      // float dEtaIn = electron.dEtaInSeed();
+      // float dPhiIn = electron.deltaPhiSuperClusterTrackAtVtx();
+      float HoverE = electron.hadronicOverEm();
+      //bool h_Escaled = electron.hadronicOverEm() < (electron.isEB() ? 0.05 + 1.12 + 0.0368 * *rho : 0.0414 + 0.5 + 0.201 * *rho) / electron.superCluster()->energy();
+      
+      const float ecal_energy_inverse = 1.0/electron.ecalEnergy();
+      const float eSCoverP = electron.eSuperClusterOverP();
+      float ooEmooP = (1.0 - eSCoverP)*ecal_energy_inverse;
+      //float ooEmooP = fabs(1.0/electron.ecalEnergy() - electron.eSuperClusterOverP()/electron.ecalEnergy() ); above is the same
+      
       int expectedMissingInnerHits = electron.gsfTrack()->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS);
+      const bool passveto = electron.passConversionVeto();
 
       const auto pfIso = electron.pfIsolationVariables();
       const float eA = electron_effective_areas.getEffectiveArea(fabs(electron.superCluster()->eta()));
       const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - *rho*eA)) / electron.pt();
+      // 
 
 
       bool isVetoEl = electron.electronID("cutBasedElectronID-Fall17-94X-V2-veto");
@@ -566,8 +586,69 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
       bool isMedEl = electron.electronID("cutBasedElectronID-Fall17-94X-V2-medium");
       bool isTightEl = electron.electronID("cutBasedElectronID-Fall17-94X-V2-tight");
 
-      const bool passveto = electron.passConversionVeto();
-      
+      bool VetoEl_noiso = false;
+      bool LooseEl_noiso = false;
+      bool MedEl_noiso = false;
+      bool TightEl_noiso = false;
+
+
+      if (fabs(electron.superCluster()->eta()) <= 1.479) { 
+        double  he_veto =  0.05 + 1.16/electron.superCluster()->energy() + 0.0324 * *rho/electron.superCluster()->energy();
+        double he_loose =  0.05 + 1.16/electron.superCluster()->energy() + 0.0324 * *rho/electron.superCluster()->energy();
+        double   he_med = 0.046 + 1.16/electron.superCluster()->energy() + 0.0324 * *rho/electron.superCluster()->energy();
+        double he_tight = 0.026 + 1.15/electron.superCluster()->energy() + 0.0324 * *rho/electron.superCluster()->energy();
+        
+        // //temp : to compare makeshift ID to central ID 
+        // bool  passveto_iso = iso < 0.198  + 0.506/electron.pt();
+        // bool passloose_iso = iso < 0.112  + 0.506/electron.pt();
+        // bool   passmed_iso = iso < 0.0479 + 0.506/electron.pt();
+        // bool passtight_iso = iso < 0.0287 + 0.506/electron.pt(); 
+        // //
+
+        VetoEl_noiso = cutBasedIDHelper(electron, 0.0126, 0.00463,   0.148,  he_veto, 0.209, 2);
+        LooseEl_noiso = cutBasedIDHelper(electron, 0.0112, 0.00377,  0.0884, he_loose, 0.193, 1);
+        MedEl_noiso = cutBasedIDHelper(electron, 0.0106,  0.0032,  0.0547,   he_med, 0.184, 1);
+        TightEl_noiso = cutBasedIDHelper(electron, 0.0104, 0.00255,   0.022, he_tight, 0.159, 1);
+
+        // //temp : to compare makeshift ID to central ID 
+        // if (isVetoEl && !(VetoEl_noiso && passveto_iso)) std::cout << "ISSUE WITH COMPATIBLE VETO IDs" << std::endl;
+        // if (isLooseEl && !(LooseEl_noiso && passloose_iso)) std::cout << "ISSUE WITH COMPATIBLE LOOSE IDs" << std::endl;
+        // if (isMedEl && !(MedEl_noiso && passmed_iso)) std::cout << "ISSUE WITH COMPATIBLE MED IDs" << std::endl;
+        // if (isTightEl && !(TightEl_noiso && passtight_iso)) std::cout << "ISSUE WITH COMPATIBLE TIGHT IDs" << std::endl;
+
+        // std::cout << "check : " << isTightEl << TightEl_noiso << std::endl;
+        // std::cout << "tight iso : " << passtight_iso << " , " << iso << std::endl;
+        // //
+
+      }
+      else if (fabs(electron.superCluster()->eta()) > 1.479) {
+
+        double  he_veto =   0.05 + 2.54/electron.superCluster()->energy() + 0.183 * *rho/electron.superCluster()->energy();
+        double he_loose = 0.0441 + 2.54/electron.superCluster()->energy() + 0.183 * *rho/electron.superCluster()->energy();
+        double   he_med = 0.0275 + 2.52/electron.superCluster()->energy() + 0.183 * *rho/electron.superCluster()->energy();
+        double he_tight = 0.0188 + 2.06/electron.superCluster()->energy() + 0.183 * *rho/electron.superCluster()->energy();
+
+        // //temp : to compare makeshift ID to central ID 
+        // bool  passveto_iso = iso < 0.203  + 0.963/electron.pt();
+        // bool passloose_iso = iso < 0.108  + 0.963/electron.pt();
+        // bool   passmed_iso = iso < 0.0658 + 0.963/electron.pt(); 
+        // bool passtight_iso = iso < 0.0445 + 0.963/electron.pt();
+        // //
+
+        VetoEl_noiso = cutBasedIDHelper(electron, 0.0457, 0.00814,   0.19,  he_veto, 0.132,  3);
+        LooseEl_noiso = cutBasedIDHelper(electron, 0.0425, 0.00674,  0.169, he_loose, 0.111,  1);
+        MedEl_noiso = cutBasedIDHelper(electron, 0.0387, 0.00632, 0.0394,   he_med, 0.0721, 1);
+        TightEl_noiso = cutBasedIDHelper(electron, 0.0353, 0.00501, 0.0236, he_tight, 0.0197, 1);
+
+      //  //temp : to compare makeshift ID to central ID 
+      //   if (isVetoEl && !(VetoEl_noiso && passveto_iso)) std::cout << "ISSUE WITH COMPATIBLE VETO IDs" << std::endl;
+      //   if (isLooseEl && !(LooseEl_noiso && passloose_iso)) std::cout << "ISSUE WITH COMPATIBLE LOOSE IDs" << std::endl;
+      //   if (isMedEl && !(MedEl_noiso && passmed_iso)) std::cout << "ISSUE WITH COMPATIBLE MED IDs" << std::endl;
+      //   if (isTightEl && !(TightEl_noiso && passtight_iso)) std::cout << "ISSUE WITH COMPATIBLE TIGHT IDs" << std::endl;
+      //   //
+
+      }
+
       //similarly for electron : keep ID (including specific cuts pertaining to ID), standard ele info, pfiso 
       std::vector<int> eleID;
       eleID.push_back(isVetoEl);
@@ -577,8 +658,16 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
 		       
       mevent->electron_ID.push_back(eleID);
 
+      std::vector<int> elenoisoID;
+      elenoisoID.push_back(VetoEl_noiso);
+      elenoisoID.push_back(LooseEl_noiso);
+      elenoisoID.push_back(MedEl_noiso);
+      elenoisoID.push_back(TightEl_noiso);
+
+      mevent->electron_noiso_ID.push_back(elenoisoID);
+
       mevent->ele_ID_push_back(electron,
-			       h_Escaled,
+			       HoverE,
 			       ooEmooP,
 			       expectedMissingInnerHits,
 			       iso,
@@ -596,11 +685,12 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
 				       pfIso.sumPhotonEt,
 				       *rho*eA);
 
+      mevent->ele_hlt_push_back(electron, triggerfloats->hltelectrons);
+
     }
   }
 
   //////////////////////////////////////////////////////////////////////
-
   if (use_vertex_seed_tracks) {
     edm::Handle<reco::TrackCollection> vertex_seed_tracks;
     event.getByToken(vertex_seed_tracks_token, vertex_seed_tracks);
@@ -734,6 +824,7 @@ void MFVEventProducer::produce(edm::Event& event, const edm::EventSetup& setup) 
     mevent->electron_dxyerr.clear();
     mevent->electron_dzerr.clear();
     mevent->electron_ID.clear();
+    mevent->electron_noiso_ID.clear();
     mevent->electron_isEB.clear();
     mevent->electron_isEE.clear();
     mevent->electron_sigmaIetaIeta5x5.clear();

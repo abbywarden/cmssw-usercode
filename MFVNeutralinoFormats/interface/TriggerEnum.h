@@ -12,10 +12,6 @@ namespace mfv {
   // JMTBAD hope you keep these in sync with TriggerEnum.cc
   static const int n_clean_paths = 7;
   enum {
-
-    // HT-triggered analysis trigger
-    b_HLT_PFHT1050,
-
     // Lepton triggers
     b_HLT_Ele27_WPTight_Gsf, //2016
     b_HLT_Ele32_WPTight_Gsf, //2018
@@ -25,7 +21,12 @@ namespace mfv {
     b_HLT_IsoMu24, //2018
     b_HLT_IsoMu27, 
     b_HLT_Mu50,
-    
+    b_HLT_Photon175,
+    b_HLT_Photon200,
+
+    // HT-triggered analysis trigger
+    b_HLT_PFHT1050,
+
     // displaced dilepton triggers 
     b_HLT_Mu43NoFiltersNoVtx_Photon43_CaloIdL, 
     b_HLT_Diphoton30_22_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90, 
@@ -80,6 +81,21 @@ namespace mfv {
     n_l1_paths // = 29
   };
 
+  // enum {
+  //   // Lepton triggers
+  //   b_HLT_Ele27_WPTight_Gsf, //2016
+  //   b_HLT_Ele32_WPTight_Gsf, //2018
+  //   b_HLT_Ele35_WPTight_Gsf, //2017
+  //   b_HLT_Ele115_CaloIdVT_GsfTrkIdT,
+  //   b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
+  //   b_HLT_IsoMu24, //2018
+  //   b_HLT_IsoMu27, 
+  //   b_HLT_Mu50,
+  //   b_HLT_Photon175,
+  //   b_HLT_Photon200,
+  //   n_lep_hlt_paths
+  // };
+
   enum {
     // Filters for 2017 di-bjet trigger (some are shared with 2018) (0,1,2,3  n=4)
     b_hltDoubleCaloBJets100eta2p3, b_hltBTagCalo80x6CSVp0p92DoubleWithMatching, b_hltDoublePFJets100Eta2p3, b_hltDoublePFJets100Eta2p3MaxDeta1p6,
@@ -127,6 +143,7 @@ namespace mfv {
   static_assert(n_filter_paths <= 64, "too many filter paths");
 
   extern const char* hlt_paths[n_hlt_paths];
+  // extern const char* SingleLep_hlt_paths[n_lep_hlt_paths];
   extern const char* l1_paths[n_l1_paths];
   extern const char* clean_paths[n_clean_paths];
   extern const char* filter_paths[n_filter_paths];
@@ -153,6 +170,7 @@ namespace mfv {
    mfv::b_HLT_Ele35_WPTight_Gsf, //2017
    mfv::b_HLT_Ele32_WPTight_Gsf, //2018
    mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT, mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165,
+   mfv::b_HLT_Photon175, mfv::b_HLT_Photon200
   }; 
   static const std::vector<size_t> MuonTriggers = {
    //muon triggers

@@ -4,16 +4,17 @@ from JMTucker.Tools import Samples
 from JMTucker.MFVNeutralino.PerSignal import PerSignal
 
 set_style()
-ps = plot_saver(plot_dir('sigeff_trig'), size=(600,600), log=False, pdf=True)
+ps = plot_saver(plot_dir('sigeff_trig'), size=(800,600), log=False, pdf=True)
 
 # where "new" triggers = bjet and displaced dijet triggers
 study_new_triggers = True
 
 if study_new_triggers :
 
-    root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrigFiltCheckV3/'
-    trigs = ['TriggerLeptons', 'TriggerJets']
-    nice = ['SingleLep', 'PFHT1050']
+    root_file_dir = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrigFiltCheck/'
+    trigs = ['TriggerLeptons', 'TriggerLeptons_noPhoton', 'TriggerLeptonsORDispLep', 'Trigger']
+    nice = ['EgammaMu', 'EleMu', 'EleMuORDispDilep', 'HT1050']
+    colors = [ROOT.kRed, ROOT.kBlue, ROOT.kGreen+2, ROOT.kBlack]
 
 
     #root_file_dir = '/uscms/home/ali/nobackup/LLP/crabdir/TrigFiltCheckV3/'
@@ -41,10 +42,12 @@ def sample_ok(s):
 #multijet = [s for s in Samples.mfv_signal_samples_2018 if sample_ok(s)]
 #dijet = [s for s in Samples.mfv_stopdbardbar_samples_2018 if sample_ok(s)]
 #splitSUSY = Samples.mfv_splitSUSY_samples_M2000_2017
-multijet = [s for s in Samples.mfv_signal_samples_2016 if sample_ok(s)]
-dijet_d = [s for s in Samples.mfv_stopdbardbar_samples_2016 if sample_ok(s)]
-dijet_b = [s for s in Samples.mfv_stopbbarbbar_samples_2016 if sample_ok(s)]
+
+# multijet = [s for s in Samples.mfv_signal_samples_2016 if sample_ok(s)]
+# dijet_d = [s for s in Samples.mfv_stopdbardbar_samples_2016 if sample_ok(s)]
+# dijet_b = [s for s in Samples.mfv_stopbbarbbar_samples_2016 if sample_ok(s)]
 #higgs   = [s for s in Samples.HToSSTodddd_samples_2016 if sample_ok(s)]
+DisplacedSUSY = Samples.mfv_stopld_samples_2018  #+ Samples.mfv_stopld_samples_2018
 
 def getit(f, n):
     hnum = f.Get('SimpleTriggerEfficiency/triggers_pass_num')
@@ -70,10 +73,11 @@ for sample in DisplacedSUSY:
         continue
     f = ROOT.TFile(fn)
     sample.ys = {n: getit(f,'p'+n) for n in trigs}
+    #print(sample.ys)
 
 if len(trigs) > 1:
     #for kind, samples in ('multijet', multijet), ('dijet_d', dijet_d), ('dijet_b', dijet_b):
-    kind = 'semilept_lb'
+    kind = 'semilept_ld'
     samples = DisplacedSUSY
 
     per = PerSignal('efficiency', y_range=(0.,1.15))
@@ -84,10 +88,10 @@ if len(trigs) > 1:
     per.draw(canvas=ps.c)
 
     if study_new_triggers :
-        mvpave(per.decay_paves[0], 7.5, 1.04, 10.4, 1.1)
-        mvpave(per.decay_paves[1], 11.5,1.00 , 17.5, 1.14)
-        mvpave(per.decay_paves[2], 18.5,  1.04, 23.5, 1.1) 
-    #    mvpave(per.decay_paves[3], 11.5, 1.04, 13.5, 1.1) 
+        mvpave(per.decay_paves[0], 8.5, 1.04, 11.5, 1.1)
+        mvpave(per.decay_paves[1], 13.5, 1.04 , 16.5, 1.1)
+        mvpave(per.decay_paves[2], 20.5,  1.04, 23.5, 1.1) 
+        mvpave(per.decay_paves[3], 27.5, 1.04, 30.5, 1.1) 
     else :
         mvpave(per.decay_paves[0], 0.703, 1.018, 6.227, 1.098)
         mvpave(per.decay_paves[1], 6.729, 1.021, 14.073, 1.101)
@@ -109,7 +113,7 @@ if len(trigs) > 1:
     else:
         tlatex.DrawLatex(0.725, 1.05, kind)
         
-    ps.save(kind)
+    ps.save(kind + '_wHT')
 else:
     for sample in multijet + dijet_d + dijet_b:# + higgs:
         print sample.name
