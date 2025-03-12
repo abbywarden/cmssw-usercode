@@ -15,6 +15,7 @@
 #include "JMTucker/MFVNeutralino/interface/EventTools.h"
 #include "DataFormats/Math/interface/PtEtaPhiMass.h"
 #include "JMTucker/MFVNeutralinoFormats/interface/VertexAux.h"
+#include "JMTucker/Tools/interface/Year.h"
 #include "TLorentzVector.h"
 #include "DataFormats/Math/interface/Point3D.h"
 
@@ -27,8 +28,16 @@ class MFVEventHistos : public edm::EDAnalyzer {
   const edm::EDGetTokenT<MFVEvent> mevent_token;
   const edm::EDGetTokenT<double> weight_token;
   const edm::EDGetTokenT<MFVVertexAuxCollection> vertex_token;
-  const edm::EDGetTokenT<bool> show_gen_token;
+  bool satisfiesLepTriggerPT(edm::Handle<MFVEvent>, int, size_t, const edm::EventSetup&);
+
+  bool jet_hlt_match(edm::Handle<MFVEvent> mevent, int i, float min_jet_pt=20.) const {
+    // an offline jet with a successful HLT match will have a nonzero jet_hlt_pt;
+    // all others have the default value of 0
+    return mevent->jet_hlt_pt.at(i) > min_jet_pt;
+  }
+  // const edm::EDGetTokenT<bool> show_gen_token;
   
+  const bool show_gen;
 
   TH1F* h_w;
   TH1F* h_nsv;
@@ -176,6 +185,7 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_muon_pt_[3];
   TH1F* h_muon_eta_[3];
   TH1F* h_muon_iso_[3];
+  TH1F* h_muon_nm1iso_[3]; // ID, pT, eta applied but not iso 
   TH1F* h_muon_phi_[3];
   TH1F* h_muon_dxybs_[3];
   TH1F* h_muon_nsigmadxy_[3];
@@ -190,6 +200,7 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_electron_eta_[4];
   TH1F* h_electron_phi_[4];
   TH1F* h_electron_iso_[4];
+  TH1F* h_electron_nm1iso_[4]; //ID, pT, eta applied but not iso 
   TH1F* h_electron_dxybs_[4];
   TH1F* h_electron_nsigmadxy_[4];
   TH1F* h_electron_dz_[4];
@@ -201,7 +212,21 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_electron_npxlayers_[4];
   TH1F* h_electron_nstlayers_[4];
   TH1F* h_electron_nlayers_[4];
-  
+
+  TH1F* h_electron_fbrem_[4];
+  TH1F* h_EE_electron_fbrem_[4];
+  TH1F* h_EB_electron_fbrem_[4];
+  TH1F* h_iso_electron_fbrem_[4];
+
+  TH2F* h_electron_nstlayers_vs_fbrem_[4];
+  TH2F* h_electron_pt_vs_fbrem_[4];
+  TH2F* h_EE_electron_nstlayers_vs_fbrem_[4];
+  TH2F* h_EB_electron_nstlayers_vs_fbrem_[4];
+  TH2F* h_EE_electron_pt_vs_fbrem_[4];
+  TH2F* h_EB_electron_pt_vs_fbrem_[4];
+  TH2F* h_iso_electron_nstlayers_vs_fbrem_[4];
+  TH2F* h_iso_electron_pt_vs_fbrem_[4];
+
   //leptons that pass selection : cutbasedID, iso, pt >= 20 GeV 
   TH1F* h_nselmu;
   TH1F* h_nselele;
@@ -290,8 +315,8 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   : mevent_token(consumes<MFVEvent>(cfg.getParameter<edm::InputTag>("mevent_src"))),
     weight_token(consumes<double>(cfg.getParameter<edm::InputTag>("weight_src"))),
 	  vertex_token(consumes<MFVVertexAuxCollection>(cfg.getParameter<edm::InputTag>("vertex_src"))),
-    show_gen_token(consumes<bool>(cfg.getParameter<edm::InputTag>("show_gen")))
-
+    // show_gen_token(consumes<bool>(cfg.getParameter<edm::InputTag>("show_gen")))
+    show_gen(cfg.getParameter<bool>("show_gen"))
 {
   edm::Service<TFileService> fs;
 
@@ -531,6 +556,7 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
     h_electron_eta_[i] = fs->make<TH1F>(TString::Format("h_electron_eta_%s", ele_ex[i]), TString::Format(";%s electron #eta (rad);electron/.104", ele_ex[i]), 50, -2.6, 2.6);
     h_electron_phi_[i] = fs->make<TH1F>(TString::Format("h_electron_phi_%s", ele_ex[i]), TString::Format( ";%s electron #phi (rad);electron/.126", ele_ex[i]),  50, -3.1416, 3.1416);
     h_electron_iso_[i] = fs->make<TH1F>(TString::Format("h_electron_iso_%s", ele_ex[i]), TString::Format(";%s electron iso;electron/.04", ele_ex[i]), 50, 0, 2.0);
+    h_electron_nm1iso_[i] = fs->make<TH1F>(TString::Format("h_electron_nm1iso_%s", ele_ex[i]), TString::Format(";%s electron iso;electron/.04", ele_ex[i]), 50, 0, 2.0); 
     h_electron_dxybs_[i] = fs->make<TH1F>(TString::Format("h_electron_absdxybs_%s", ele_ex[i]), TString::Format(";absdxybs of %s electrons;electron/50 #mum", ele_ex[i]), 400, 0, 4.0);
     h_electron_nsigmadxy_[i] = fs->make<TH1F>(TString::Format("h_electron_nsigmadxy_%s", ele_ex[i]), TString::Format(";%s muon n#sigma(dxy);arb. units", ele_ex[i]), 400, -60, 60);
     h_electron_dz_[i] = fs->make<TH1F>(TString::Format("h_electron_dz_%s", ele_ex[i]), TString::Format(";dz of %s electrons;electron/50 #mum", ele_ex[i]), 400, -2.0, 2.0);
@@ -542,6 +568,21 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
     h_electron_npxlayers_[i] = fs->make<TH1F>(TString::Format("h_electron_npxlayers_%s", ele_ex[i]), TString::Format(";%s electron # pixel layers;tracks", ele_ex[i]), 10, 0, 10);
     h_electron_nstlayers_[i] = fs->make<TH1F>(TString::Format("h_electron_nstlayers_%s", ele_ex[i]), TString::Format(";%s electron # strip layers;tracks", ele_ex[i]), 20, 0, 20);
     h_electron_nlayers_[i] = fs->make<TH1F>(TString::Format("h_electron_nlayers_%s", ele_ex[i]), TString::Format("; %s electron # layers;tracks", ele_ex[i]), 30, 0, 30);
+  
+    h_electron_fbrem_[i] = fs->make<TH1F>(TString::Format("h_electron_fbrem_%s", ele_ex[i]), TString::Format(";%s electron fbrem;tracks", ele_ex[i]), 100, -1, 1);
+    h_EE_electron_fbrem_[i] = fs->make<TH1F>(TString::Format("h_EE_electron_fbrem_%s", ele_ex[i]), TString::Format(";%s electron fbrem;tracks", ele_ex[i]), 100, -1, 1);
+    h_EB_electron_fbrem_[i] = fs->make<TH1F>(TString::Format("h_EB_electron_fbrem_%s", ele_ex[i]), TString::Format(";%s electron fbrem;tracks", ele_ex[i]), 100, -1, 1);
+    h_iso_electron_fbrem_[i] = fs->make<TH1F>(TString::Format("h_iso_electron_fbrem_%s", ele_ex[i]), TString::Format(";sel %s electron fbrem;tracks", ele_ex[i]), 100, -1, 1);
+    h_electron_nstlayers_vs_fbrem_[i] = fs->make<TH2F>(TString::Format("h_electron_nstlayers_vs_fbrem_%s", ele_ex[i]), TString::Format(";%s electron fbrem; nstlayers", ele_ex[i]), 100, -1, 1, 20, 0, 20);
+    h_electron_pt_vs_fbrem_[i] = fs->make<TH2F>(TString::Format("h_electron_pt_vs_fbrem_%s", ele_ex[i]), TString::Format(";%s electron fbrem; pt", ele_ex[i]), 100, -1, 1, 200, 0, 1000);
+    h_EE_electron_nstlayers_vs_fbrem_[i] = fs->make<TH2F>(TString::Format("h_EE_electron_nstlayers_vs_fbrem_%s", ele_ex[i]), TString::Format(";EE %s electron fbrem; nstlayers", ele_ex[i]), 100, -1, 1, 20, 0, 20);
+    h_EB_electron_nstlayers_vs_fbrem_[i] = fs->make<TH2F>(TString::Format("h_EB_electron_nstlayers_vs_fbrem_%s", ele_ex[i]), TString::Format(";EB %s electron fbrem; nstlayers", ele_ex[i]), 100, -1, 1, 20, 0, 20);
+    h_EE_electron_pt_vs_fbrem_[i] = fs->make<TH2F>(TString::Format("h_EE_electron_pt_vs_fbrem_%s", ele_ex[i]), TString::Format(";EE %s electron fbrem; pt", ele_ex[i]), 100, -1, 1, 200, 0, 1000);
+    h_EB_electron_pt_vs_fbrem_[i] = fs->make<TH2F>(TString::Format("h_EB_electron_pt_vs_fbrem_%s", ele_ex[i]), TString::Format(";EB %s electron fbrem; pt", ele_ex[i]), 100, -1, 1, 200, 0, 1000);
+    h_iso_electron_nstlayers_vs_fbrem_[i] = fs->make<TH2F>(TString::Format("h_iso_electron_nstlayers_vs_fbrem_%s", ele_ex[i]), TString::Format(";iso %s electron fbrem; nstlayers", ele_ex[i]), 100, -1, 1, 20, 0, 20);
+    h_iso_electron_pt_vs_fbrem_[i] = fs->make<TH2F>(TString::Format("h_iso_electron_pt_vs_fbrem_%s", ele_ex[i]), TString::Format(";iso %s electron fbrem; pt", ele_ex[i]), 100, -1, 1, 200, 0, 1000);
+
+  
   }
     
   const char* mu_ex[3] = {"loose", "medium", "tight"};
@@ -551,6 +592,7 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
     h_muon_eta_[i] = fs->make<TH1F>(TString::Format("h_muon_eta_%s", mu_ex[i]), TString::Format("; %s muon #eta (rad);muon/.104", mu_ex[i]), 50, -2.6, 2.6);
     h_muon_phi_[i] = fs->make<TH1F>(TString::Format("h_muon_phi_%s", mu_ex[i]), TString::Format("; %s muon #phi (rad);muon/.126", mu_ex[i]), 50, -3.1416, 3.1416);
     h_muon_iso_[i] = fs->make<TH1F>(TString::Format("h_muon_iso_%s", mu_ex[i]), TString::Format(";%s muon iso;muon/.04", mu_ex[i]), 50, 0, 2.0);
+    h_muon_nm1iso_[i] = fs->make<TH1F>(TString::Format("h_muon_nm1iso_%s", mu_ex[i]), TString::Format(";%s muon iso;muon/.04", mu_ex[i]), 50, 0, 2.0);
     h_muon_dxybs_[i] = fs->make<TH1F>(TString::Format("h_muon_absdxybs_%s", mu_ex[i]), TString::Format(";absdxybs of %s muons;muon/50 #mum", mu_ex[i]), 400, 0, 2.0);
     h_muon_nsigmadxy_[i] = fs->make<TH1F>(TString::Format("h_muon_nsigmadxy_%s", mu_ex[i]), TString::Format(";%s muon n#sigma(dxy);arb. units", mu_ex[i]), 400, -60, 60);
     h_muon_dz_[i] = fs->make<TH1F>(TString::Format("h_muon_dz_%s", mu_ex[i]), TString::Format(";dz of %s muons;muon/50 #mum", mu_ex[i]), 400, -2.0, 2.0);
@@ -570,7 +612,7 @@ MFVEventHistos::MFVEventHistos(const edm::ParameterSet& cfg)
   }
 }
 
-void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
+void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup& setup) {
   edm::Handle<MFVEvent> mevent;
   event.getByToken(mevent_token, mevent);
 
@@ -585,8 +627,8 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   h_nsv->Fill(nsv, w);
   h_eventid->Fill(event.id().event());
 
-  edm::Handle<bool> show_gen;
-  event.getByToken(show_gen_token, show_gen);
+  // edm::Handle<bool> show_gen;
+  // event.getByToken(show_gen_token, show_gen);
 
   //////////////////////////////////////////////////////////////////////////////
   if (show_gen) { 
@@ -1043,6 +1085,16 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
         if ((fabs(mevent->muon_dxybs[imu]) / mevent->muon_dxyerr[imu]) > 3) {
           nmu_nsigma +=1;
         }
+
+        // for nm1 iso : 
+        if (mevent->muon_eta[imu] < 2.4) { 
+          for(size_t trig : mfv::MuonTriggers) {
+            if(satisfiesLepTriggerPT(mevent, imu, trig, setup)) {
+              h_muon_nm1iso_[j]->Fill(mevent->muon_iso[imu], w);
+            }
+          }
+        }
+
       }
     }
   }
@@ -1094,7 +1146,8 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
 
     for (int j = 0; j < 4; ++j) {
 
-      if (mevent->electron_ID[iel][j] == 1) {
+      //switching to no iso ID 
+      if (mevent->electron_noiso_ID[iel][j] == 1) {
       	nelectrons[j] +=1;
       
         h_electron_pt_[j]->Fill(mevent->electron_pt[iel], w);
@@ -1110,21 +1163,53 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
         h_electron_nstlayers_[j]->Fill(mevent->electron_nstlayers(iel), w);
         h_electron_npxlayers_[j]->Fill(mevent->electron_npxlayers(iel), w);
         h_electron_nlayers_[j]->Fill(mevent->electron_nlayers(iel), w);
+
+        h_electron_fbrem_[j]->Fill(mevent->electron_fBrem[iel], w);
+        h_electron_nstlayers_vs_fbrem_[j]->Fill(mevent->electron_fBrem[iel], mevent->electron_nstlayers(iel), w);
+        h_electron_pt_vs_fbrem_[j]->Fill(mevent->electron_fBrem[iel], mevent->electron_pt[iel], w);
+
+        if (mevent->electron_iso[iel] < 0.1) {
+          h_iso_electron_fbrem_[j]->Fill(mevent->electron_fBrem[iel], w);
+          h_iso_electron_nstlayers_vs_fbrem_[j]->Fill(mevent->electron_fBrem[iel], mevent->electron_nstlayers(iel), w);
+          h_iso_electron_pt_vs_fbrem_[j]->Fill(mevent->electron_fBrem[iel], mevent->electron_pt[iel], w);
+        }
+
+        if (fabs(mevent->electron_eta[iel]) > 1.4) {
+          h_EE_electron_fbrem_[j]->Fill(mevent->electron_fBrem[iel], w);
+          h_EE_electron_nstlayers_vs_fbrem_[j]->Fill(mevent->electron_fBrem[iel], mevent->electron_nstlayers(iel), w);
+          h_EE_electron_pt_vs_fbrem_[j]->Fill(mevent->electron_fBrem[iel], mevent->electron_pt[iel], w);
+
+        } 
+        if (fabs(mevent->electron_eta[iel]) < 1.4) {
+          h_EB_electron_fbrem_[j]->Fill(mevent->electron_fBrem[iel], w);
+          h_EB_electron_nstlayers_vs_fbrem_[j]->Fill(mevent->electron_fBrem[iel], mevent->electron_nstlayers(iel), w);
+          h_EB_electron_pt_vs_fbrem_[j]->Fill(mevent->electron_fBrem[iel], mevent->electron_pt[iel], w);
+        }
+
+
         if ((fabs(mevent->electron_dxybs[iel]) / mevent->electron_dxyerr[iel]) > 3) {
           nele_nsigma +=1;
         }
-      }
-    
-      if (mevent->electron_isEB[iel] == 1) {
-    	  h_electron_dz_EB_[j]->Fill(mevent->electron_dz[iel], w);
-      }
+        // for nm1 iso : 
+        if (mevent->electron_eta[iel] < 2.4) { 
+          for(size_t trig : mfv::ElectronTriggers) {
+            if(satisfiesLepTriggerPT(mevent, iel, trig, setup)) {
+              h_electron_nm1iso_[j]->Fill(mevent->electron_iso[iel], w);
+            }
+          }
+        }
 
-      else if (mevent->electron_isEE[iel] == 1) {
-    	  h_electron_dz_EE_[j]->Fill(mevent->electron_dz[iel], w);
+    
+        if (mevent->electron_isEB[iel] == 1) {
+          h_electron_dz_EB_[j]->Fill(mevent->electron_dz[iel], w);
+        }
+
+        else if (mevent->electron_isEE[iel] == 1) {
+          h_electron_dz_EE_[j]->Fill(mevent->electron_dz[iel], w);
+        }
       }
     }
   }
-
   for (int j = 0; j < 4; ++j) {
     h_nelectrons_[j]->Fill(nelectrons[j], w);
   }
@@ -1249,7 +1334,6 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     }
   }
   //////////////////////////////////////////////////////////////////////////////
-
   const size_t n_vertex_seed_tracks = mevent->n_vertex_seed_tracks();
   std::vector<int> track_which_jet;
   
@@ -1258,6 +1342,7 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     h_vertex_seed_track_chi2dof->Fill(mevent->vertex_seed_track_chi2dof[i], w);
     h_vertex_seed_track_q->Fill(mevent->vertex_seed_track_q(i), w);
     h_vertex_seed_track_pt->Fill(mevent->vertex_seed_track_pt(i), w);
+    std::cout << "vertex seed track pt : " << mevent->vertex_seed_track_pt(i) << std::endl;
     if (abs(mevent->vertex_seed_track_eta[i])<1.4){
       h_vertex_seed_track_pt_barrel->Fill(mevent->vertex_seed_track_pt(i), w);
     }
@@ -1308,6 +1393,97 @@ void MFVEventHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
       h_jet_nseedtrack[i]->Fill(n_seedtrack, w);
   }
   h_jet_nseedtrack[MAX_NJETS]->Fill(njet_seedtrack, w);
+
+}
+
+
+//splitting up the satisfieslep trigger into muon/ele trigger -> just checking if the electron or muon passes pT requirement given which trigger fired 
+bool MFVEventHistos::satisfiesLepTriggerPT(edm::Handle<MFVEvent> mevent, int it, size_t trig, const edm::EventSetup& setup) { 
+  if(!mevent->pass_hlt(trig)) return false;
+
+  int year = int(MFVNEUTRALINO_YEAR);
+  assert(year == 20161 || year == 20162 || year == 2017 || year == 2018); // in case of race conditions where the compiled macro is invalid...
+
+  // int nmuons     = mevent->nmuons();
+  // int nelectrons = mevent->nelectrons();
+  int njets      = mevent->njets(20);
+    
+  bool passed_kinematics = false;
+
+  switch(trig){
+  case mfv::b_HLT_Ele27_WPTight_Gsf : //for 2016
+    {
+    if (year != 20161 and year !=20162) return false;
+    if (mevent->electron_pt[it] > 30) passed_kinematics = true; //for 2016
+    return passed_kinematics;
+    }
+  case mfv::b_HLT_Ele35_WPTight_Gsf : //for 2017
+    {
+    if (year != 2017) return false;
+    if (mevent->electron_pt[it] > 38) passed_kinematics = true; //for 2017
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_Ele32_WPTight_Gsf : //for 2018
+    {
+    if (year != 2018) return false;
+    if (mevent->electron_pt[it] > 35) passed_kinematics = true; //for 2018
+    return passed_kinematics;
+  }
+    case mfv::b_HLT_Photon175 : //for 2017, 2016 
+  {
+    if (year != 20161 and year != 20162) return false;
+    if (mevent->electron_pt[it] > 180) passed_kinematics = true; 
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_Photon200 : //for 2018, 2017
+  {
+    if (year != 2018 and year != 2017) return false;
+    if (mevent->electron_pt[it] > 205) passed_kinematics = true;
+    return passed_kinematics;
+  }
+
+  case mfv::b_HLT_IsoMu27 : //for 2017
+    {
+    if (year != 2017) return false;
+    if (mevent->muon_pt[it] > 30) passed_kinematics = true; 
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_IsoMu24 : //for 2018, 2016
+    {
+      if (year == 2017) return false;
+      if (mevent->muon_pt[it] > 27) passed_kinematics = true;
+      return passed_kinematics;
+    }
+  
+  case mfv::b_HLT_Mu50 :
+    {
+    if (mevent->muon_pt[it] > 53) passed_kinematics = true;
+    return passed_kinematics;
+    }
+    
+  case mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT :
+    {
+    if (mevent->electron_pt[it] > 120) passed_kinematics = true;
+    return passed_kinematics;
+    }
+    
+  case  mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165 :
+    {
+    if (mevent->electron_pt[it] > 55) {
+      for(int j0=0; j0 < njets; ++j0){
+        if (!jet_hlt_match(mevent, j0) || mevent->jet_pt[j0] < 170) continue;
+        passed_kinematics = true;
+      }
+    }
+    return passed_kinematics;
+    }
+  default :
+    {
+      throw std::invalid_argument(std::string(mfv::hlt_paths[trig]) + " not implemented in satisfiesLepTrigger");
+    }
+  }
+
+  return false;
 
 }
 

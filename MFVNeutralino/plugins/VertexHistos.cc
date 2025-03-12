@@ -13,6 +13,8 @@
 #include "JMTucker/Tools/interface/Utilities.h"
 #include "JMTucker/MFVNeutralinoFormats/interface/Event.h"
 #include "JMTucker/MFVNeutralinoFormats/interface/VertexAux.h"
+#include "JMTucker/Tools/interface/Year.h"
+
 // #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 
 
@@ -26,6 +28,13 @@ class MFVVertexHistos : public edm::EDAnalyzer {
   const edm::EDGetTokenT<double> weight_token;
   const edm::EDGetTokenT<MFVVertexAuxCollection> vertex_token;
   // const edm::EDGetTokenT<reco::GenParticleCollection> gen_particles_token; //GEN COMMENTED OUT
+  bool satisfiesLepTriggerPT(edm::Handle<MFVEvent>, edm::Handle<MFVVertexAuxCollection>, int, int, size_t, const edm::EventSetup&);
+
+  bool jet_hlt_match(edm::Handle<MFVEvent> mevent, int i, float min_jet_pt=20.) const {
+    // an offline jet with a successful HLT match will have a nonzero jet_hlt_pt;
+    // all others have the default value of 0
+    return mevent->jet_hlt_pt.at(i) > min_jet_pt;
+  }
 
   const int max_ntrackplots;
   const bool do_scatterplots;
@@ -49,6 +58,8 @@ class MFVVertexHistos : public edm::EDAnalyzer {
   TH2F* h_sv_mupt_muiso[sv_num_indices];
   TH1F* h_w;
   TH1F* h_nsv;
+  TH1F* h_nsv_cc;
+
   TH1F* h_nsv_wlep;  // assoc. lep in sv
   /////////////////////////////////////////////////////////////////////////////////////
   // for signal 
@@ -101,18 +112,34 @@ class MFVVertexHistos : public edm::EDAnalyzer {
   TH1F* h_sv_nbtks[3];
   TH1F* h_sv_nlep_nbtks[3]; //combining to look at tracks from : lepton & bjets -> I think this is double counting
 
-  TH1F* h_sv_nleptks_nbtks[3]; // combining : tracks from bjets (not from lep) and tracks from leptons (not from bjets) 
-  TH1F* h_sv_nlepbtks[3]; //combining : tracks from bjets (not from lep) and tracks from leptons coming from the bjet 
+  TH1F* h_svmu_nbtags[3];
+  TH1F* h_svmu_nbtks[3];
+  TH1F* h_svmu_nbtks_notlep[3]; //tracks from bjets and not from leptons 
+  TH1F* h_svele_nbtags[3];
+  TH1F* h_svele_nbtks[3];
+  TH1F* h_svele_nbtks_notlep[3]; //tracks from bjets and not from leptons 
+
+  TH1F* h_svwele_tightsel_passtriggers; //which triggers fire in events w/ SVwele and the ele passes tightsel
+  TH1F* h_svwmu_tightsel_passtriggers; //which triggers fire in events w/ SVwmu and the mu passes tightsel
+
+
+  // TH1F* h_sv_nleptks_nbtks[3]; // combining : tracks from bjets (not from lep) and tracks from leptons (not from bjets) 
+  // TH1F* h_sv_nlepbtks[3]; //combining : tracks from bjets (not from lep) and tracks from leptons coming from the bjet 
+
+  // TH1F* h_sv_neletks_nbtks[3]; // combining : tracks from bjets (not from lep) and tracks from leptons (not from bjets) 
+  // TH1F* h_sv_nelebtks[3]; //combining : tracks from bjets (not from lep) and tracks from leptons coming from the bjet 
+  // TH1F* h_sv_nmutks_nbtks[3]; // combining : tracks from bjets (not from lep) and tracks from leptons (not from bjets) 
+  // TH1F* h_sv_nmubtks[3]; //combining : tracks from bjets (not from lep) and tracks from leptons coming from the bjet 
 
   TH1F* h_sv_nbtks_notlep[3]; //tracks from bjets and not from leptons 
-  TH1F* h_sv_nlep_fromb[3]; //tracks coming from leptons from bjets
-  TH1F* h_sv_nele_fromb[3]; //tracks coming from ele from bjets
-  TH1F* h_sv_nmu_fromb[3]; //tracks coming from mu from bjets 
+  // TH1F* h_sv_nlep_fromb[3]; //tracks coming from leptons from bjets
+  // TH1F* h_sv_nele_fromb[3]; //tracks coming from ele from bjets
+  // TH1F* h_sv_nmu_fromb[3]; //tracks coming from mu from bjets 
 
-  //now concerning counting/pt leptons from/not from b 
-  TH1F* h_sv_nlep_notb[3];
-  TH1F* h_sv_nele_notb[3];
-  TH1F* h_sv_nmu_notb[3];
+  // //now concerning counting/pt leptons from/not from b 
+  // TH1F* h_sv_nlep_notb[3];
+  // TH1F* h_sv_nele_notb[3];
+  // TH1F* h_sv_nmu_notb[3];
 
   //above should have sv contain a b though so make case when do not have b 
   // TH1F* h_sv_nlep_notbnob[3];
@@ -255,46 +282,112 @@ class MFVVertexHistos : public edm::EDAnalyzer {
   TH1F* h_sv_selmu;
   TH1F* h_sv_selele;
 
+  TH1F* h_sv_electron_nm1iso; //all cuts applied to trigger electron except isolation 
+  TH1F* h_sv_muon_nm1iso; //all cuts applied to trigger muon except isolation 
+
   TH2F* h_leading_lepptvsbs2derr_inSV_[4];
+  TH2F* h_leading_eleptvsbs2derr_inSV_[4];
+  TH2F* h_leading_muptvsbs2derr_inSV_[4];
 
   TH1F* h_leading_leppt_inSV_[4];
   TH1F* h_leading_trackpt_inSV_[4]; //the track's pT that is associated to the lepton? 
   TH1F* h_leading_trackptratio_inSV_[4]; //ratio of the leading track's pT / sum all other tracks's pT 
-
   TH1F* h_leading_mutrackpt_inSV_[4]; //the track's pT that is associated to the muon? 
   TH1F* h_leading_mutrackptratio_inSV_[4]; //ratio of the leading mutrack's pT / sum all other tracks's pT 
-
   TH1F* h_leading_eletrackpt_inSV_[4]; //the track's pT that is associated to the electron? 
   TH1F* h_leading_eletrackptratio_inSV_[4]; //ratio of the leading eletrack's pT / sum all other tracks's pT 
-
   TH1F* h_leading_lepnsigmadxy_inSV_[4];
   TH1F* h_leading_lepdxy_inSV_[4];
   TH1F* h_leading_lepdxyerr_inSV_[4];
-
   TH1F* h_leading_lepeta_inSV_[4];
   TH1F* h_leading_lepid_inSV_[4];
   TH1F* h_leading_lepiso_inSV_[4];
 
-  TH1F* h_svwlep_rescale_bs2derr_[4];
-  TH1F* h_svwlep_rescale_pertkbs2derr_[4];
-  TH1F* h_svwlep_bsbs2ddist_[4];
-  TH1F* h_svwlep_ntracks_[4];
-  TH1F* h_svwlep_trackpairdravg_[4];
-  TH1F* h_svwlep_costh_[4];
-  TH1F* h_svwlep_tracktripmassmax_[4];
-  TH1F* h_svwlep_leadinglepptinSV_[4];
-  TH1F* h_svwlep_leadinglepnsigmadxyinSV_[4];
-  TH1F* h_svwlep_avgptmlep_[4];
-  TH1F* h_svwlep_trackpairdravgmmax_[4];
+  TH2F* h_leading_mutrackpT_vs_mupT_inSV; //muon passes ID, iso 
+  TH2F* h_leading_eletrackpT_vs_elepT_inSV; //ele passes ID, iso
+  TH2F* h_leading_mutracknsigmadxy_vs_munsigmadxy_inSV; //muon passes ID, iso 
+  TH2F* h_leading_eletracknsigmadxy_vs_elensigmadxy_inSV; //ele passes ID, iso
 
-  TH1F* h_svwlep_trackptgt3_[4];
-  TH1F* h_svwlep_trackptgt10_[4];
+  // all_lep no cuts, all_lep ID, all_lep iso, all_lep sel, lep sel barrel, lep sel endcap
+  TH1F* h_svwlep_rescale_bs2derr_[6];
+  TH1F* h_svwlep_rescale_pertkbs2derr_[6];
+  TH1F* h_svwlep_bsbs2ddist_[6];
+  TH1F* h_svwlep_ntracks_[6];
+  TH1F* h_svwlep_trackpairdravg_[6];
+  TH1F* h_svwlep_costh_[6];
+  TH1F* h_svwlep_tracktripmassmax_[6];
+  TH1F* h_svwlep_leadinglepptinSV_[6];
+  TH1F* h_svwlep_leadinglepdxyinSV_[6];
+  TH1F* h_svwlep_leadinglepdxyerrinSV_[6];
+  TH1F* h_svwlep_leadingleprescaleddxyerrinSV_[6];
+  TH1F* h_svwlep_leadinglepnsigmadxyinSV_[6];
+  TH1F* h_svwlep_leadingleprescalednsigmadxyinSV_[6];
+  TH1F* h_svwlep_leadinglepIDinSV_[6];
+  TH1F* h_svwlep_leadinglepisoinSV_[6];
+  TH1F* h_svwlep_leadinglepetainSV_[6];
+  TH1F* h_svwlep_avgptmlep_[6];
+  TH1F* h_svwlep_trackpairdravgmmax_[6];
+  TH1F* h_svwlep_trackptgt3_[6];
+  TH1F* h_svwlep_trackptgt10_[6];
+  TH1F* h_svwlepjet_pairdr_[6];
+  TH1F* h_svwlep_jet_pairdr_[6];
+  TH1F* h_svwlepjet_pt_[6];
+  TH1F* h_svwlepjet_ptratio_[6];
 
-  TH1F* h_svwlepjet_pairdr_[4];
-  TH1F* h_svwlepjet_pt_[4];
-  TH1F* h_svwlepjet_ptratio_[4];
+  // svwele (same as above) leading lep is ele 
+  TH1F* h_svwele_rescale_bs2derr_[6];
+  TH1F* h_svwele_rescale_pertkbs2derr_[6];
+  TH1F* h_svwele_bsbs2ddist_[6];
+  TH1F* h_svwele_ntracks_[6];
+  TH1F* h_svwele_trackpairdravg_[6];
+  TH1F* h_svwele_costh_[6];
+  TH1F* h_svwele_tracktripmassmax_[6];
+  TH1F* h_svwele_leadinglepptinSV_[6];
+  TH1F* h_svwele_leadinglepdxyinSV_[6];
+  TH1F* h_svwele_leadinglepdxyerrinSV_[6];
+  TH1F* h_svwele_leadingleprescaleddxyerrinSV_[6];
+  TH1F* h_svwele_leadinglepnsigmadxyinSV_[6];
+  TH1F* h_svwele_leadingleprescalednsigmadxyinSV_[6];
+  TH1F* h_svwele_leadinglepIDinSV_[6];
+  TH1F* h_svwele_leadinglepisoinSV_[6];
+  TH1F* h_svwele_leadinglepetainSV_[6];
+  TH1F* h_svwele_avgptmlep_[6];
+  TH1F* h_svwele_trackpairdravgmmax_[6];
+  TH1F* h_svwele_trackptgt3_[6];
+  TH1F* h_svwele_trackptgt10_[6];
+  TH1F* h_svwelejet_pairdr_[6];
+  TH1F* h_svwele_jet_pairdr_[6];
+  TH1F* h_svwelejet_pt_[6];
+  TH1F* h_svwelejet_ptratio_[6];
+  TH1F* h_svwele_leadinglephltdRinSV_[6];
 
+  //svwmu - leading lep is mu
+  TH1F* h_svwmu_rescale_bs2derr_[6];
+  TH1F* h_svwmu_rescale_pertkbs2derr_[6];
+  TH1F* h_svwmu_bsbs2ddist_[6];
+  TH1F* h_svwmu_ntracks_[6];
+  TH1F* h_svwmu_trackpairdravg_[6];
+  TH1F* h_svwmu_costh_[6];
+  TH1F* h_svwmu_tracktripmassmax_[6];
+  TH1F* h_svwmu_leadinglepptinSV_[6];
+  TH1F* h_svwmu_leadinglepdxyinSV_[6];
+  TH1F* h_svwmu_leadinglepdxyerrinSV_[6];
+  TH1F* h_svwmu_leadingleprescaleddxyerrinSV_[6];
+  TH1F* h_svwmu_leadinglepnsigmadxyinSV_[6];
+  TH1F* h_svwmu_leadingleprescalednsigmadxyinSV_[6];
+  TH1F* h_svwmu_leadinglepIDinSV_[6];
+  TH1F* h_svwmu_leadinglepisoinSV_[6];
+  TH1F* h_svwmu_leadinglepetainSV_[6];
+  TH1F* h_svwmu_avgptmlep_[6];
+  TH1F* h_svwmu_trackpairdravgmmax_[6];
+  TH1F* h_svwmu_trackptgt3_[6];
+  TH1F* h_svwmu_trackptgt10_[6];
+  TH1F* h_svwmujet_pairdr_[6];
+  TH1F* h_svwmu_jet_pairdr_[6];
+  TH1F* h_svwmujet_pt_[6];
+  TH1F* h_svwmujet_ptratio_[6];
   // TH1F* h_svwsellep_pairdr;
+  TH1F* h_svwmu_leadinglephltdRinSV_[6];
 
 };
 
@@ -312,11 +405,23 @@ MFVVertexHistos::MFVVertexHistos(const edm::ParameterSet& cfg)
 
   h_w = fs->make<TH1F>("h_w", ";event weight;events/0.1", 100, 0, 10);
   h_nsv = fs->make<TH1F>("h_nsv", ";# of secondary vertices;arb. units", 15, 0, 15);
+  h_nsv_cc = fs->make<TH1F>("h_nsv_cc", ";# of secondary vertices;arb. units", 15, 0, 15);
+
   h_nsv_wlep = fs->make<TH1F>("h_nsv_wlep", ";# of secondary vertices with at least 1 assoc. lep;arb. units", 10, 0, 10);
 
   h_sv_sellep = fs->make<TH1F>("h_sv_sellep", ";# of leptons passing ID and iso associated to a SV;arb. units", 10, 0, 10);
   h_sv_selmu = fs->make<TH1F>("h_sv_selmu", ";# of muons passing ID and iso associated to a SV;arb. units", 10, 0, 10);
   h_sv_selele = fs->make<TH1F>("h_sv_selele", ";# of electrons passing ID and iso associated to a SV;arb. units", 10, 0, 10);
+  h_sv_electron_nm1iso = fs->make<TH1F>("h_sv_electron_nm1iso", "; associated electron iso; arb. units", 60, 0, 2.0);
+  h_sv_muon_nm1iso = fs->make<TH1F>("h_sv_muon_nm1iso", "; associated muon iso; arb. units", 60, 0, 2.0);
+
+  h_svwele_tightsel_passtriggers = fs->make<TH1F>("h_svwele_tightsel_passtriggers", ";triggers that fire w/ SVwele events; arb. units", 10, 0, 10);
+  h_svwmu_tightsel_passtriggers = fs->make<TH1F>("h_svwmu_tightsel_passtriggers", ";triggers that fire w/ SVwmu events; arb. units", 10, 0, 10);
+
+  h_leading_mutrackpT_vs_mupT_inSV = fs->make<TH2F>("h_leading_mutrackpT_vs_mupT_inSV", ";pt of leading matched mu tk (GeV); pt of leading sel mu in SV (GeV))", 200, 0, 400, 200, 0, 400);
+  h_leading_eletrackpT_vs_elepT_inSV = fs->make<TH2F>("h_leading_eletrackpT_vs_elepT_inSV", ";pt of leading matched ele tk (GeV); pt of matched sel ele in SV (GeV))", 200, 0, 400, 200, 0, 400);
+  h_leading_mutracknsigmadxy_vs_munsigmadxy_inSV = fs->make<TH2F>("h_leading_mutracknsigmadxy_vs_munsigmadxy_inSV", ";nsigmadxy of leading matched mu tk; nsigmadxy of leading sel mu in SV)", 100, 0, 100, 100, 0, 100);
+  h_leading_eletracknsigmadxy_vs_elensigmadxy_inSV = fs->make<TH2F>("h_leading_eletracknsigmadxy_vs_elensigmadxy_inSV", ";nsigmadxy of leading matched ele tk; nsigmadxy of matched sel ele in SV)", 100, 0, 100, 100, 0, 100);
 
   // h_gensv_winbp = fs->make<TH1F>("h_gensv_winbp", ";# of gen sv within beampipe;arb. units", 2, 0, 2);
 
@@ -332,26 +437,29 @@ MFVVertexHistos::MFVVertexHistos(const edm::ParameterSet& cfg)
   // }
   
   // now do : cuts none, eta_lt1p4, tight_sel, vtight_sel
-  const char* iso_eta[4] = {"nocuts", "just_1lep", "tight_sel", "vtight_sel"};
+  const char* iso_eta[6] = {"nocuts", "just_ID", "just_iso", "sellep", "hltmatch_nocuts", "hltmatch_sellep"};
 
-  for (int i=0; i <4; ++i) {
-    h_leading_leppt_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_leppt_inSV_%s", iso_eta[i]), "; leading lepton pT assoicated to sv; arb. units", 80, 0, 400);
-    h_leading_lepptvsbs2derr_inSV_[i] = fs->make<TH2F>(TString::Format("h_leading_lepptvsbs2derr_inSV_%s", iso_eta[i]), "; leading lepton pT assoicated to sv; bs2derr", 80, 0, 400, 80, 0, 0.01);
-    h_leading_lepnsigmadxy_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepnsigmadxy_inSV_%s", iso_eta[i]), "; leading lepton nsigmadxy assoicated to sv; arb. units", 50, 0, 50);
-    h_leading_lepdxy_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepdxy_inSV_%s", iso_eta[i]), "; leading lepton dxy assoicated to sv; arb. units", 50, 0, 0.25);
-    h_leading_lepdxyerr_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepdxyerr_inSV_%s", iso_eta[i]), "; leading lepton dxyerr assoicated to sv; arb. units", 50, 0, 0.015);
+  for (int i=0; i <6; ++i) {
+    if (i < 4) { 
+      h_leading_leppt_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_leppt_inSV_%s", iso_eta[i]), "; leading lepton pT assoicated to sv; arb. units", 80, 0, 400);
+      h_leading_lepptvsbs2derr_inSV_[i] = fs->make<TH2F>(TString::Format("h_leading_lepptvsbs2derr_inSV_%s", iso_eta[i]), "; leading lepton pT assoicated to sv; bs2derr", 80, 0, 400, 80, 0, 0.01);
+      h_leading_eleptvsbs2derr_inSV_[i] = fs->make<TH2F>(TString::Format("h_leading_eleptvsbs2derr_inSV_%s", iso_eta[i]), "; leading electron pT assoicated to sv; bs2derr", 80, 0, 400, 80, 0, 0.01);
+      h_leading_muptvsbs2derr_inSV_[i] = fs->make<TH2F>(TString::Format("h_leading_muptvsbs2derr_inSV_%s", iso_eta[i]), "; leading muon pT assoicated to sv; bs2derr", 80, 0, 400, 80, 0, 0.01);   
+      h_leading_lepnsigmadxy_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepnsigmadxy_inSV_%s", iso_eta[i]), "; leading lepton nsigmadxy assoicated to sv; arb. units", 50, 0, 50);
+      h_leading_lepdxy_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepdxy_inSV_%s", iso_eta[i]), "; leading lepton dxy assoicated to sv; arb. units", 50, 0, 0.25);
+      h_leading_lepdxyerr_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepdxyerr_inSV_%s", iso_eta[i]), "; leading lepton dxyerr assoicated to sv; arb. units", 50, 0, 0.015);
 
-    h_leading_lepeta_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepeta_inSV_%s", iso_eta[i]), "; leading lepton eta assoicated to sv; arb. units", 50, -3.4, 3.4);
-    h_leading_lepid_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepid_inSV_%s", iso_eta[i]), "; leading lepton ID assoicated to sv; arb. units", 10, 0, 10); //odd fill structure - rework?
-    h_leading_lepiso_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepiso_inSV_%s", iso_eta[i]), "; leading lepton iso assoicated to sv; arb. units", 60, 0, 0.15);
-    
-    h_leading_trackpt_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_trackpt_inSV_%s", iso_eta[i]), "; leading SV track pT assoicated to lepton; arb. units", 80, 0, 400);
-    h_leading_trackptratio_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_trackptratio_inSV_%s", iso_eta[i]), "; ratio{leptrackpT, sum_othertrackpT} in sv; arb. units", 40, 0, 20);
-    h_leading_mutrackpt_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_mutrackpt_inSV_%s", iso_eta[i]), "; leading SV track pT assoicated to muon; arb. units", 80, 0, 400);
-    h_leading_mutrackptratio_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_mutrackptratio_inSV_%s", iso_eta[i]), "; ratio{mutrackpT, sum_othertrackpT} in sv; arb. units", 40, 0, 20);
-    h_leading_eletrackpt_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_eletrackpt_inSV_%s", iso_eta[i]), "; leading SV track pT assoicated to electron; arb. units", 80, 0, 400);
-    h_leading_eletrackptratio_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_eletrackptratio_inSV_%s", iso_eta[i]), "; ratio{eletrackpT, sum_othertrackpT} in sv; arb. units", 40, 0, 20);
-    
+      h_leading_lepeta_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepeta_inSV_%s", iso_eta[i]), "; leading lepton eta assoicated to sv; arb. units", 50, -3.4, 3.4);
+      h_leading_lepid_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepid_inSV_%s", iso_eta[i]), "; leading lepton ID assoicated to sv; arb. units", 10, 0, 10); //odd fill structure - rework?
+      h_leading_lepiso_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_lepiso_inSV_%s", iso_eta[i]), "; leading lepton iso assoicated to sv; arb. units", 60, 0, 0.15);
+      
+      h_leading_trackpt_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_trackpt_inSV_%s", iso_eta[i]), "; leading SV track pT assoicated to lepton; arb. units", 80, 0, 400);
+      h_leading_trackptratio_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_trackptratio_inSV_%s", iso_eta[i]), "; ratio{leptrackpT, sum_othertrackpT} in sv; arb. units", 40, 0, 20);
+      h_leading_mutrackpt_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_mutrackpt_inSV_%s", iso_eta[i]), "; leading SV track pT assoicated to muon; arb. units", 80, 0, 400);
+      h_leading_mutrackptratio_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_mutrackptratio_inSV_%s", iso_eta[i]), "; ratio{mutrackpT, sum_othertrackpT} in sv; arb. units", 40, 0, 20);
+      h_leading_eletrackpt_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_eletrackpt_inSV_%s", iso_eta[i]), "; leading SV track pT assoicated to electron; arb. units", 80, 0, 400);
+      h_leading_eletrackptratio_inSV_[i] = fs->make<TH1F>(TString::Format("h_leading_eletrackptratio_inSV_%s", iso_eta[i]), "; ratio{eletrackpT, sum_othertrackpT} in sv; arb. units", 40, 0, 20);
+    }
     h_svwlep_rescale_bs2derr_[i] = fs->make<TH1F>(TString::Format("h_svwlep_rescale_bs2derr_%s", iso_eta[i]),  "; #sigma(dist2d(SV, beamspot)) (cm)", 100, 0, 0.05);
     h_svwlep_rescale_pertkbs2derr_[i] = fs->make<TH1F>(TString::Format("h_svwlep_rescale_pertkbs2derr_%s", iso_eta[i]),  "; #sigma(dist2d(SV, beamspot)) * sqrt(ntracks) (cm)", 100, 0, 0.05);
     h_svwlep_bsbs2ddist_[i] = fs->make<TH1F>(TString::Format("h_svwlep_bsbs2ddist_%s", iso_eta[i]),  "; d_{BV} (cm)", 100, 0, 0.1);
@@ -360,16 +468,76 @@ MFVVertexHistos::MFVVertexHistos(const edm::ParameterSet& cfg)
     h_svwlep_costh_[i] = fs->make<TH1F>(TString::Format("h_svwlep_costh_%s", iso_eta[i]),  "cos(angle(2-momentum (tracks-plus-jets-by-ntracks), 2-dist to BS))", 50, -1, 1);
     h_svwlep_tracktripmassmax_[i]=fs->make<TH1F>(TString::Format("h_svwlep_tracktripmassmax_%s", iso_eta[i]),  "max #Sigma M (GeV) of three tracks in SV", 40, 0, 200);
     h_svwlep_leadinglepptinSV_[i]=fs->make<TH1F>(TString::Format("h_svwlep_leadinglepptinSV_%s", iso_eta[i]),  "leading lepton pT associated to sv", 80, 0, 400);
+    h_svwlep_leadinglepdxyinSV_[i] = fs->make<TH1F>(TString::Format("h_svwlep_leadinglepdxyinSV_%s", iso_eta[i]), "; leading lepton dxy assoicated to sv; arb. units", 50, 0, 0.25);
+    h_svwlep_leadinglepdxyerrinSV_[i] = fs->make<TH1F>(TString::Format("h_svwlep_leadinglepdxyerrinSV_%s", iso_eta[i]), "; leading lepton dxyerr assoicated to sv; arb. units", 50, 0, 0.015);
+    h_svwlep_leadingleprescaleddxyerrinSV_[i] = fs->make<TH1F>(TString::Format("h_svwlep_leadingleprescaleddxyerrinSV_%s", iso_eta[i]), "; leading lepton dxyerr (rescaled) assoicated to sv; arb. units", 50, 0, 0.015);
     h_svwlep_leadinglepnsigmadxyinSV_[i] = fs->make<TH1F>(TString::Format("h_svwlep_leadinglepnsigmadxyinSV_%s", iso_eta[i]), "; leading lepton nsigmadxy assoicated to sv; arb. units", 50, 0, 50);
+    h_svwlep_leadingleprescalednsigmadxyinSV_[i] = fs->make<TH1F>(TString::Format("h_svwlep_leadingleprescalednsigmadxyinSV_%s", iso_eta[i]), "; leading lepton nsigmadxy (rescaled) assoicated to sv; arb. units", 50, 0, 50);   
+    h_svwlep_leadinglepetainSV_[i] = fs->make<TH1F>(TString::Format("h_svwlep_leadinglepetainSV_%s", iso_eta[i]), "; leading lepton eta assoicated to sv; arb. units", 50, -3.4, 3.4);
+    h_svwlep_leadinglepIDinSV_[i] = fs->make<TH1F>(TString::Format("h_svwlep_leadinglepIDinSV_%s", iso_eta[i]), "; leading lepton ID assoicated to sv; arb. units", 10, 0, 10); //odd fill structure - rework?
+    h_svwlep_leadinglepisoinSV_[i] = fs->make<TH1F>(TString::Format("h_svwlep_leadinglepisoinSV_%s", iso_eta[i]), "; leading lepton iso assoicated to sv; arb. units", 60, 0, 0.15);
     h_svwlep_trackpairdravgmmax_[i] = fs->make<TH1F>(TString::Format("h_svwlep_trackpairdravgmmax_%s", iso_eta[i]),  "SV avg{#Delta R(i,j) - max #Delta R}", 50, 0, 5);
     h_svwlep_avgptmlep_[i] = fs->make<TH1F>(TString::Format("h_svwlep_avgptmlep_%s", iso_eta[i]),  "avg track pT (minus leading lepton pT)", 100, 0, 100);
-
-    
     h_svwlep_trackptgt3_[i] = fs->make<TH1F>(TString::Format("h_svwlep_trackptgt3_%s", iso_eta[i]), ";# of tracks/SV w/ p_{T} > 3 GeV; arb. units", 10, 0, 10);
     h_svwlep_trackptgt10_[i] = fs->make<TH1F>(TString::Format("h_svwlep_trackptgt10_%s", iso_eta[i]), ";# of tracks/SV w/ p_{T} > 10 GeV; arb. units", 10, 0, 10);
-    h_svwlepjet_pairdr_[i] = fs->make<TH1F>(TString::Format("h_svwlepjet_pairdr_%s", iso_eta[i]), "; deltaR between jet and lepton track within a SV; arb. units", 100, 0, 6.3);
+    h_svwlepjet_pairdr_[i] = fs->make<TH1F>(TString::Format("h_svwlepjet_pairdr_%s", iso_eta[i]), "; deltaR between jet and lepton track within a SV; arb. units", 100, 0, 6.3); 
+    h_svwlep_jet_pairdr_[i] = fs->make<TH1F>(TString::Format("h_svwlep_jet_pairdr_%s", iso_eta[i]), "; deltaR between assoc lepton in SV and jet; arb. units", 100, 0, 6.3); //jet not in the SV 
     h_svwlepjet_pt_[i] = fs->make<TH1F>(TString::Format("h_svwlepjet_pt_%s", iso_eta[i]), "; leading jet pT associated to sv; arb. units", 80, 0, 400);
     h_svwlepjet_ptratio_[i] = fs->make<TH1F>(TString::Format("h_svwlepjet_ptratio_%s", iso_eta[i]), "; leading lepton pT / leading jet pT associated to SV; arb. units", 40, 0, 20);
+
+    // same but for leading lepton is mu
+    h_svwmu_rescale_bs2derr_[i] = fs->make<TH1F>(TString::Format("h_svwmu_rescale_bs2derr_%s", iso_eta[i]),  "; #sigma(dist2d(SV, beamspot)) (cm)", 100, 0, 0.05);
+    h_svwmu_rescale_pertkbs2derr_[i] = fs->make<TH1F>(TString::Format("h_svwmu_rescale_pertkbs2derr_%s", iso_eta[i]),  "; #sigma(dist2d(SV, beamspot)) * sqrt(ntracks) (cm)", 100, 0, 0.05);
+    h_svwmu_bsbs2ddist_[i] = fs->make<TH1F>(TString::Format("h_svwmu_bsbs2ddist_%s", iso_eta[i]),  "; d_{BV} (cm)", 100, 0, 0.1);
+    h_svwmu_ntracks_[i] = fs->make<TH1F>(TString::Format("h_svwmu_ntracks_%s", iso_eta[i]),  ";# of tracks/SV", 40, 0, 40);
+    h_svwmu_trackpairdravg_[i] = fs->make<TH1F>(TString::Format("h_svwmu_trackpairdravg_%s", iso_eta[i]),  "SV avg{#Delta R(i,j)}", 50, 0, 5);
+    h_svwmu_costh_[i] = fs->make<TH1F>(TString::Format("h_svwmu_costh_%s", iso_eta[i]),  "cos(angle(2-momentum (tracks-plus-jets-by-ntracks), 2-dist to BS))", 50, -1, 1);
+    h_svwmu_tracktripmassmax_[i]=fs->make<TH1F>(TString::Format("h_svwmu_tracktripmassmax_%s", iso_eta[i]),  "max #Sigma M (GeV) of three tracks in SV", 40, 0, 200);
+    h_svwmu_leadinglepptinSV_[i]=fs->make<TH1F>(TString::Format("h_svwmu_leadinglepptinSV_%s", iso_eta[i]),  "leading muon pT associated to sv", 80, 0, 400);
+    h_svwmu_leadinglepdxyinSV_[i] = fs->make<TH1F>(TString::Format("h_svwmu_leadinglepdxyinSV_%s", iso_eta[i]), "; leading muon dxy assoicated to sv; arb. units", 50, 0, 0.25);
+    h_svwmu_leadinglepdxyerrinSV_[i] = fs->make<TH1F>(TString::Format("h_svwmu_leadinglepdxyerrinSV_%s", iso_eta[i]), "; leading muon dxyerr assoicated to sv; arb. units", 50, 0, 0.015);
+    h_svwmu_leadingleprescaleddxyerrinSV_[i] = fs->make<TH1F>(TString::Format("h_svwmu_leadingleprescaleddxyerrinSV_%s", iso_eta[i]), "; leading muon dxyerr (rescaled) assoicated to sv; arb. units", 50, 0, 0.015);
+    h_svwmu_leadinglepnsigmadxyinSV_[i] = fs->make<TH1F>(TString::Format("h_svwmu_leadinglepnsigmadxyinSV_%s", iso_eta[i]), "; leading muon nsigmadxy assoicated to sv; arb. units", 50, 0, 50);
+    h_svwmu_leadingleprescalednsigmadxyinSV_[i] = fs->make<TH1F>(TString::Format("h_svwmu_leadingleprescalednsigmadxyinSV_%s", iso_eta[i]), "; leading muon nsigmadxy (rescaled) assoicated to sv; arb. units", 50, 0, 50);   
+    h_svwmu_leadinglepetainSV_[i] = fs->make<TH1F>(TString::Format("h_svwmu_leadinglepetainSV_%s", iso_eta[i]), "; leading muon eta assoicated to sv; arb. units", 50, -3.4, 3.4);
+    h_svwmu_leadinglepIDinSV_[i] = fs->make<TH1F>(TString::Format("h_svwmu_leadinglepIDinSV_%s", iso_eta[i]), "; leading muon ID assoicated to sv; arb. units", 10, 0, 10); //odd fill structure - rework?
+    h_svwmu_leadinglepisoinSV_[i] = fs->make<TH1F>(TString::Format("h_svwmu_leadinglepisoinSV_%s", iso_eta[i]), "; leading muon iso assoicated to sv; arb. units", 60, 0, 0.15);
+    h_svwmu_trackpairdravgmmax_[i] = fs->make<TH1F>(TString::Format("h_svwmu_trackpairdravgmmax_%s", iso_eta[i]),  "SV avg{#Delta R(i,j) - max #Delta R}", 50, 0, 5);
+    h_svwmu_avgptmlep_[i] = fs->make<TH1F>(TString::Format("h_svwmu_avgptmlep_%s", iso_eta[i]),  "avg track pT (minus leading muon pT)", 100, 0, 100);
+    h_svwmu_trackptgt3_[i] = fs->make<TH1F>(TString::Format("h_svwmu_trackptgt3_%s", iso_eta[i]), ";# of tracks/SV w/ p_{T} > 3 GeV; arb. units", 10, 0, 10);
+    h_svwmu_trackptgt10_[i] = fs->make<TH1F>(TString::Format("h_svwmu_trackptgt10_%s", iso_eta[i]), ";# of tracks/SV w/ p_{T} > 10 GeV; arb. units", 10, 0, 10);
+    h_svwmujet_pairdr_[i] = fs->make<TH1F>(TString::Format("h_svwmujet_pairdr_%s", iso_eta[i]), "; deltaR between jet and leading electron within a SV; arb. units", 100, 0, 6.3); 
+    h_svwmu_jet_pairdr_[i] = fs->make<TH1F>(TString::Format("h_svwmu_jet_pairdr_%s", iso_eta[i]), "; deltaR between leading electron in SV and jet; arb. units", 100, 0, 6.3); //jet not in the SV 
+    h_svwmujet_pt_[i] = fs->make<TH1F>(TString::Format("h_svwmujet_pt_%s", iso_eta[i]), "; leading jet pT associated to sv; arb. units", 80, 0, 400);
+    h_svwmujet_ptratio_[i] = fs->make<TH1F>(TString::Format("h_svwmujet_ptratio_%s", iso_eta[i]), "; leading electron pT / leading jet pT associated to SV; arb. units", 40, 0, 20);
+    h_svwmu_leadinglephltdRinSV_[i] = fs->make<TH1F>(TString::Format("h_svwmu_leadinglephltdRinSV_%s", iso_eta[i]), "; best dR between hlt lep and leading lep in SV; arb. units", 50, 0, 5);
+
+    // same but for leading lepton is ele
+    h_svwele_rescale_bs2derr_[i] = fs->make<TH1F>(TString::Format("h_svwele_rescale_bs2derr_%s", iso_eta[i]),  "; #sigma(dist2d(SV, beamspot)) (cm)", 100, 0, 0.05);
+    h_svwele_rescale_pertkbs2derr_[i] = fs->make<TH1F>(TString::Format("h_svwele_rescale_pertkbs2derr_%s", iso_eta[i]),  "; #sigma(dist2d(SV, beamspot)) * sqrt(ntracks) (cm)", 100, 0, 0.05);
+    h_svwele_bsbs2ddist_[i] = fs->make<TH1F>(TString::Format("h_svwele_bsbs2ddist_%s", iso_eta[i]),  "; d_{BV} (cm)", 100, 0, 0.1);
+    h_svwele_ntracks_[i] = fs->make<TH1F>(TString::Format("h_svwele_ntracks_%s", iso_eta[i]),  ";# of tracks/SV", 40, 0, 40);
+    h_svwele_trackpairdravg_[i] = fs->make<TH1F>(TString::Format("h_svwele_trackpairdravg_%s", iso_eta[i]),  "SV avg{#Delta R(i,j)}", 50, 0, 5);
+    h_svwele_costh_[i] = fs->make<TH1F>(TString::Format("h_svwele_costh_%s", iso_eta[i]),  "cos(angle(2-momentum (tracks-plus-jets-by-ntracks), 2-dist to BS))", 50, -1, 1);
+    h_svwele_tracktripmassmax_[i]=fs->make<TH1F>(TString::Format("h_svwele_tracktripmassmax_%s", iso_eta[i]),  "max #Sigma M (GeV) of three tracks in SV", 40, 0, 200);
+    h_svwele_leadinglepptinSV_[i]=fs->make<TH1F>(TString::Format("h_svwele_leadinglepptinSV_%s", iso_eta[i]),  "leading electron pT associated to sv", 80, 0, 400);
+    h_svwele_leadinglepdxyinSV_[i] = fs->make<TH1F>(TString::Format("h_svwele_leadinglepdxyinSV_%s", iso_eta[i]), "; leading electron dxy assoicated to sv; arb. units", 50, 0, 0.25);
+    h_svwele_leadinglepdxyerrinSV_[i] = fs->make<TH1F>(TString::Format("h_svwele_leadinglepdxyerrinSV_%s", iso_eta[i]), "; leading electron dxyerr assoicated to sv; arb. units", 50, 0, 0.015);
+    h_svwele_leadingleprescaleddxyerrinSV_[i] = fs->make<TH1F>(TString::Format("h_svwele_leadingleprescaleddxyerrinSV_%s", iso_eta[i]), "; leading electron dxyerr (rescaled) assoicated to sv; arb. units", 50, 0, 0.015);
+    h_svwele_leadinglepnsigmadxyinSV_[i] = fs->make<TH1F>(TString::Format("h_svwele_leadinglepnsigmadxyinSV_%s", iso_eta[i]), "; leading electron nsigmadxy assoicated to sv; arb. units", 50, 0, 50);
+    h_svwele_leadingleprescalednsigmadxyinSV_[i] = fs->make<TH1F>(TString::Format("h_svwele_leadingleprescalednsigmadxyinSV_%s", iso_eta[i]), "; leading electron nsigmadxy (rescaled) assoicated to sv; arb. units", 50, 0, 50);
+    h_svwele_leadinglepetainSV_[i] = fs->make<TH1F>(TString::Format("h_svwele_leadinglepetainSV_%s", iso_eta[i]), "; leading electron eta assoicated to sv; arb. units", 50, -3.4, 3.4);
+    h_svwele_leadinglepIDinSV_[i] = fs->make<TH1F>(TString::Format("h_svwele_leadinglepIDinSV_%s", iso_eta[i]), "; leading electron ID assoicated to sv; arb. units", 10, 0, 10); //odd fill structure - rework?
+    h_svwele_leadinglepisoinSV_[i] = fs->make<TH1F>(TString::Format("h_svwele_leadinglepisoinSV_%s", iso_eta[i]), "; leading electron iso assoicated to sv; arb. units", 60, 0, 0.15);
+    h_svwele_trackpairdravgmmax_[i] = fs->make<TH1F>(TString::Format("h_svwele_trackpairdravgmmax_%s", iso_eta[i]),  "SV avg{#Delta R(i,j) - max #Delta R}", 50, 0, 5);
+    h_svwele_avgptmlep_[i] = fs->make<TH1F>(TString::Format("h_svwele_avgptmlep_%s", iso_eta[i]),  "avg track pT (minus leading electron pT)", 100, 0, 100);
+    h_svwele_trackptgt3_[i] = fs->make<TH1F>(TString::Format("h_svwele_trackptgt3_%s", iso_eta[i]), ";# of tracks/SV w/ p_{T} > 3 GeV; arb. units", 10, 0, 10);
+    h_svwele_trackptgt10_[i] = fs->make<TH1F>(TString::Format("h_svwele_trackptgt10_%s", iso_eta[i]), ";# of tracks/SV w/ p_{T} > 10 GeV; arb. units", 10, 0, 10);
+    h_svwelejet_pairdr_[i] = fs->make<TH1F>(TString::Format("h_svwelejet_pairdr_%s", iso_eta[i]), "; deltaR between jet and leading electron within a SV; arb. units", 100, 0, 6.3); 
+    h_svwele_jet_pairdr_[i] = fs->make<TH1F>(TString::Format("h_svwele_jet_pairdr_%s", iso_eta[i]), "; deltaR between leading electron in SV and jet; arb. units", 100, 0, 6.3); //jet not in the SV 
+    h_svwelejet_pt_[i] = fs->make<TH1F>(TString::Format("h_svwelejet_pt_%s", iso_eta[i]), "; leading jet pT associated to sv; arb. units", 80, 0, 400);
+    h_svwelejet_ptratio_[i] = fs->make<TH1F>(TString::Format("h_svwelejet_ptratio_%s", iso_eta[i]), "; leading electron pT / leading jet pT associated to SV; arb. units", 40, 0, 20);
+    h_svwele_leadinglephltdRinSV_[i] = fs->make<TH1F>(TString::Format("h_svwele_leadinglephltdRinSV_%s", iso_eta[i]), "; best dR between hlt lep and leading lep in SV; arb. units", 50, 0, 5);
 
     // h_sv_mupt_notb[i] = fs->make<TH1F>(TString::Format("h_sv_mupt_%s_inSV_notb", iso_eta[i]), "; muon pT associated to SV NOT from Bjet; arb. units", 80, 0, 400);
     // h_sv_elept_notb[i] = fs->make<TH1F>(TString::Format("h_sv_elept_%s_inSV_notb", iso_eta[i]), "; ele pT associated to SV NOT from Bjet; arb. units", 80, 0, 400);
@@ -510,6 +678,17 @@ MFVVertexHistos::MFVVertexHistos(const edm::ParameterSet& cfg)
   hs.add("fractrackssharedwpvs", "fraction of tracks shared with any PV", 41, 0, 1.025);
   hs.add("npvswtracksshared", "number of PVs having tracks shared",  30, 0, 30);
   
+  hs.add("trackptmin", "SV min{ trk_{i} p_{T}}", 50, 0, 50);
+  hs.add("trackptmax", "SV max{ trk_{i} p_{T}}", 50, 0, 200);
+  hs.add("trackptavg", "SV avg{ trk_{i} p_{T}}", 50, 0, 50);
+  hs.add("trackptrms", "SV rms{ trk_{i} p_{T}}", 50, 0, 50);
+
+  hs.add("trackpairdptmin", "SV min{#Delta p_{T}(i,j)}", 50, 0, 50);
+  hs.add("trackpairdptmax", "SV max{#Delta p_{T}(i,j)}", 50, 0, 200);
+  hs.add("trackpairdptavg", "SV avg{#Delta p_{T}(i,j)}", 50, 0, 50);
+  hs.add("trackpairdptrms", "SV rms{#Delta p_{T}(i,j)}", 50, 0, 50);
+
+
   hs.add("trackdxymin", "SV min{trk_{i} dxy(BS)} (cm)", 50, 0, 0.2);
   hs.add("trackdxymax", "SV max{trk_{i} dxy(BS)} (cm)", 50, 0, 2);
   hs.add("trackdxyavg", "SV avg{trk_{i} dxy(BS)} (cm)", 50, 0, 0.5);
@@ -742,32 +921,33 @@ MFVVertexHistos::MFVVertexHistos(const edm::ParameterSet& cfg)
     h_sv_nbtks[i] = fs->make<TH1F>(TString::Format("h_sv_nbtks_%i",i), TString::Format(";# tracks from %s B jets;arb. units",bname[i]), 20,0,20);
     h_sv_nbtks_notlep[i] = fs->make<TH1F>(TString::Format("h_sv_nbtks_notlep%i",i), TString::Format(";# tracks from %s B jets and not from sel lep;arb. units",bname[i]), 10,0,10);
 
-    h_sv_nlep_nbtks[i] = fs->make<TH1F>(TString::Format("h_sv_nlep_nbtks_%i",i), TString::Format(";# tracks from leptons and %s B jets;arb. units",bname[i]), 20,0,20);
-    h_sv_nleptks_nbtks[i] = fs->make<TH1F>(TString::Format("h_sv_nleptks_nbtks_%i",i), TString::Format(";# tracks from leptons and %s B jets;arb. units",bname[i]), 10,0,10);
-    h_sv_nlepbtks[i] = fs->make<TH1F>(TString::Format("h_sv_nlepbtks_%i",i), TString::Format(";# tracks from leptons and %s B jets;arb. units",bname[i]), 10,0,10);
+    h_svmu_nbtags[i] = fs->make<TH1F>(TString::Format("h_svmu_nbtags_%i",i), TString::Format(";# %s B jets asso. w/ SVmu;arb. units",bname[i]), 10,0,10);
+    h_svmu_nbtks[i] = fs->make<TH1F>(TString::Format("h_svmu_nbtks_%i",i), TString::Format(";# tracks from %s B jets;arb. units",bname[i]), 20,0,20);
+    h_svmu_nbtks_notlep[i] = fs->make<TH1F>(TString::Format("h_svmu_nbtks_notlep%i",i), TString::Format(";# tracks from %s B jets and not from sel lep;arb. units",bname[i]), 10,0,10);
+    h_svele_nbtags[i] = fs->make<TH1F>(TString::Format("h_svele_nbtags_%i",i), TString::Format(";# %s B jets asso. w/ SVele;arb. units",bname[i]), 10,0,10);
+    h_svele_nbtks[i] = fs->make<TH1F>(TString::Format("h_svele_nbtks_%i",i), TString::Format(";# tracks from %s B jets;arb. units",bname[i]), 20,0,20);
+    h_svele_nbtks_notlep[i] = fs->make<TH1F>(TString::Format("h_svele_nbtks_notlep%i",i), TString::Format(";# tracks from %s B jets and not from sel lep;arb. units",bname[i]), 10,0,10);
 
-    h_sv_nlep_fromb[i] = fs->make<TH1F>(TString::Format("h_sv_nlep_fromb_%i",i), TString::Format(";# tracks from sel leptons coming from %s B jets;arb. units",bname[i]), 10,0,10);
-    h_sv_nele_fromb[i] = fs->make<TH1F>(TString::Format("h_sv_nele_fromb_%i",i), TString::Format(";# tracks from sel electrons coming from %s B jets;arb. units", bname[i]), 10,0,10);
-    h_sv_nmu_fromb[i] = fs->make<TH1F>(TString::Format("h_sv_nmu_fromb_%i",i), TString::Format(";# tracks from sel muons coming from %s B jets;arb. units", bname[i]), 10,0,10);
+    h_sv_nlep_nbtks[i] = fs->make<TH1F>(TString::Format("h_sv_nlep_nbtks_%i",i), TString::Format(";# tracks from leptons and %s B jets;arb. units",bname[i]), 20,0,20);
+    // h_sv_nleptks_nbtks[i] = fs->make<TH1F>(TString::Format("h_sv_nleptks_nbtks_%i",i), TString::Format(";# tracks from leptons and %s B jets;arb. units",bname[i]), 10,0,10);
+    // h_sv_nlepbtks[i] = fs->make<TH1F>(TString::Format("h_sv_nlepbtks_%i",i), TString::Format(";# tracks from leptons and %s B jets;arb. units",bname[i]), 10,0,10);
+    // h_sv_nmutks_nbtks[i] = fs->make<TH1F>(TString::Format("h_sv_nmutks_nbtks_%i",i), TString::Format(";# tracks from muon and %s B jets;arb. units",bname[i]), 10,0,10);
+    // h_sv_nmubtks[i] = fs->make<TH1F>(TString::Format("h_sv_nmubtks_%i",i), TString::Format(";# tracks from muon and %s B jets;arb. units",bname[i]), 10,0,10);
+    // h_sv_neletks_nbtks[i] = fs->make<TH1F>(TString::Format("h_sv_neletks_nbtks_%i",i), TString::Format(";# tracks from electrons and %s B jets;arb. units",bname[i]), 10,0,10);
+    // h_sv_nelebtks[i] = fs->make<TH1F>(TString::Format("h_sv_nelebtks_%i",i), TString::Format(";# tracks from electrons and %s B jets;arb. units",bname[i]), 10,0,10);
+
+    // h_sv_nlep_fromb[i] = fs->make<TH1F>(TString::Format("h_sv_nlep_fromb_%i",i), TString::Format(";# tracks from sel leptons coming from %s B jets;arb. units",bname[i]), 10,0,10);
+    // h_sv_nele_fromb[i] = fs->make<TH1F>(TString::Format("h_sv_nele_fromb_%i",i), TString::Format(";# tracks from sel electrons coming from %s B jets;arb. units", bname[i]), 10,0,10);
+    // h_sv_nmu_fromb[i] = fs->make<TH1F>(TString::Format("h_sv_nmu_fromb_%i",i), TString::Format(";# tracks from sel muons coming from %s B jets;arb. units", bname[i]), 10,0,10);
     
-    h_sv_nlep_notb[i] = fs->make<TH1F>(TString::Format("h_sv_nlep_notb_%i",i), TString::Format(";# tracks from sel leptons NOT coming from %s B jets;arb. units", bname[i]), 10,0,10);
-    h_sv_nele_notb[i] = fs->make<TH1F>(TString::Format("h_sv_nele_notb_%i",i), TString::Format(";# tracks from sel electrons NOT coming from %s B jets;arb. units", bname[i]), 10,0,10);
-    h_sv_nmu_notb[i] = fs->make<TH1F>(TString::Format("h_sv_nmu_notb_%i",i), TString::Format(";# tracks from sel muons NOT coming from %s B jets;arb. units", bname[i]), 10,0,10);
+    // h_sv_nlep_notb[i] = fs->make<TH1F>(TString::Format("h_sv_nlep_notb_%i",i), TString::Format(";# tracks from sel leptons NOT coming from %s B jets;arb. units", bname[i]), 10,0,10);
+    // h_sv_nele_notb[i] = fs->make<TH1F>(TString::Format("h_sv_nele_notb_%i",i), TString::Format(";# tracks from sel electrons NOT coming from %s B jets;arb. units", bname[i]), 10,0,10);
+    // h_sv_nmu_notb[i] = fs->make<TH1F>(TString::Format("h_sv_nmu_notb_%i",i), TString::Format(";# tracks from sel muons NOT coming from %s B jets;arb. units", bname[i]), 10,0,10);
 
     // h_sv_nlep_notbnob[i] = fs->make<TH1F>(TString::Format("h_sv_nlep_notbnob_%i",i), TString::Format(";# tracks from sel leptons NOT coming from %s B jets;arb. units", bname[i]), 10,0,10);
     // h_sv_nele_notbnob[i] = fs->make<TH1F>(TString::Format("h_sv_nele_notbnob_%i",i), TString::Format(";# tracks from sel electrons NOT coming from %s B jets;arb. units", bname[i]), 10,0,10);
     // h_sv_nmu_notbnob[i] = fs->make<TH1F>(TString::Format("h_sv_nmu_notbnob_%i",i), TString::Format(";# tracks from sel muons NOT coming from %s B jets;arb. units", bname[i]), 10,0,10);
      
-    
-    // for (int j = 0; j < 4; ++j) {
-    //   h_sv_nlep_fromb[i][j] = fs->make<TH1F>(TString::Format("h_sv_nlep_%i_nbtks_%i",j,i), TString::Format(";# tracks from %s leptons coming from %s B jets;arb. units",lname[j], bname[i]), 10,0,10);
-    //   h_sv_nele_fromb[i][j] = fs->make<TH1F>(TString::Format("h_sv_nele_%i_nbtks_%i",j,i), TString::Format(";# tracks from %s electrons coming from %s B jets;arb. units",lname[j], bname[i]), 10,0,10);
-    //   h_sv_nmu_fromb[i][j] = fs->make<TH1F>(TString::Format("h_sv_nmu_%i_nbtks_%i",j,i), TString::Format(";# tracks from %s muons coming from %s B jets;arb. units",lname[j], bname[i]), 10,0,10);
-      
-    //   h_sv_nlep_notb[i][j] = fs->make<TH1F>(TString::Format("h_sv_nlep_%i_notb_%i",j,i), TString::Format(";# tracks from %s leptons NOT coming from %s B jets;arb. units",lname[j], bname[i]), 10,0,10);
-    //   h_sv_nele_notb[i][j] = fs->make<TH1F>(TString::Format("h_sv_nele_%i_notb_%i",j,i), TString::Format(";# tracks from %s electrons NOT coming from %s B jets;arb. units",lname[j], bname[i]), 10,0,10);
-    //   h_sv_nmu_notb[i][j] = fs->make<TH1F>(TString::Format("h_sv_nmu_%i_notb_%i",j,i), TString::Format(";# tracks from %s muons coming NOT from %s B jets;arb. units",lname[j], bname[i]), 10,0,10);
-    // }
     h_sv_mindeltaphi_svbjet[i] = fs->make<TH1F>(TString::Format("h_sv_mindeltaphi_svbjet_%i",i), TString::Format(";|#Delta#phi(SV-PV,closest asso. %s B jet)|;arb. units",bname[i]),50, 0, 3.15);
     h_sv_mindeltar_sv_bjet[i] = fs->make<TH1F>(TString::Format("h_sv_mindeltar_sv_bjet_%i",i), TString::Format(";#Delta R(SV-PV,closest asso. %s B jet);arb. units",bname[i]),150,0,7);
     h_sv_mindeltaphi_lepbjet[i] = fs->make<TH1F>(TString::Format("h_sv_mindeltaphi_lepbjet_%i",i), TString::Format(";|#Delta#phi(lep,closest asso. %s B jet)|;arb. units",bname[i]),50, 0, 3.15);
@@ -808,7 +988,7 @@ MFVVertexHistos::MFVVertexHistos(const edm::ParameterSet& cfg)
   h_absdeltaphi01_no_shared_jets = fs->make<TH1F>("h_absdeltaphi01_no_shared_jets", ";abs(delta(phi of sv #0, phi of sv #1));arb. units", 316, 0, 3.16);
 }
 
-void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
+void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup& setup) {
   edm::Handle<MFVEvent> mevent;
   event.getByToken(mevent_token, mevent);
 
@@ -951,16 +1131,18 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
   std::vector<float> leading_sel_lepphi(nsv, -1.0);
   std::vector<float> leading_sel_lepeta(nsv, -1.0);
   std::vector<float> leading_sel_leppt(nsv, -1.0);
+  std::vector<float> leading_sel_leptype(nsv, -1.0);
 
 
   std::vector<std::vector<std::string>> lep_tracks; // 2d vector, vector of track vectors. 
 
 
   int nsv_wlep = 0;
+  int nsv_cc = 0;
   for (int isv = 0; isv < nsv; ++isv) {
     const MFVVertexAux& aux = auxes->at(isv);
     const int ntracks = aux.ntracks();
-
+    if (ntracks > 3) ++nsv_cc;
     //eg ("ele", "other", "other") means track0 is an electron, no other tracks are leptons; these leptons pass id, iso 
     std::vector<std::string> leptks(ntracks, "other");
 
@@ -1146,6 +1328,16 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
         {"trackdzavg", aux.trackdzavg()},
         {"trackdzrms", aux.trackdzrms()},
 
+        {"trackptmin", aux.mintrackpt()},
+        {"trackptmax", aux.maxtrackpt()},
+        {"trackptavg", aux.trackptavg()},
+        {"trackptrms", aux.trackptrms()},
+
+        {"trackpairdptmin", aux.trackpairdptmin()},
+        {"trackpairdptmax", aux.trackpairdptmax()},
+        {"trackpairdptavg", aux.trackpairdptavg()},
+        {"trackpairdptrms", aux.trackpairdptrms()},
+
         {"trackpterrmin", aux.trackpterrmin()},
         {"trackpterrmax", aux.trackpterrmax()},
         {"trackpterravg", aux.trackpterravg()},
@@ -1276,7 +1468,10 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
 
     double selmu = 0;
     double selele = 0;
+    std::vector<float> sv_track_pt;
+
     for (int i = 0; i < ntracks; ++i) {
+      sv_track_pt.push_back(aux.track_pt(i));
       sumpt_tracks += aux.track_pt(i);
       fill(h_sv_track_weight, isv, aux.track_weight(i), w);
       fill(h_sv_track_q, isv, aux.track_q(i), w);
@@ -1299,38 +1494,51 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
       fill(h_sv_track_nhits, isv, aux.track_nhits(i), w);
       fill(h_sv_track_injet, isv, aux.track_injet[i], w);
       fill(h_sv_track_inpv, isv, aux.track_inpv[i], w);
+      // if (aux.track_dxy[i]/ aux.track_dxy_err(i) < 3) {
+      //   std::cout << 
+      // }
     }
+
+    std::sort(sv_track_pt.begin(), sv_track_pt.end(), [](auto a, auto b) { return a > b; });
+
 
     fill(h_sv_tracks_sumpt, isv, sumpt_tracks, w);
 
     std::vector<float> assoc_lep{-1.0};
     std::vector<float> assoc_lepnsigmadxy {-999.0};
+    std::vector<float> assoc_lepnsigmadxyrescaled {-999.0};
     std::vector<float> assoc_lepdxy {-999.0};
     std::vector<float> assoc_lepdxyerr {-999.0};
+    std::vector<float> assoc_lepdxyerrrescaled {-999.0};
 
     std::vector<float> assoc_lepeta{-999.0};
     std::vector<float> assoc_lepid{-999.0};
     std::vector<float> assoc_lepiso{-999.0};
     std::vector<float> assoc_lepphi{-999.0};
+    std::vector<float> assoc_lephltmatch{-1.0};
+    std::vector<float> assoc_lephltdR{-999.0};
 
     // unsigned int neletrack = 0;
     // unsigned int nmutrack = 0;
     // unsigned int nlepjettrack = 0; 
     // unsigned int nmujettrack = 0;
     // unsigned int nelejettrack = 0;
-    bool only_1lep = aux.nmuons + aux.nelectrons == 1;
-    bool isele = aux.nelectrons == 1;
-    bool ismu = aux.nmuons == 1;
+    // bool only_1lep = aux.nmuons + aux.nelectrons == 1;
+    // bool isele = aux.nelectrons == 1;
+    // bool ismu = aux.nmuons == 1;
 
     for (int i=0; i < aux.nmuons; ++i) {
-    
       assoc_lep.push_back(aux.muon_pt[i]);
       assoc_lepnsigmadxy.push_back(fabs(aux.muon_dxybs[i])/aux.muon_dxyerr[i]);
+      assoc_lepnsigmadxyrescaled.push_back(fabs(aux.muon_dxybs[i])/aux.rescaled_muon_dxyerr[i]);
       assoc_lepdxy.push_back(fabs(aux.muon_dxybs[i]));
       assoc_lepdxyerr.push_back(fabs(aux.muon_dxyerr[i]));
+      assoc_lepdxyerrrescaled.push_back(fabs(aux.rescaled_muon_dxyerr[i]));
       assoc_lepeta.push_back(aux.muon_eta[i]);
       assoc_lepphi.push_back(aux.muon_phi[i]);
       assoc_lepiso.push_back(aux.muon_iso[i]);
+      assoc_lephltmatch.push_back(aux.mu_is_hltmatched[i]);
+      assoc_lephltdR.push_back(aux.mu_besthltmatchdR[i]);
 
       auto temp = aux.muon_ID[i]; 
       int id = 0;
@@ -1339,6 +1547,18 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
       if ( temp[1] == 1 ) id = 2; //medium
       if ( temp[2] == 1 ) id = 3; //tight
       assoc_lepid.push_back(id);
+
+      //for nm1 iso 
+      if (id > 1) {
+        if (aux.muon_eta[i] < 2.4) {
+          for(size_t trig : mfv::MuonTriggers) {
+            //event, vertex, ith lepton, isv, trig, setup 
+            if(satisfiesLepTriggerPT(mevent, auxes, i, isv, trig, setup)) {
+              h_sv_muon_nm1iso->Fill(aux.muon_iso[i], w);
+            }
+          }
+        }
+      }
 
       //reverse match muon to the track 
       double mu_mindr = 999;
@@ -1364,15 +1584,15 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
 
       bool isolt0p1 = aux.muon_iso[i] < 0.1;
       // bool isolt0p05 = aux.muon_iso[i] < 0.05;
-      bool etalt1p4 = fabs(aux.muon_eta[i]) < 1.4;
+      // bool etalt1p4 = fabs(aux.muon_eta[i]) < 1.4;
       // bool idloose = id > 0;
       bool idmed = id > 1;
 
       bool tight_sel = isolt0p1 && idmed;
-      bool vtight_sel = isolt0p1 && idmed && etalt1p4;
-      bool one_tightsel_lep = only_1lep && isolt0p1 && idmed && ismu;
+      // bool vtight_sel = isolt0p1 && idmed && etalt1p4;
+      // bool one_tightsel_lep = only_1lep && isolt0p1 && idmed && ismu;
       // std::vector<bool> iso_eta = {true, isolt0p1, isolt0p05, etalt1p5, !etalt1p5, idloose, idmed, loose_sel};
-      std::vector<bool> iso_eta = {true, one_tightsel_lep, tight_sel, vtight_sel};
+      std::vector<bool> iso_eta = {true, idmed, isolt0p1, tight_sel};
 
       // if (aux.muon_iso[i] < 0.05) {
       for (int j = 0; j < 4; j++ ) {
@@ -1438,21 +1658,46 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     for (int i=0; i < aux.nelectrons; ++i) {
       assoc_lep.push_back(aux.electron_pt[i]);
       assoc_lepnsigmadxy.push_back(fabs(aux.electron_dxybs[i])/aux.electron_dxyerr[i]);
+      assoc_lepnsigmadxyrescaled.push_back(fabs(aux.electron_dxybs[i])/aux.rescaled_electron_dxyerr[i]);
       assoc_lepdxy.push_back(fabs(aux.electron_dxybs[i]));
       assoc_lepdxyerr.push_back(fabs(aux.electron_dxyerr[i]));
+      assoc_lepdxyerrrescaled.push_back(fabs(aux.rescaled_electron_dxyerr[i]));
 
       assoc_lepeta.push_back(aux.electron_eta[i]);
       assoc_lepphi.push_back(aux.electron_phi[i]);
       assoc_lepiso.push_back(aux.electron_iso[i]);
+      assoc_lephltmatch.push_back(aux.ele_is_hltmatched[i]);
+      assoc_lephltdR.push_back(aux.ele_besthltmatchdR[i]);
 
+      // auto temp = aux.electron_ID[i]; 
+      // int id = 0;
+      // if ( temp[0] == 0 ) id = 0; //none
+      // if ( temp[0] == 1 ) id = 1; //veto
+      // if ( temp[1] == 1 ) id = 2; //loose
+      // if ( temp[2] == 1 ) id = 3; //med 
+      // if ( temp[3] == 1 ) id = 4; //tight
 
-      auto temp = aux.electron_ID[i]; 
-      int id = 0;
-      if ( temp[0] == 0 ) id = 0; //none
-      if ( temp[0] == 1 ) id = 1; //veto
-      if ( temp[1] == 1 ) id = 2; //loose
-      if ( temp[2] == 1 ) id = 3; //med 
-      if ( temp[3] == 1 ) id = 4; //tight
+      auto temp_noiso = aux.electron_ID_noiso[i];
+      int idnoi = 0;
+      if ( temp_noiso[0] == 0 ) idnoi = 0; //none
+      if ( temp_noiso[0] == 1 ) idnoi = 1; //veto
+      if ( temp_noiso[1] == 1 ) idnoi = 2; //loose
+      if ( temp_noiso[2] == 1 ) idnoi = 3; //med 
+      if ( temp_noiso[3] == 1 ) idnoi = 4; //tight
+
+      //for nm1 iso 
+      if (idnoi == 4) {
+        if (aux.electron_eta[i] < 2.4) {
+          for(size_t trig : mfv::ElectronTriggers) {
+            //event, vertex, ith lepton, isv, trig, setup 
+            if(satisfiesLepTriggerPT(mevent, auxes, i, isv, trig, setup)) {
+              h_sv_electron_nm1iso->Fill(aux.electron_iso[i], w);
+            }
+          }
+        }
+      }
+
+      // std::cout << "CHECKING : " << id << " and " << idnoi << std::endl;
 
       //reverse match electron to the track 
       double ele_mindr = 999;
@@ -1463,7 +1708,7 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
           if (dr < 0.01) {
             if (!is_matchedtk[t]) { //so not to double count tracks already matched to mu
               // selections on ele : id, iso 
-              if (id > 3 && aux.electron_iso[i] < 0.1) {
+              if (idnoi > 3 && aux.electron_iso[i] < 0.1) {
                 is_matchedtk[t] = true;
                 leptks[t] = "ele"; 
                 ++selele;
@@ -1473,20 +1718,20 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
         }
       }
 
-      fill(h_sv_elept_eleID, isv, aux.electron_pt[i], id, w);
+      fill(h_sv_elept_eleID, isv, aux.electron_pt[i], idnoi, w);
       fill(h_sv_elept_eleiso, isv, aux.electron_pt[i], aux.electron_iso[i], w);
-      assoc_lepid.push_back(id + 5); //electron ID starts at 5 
+      assoc_lepid.push_back(idnoi + 5); //electron ID starts at 5 
 
       bool isolt0p1 = aux.electron_iso[i] < 0.1;
-      bool etalt1p4 = fabs(aux.electron_eta[i]) < 1.4;
-      bool idtight = id > 3; // 3 is med, 4 is tight
+      // bool etalt1p4 = fabs(aux.electron_eta[i]) < 1.4;
+      bool idtight = idnoi > 3; // 3 is med, 4 is tight
 
       bool tight_sel = isolt0p1 && idtight;
-      bool vtight_sel = isolt0p1 && idtight && etalt1p4;
-      bool one_tightsel_lep = only_1lep && isolt0p1 && idtight && isele;
+      // bool vtight_sel = isolt0p1 && idtight && etalt1p4;
+      // bool one_tightsel_lep = only_1lep && isolt0p1 && idtight && isele;
 
       // std::vector<bool> iso_eta = {true, isolt0p1, isolt0p05, etalt1p5, !etalt1p5, idloose, idmed, loose_sel};
-      std::vector<bool> iso_eta = {true, one_tightsel_lep, tight_sel, vtight_sel};
+      std::vector<bool> iso_eta = {true, idtight, isolt0p1, tight_sel};
       // if (aux.electron_iso[i] < 0.05) {
       for (int j = 0; j < 4; j++ ) {
         if (iso_eta[j]) { 
@@ -1494,7 +1739,7 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
           fill(h_sv_eletrack_dxy_[j], isv, aux.electron_dxybs[i], w);
           fill(h_sv_eletrack_dz_[j], isv, aux.electron_dz[i], w);
           fill(h_sv_eletrack_iso_[j], isv, aux.electron_iso[i], w); 
-          fill(h_sv_eletrack_ID_[j],  isv, id,  w);
+          fill(h_sv_eletrack_ID_[j],  isv, idnoi,  w);
 
           //now genmatching (but only for electrons w/ pt >= 50, isolation, and nsigmadxy >= 4)
           // bool use_ele = aux.electron_pt[i] >= 50 &&
@@ -1568,6 +1813,7 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
 
     float leading_leptrackpt = 0;
     float leading_leptrackptratio = 0;
+    float leading_leptracknsigmadxy = -999;
     if (leading_leppt > 0) {
       //reverse match leading lep to a track 
       double mindr = 999;
@@ -1578,15 +1824,17 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
           if (dr < 0.01) { 
             leading_leptrackpt = aux.track_pt(t);
             leading_leptrackptratio = aux.track_pt(t)/(fabs(sumpt_tracks - aux.track_pt(t)));
+            leading_leptracknsigmadxy = aux.track_dxy_nsigma(t); //not rescaled 
           }
         }
       }
     
 
-      if ((leading_leppt > 0) && (leading_leptrackpt == 0)) std::cout << "found a leading lepton but not the track; the tightest dr was " << mindr << std::endl;
-
+      if ((leading_leppt > 0) && (leading_leptrackpt == 0)) {
+        std::cout << "found a leading lepton but not the track; the tightest dr was " << mindr << std::endl;
+      }
       bool isolt0p1 = assoc_lepiso[leading_lepidx] < 0.1;
-      bool etalt1p4 = fabs(assoc_lepeta[leading_lepidx]) < 1.4;
+      // bool etalt1p4 = fabs(assoc_lepeta[leading_lepidx]) < 1.4;
 
       // bool idloose = false;
       // bool idmed = false;
@@ -1605,9 +1853,15 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
         is_mu = true;
       }
 
+      bool iso = isolt0p1;
+      bool id = idtight;
       bool tight_sel = isolt0p1 && idtight;
-      bool vtight_sel = isolt0p1 && idtight && etalt1p4;
-      bool one_tightsel_lep = only_1lep && isolt0p1 && idtight;
+      // bool etalt1p5_sellep = tight_sel && (fabs(assoc_lepeta[leading_lepidx]) < 1.5);
+      // bool etagt1p5_sellep = tight_sel && (fabs(assoc_lepeta[leading_lepidx]) > 1.5);
+      bool hltmatch_nocuts = assoc_lephltmatch[leading_lepidx];
+      bool hltmatch_sellep = assoc_lephltmatch[leading_lepidx] && tight_sel; 
+      // bool vtight_sel = isolt0p1 && idtight && etalt1p4;
+      // bool one_tightsel_lep = only_1lep && isolt0p1 && idtight;
 
       // bool ultratight_track = isolt0p1 && idtight && leading_leptrackpt >= 20;
 
@@ -1615,49 +1869,199 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
         leading_sel_lepphi[isv] = assoc_lepphi[leading_lepidx];
         leading_sel_lepeta[isv] = assoc_lepeta[leading_lepidx];
         leading_sel_leppt[isv] = leading_leppt;
+        leading_sel_leptype[isv] = is_mu;  //false == is electron, true == is mu
       }
 
-      std::vector<bool> iso_eta = {true, one_tightsel_lep, tight_sel, vtight_sel};
+      std::vector<bool> iso_eta = {true, id, iso, tight_sel, hltmatch_nocuts, hltmatch_sellep};
 
-      for (int i = 0; i < 4; i++ ) {
-        if (iso_eta[i]) { 
-          h_leading_leppt_inSV_[i]->Fill(leading_leppt,  w);
-          h_leading_lepptvsbs2derr_inSV_[i]->Fill(leading_leppt, aux.rescale_bs2derr, w);
-          h_leading_lepnsigmadxy_inSV_[i]->Fill(assoc_lepnsigmadxy[leading_lepidx], w);
-          h_leading_lepdxy_inSV_[i]->Fill(assoc_lepdxy[leading_lepidx], w);
-          h_leading_lepdxyerr_inSV_[i]->Fill(assoc_lepdxyerr[leading_lepidx], w);
-
-          h_leading_lepeta_inSV_[i]->Fill(assoc_lepeta[leading_lepidx],w);
-          h_leading_lepid_inSV_[i]->Fill(assoc_lepid[leading_lepidx],w);
-          h_leading_lepiso_inSV_[i]->Fill(assoc_lepiso[leading_lepidx],w);
-
-          if (leading_leptrackpt > 0) {
-            h_leading_trackpt_inSV_[i]->Fill(leading_leptrackpt,w);
-            h_leading_trackptratio_inSV_[i]->Fill(leading_leptrackptratio,w);
-
-            if (is_mu) {
-                h_leading_mutrackpt_inSV_[i]->Fill(leading_leptrackpt,w);
-                h_leading_mutrackptratio_inSV_[i]->Fill(leading_leptrackptratio,w);
+      if (tight_sel) {
+        if (is_mu) {
+          // currently set up only for 2018
+          bool pass_mu_trig = false; //try first mu triggers (since its a SVwmu)
+          bool trig_passed = false;
+          if(mevent->pass_hlt(mfv::b_HLT_IsoMu24)) {
+            h_svwmu_tightsel_passtriggers->Fill(1, w);
+            pass_mu_trig = true;
+            trig_passed = true;
+          }
+          if( (mevent->pass_hlt(mfv::b_HLT_Mu50)) & !trig_passed) {
+            h_svwmu_tightsel_passtriggers->Fill(2, w);
+            pass_mu_trig = true;
+            trig_passed = true;
+          }
+          if (!pass_mu_trig) { 
+            if(mevent->pass_hlt(mfv::b_HLT_Ele32_WPTight_Gsf)) {
+              h_svwmu_tightsel_passtriggers->Fill(3, w);
+              trig_passed = true;
             }
-            else {
-              h_leading_eletrackpt_inSV_[i]->Fill(leading_leptrackpt,w);
-              h_leading_eletrackptratio_inSV_[i]->Fill(leading_leptrackptratio,w);
+            if( (mevent->pass_hlt(mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT)) & !trig_passed) {
+              h_svwmu_tightsel_passtriggers->Fill(4, w);
+              trig_passed = true;
+            }
+            if(( mevent->pass_hlt(mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165)) & !trig_passed) {
+              h_svwmu_tightsel_passtriggers->Fill(5, w);
+              trig_passed = true;
+            }
+            if(( mevent->pass_hlt(mfv::b_HLT_Photon200)) & !trig_passed) {
+              h_svwmu_tightsel_passtriggers->Fill(6, w);
+              trig_passed = true;
             }
           }
+        }
+        else {
+          bool pass_ele_trig = false; //try first electron triggers (since its a SVwele)
+          bool trig_passed = false;
 
+          if(mevent->pass_hlt(mfv::b_HLT_Ele32_WPTight_Gsf)) {
+            h_svwele_tightsel_passtriggers->Fill(3, w);
+            trig_passed = true;
+            pass_ele_trig = true;
+          }
+          if((mevent->pass_hlt(mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT)) & !trig_passed) {
+            h_svwele_tightsel_passtriggers->Fill(4, w);
+            trig_passed = true;
+            pass_ele_trig = true;
+          }
+          if((mevent->pass_hlt(mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165))  & !trig_passed) {
+            h_svwele_tightsel_passtriggers->Fill(5, w);
+            trig_passed = true;
+            pass_ele_trig = true;
+          }
+          if(( mevent->pass_hlt(mfv::b_HLT_Photon200)) & !trig_passed) {
+            h_svwele_tightsel_passtriggers->Fill(6, w);
+            trig_passed = true;
+            pass_ele_trig = true;
+          }
+          if (!pass_ele_trig) { 
+            if(mevent->pass_hlt(mfv::b_HLT_IsoMu24)) {
+              h_svwele_tightsel_passtriggers->Fill(1, w);
+              trig_passed = true;
+            }
+            if ((mevent->pass_hlt(mfv::b_HLT_Mu50)) & !trig_passed) {
+              h_svwele_tightsel_passtriggers->Fill(2, w);
+              trig_passed = true;
+            }
+          }
+        }
+      }
+      for (int i = 0; i < 6; i++ ) {
+        if (iso_eta[i]) { 
+          if (i < 4) { 
+            h_leading_leppt_inSV_[i]->Fill(leading_leppt,  w);
+            h_leading_lepptvsbs2derr_inSV_[i]->Fill(leading_leppt, aux.rescale_bs2derr, w);
+            if (is_mu) 
+              h_leading_muptvsbs2derr_inSV_[i]->Fill(leading_leppt, aux.rescale_bs2derr, w);
+            if (!is_mu) 
+              h_leading_eleptvsbs2derr_inSV_[i]->Fill(leading_leppt, aux.rescale_bs2derr, w);
+
+            h_leading_lepnsigmadxy_inSV_[i]->Fill(assoc_lepnsigmadxy[leading_lepidx], w);
+            h_leading_lepdxy_inSV_[i]->Fill(assoc_lepdxy[leading_lepidx], w);
+            h_leading_lepdxyerr_inSV_[i]->Fill(assoc_lepdxyerr[leading_lepidx], w);
+
+            h_leading_lepeta_inSV_[i]->Fill(assoc_lepeta[leading_lepidx],w);
+            h_leading_lepid_inSV_[i]->Fill(assoc_lepid[leading_lepidx],w);
+            h_leading_lepiso_inSV_[i]->Fill(assoc_lepiso[leading_lepidx],w);
+
+            if (leading_leptrackpt > 0) {
+              h_leading_trackpt_inSV_[i]->Fill(leading_leptrackpt,w);
+              h_leading_trackptratio_inSV_[i]->Fill(leading_leptrackptratio,w);
+
+              if (is_mu) {
+                  h_leading_mutrackpt_inSV_[i]->Fill(leading_leptrackpt,w);
+                  h_leading_mutrackptratio_inSV_[i]->Fill(leading_leptrackptratio,w);
+                  if (i == 3) {
+                    h_leading_mutrackpT_vs_mupT_inSV->Fill(leading_leptrackpt, leading_leppt, w);
+                    h_leading_mutracknsigmadxy_vs_munsigmadxy_inSV->Fill(leading_leptracknsigmadxy, assoc_lepnsigmadxy[leading_lepidx], w);
+                  }
+              }
+              else {
+                h_leading_eletrackpt_inSV_[i]->Fill(leading_leptrackpt,w);
+                h_leading_eletrackptratio_inSV_[i]->Fill(leading_leptrackptratio,w);
+                if (i == 3) {
+                  h_leading_eletrackpT_vs_elepT_inSV->Fill(leading_leptrackpt, leading_leppt, w);
+                  h_leading_eletracknsigmadxy_vs_elensigmadxy_inSV->Fill(leading_leptracknsigmadxy, assoc_lepnsigmadxy[leading_lepidx], w);
+                }
+              }
+            }
+          }
           h_svwlep_rescale_bs2derr_[i]->Fill(aux.rescale_bs2derr, w);
           h_svwlep_rescale_pertkbs2derr_[i]->Fill(aux.rescale_bs2derr*sqrt(aux.ntracks()), w);
           h_svwlep_bsbs2ddist_[i]->Fill(mevent->bs2ddist(aux), w);
           h_svwlep_ntracks_[i]->Fill(aux.ntracks(), w);
           h_svwlep_trackpairdravg_[i]->Fill(trackpairdr_stats.avg, w);
           h_svwlep_trackpairdravgmmax_[i]->Fill(2*(trackpairdr_stats.avg*(aux.ntracks()*(aux.ntracks()-1)/2) - trackpairdr_stats.max)/( (aux.ntracks()- 2)*(aux.ntracks()+1) ), w);
-          h_svwlep_avgptmlep_[i]->Fill( (sumpt_tracks*aux.ntracks() - leading_leppt)/(aux.ntracks()-1), w);
+          h_svwlep_avgptmlep_[i]->Fill( (sumpt_tracks - leading_leppt)/(aux.ntracks()-1), w);
           h_svwlep_costh_[i]->Fill(aux.costhmombs  (mfv::PTracksPlusJetsByNtracks), w);
           h_svwlep_tracktripmassmax_[i]->Fill(aux.tracktripmassmax(), w);
           h_svwlep_leadinglepptinSV_[i]->Fill(leading_leppt, w);
+          h_svwlep_leadinglepdxyinSV_[i]->Fill(assoc_lepdxy[leading_lepidx], w);
+          h_svwlep_leadinglepdxyerrinSV_[i]->Fill(assoc_lepdxyerr[leading_lepidx], w);
+          h_svwlep_leadingleprescaleddxyerrinSV_[i]->Fill(assoc_lepdxyerrrescaled[leading_lepidx], w);
           h_svwlep_leadinglepnsigmadxyinSV_[i]->Fill(assoc_lepnsigmadxy[leading_lepidx], w);
+          h_svwlep_leadingleprescalednsigmadxyinSV_[i]->Fill(assoc_lepnsigmadxyrescaled[leading_lepidx], w);
+          h_svwlep_leadinglepIDinSV_[i]->Fill(assoc_lepid[leading_lepidx], w);
+          h_svwlep_leadinglepisoinSV_[i]->Fill(assoc_lepiso[leading_lepidx], w);
+          h_svwlep_leadinglepetainSV_[i]->Fill(assoc_lepeta[leading_lepidx], w);
           h_svwlep_trackptgt3_[i]->Fill(aux.ntracksptgt(3), w);
           h_svwlep_trackptgt10_[i]->Fill(aux.ntracksptgt(10), w);
+
+          //same but ele 
+          if (!is_mu) { 
+            h_svwele_rescale_bs2derr_[i]->Fill(aux.rescale_bs2derr, w);
+            h_svwele_rescale_pertkbs2derr_[i]->Fill(aux.rescale_bs2derr*sqrt(aux.ntracks()), w);
+            h_svwele_bsbs2ddist_[i]->Fill(mevent->bs2ddist(aux), w);
+            h_svwele_ntracks_[i]->Fill(aux.ntracks(), w);
+            h_svwele_trackpairdravg_[i]->Fill(trackpairdr_stats.avg, w);
+            h_svwele_trackpairdravgmmax_[i]->Fill(2*(trackpairdr_stats.avg*(aux.ntracks()*(aux.ntracks()-1)/2) - trackpairdr_stats.max)/( (aux.ntracks()- 2)*(aux.ntracks()+1) ), w);
+            h_svwele_avgptmlep_[i]->Fill( (sumpt_tracks - leading_leppt)/(aux.ntracks()-1), w);
+            h_svwele_costh_[i]->Fill(aux.costhmombs  (mfv::PTracksPlusJetsByNtracks), w);
+            h_svwele_tracktripmassmax_[i]->Fill(aux.tracktripmassmax(), w);
+            h_svwele_leadinglepptinSV_[i]->Fill(leading_leppt, w);
+            h_svwele_leadinglepdxyinSV_[i]->Fill(assoc_lepdxy[leading_lepidx], w);
+            h_svwele_leadinglepdxyerrinSV_[i]->Fill(assoc_lepdxyerr[leading_lepidx], w);
+            h_svwele_leadingleprescaleddxyerrinSV_[i]->Fill(assoc_lepdxyerrrescaled[leading_lepidx], w);
+            h_svwele_leadinglepnsigmadxyinSV_[i]->Fill(assoc_lepnsigmadxy[leading_lepidx], w);
+            h_svwele_leadingleprescalednsigmadxyinSV_[i]->Fill(assoc_lepnsigmadxyrescaled[leading_lepidx], w);
+            h_svwele_leadinglepIDinSV_[i]->Fill(assoc_lepid[leading_lepidx], w);
+            h_svwele_leadinglepisoinSV_[i]->Fill(assoc_lepiso[leading_lepidx], w);
+            h_svwele_leadinglepetainSV_[i]->Fill(assoc_lepeta[leading_lepidx], w);
+            h_svwele_leadinglephltdRinSV_[i]->Fill(assoc_lephltdR[leading_lepidx],w);
+            h_svwele_trackptgt3_[i]->Fill(aux.ntracksptgt(3), w);
+            h_svwele_trackptgt10_[i]->Fill(aux.ntracksptgt(10), w);
+
+            // std::cout << "leading lep SV is electron " << i << std::endl;
+            // for (auto i : sv_track_pt) std::cout << i << " ";
+            // std::cout << " " << std::endl;
+
+          }
+          if (is_mu) {
+            h_svwmu_rescale_bs2derr_[i]->Fill(aux.rescale_bs2derr, w);
+            h_svwmu_rescale_pertkbs2derr_[i]->Fill(aux.rescale_bs2derr*sqrt(aux.ntracks()), w);
+            h_svwmu_bsbs2ddist_[i]->Fill(mevent->bs2ddist(aux), w);
+            h_svwmu_ntracks_[i]->Fill(aux.ntracks(), w);
+            h_svwmu_trackpairdravg_[i]->Fill(trackpairdr_stats.avg, w);
+            h_svwmu_trackpairdravgmmax_[i]->Fill(2*(trackpairdr_stats.avg*(aux.ntracks()*(aux.ntracks()-1)/2) - trackpairdr_stats.max)/( (aux.ntracks()- 2)*(aux.ntracks()+1) ), w);
+            h_svwmu_avgptmlep_[i]->Fill( (sumpt_tracks - leading_leppt)/(aux.ntracks()-1), w);
+            h_svwmu_costh_[i]->Fill(aux.costhmombs  (mfv::PTracksPlusJetsByNtracks), w);
+            h_svwmu_tracktripmassmax_[i]->Fill(aux.tracktripmassmax(), w);
+            h_svwmu_leadinglepptinSV_[i]->Fill(leading_leppt, w);
+            h_svwmu_leadinglepdxyinSV_[i]->Fill(assoc_lepdxy[leading_lepidx], w);
+            h_svwmu_leadinglepdxyerrinSV_[i]->Fill(assoc_lepdxyerr[leading_lepidx], w);
+            h_svwmu_leadingleprescaleddxyerrinSV_[i]->Fill(assoc_lepdxyerrrescaled[leading_lepidx], w);
+            h_svwmu_leadinglepnsigmadxyinSV_[i]->Fill(assoc_lepnsigmadxy[leading_lepidx], w);
+            h_svwmu_leadingleprescalednsigmadxyinSV_[i]->Fill(assoc_lepnsigmadxyrescaled[leading_lepidx], w);
+            h_svwmu_leadinglepIDinSV_[i]->Fill(assoc_lepid[leading_lepidx], w);
+            h_svwmu_leadinglepisoinSV_[i]->Fill(assoc_lepiso[leading_lepidx], w);
+            h_svwmu_leadinglepetainSV_[i]->Fill(assoc_lepeta[leading_lepidx], w);
+            h_svwmu_leadinglephltdRinSV_[i]->Fill(assoc_lephltdR[leading_lepidx],w);
+            h_svwmu_trackptgt3_[i]->Fill(aux.ntracksptgt(3), w);
+            h_svwmu_trackptgt10_[i]->Fill(aux.ntracksptgt(10), w);
+
+            // std::cout << "leading lep SV is muon " << i << std::endl;
+            // for (auto i : sv_track_pt) std::cout << i << " ";
+            // std::cout << " " << std::endl;
+
+          }
 
 
           // next : use the leading lepton and check the delta R between it and the leading jet in the SV 
@@ -1665,6 +2069,31 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
             h_svwlepjet_pairdr_[i]->Fill(reco::deltaR(assoc_jeteta[leading_jetidx], assoc_jetphi[leading_jetidx], assoc_lepeta[leading_lepidx], assoc_lepphi[leading_lepidx]), w);
             h_svwlepjet_pt_[i]->Fill(leading_jetpt, w);
             h_svwlepjet_ptratio_[i]->Fill(leading_leppt/leading_jetpt, w);
+
+            //now for ele
+            if (!is_mu) { 
+              h_svwelejet_pairdr_[i]->Fill(reco::deltaR(assoc_jeteta[leading_jetidx], assoc_jetphi[leading_jetidx], assoc_lepeta[leading_lepidx], assoc_lepphi[leading_lepidx]), w);
+              h_svwelejet_pt_[i]->Fill(leading_jetpt, w);
+              h_svwelejet_ptratio_[i]->Fill(leading_leppt/leading_jetpt, w);
+            }
+            if (is_mu) {
+              h_svwmujet_pairdr_[i]->Fill(reco::deltaR(assoc_jeteta[leading_jetidx], assoc_jetphi[leading_jetidx], assoc_lepeta[leading_lepidx], assoc_lepphi[leading_lepidx]), w);
+              h_svwmujet_pt_[i]->Fill(leading_jetpt, w);
+              h_svwmujet_ptratio_[i]->Fill(leading_leppt/leading_jetpt, w);
+            }
+          }
+          //if there is no associated jet, check and see if there is a jet in the event 
+          else {
+            if (mevent->jet_id.size() != 0) {
+              if (mevent->jet_pt[0] > mfv::min_jet_pt) { 
+                h_svwlep_jet_pairdr_[i]->Fill(reco::deltaR(mevent->jet_eta[0], mevent->jet_phi[0], assoc_lepeta[leading_lepidx], assoc_lepphi[leading_lepidx]), w);
+
+                if (!is_mu) 
+                  h_svwele_jet_pairdr_[i]->Fill(reco::deltaR(mevent->jet_eta[0], mevent->jet_phi[0], assoc_lepeta[leading_lepidx], assoc_lepphi[leading_lepidx]), w);
+                if (is_mu)
+                  h_svwmu_jet_pairdr_[i]->Fill(reco::deltaR(mevent->jet_eta[0], mevent->jet_phi[0], assoc_lepeta[leading_lepidx], assoc_lepphi[leading_lepidx]), w);
+              }
+            }
           }
         }
       }
@@ -1741,6 +2170,7 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     lep_tracks.push_back(leptks);
   }
   h_nsv_wlep->Fill(nsv_wlep, w);
+  h_nsv_cc->Fill(nsv_cc, w);
  ////////////////////////////////////////////////////////////////////////////////////////
   //3. Find the best match (reco vtx to gen vtx)
   //GEN COMMENTED OUT 
@@ -2209,7 +2639,6 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
 
     std::vector<std::set<int>> sv_bjetasso(3);
     std::vector<unsigned int> nbtrack = {0,0,0};
-
     std::vector<unsigned int> nbtrack_notlep = {0,0,0}; //btracks not leptons
 
     //these are leptons passing id, iso 
@@ -2221,6 +2650,7 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     std::vector<unsigned int> nele_fromb = {0,0,0};
     std::vector<unsigned int> nmu_fromb = {0,0,0};
 
+    //loop over tracks in SV
     for (int i = 0; i < ntracks; ++i) {
 
       //these reset every time so checking a) if the track is a lepton, and b) what type of lepton and c) what cuts it passes
@@ -2249,6 +2679,7 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
         sv_jetasso.insert((int) jet_index);
         ++njettrack;
   
+        //now checking of those matched jets, which one is btagged
         for(int ibdisc=0; ibdisc<3; ++ibdisc){
           if (mevent->is_btagged(jet_index, ibdisc)){
             sv_bjetasso[ibdisc].insert((int) jet_index);
@@ -2256,13 +2687,14 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
             is_bjetmatched = true;
             if (!is_lepmatched) ++nbtrack_notlep[ibdisc];
             else {
+              // these tracks are both lepton matched and in the bjet
               if (is_mu) ++nmu_fromb[ibdisc];
               else if (is_ele) ++nele_fromb[ibdisc];
             }
           }
         }
       }
-      if (!is_bjetmatched) { //ahh this will mean that there was no bjet found - loose, med, tight
+      if (!is_bjetmatched) { //this will mean that the track was not found in the bjet - loose, med, tight
         if (is_lepmatched) {
           if (is_mu) ++nmu_notfromb;
           else if (is_ele) ++nele_notfromb;
@@ -2283,29 +2715,47 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
       h_sv_nbtks[ibdisc]->Fill(nbtrack[ibdisc], w);
       h_sv_nbtks_notlep[ibdisc]->Fill(nbtrack_notlep[ibdisc],w);
       h_sv_nlep_nbtks[ibdisc]->Fill(nbtrack[ibdisc] + aux.nleptons, w); //TOFIX
-      
-      if ( (nbtrack_notlep[ibdisc] == nbtrack[ibdisc]) && (nbtrack[ibdisc] > 0) ) { //means that all btracks are not sel lepton tracks 
-        h_sv_nlepbtks[ibdisc]->Fill(nbtrack_notlep[ibdisc] + nele_notfromb + nmu_notfromb, w);
-        h_sv_nlep_notb[ibdisc]->Fill(nele_notfromb + nmu_notfromb, w);
-        h_sv_nele_notb[ibdisc]->Fill(nele_notfromb, w);
-        h_sv_nmu_notb[ibdisc]->Fill(nmu_notfromb, w);
+
+      //repeat but now separated by ele, mu 
+      if (leading_sel_leptype[isv]){
+        h_svmu_nbtags[ibdisc]->Fill(sv_bjetasso[ibdisc].size(), w);
+        h_svmu_nbtks[ibdisc]->Fill(nbtrack[ibdisc], w);
+        h_svmu_nbtks_notlep[ibdisc]->Fill(nbtrack_notlep[ibdisc],w);
       }
+      if (!leading_sel_leptype[isv]) {
+        h_svele_nbtags[ibdisc]->Fill(sv_bjetasso[ibdisc].size(), w);
+        h_svele_nbtks[ibdisc]->Fill(nbtrack[ibdisc], w);
+        h_svele_nbtks_notlep[ibdisc]->Fill(nbtrack_notlep[ibdisc],w);
+      }
+      //notice : something is still not quite right with bjet + lep track logic... 
+      // if ( (nbtrack_notlep[ibdisc] == nbtrack[ibdisc]) && (nbtrack[ibdisc] > 0) ) { //means that all btracks are not sel lepton tracks 
+      //   h_sv_nlepbtks[ibdisc]->Fill(nbtrack_notlep[ibdisc] + nele_notfromb + nmu_notfromb, w);
+      //   h_sv_nmubtks[ibdisc]->Fill(nbtrack_notlep[ibdisc] + nmu_notfromb, w);
+      //   h_sv_nelebtks[ibdisc]->Fill(nbtrack_notlep[ibdisc] + nele_notfromb, w);
+
+      //   h_sv_nlep_notb[ibdisc]->Fill(nele_notfromb + nmu_notfromb, w);
+      //   h_sv_nele_notb[ibdisc]->Fill(nele_notfromb, w);
+      //   h_sv_nmu_notb[ibdisc]->Fill(nmu_notfromb, w);
+      // }
 
 
-      if ( (nbtrack[ibdisc] - nbtrack_notlep[ibdisc] > 0) && nbtrack_notlep[ibdisc] > 0) { //means that there is at least 1 track in the bjet that is a sel lepton; and there should be a lepton...
-        h_sv_nleptks_nbtks[ibdisc]->Fill(nbtrack_notlep[ibdisc] + nele_fromb[ibdisc] + nmu_fromb[ibdisc], w);
-        h_sv_nlep_fromb[ibdisc]->Fill(nele_fromb[ibdisc] + nmu_fromb[ibdisc], w);
-        h_sv_nele_fromb[ibdisc]->Fill(nele_fromb[ibdisc], w);
-        h_sv_nmu_fromb[ibdisc]->Fill(nmu_fromb[ibdisc], w);
-      }
+      // if ( (nbtrack[ibdisc] - nbtrack_notlep[ibdisc] > 0) && nbtrack_notlep[ibdisc] > 0) { //means that there is at least 1 track in the bjet that is a sel lepton; and there should be a lepton...
+      //   h_sv_nleptks_nbtks[ibdisc]->Fill(nbtrack_notlep[ibdisc] + nele_fromb[ibdisc] + nmu_fromb[ibdisc], w);
+      //   h_sv_nmutks_nbtks[ibdisc]->Fill(nbtrack_notlep[ibdisc] + nmu_fromb[ibdisc], w);
+      //   h_sv_neletks_nbtks[ibdisc]->Fill(nbtrack_notlep[ibdisc] + nele_fromb[ibdisc], w);
+
+      //   h_sv_nlep_fromb[ibdisc]->Fill(nele_fromb[ibdisc] + nmu_fromb[ibdisc], w);
+      //   h_sv_nele_fromb[ibdisc]->Fill(nele_fromb[ibdisc], w);
+      //   h_sv_nmu_fromb[ibdisc]->Fill(nmu_fromb[ibdisc], w);
+      // }
 
       // if (nbtrack[ibdisc] ==0) { //means that did not find any tracks from bjets so by default, the lepton will not be from b
       //   h_sv_nlep_notbnob[ibdisc]->Fill(nele_notfromb + nmu_notfromb, w);
       //   h_sv_nele_notbnob[ibdisc]->Fill(nele_notfromb, w);
       //   h_sv_nmu_notbnob[ibdisc]->Fill(nmu_notfromb, w);
       // }
-      // h_sv_nallbtags->Fill(sv_bjetasso[0].size(), sv_bjetasso[1].size(), sv_bjetasso[2].size(), w);
-      // h_sv_nallbtks->Fill(nbtrack[0], nbtrack[1], nbtrack[2], w);
+      h_sv_nallbtags->Fill(sv_bjetasso[0].size(), sv_bjetasso[1].size(), sv_bjetasso[2].size(), w);
+      h_sv_nallbtks->Fill(nbtrack[0], nbtrack[1], nbtrack[2], w);
 
     
 
@@ -2359,6 +2809,98 @@ void MFVVertexHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
       }
     }
   } 
+}
+
+//splitting up the satisfieslep trigger into muon/ele trigger -> just checking if the electron or muon passes pT requirement given which trigger fired -> this is for the muons and electrons in the SV 
+bool MFVVertexHistos::satisfiesLepTriggerPT(edm::Handle<MFVEvent> mevent, edm::Handle<MFVVertexAuxCollection> auxes, int it, int isv, size_t trig, const edm::EventSetup& setup) { 
+  if(!mevent->pass_hlt(trig)) return false;
+  
+  const MFVVertexAux& aux = auxes->at(isv);
+
+  int year = int(MFVNEUTRALINO_YEAR);
+  assert(year == 20161 || year == 20162 || year == 2017 || year == 2018); // in case of race conditions where the compiled macro is invalid...
+
+  // int nmuons     = mevent->nmuons();
+  // int nelectrons = mevent->nelectrons();
+  int njets      = mevent->njets(20);
+    
+  bool passed_kinematics = false;
+
+  switch(trig){
+  case mfv::b_HLT_Ele27_WPTight_Gsf : //for 2016
+    {
+    if (year != 20161 and year !=20162) return false;
+    if (aux.electron_pt[it] > 30) passed_kinematics = true; //for 2016
+    return passed_kinematics;
+    }
+  case mfv::b_HLT_Ele35_WPTight_Gsf : //for 2017
+    {
+    if (year != 2017) return false;
+    if (aux.electron_pt[it] > 38) passed_kinematics = true; //for 2017
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_Ele32_WPTight_Gsf : //for 2018
+    {
+    if (year != 2018) return false;
+    if (aux.electron_pt[it] > 35) passed_kinematics = true; //for 2018
+    return passed_kinematics;
+  }
+
+  case mfv::b_HLT_IsoMu27 : //for 2017
+    {
+    if (year != 2017) return false;
+    if (aux.muon_pt[it] > 30) passed_kinematics = true; 
+    return passed_kinematics;
+  }
+  case mfv::b_HLT_IsoMu24 : //for 2018, 2016
+    {
+      if (year == 2017) return false;
+      if (aux.muon_pt[it] > 27) passed_kinematics = true;
+      return passed_kinematics;
+    }
+  
+  case mfv::b_HLT_Mu50 :
+    {
+    if (aux.muon_pt[it] > 53) passed_kinematics = true;
+    return passed_kinematics;
+    }
+    
+  case mfv::b_HLT_Ele115_CaloIdVT_GsfTrkIdT :
+    {
+    if (aux.electron_pt[it] > 120) passed_kinematics = true;
+    return passed_kinematics;
+    }
+    
+  case  mfv::b_HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165 :
+    {
+    if (aux.electron_pt[it] > 55) {
+      for(int j0=0; j0 < njets; ++j0){
+        if (!jet_hlt_match(mevent, j0) || mevent->jet_pt[j0] < 170) continue; //just looking for a jet in the event
+        passed_kinematics = true;
+      }
+    }
+    return passed_kinematics;
+    }
+  case mfv::b_HLT_Photon175 : //for  2016 
+    {
+      if (year != 20161 and year != 20162) return false;
+      if (aux.electron_pt[it] > 180) passed_kinematics = true; 
+      return passed_kinematics;
+    }
+  case mfv::b_HLT_Photon200 : //for 2018, 2017
+    {
+      if (year != 2018 and year != 2017) return false;
+      if (aux.electron_pt[it] > 205) passed_kinematics = true;
+      return passed_kinematics;
+    }
+  default :
+    {
+      throw std::invalid_argument(std::string(mfv::hlt_paths[trig]) + " not implemented in satisfiesLepTrigger");
+    }
+  }
+
+  return false;
+
 }
 
 DEFINE_FWK_MODULE(MFVVertexHistos);
