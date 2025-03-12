@@ -6,7 +6,7 @@ ROOT.gErrorIgnoreLevel = 1001 # Suppress TCanvas::SaveAs messages.
 #which = '2017p8' if '2017p8' in sys.argv else '2017' if '2017' in sys.argv else 'run2'
 which = "run2"
 intlumi = 100.3 if which == 'run2' else 59.8 #41.48 # 2017 : 41.48 #2017 + 2018 : 101.3
-path = plot_dir('pretty_limits_1d_Dec2024_%s' % which, make=True)
+path = plot_dir('pretty_limits_1d_Mar2024_%s_sig1fbxsec' % which, make=True)
 draw_observed = False
 
 ts = tdr_style()
@@ -43,20 +43,26 @@ kinds = [
     # 'dijet_bb_M0300',
     # 'dijet_bb_M0400',
     # 'dijet_bb_M0600',
-    # 'stopld_tau100um',
-    # 'stopld_tau300um',
-    # 'stopld_tau1mm',
-    # 'stopld_tau10mm',
-    # 'stopld_tau30mm',
-    # 'stoplb_tau100um',
-    # 'stoplb_tau300um',
-    # 'stoplb_tau1mm',
-    # 'stoplb_tau10mm',
-    # 'stoplb_tau30mm',
-    'stopld_M800',
-    'stopld_M1600',
-    'stoplb_M800',
-    'stoplb_M1600',
+    'stopld_tau100um',
+    'stopld_tau300um',
+    'stopld_tau1mm',
+    'stopld_tau10mm',
+    'stopld_tau30mm',
+    'stoplb_tau100um',
+    'stoplb_tau300um',
+    'stoplb_tau1mm',
+    'stoplb_tau10mm',
+    'stoplb_tau30mm',
+    # 'stopld_M800',
+    # 'stopld_M1000',
+    # 'stopld_M1200',
+    # 'stopld_M1400',
+    # 'stopld_M1600',
+    # 'stoplb_M800',
+    # 'stoplb_M1000',
+    # 'stoplb_M1200',
+    # 'stoplb_M1400',
+    # 'stoplb_M1600',
     ]
 
 def tau(tau):
@@ -91,7 +97,7 @@ def nice_leg(kind):
         return '#tilde{t} #rightarrow #bar{l}#kern[0.1]{#bar{d}}', 'c#tau = ' + tau(kind.replace('stopld_tau', ''))
     elif kind.startswith('stoplb'):
         print(kind)
-        return '#tilde{t} #rightarrow #bar{l}#kern[0.1]{#bar{d}}', 'c#tau = ' + tau(kind.replace('stoplb_tau', ''))
+        return '#tilde{t} #rightarrow #bar{l}#kern[0.1]{#bar{b}}', 'c#tau = ' + tau(kind.replace('stoplb_tau', ''))
 
       
 def nice_theory(kind, idx=1):
@@ -190,7 +196,8 @@ for kind in kinds:
     g.SetTitle(';%s;#sigma#bf{#it{#Beta}}^{2} (fb)    ' % xtitle)
     g.Draw('A3')
 
-#    draw_theory = 'tau' in kind
+    #draw_theory = 'tau' in kind
+    draw_theory = True
 
     xax = g.GetXaxis()
     xax.SetNoExponent()
@@ -206,7 +213,7 @@ for kind in kinds:
 
     if versus_mass:
         #xax.SetLimits(105, 3200)
-        xax.SetLimits(200, 1600)
+        xax.SetLimits(200, 1800)
         yax.SetRangeUser(0.01, 100000 if versus_tau else 130) #(versus_tau and draw_theory) else 130)
     elif versus_tau:
         xax.SetLimits(0.068, 130)
@@ -245,24 +252,27 @@ for kind in kinds:
 
     expect95.Draw('3')
     expect68.Draw('3')
-#    if draw_theory:
-#        theory.Draw('L3')
-#    theory.Draw('L3')
+    if draw_theory:
+       theory.Draw('L3')
+    #    theory.Draw('L3')
     if theory2 :
         theory2.Draw('L3')
     expect50.Draw('L')
     #observed.Draw('L')
 
-#    if draw_theory:
-#        leg = ROOT.TLegend(0.552, 0.563, 0.870, 0.867)
-#    else:
-#        leg = ROOT.TLegend(0.552, 0.603, 0.870, 0.867)
+    if draw_theory:
+       #leg = ROOT.TLegend(0.552, 0.563, 0.870, 0.867)
+       leg = ROOT.TLegend(0.652, 0.663, 0.870, 0.867)
+    else:
+       leg = ROOT.TLegend(0.552, 0.603, 0.870, 0.867)
+       
     xoffset = 0.015
     if kind == 'multijet_M0800' :
         yoffset = -0.15
         leg = ROOT.TLegend(0.567+xoffset, 0.565+yoffset, 0.870+xoffset, 0.869+yoffset)
     else :
-        leg = ROOT.TLegend(0.567+xoffset, 0.565, 0.870+xoffset, 0.869)
+        #leg = ROOT.TLegend(0.567+xoffset, 0.565, 0.870+xoffset, 0.869)
+        leg = ROOT.TLegend(0.567+xoffset, 0.605, 0.850+xoffset, 0.869)
     leg.SetTextFont(42)
     leg.SetFillColor(ROOT.kWhite)
     leg.SetBorderSize(0)
@@ -272,8 +282,8 @@ for kind in kinds:
     #leg.AddEntry(expect16, 'Previous Results', 'L')
     leg.AddEntry(expect68, '68% expected', 'F')
     leg.AddEntry(expect95, '95% expected', 'F')
-#    if draw_theory:
-#        leg.AddEntry(theory, nice_theory(kind) + ', #bf{#it{#Beta}}=1', 'LF')
+    if draw_theory:
+       leg.AddEntry(theory, nice_theory(kind) + ', #bf{#it{#Beta}}=1', 'LF')
 #    leg.AddEntry(theory, nice_theory(kind) + ', #bf{#it{#Beta}}=0.1', 'LF')
     if theory2 :
         leg.AddEntry(theory2, nice_theory(kind,2) + ', #bf{#it{#Beta}}=0.1', 'LF')
@@ -296,8 +306,9 @@ for kind in kinds:
     else : # "multijet_tau"
         sig_text         = write(42, 0.04, 0.155, 0.20, labels[0])
         mass_or_tau_text = write(42, 0.04, 0.155, 0.15, labels[1])
-        cms = write(61, 0.050, 0.20, 0.825, 'CMS')
-
+        #cms = write(61, 0.050, 0.20, 0.825, 'CMS')
+        cms = write(61, 0.050, 0.15, 0.913, 'CMS')
+        
     lum = write(42, 0.050, 0.563, 0.913, '%s fb^{-1} (13 TeV)' % intlumi)
     fn = os.path.join(path, 'limit1d_' + kind)
     c.SaveAs(fn + '.pdf')
@@ -305,9 +316,13 @@ for kind in kinds:
     c.SaveAs(fn + '.root')
 
     if "_M" in kind or 'dijet' in kind :
-        pre = write(52, 0.047, 0.285, 0.825, 'Preliminary')
+        #pre = write(52, 0.047, 0.285, 0.825, 'Preliminary')
+        #pre = write(52, 0.047, 0.305, 0.825, 'Preliminary')
+        pre = write(52, 0.050, 0.255, 0.913, 'Preliminary')
     else :
-        pre = write(52, 0.047, 0.285, 0.825, 'Preliminary')
+        #pre = write(52, 0.047, 0.285, 0.825, 'Preliminary')
+        #pre = write(52, 0.047, 0.305, 0.825, 'Preliminary')
+        pre = write(52, 0.050, 0.255, 0.913, 'Preliminary')
 
     c.SaveAs(fn + '_prelim.pdf')
     c.SaveAs(fn + '_prelim.png')

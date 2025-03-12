@@ -3,11 +3,12 @@ from array import array
 from JMTucker.Tools.ROOTTools import *
 
 draw_pm1sigma_excl = True
-swap_axes = True
+swap_axes = False
 
 which = '2017p8' if '2017p8' in sys.argv else 'run2'
-intlumi = 120 if which == 'run2' else 101
-path = plot_dir('pretty_limits_2d_%s_May2024' % which, make=True)
+intlumi = 100.3 if which == 'run2' else 101
+path = plot_dir('pretty_limits_2d_%s_Jan2024' % which, make=True)
+draw_expected = False
 
 ts = tdr_style()
 ROOT.gStyle.SetPalette(ROOT.kBird)
@@ -56,11 +57,14 @@ def do_swap_axes(obj) :
         os.abort()
     return obj
 
-f = ROOT.TFile('limits_%s.root' % which)
-f2 = ROOT.TFile('limits_fromr_%s.root' % which)
-f3 = ROOT.TFile('limits_fromr_neu_%s.root' % which)
+#f = ROOT.TFile('limits_%s.root' % which)
+#f2 = ROOT.TFile('limits_fromr_%s.root' % which)
+f = ROOT.TFile('limits_2d_run2.root')
+f2 = ROOT.TFile('limits_fromr_test.root')
+#f3 = ROOT.TFile('limits_fromr_neu_%s.root' % which)
 
-for kind in 'mfv_stopdbardbar', 'mfv_neu':
+#for kind in 'mfv_stopdbardbar', 'mfv_neu':
+for kind in 'mfv_stoplb', 'mfv_stopld' :
     c = ROOT.TCanvas('c', '', 950, 900)
     c.SetTopMargin(0.160)
     c.SetBottomMargin(0.12)
@@ -74,6 +78,8 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
         c.SetLogy()
 
     h = f.Get('%s/observed' % kind)
+    if draw_expected:
+        h = f.Get("%s/expect50" % kind)
 
     xax = h.GetXaxis()
     yax = h.GetYaxis()
@@ -82,7 +88,7 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
         h = do_swap_axes(h)
         xax = h.GetYaxis()
         yax = h.GetXaxis()
-    yax.SetTitle('c#tau (mm)')
+    yax.SetTitle('c#tau (um)')
     if kind == 'mfv_neu':
         xax.SetTitle('m_{#tilde{#chi}^{0} / #tilde{g}} (GeV)')
     else:
@@ -114,6 +120,8 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
         theories = ['stopstop']
     elif kind == 'mfv_neu' :
         theories = ['gluglu', 'higgsino_N2N1']
+    elif kind == 'mfv_stoplb' or 'mfv_stopld' :
+        theories = ['stopstop_new']
 
     for theory in theories :
         if theory == 'gluglu' :
@@ -124,12 +132,13 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
             theory_color = ROOT.kRed
 
         if theory == 'higgsino_N2N1':
-            g_obs   = f3.Get('%s_observed_fromrinterp_%s_nm_exc_g' % (kind, theory))
-            g_obsup = f3.Get('%s_observed_fromrinterp_%s_up_exc_g' % (kind, theory))
-            g_obsdn = f3.Get('%s_observed_fromrinterp_%s_dn_exc_g' % (kind, theory))
-            g_exp   = f3.Get('%s_expect50_fromrinterp_%s_nm_exc_g' % (kind, theory))
-            g_expup = f3.Get('%s_expect84_fromrinterp_%s_nm_exc_g' % (kind, theory))
-            g_expdn = f3.Get('%s_expect16_fromrinterp_%s_nm_exc_g' % (kind, theory))
+            continue
+            # g_obs   = f3.Get('%s_observed_fromrinterp_%s_nm_exc_g' % (kind, theory))
+            # g_obsup = f3.Get('%s_observed_fromrinterp_%s_up_exc_g' % (kind, theory))
+            # g_obsdn = f3.Get('%s_observed_fromrinterp_%s_dn_exc_g' % (kind, theory))
+            # g_exp   = f3.Get('%s_expect50_fromrinterp_%s_nm_exc_g' % (kind, theory))
+            # g_expup = f3.Get('%s_expect84_fromrinterp_%s_nm_exc_g' % (kind, theory))
+            # g_expdn = f3.Get('%s_expect16_fromrinterp_%s_nm_exc_g' % (kind, theory))
         else:
             g_obs   = f2.Get('%s_observed_fromrinterp_%s_nm_exc_g' % (kind, theory))
             g_obsup = f2.Get('%s_observed_fromrinterp_%s_up_exc_g' % (kind, theory))
@@ -154,8 +163,9 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
         g_expdn.SetName("g_expdn_%s" % theory)
 
         if draw_pm1sigma_excl:
-            for g in g_obs, g_exp:
-                g.SetLineWidth(3)
+            if draw_expected:
+                for g in g_obs, g_exp:
+                    g.SetLineWidth(3)
         else:
             g_obs.SetLineWidth(3)
         for g in g_obs, g_obsup, g_obsdn:
@@ -166,28 +176,35 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
         for g in (g_obsup, g_obsdn, g_expup, g_expdn):
             g.SetLineWidth(1)
 
-        if kind == 'mfv_neu':
-            disp_jet_excl = array('d', [2229, 2498, 2616, 2645, 2641])
-        else:
-            disp_jet_excl = array('d', [1479, 1711, 1805, 1823, 1802])
-        ys = array('d', [1., 3., 10., 30., 100.])
-        g_dispjet_excl = ROOT.TGraph(len(ys), disp_jet_excl, ys)
-        if swap_axes :
-            g_dispjet_excl = do_swap_axes(g_dispjet_excl)
-        g_dispjet_excl.SetName("g_dispjet_excl")
-        g_dispjet_excl.SetLineColor(ROOT.kTeal)
-        g_dispjet_excl.SetLineWidth(3)
-        g_dispjet_excl.SetLineStyle(4)
+        # if kind == 'mfv_neu':
+        #     disp_jet_excl = array('d', [2229, 2498, 2616, 2645, 2641])
+        # else:
+        #     disp_jet_excl = array('d', [1479, 1711, 1805, 1823, 1802])
+        # ys = array('d', [1., 3., 10., 30., 100.])
+        # g_dispjet_excl = ROOT.TGraph(len(ys), disp_jet_excl, ys)
+        # if swap_axes :
+        #     g_dispjet_excl = do_swap_axes(g_dispjet_excl)
+        # g_dispjet_excl.SetName("g_dispjet_excl")
+        # g_dispjet_excl.SetLineColor(ROOT.kTeal)
+        # g_dispjet_excl.SetLineWidth(3)
+        # g_dispjet_excl.SetLineStyle(4)
 
-        excl_to_draw = [g_dispjet_excl, g_obs, g_obsup, g_obsdn, g_exp, g_expup, g_expdn] if draw_pm1sigma_excl else [g_exp, g_obs]
+        # excl_to_draw = [g_dispjet_excl, g_obs, g_obsup, g_obsdn, g_exp, g_expup, g_expdn] if draw_pm1sigma_excl else [g_exp, g_obs]
+        # for g in excl_to_draw:
+        #     g.Draw('L')
+
+        excl_to_draw = [g_obs, g_obsup, g_obsdn, g_exp, g_expup, g_expdn] if draw_pm1sigma_excl else [g_exp, g_obs]
+        if draw_expected:
+          excl_to_draw = [g_exp, g_expup, g_expdn] if draw_pm1sigma_excl else [g_exp]
         for g in excl_to_draw:
             g.Draw('L')
-
+            
     c.Update()
     palette = h.GetListOfFunctions().FindObject("palette")
     palette.SetY2NDC(0.932)
 
-    leg = ROOT.TLegend(0.17, 0.840, 0.83, 0.931)
+    # leg = ROOT.TLegend(0.17, 0.840, 0.83, 0.931)
+    leg = ROOT.TLegend(0.20, 0.870, 0.83, 0.931)
     leg.SetTextFont(42)
     leg.SetTextSize(0.03)
     leg.SetTextAlign(22)
@@ -200,19 +217,24 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
         if kind == 'mfv_neu':
             g_exp_clone = g_exp.Clone()
             g_exp_clone.SetLineColor(ROOT.kBlack)
-            leg.AddEntry(g_dispjet_excl, '#kern[-0.2]{CMS disp. jets (#tilde{g})}', 'L')
+            #leg.AddEntry(g_dispjet_excl, '#kern[-0.2]{CMS disp. jets (#tilde{g})}', 'L')
             leg.AddEntry(g_exp_clone, '#kern[-0.16]{Expected #pm 1 #sigma_{exp}}', 'L')
         else:
-            leg.AddEntry(g_dispjet_excl, '#kern[-0.2]{CMS disp. jets}', 'L')
+            #leg.AddEntry(g_dispjet_excl, '#kern[-0.2]{CMS disp. jets}', 'L')
             leg.AddEntry(g_exp, '#kern[-0.16]{Expected #pm 1 #sigma_{exp}}', 'L')
     else:
         # force the lines in the legend to be black
-        g_obs_clone = g_obs.Clone()
+        if not draw_expected:
+            g_obs_clone = g_obs.Clone()
+            g_obs_clone.SetLineColor(ROOT.kBlack)
+            leg.AddEntry(g_obs_clone, '#kern[-0.22]{Obs.}', 'L')
+
+        # g_obs_clone = g_obs.Clone()
         g_exp_clone = g_exp.Clone()
-        g_obs_clone.SetLineColor(ROOT.kBlack)
+        # g_obs_clone.SetLineColor(ROOT.kBlack)
         g_exp_clone.SetLineColor(ROOT.kBlack)
 
-        leg.AddEntry(g_obs_clone, '#kern[-0.22]{Obs.}', 'L')
+        # leg.AddEntry(g_obs_clone, '#kern[-0.22]{Obs.}', 'L')
         leg.AddEntry(g_exp_clone, '#kern[-0.22]{Exp.}', 'L')
     leg.Draw()
 
@@ -228,6 +250,18 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
         t.SetTextSize(0.07)
         t.DrawLatexNDC(0.405,0.772,'#color[%i]{#tilde{g}}' % glu_color)
         t.DrawLatexNDC(0.395,0.4,'#color[%i]{#tilde{#chi}^{0}}' % neu_color)
+    elif kind == 'mfv_stoplb':
+        stop_color = ROOT.kRed
+        model = '#kern[-0.%i]{#tilde{t} #rightarrow #bar{l}#kern[0.1]{#bar{b}}}' % (52 if draw_pm1sigma_excl else 22)
+        t.DrawLatexNDC(0.22, 0.895, model)
+        t.SetTextSize(0.07)
+        t.DrawLatexNDC(0.405,0.54,'#color[%i]{#tilde{t}}' % stop_color)
+    elif kind == 'mfv_stopld':
+        stop_color = ROOT.kRed
+        model = '#kern[-0.%i]{#tilde{t} #rightarrow #bar{l}#kern[0.1]{#bar{d}}}' % (52 if draw_pm1sigma_excl else 22)
+        t.DrawLatexNDC(0.22, 0.895, model)
+        t.SetTextSize(0.07)
+        t.DrawLatexNDC(0.405,0.54,'#color[%i]{#tilde{t}}' % stop_color)
     else:
         stop_color = ROOT.kRed
         model = '#kern[-0.%i]{#tilde{t} #rightarrow #bar{d}#kern[0.1]{#bar{d}}}' % (52 if draw_pm1sigma_excl else 22)
@@ -269,7 +303,9 @@ for kind in 'mfv_stopdbardbar', 'mfv_neu':
     c.SaveAs(fn + '.png')
     c.SaveAs(fn + '.root')
 
-    pre = write(52, 0.047, 0.231+xshift, 0.945, 'Preliminary')
+    #pre = write(52, 0.047, 0.231+xshift, 0.945, 'Preliminary')
+    pre = write(52, 0.047, 0.3+xshift, 0.945, 'Preliminary')
+
     c.SaveAs(fn + '_prelim.pdf')
     c.SaveAs(fn + '_prelim.png')
     c.SaveAs(fn + '_prelim.root')

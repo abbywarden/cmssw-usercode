@@ -10,7 +10,9 @@ from JMTucker.Tools.general import from_pickle
 from limitsinput import sample_iterator, axisize
 import JMTucker.Tools.Samples as sp
 
-file_path = '/afs/hep.wisc.edu/home/acwarden/CMSSW_10_2_13/src/HiggsAnalysis/CombinedLimit/test2_Asymptotic/'
+#file_path = '/afs/hep.wisc.edu/home/acwarden/CMSSW_10_2_13/src/HiggsAnalysis/CombinedLimit/test_Asymptotic_201718/sig1fbxsec/wobserved/'
+#file_path = '/afs/hep.wisc.edu/home/acwarden/CMSSW_10_2_13/src/HiggsAnalysis/CombinedLimit/test_Asymptotic_201718/sig1fbxsec/'
+file_path = '/afs/hep.wisc.edu/home/acwarden/CMSSW_10_2_13/src/HiggsAnalysis/CombinedLimit/Mar_Asymptotic_201718/'
 
 def fmt(t, title, xtitle, color):
     t.SetLineColor(color)
@@ -48,7 +50,7 @@ def tgae(x, y, exl, exh, eyl, eyh, title, xtitle, color):
     return fmt(t, title, xtitle, color)
 
 def parse_theory(which, include_errors=True, cache={}):
-    if which not in ('gluglu', 'stopstop', 'higgsino_N2N1'):
+    if which not in ('gluglu', 'stopstop_new', 'higgsino_N2N1'):
         raise ValueError('bad which %r' % which)
     fn = which + '.csv'
     if not cache.has_key(fn):
@@ -186,9 +188,9 @@ def make_1d_plot(d, name, xkey='mass'):
     elif name.startswith('dijet'):
         which_theory = 'stopstop'
     elif name.startswith('stoplb'):
-        which_theory = 'stopstop'
+        which_theory = 'stopstop_new'
     elif name.startswith('stopld'):
-        which_theory = 'stopstop'
+        which_theory = 'stopstop_new'
 
     if xkey == 'mass':
         g.theory = make_theory(which_theory)
@@ -238,20 +240,26 @@ def save_1d_plots():
         # ('dijet_tau300um',   lambda s: 'stopdbardbar' in sample.name and sample.tau  ==  0.3 and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
         # ('dijet_tau1mm',     lambda s: 'stopdbardbar' in sample.name and sample.tau  ==  1.  and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
         # ('dijet_tau10mm',    lambda s: 'stopdbardbar' in sample.name and sample.tau  == 10.  and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
-        # ('stopld_tau100um',       lambda s: 'stopld'       in sample.name and sample.tau == 100  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        # ('stopld_tau300um',       lambda s: 'stopld'       in sample.name and sample.tau == 300  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        # ('stopld_tau1mm',         lambda s: 'stopld'       in sample.name and sample.tau == 1000.   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        # ('stopld_tau10mm',        lambda s: 'stopld'       in sample.name and sample.tau == 10000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        # ('stopld_tau30mm',        lambda s: 'stopld'       in sample.name and sample.tau == 30000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        # ('stoplb_tau100um',       lambda s: 'stoplb'       in sample.name and sample.tau == 100  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        # ('stoplb_tau300um',       lambda s: 'stoplb'       in sample.name and sample.tau == 300  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        # ('stoplb_tau1mm',         lambda s: 'stoplb'       in sample.name and sample.tau == 1000.   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        # ('stoplb_tau10mm',        lambda s: 'stoplb'       in sample.name and sample.tau == 10000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        # ('stoplb_tau30mm',        lambda s: 'stoplb'       in sample.name and sample.tau == 30000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        ('stopld_M800',           lambda s: 'stopld'       in sample.name and sample.mass == 800 and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 800.)),
-        ('stopld_M1600',          lambda s: 'stopld'       in sample.name and sample.mass == 1600 and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1600.)),
-        ('stoplb_M800',           lambda s: 'stoplb'       in sample.name and sample.mass == 800 and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 800.)),
-        ('stoplb_M1600',          lambda s: 'stoplb'       in sample.name and sample.mass == 1600 and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1600.)),
+        ('stopld_tau100um',       lambda s: 'stopld'       in sample.name and sample.tau ==   100   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        ('stopld_tau300um',       lambda s: 'stopld'       in sample.name and sample.tau ==   300   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        ('stopld_tau1mm',         lambda s: 'stopld'       in sample.name and sample.tau ==  1000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        ('stopld_tau10mm',        lambda s: 'stopld'       in sample.name and sample.tau == 10000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        ('stopld_tau30mm',        lambda s: 'stopld'       in sample.name and sample.tau == 30000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        ('stoplb_tau100um',       lambda s: 'stoplb'       in sample.name and sample.tau ==   100   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        ('stoplb_tau300um',       lambda s: 'stoplb'       in sample.name and sample.tau ==   300   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        ('stoplb_tau1mm',         lambda s: 'stoplb'       in sample.name and sample.tau ==  1000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        ('stoplb_tau10mm',        lambda s: 'stoplb'       in sample.name and sample.tau == 10000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        ('stoplb_tau30mm',        lambda s: 'stoplb'       in sample.name and sample.tau == 30000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        # ('stopld_M800',           lambda s: 'stopld'       in sample.name and sample.mass ==  800   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau',  800.)),
+        # ('stopld_M1000',          lambda s: 'stopld'       in sample.name and sample.mass == 1000   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1000.)),
+        # ('stopld_M1200',          lambda s: 'stopld'       in sample.name and sample.mass == 1200   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1200.)),
+        # ('stopld_M1400',          lambda s: 'stopld'       in sample.name and sample.mass == 1400   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1400.)),
+        # ('stopld_M1600',          lambda s: 'stopld'       in sample.name and sample.mass == 1600   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1600.)),
+        # ('stoplb_M800',           lambda s: 'stoplb'       in sample.name and sample.mass ==  800   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau',  800.)),
+        # ('stoplb_M1000',          lambda s: 'stoplb'       in sample.name and sample.mass == 1000   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1000.)),
+        # ('stoplb_M1200',          lambda s: 'stoplb'       in sample.name and sample.mass == 1200   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1200.)),
+        # ('stoplb_M1400',          lambda s: 'stoplb'       in sample.name and sample.mass == 1400   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1400.)),
+        # ('stoplb_M1600',          lambda s: 'stoplb'       in sample.name and sample.mass == 1600   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1600.)),
 
         ]
     
@@ -265,10 +273,13 @@ def save_1d_plots():
         print(name, use, sorter, xkey)
         d = limits()
         #for sample in sample_iterator(in_f, years, slices_1d=True):
-        for sample in sp.all_signal_samples_2017 + sp.all_signal_samples_2018:
+        for sample in sp.all_signal_samples_2018:
         #for sample in sp.all_signal_samples_2018:
             #result_path = file_path + (sample.name).replace('2017', '') + 'limitsum.txt'
-            result_path = file_path + (sample.name).replace('M0', 'M') + '_limitsum.txt'
+            sample_name = (sample.name).replace('2018', '201718')
+            sample_name = (sample_name).replace('M0', 'M')
+            #result_path = file_path + (sample.name).replace('M0', 'M') + '_limitsum.txt'
+            result_path = file_path + sample_name + '_limitsum.txt'
             if use(sample) and os.path.exists(result_path):
                 #fix tau to be in mm not um 
                 sample.tau = int(sample.tau)/1000. #with this - can only do either : limits by tau or limits by mass
@@ -301,28 +312,32 @@ def save_2d_plots():
     #for which, years in ('run2', [2016,2017,2018]), ('2017p8', [2017,2018]):
         #out_f = ROOT.TFile('limits_%s.root' % which, 'recreate')
 
-    for which, years in [ ('run2', [2016,2017,2018]) ]:
+    for which, years in [ ('run2', [2017,2018]) ]:
         out_f = ROOT.TFile('limits_2d_%s.root' % which, 'recreate')
 
-        for kind in ['mfv_stopld']:
+        for kind in ['mfv_stoplb', 'mfv_stopld']:
             d = limits()
-            for sample in sp.mfv_stopld_samples_2017:
-                result_path = file_path + (sample.name).replace('2017','') + 'limitsum.txt'
-                if sample.model==kind and os.path.exists(result_path):
-                  d.parse(sample, result_path)
+            for sample in sp.all_signal_samples_2018:
+                sample_name = (sample.name).replace('2018', '201718')
+                sample_name = (sample_name).replace('M0', 'M')
+                result_path = file_path + sample_name + '_limitsum.txt'
+                #if sample.model==kind and os.path.exists(result_path):
+                if (sample.name).startswith(kind) and os.path.exists(result_path):
+                    d.parse(sample, result_path)
                 # if -sample.isample in (209,210,211,303,399,489,589,590,675,676):
                 #     continue
                 # if sample.kind != kind:
                 #     continue
                 #d.parse(sample, 'combine_output_%s/signal_%05i/results' % (which, sample.isample)) # condor
                 #d.parse(sample, 'combine_output_%s/crab_signal_%05i/results' % (which, sample.isample)) # crab
-
             taus, masses = axisize(d['tau']), axisize(d['mass'])
             #taus.remove(30.)
 
             out_f.mkdir(kind).cd()
+            
+            #for x in 'observed expect2p5 expect16 expect50 expect68 expect84 expect95 expect97p5'.split():
+            for x in 'observed expect2p5 expect16 expect50 expect84 expect97p5'.split():
 
-            for x in 'observed expect2p5 expect16 expect50 expect68 expect84 expect95 expect97p5'.split():
                 h = ROOT.TH2D(x, '', len(masses)-1, masses, len(taus)-1, taus)
                 h.SetStats(0)
                 for p in d.points:
@@ -483,8 +498,10 @@ def dbg_exclude():
         c.SaveAs('/uscms/home/tucker/asdf/a%s.root' % interp)
 
 def to_r():
+    # x == masses -> cannot go to 1800 (max mass)
+    # y == lifetimes
     #f = ROOT.TFile('limits_run2.root')
-    f = ROOT.TFile('limits_2d_run2_UL.root')
+    f = ROOT.TFile('limits_2d_run2.root')
     print '''
 # if you didn't set up already, do this
 . /cvmfs/sft.cern.ch/lcg/views/LCG_89/x86_64-slc6-gcc62-opt/setup.sh
@@ -497,19 +514,21 @@ EOF
 env R_LIBS=~/.R R --no-save <<EOF
 '''
     print 'library(akima)'
-    for k in ['mfv_stopld']:
-        for y in 'observed', 'expect2p5', 'expect16', 'expect50', 'expect68', 'expect84', 'expect95', 'expect97p5':
+    for k in ['mfv_stoplb', 'mfv_stopld']:
+        #for y in 'observed', 'expect2p5', 'expect16', 'expect50', 'expect68', 'expect84', 'expect95', 'expect97p5':
+        for y in 'observed', 'expect2p5', 'expect16', 'expect50', 'expect84', 'expect97p5':
             x = '%s_%s' % (k,y)
             h = f.Get('%s/%s' % (k,y))
             to_ascii(h, open('/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/One2Two/to_r_%s.csv' % x, 'wt'), sep=',')
             print 'h<-read.table("to_r_%s.csv", header=TRUE, sep=",")' % x
-            print 'i<-interp(x=h\\$x, y=h\\$y, z=h\\$z, xo=seq(300, 3000, by=1), yo=c(seq(0.1,0.9,by=0.1), seq(1,19,by=1), seq(20,100,by=10)))' # gluino interpretation
+            print 'i<-interp(x=h\\$x, y=h\\$y, z=h\\$z, xo=seq(200, 1799, by=1), yo=c(seq(100,900,by=100), seq(1000,19000,by=1000), seq(20000,30000,by=10000)))' # gluino interpretation
+            #print 'i<-interp(x=h\\$x, y=h\\$y, z=h\\$z, xo=seq(300, 3000, by=1), yo=c(seq(0.1,0.9,by=0.1), seq(1,19,by=1), seq(20,100,by=10)))' # gluino interpretation
             #print 'i<-interp(x=h\\$x, y=h\\$y, z=h\\$z, xo=seq(300, 3000, by=1), yo=c(seq(0.16,0.915,by=0.1), seq(1,19,by=1), seq(20,100,by=5)))' # higgsino interpretation, for plot cosmetic reasons
             for a in 'xyz':
                 print 'write.csv(i\\$%s, "from_r_%s_%s.csv")' % (a,x,a)
     print 'EOF'
     os.system('rm -f to_r.zip')
-    os.system('zip -m to_r.zip to_r_*.csv 2>&1 >/dev/null')
+    #os.system('zip -m to_r.zip to_r_*.csv 2>&1 >/dev/null')
 
 def one_from_r(ex, name):
     def read_csv(fn):
@@ -518,6 +537,18 @@ def one_from_r(ex, name):
         vs = []
         for line in lines:
             ws = [float(x) for x in line.split(',')]
+            # try : 
+            #     ws = [float(x) for x in line.split(',')]
+            
+            # except : #problem when encounter Nan values ... quick workaround
+            #     continue
+            #     # ws = []
+            #     # for x in line.split(','):
+            #     #     if x == 'NA' :
+            #     #         ws.append(float(0))
+            #     #     else :
+            #     #         ws.append(float(x))
+                        
             ws.pop(0)
             if len(ws) == 1:
                 ws = ws[0]
@@ -549,14 +580,15 @@ def from_r():
     for k in 'mfv_stopld', 'mfv_stoplb':
     #for k in 'mfv_stopdbardbar', 'mfv_neu':
         for opt in 'nm', 'up', 'dn':
-            for ex in 'observed', 'expect50', 'expect16', 'expect84': # expect2p5 expect68 expect95 expect97p5
+            #for ex in 'observed', 'expect50', 'expect16', 'expect84': # expect2p5 expect68 expect95 expect97p5
+            for ex in 'observed', 'expect2p5', 'expect16', 'expect50', 'expect84', 'expect97p5': # expect2p5 expect68 expect95 expect97p5
                 ex = k + '_' + ex
                 n = '%s_fromrinterp' % ex
                 h = one_from_r(ex, n)
                 if k == 'mfv_stopdbardbar':
                     whichlist = ['stopstop']
                 elif k == 'mfv_stopld' or k == 'mfv_stoplb':
-                    whichlist = ['stopstop']
+                    whichlist = ['stopstop_new']
                 elif k == 'mfv_neu':
                     whichlist = ['gluglu', 'higgsino_N2N1']
 
@@ -578,7 +610,7 @@ if __name__ == '__main__':
             set_style()
             ps = plot_saver(plot_dir('limitsplot_theory'), size=(600,600))
             g1 = make_theory('gluglu')
-            g2 = make_theory('stopstop')
+            g2 = make_theory('stopstop_new')
             g3 = make_theory('higgsino_N2N1')
             g1.Draw('A3')
             g2.Draw('3')
