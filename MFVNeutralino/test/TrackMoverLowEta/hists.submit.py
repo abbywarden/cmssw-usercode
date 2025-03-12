@@ -6,7 +6,7 @@ version = 'ulv12lepmofftossv8'
 dataset = 'trackmover' + version
 apply_correction = False
 # year = '2017p8'
-year = '2018'
+year = '20161'
 for nl in 1,: # 3:
     for nb in 0,: # 1, 2:
       for tau in [100, 300] : #[100, 300,1000, 3000, 30000] :
@@ -29,7 +29,7 @@ for nl in 1,: # 3:
               NtupleReader_submit(batch, dataset, samples, exe_args=args, input_fns_extra=w_fns)
           else:
             #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, ttbar=True, diboson=True, Lepton_data=True, BTagCSV_data=True, DisplacedJet_data=True)
-            samples = [getattr(Samples, 'ww_2018')]
+            samples = [getattr(Samples, 'ww_20161')]
             #samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
             batch_tag = "noCorrection"
             correction_args = "--jet-decayweights false "

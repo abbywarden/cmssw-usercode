@@ -94,7 +94,7 @@ MFVTrackMover::MFVTrackMover(const edm::ParameterSet& cfg)
   produces<reco::TrackCollection>("muons");
   produces<jmt::TracksMap>("mumap");
   produces<reco::TrackCollection>("movedmu");
-  //
+  
   produces<int>("npreseljets");
   produces<int>("npreselbjets");
   produces<int>("npreselele");
@@ -258,7 +258,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
         bjets_used->push_back(*presel_bjets[i]);
       }
 
-      //determine which lep collection to pull from : 
+      // //determine which lep collection to pull from : 
       if (presel_ele.size() == 0) { 
         for (int i : knuth_select(nlep, presel_mu.size())) {
           selected_mu.push_back(presel_mu[i]);
@@ -364,6 +364,10 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
                                          tk->vy() + move.y(),
                                          tk->vz() + move.z());
 
+          // reco::TrackBase::Point new_point(tk->vx(),
+          //                                tk->vy(),
+          //                                tk->vz());
+
           output_muon_tracks->push_back(reco::Track(tk->chi2(), tk->ndof(), new_point, tk->momentum(), tk->charge(), tk->covariance(), tk->algo()));
           reco::Track& new_mutk = output_muon_tracks->back();
           new_mutk.setQualityMask(tk->qualityMask());
@@ -417,6 +421,9 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
                                          tk->vy() + move.y(),
                                          tk->vz() + move.z());
 
+          // reco::TrackBase::Point new_point(tk->vx(),
+          //                                 tk->vy(),
+          //                                 tk->vz());
           output_electron_tracks->push_back(reco::Track(tk->chi2(), tk->ndof(), new_point, tk->momentum(), tk->charge(), tk->covariance(), tk->algo()));
           reco::Track& new_eletk = output_electron_tracks->back();
           new_eletk.setQualityMask(tk->qualityMask());
@@ -438,13 +445,13 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
     for (size_t i = 0, ie = tracks->size(); i < ie; ++i) {
       reco::TrackRef tk(tracks, i);
       bool to_move = false;
-      for (const pat::Jet* jet : selected_jets)
+      for (const pat::Jet* jet : selected_jets){
         for (const reco::TrackRef& jet_tk : track_ref_getter.tracks(event, *jet))
           if (tk == jet_tk) {
             to_move = true;
             goto done_check_to_move;
           }
-
+      }
       done_check_to_move:
 
       if (to_move) {

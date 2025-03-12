@@ -15,27 +15,27 @@ private:
 
   const edm::EDGetTokenT<MFVVertexAuxCollection> vertices_token;
   const edm::EDGetTokenT<std::vector<reco::TrackRef>> sel_tracks_token;
-  // const edm::EDGetTokenT<std::vector<reco::TrackRef>> sel_mutracks_token;
-  // const edm::EDGetTokenT<std::vector<reco::TrackRef>> sel_eletracks_token;
+  const edm::EDGetTokenT<std::vector<reco::TrackRef>> sel_mutracks_token;
+  const edm::EDGetTokenT<std::vector<reco::TrackRef>> sel_eletracks_token;
   const std::string mover_src;
   const edm::EDGetTokenT<reco::TrackCollection> all_tracks_token;
   const edm::EDGetTokenT<reco::TrackCollection> moved_tracks_token;
-  // const edm::EDGetTokenT<reco::TrackCollection> moved_electron_tracks_token;
-  // const edm::EDGetTokenT<reco::TrackCollection> moved_muon_tracks_token;
+  const edm::EDGetTokenT<reco::TrackCollection> moved_electron_tracks_token;
+  const edm::EDGetTokenT<reco::TrackCollection> moved_muon_tracks_token;
   const edm::EDGetTokenT<int> npreseljets_token;
   const edm::EDGetTokenT<int> npreselbjets_token;
-  // const edm::EDGetTokenT<int> npreselmu_token;
-  // const edm::EDGetTokenT<int> npreselele_token;
+  const edm::EDGetTokenT<int> npreselmu_token;
+  const edm::EDGetTokenT<int> npreselele_token;
   const edm::EDGetTokenT<pat::JetCollection> jets_used_token;
   const edm::EDGetTokenT<pat::JetCollection> bjets_used_token;
-  // const edm::EDGetTokenT<pat::MuonCollection> muons_used_token;
-  // const edm::EDGetTokenT<pat::ElectronCollection> ele_used_token;
+  const edm::EDGetTokenT<pat::MuonCollection> muons_used_token;
+  const edm::EDGetTokenT<pat::ElectronCollection> ele_used_token;
   const edm::EDGetTokenT<std::vector<double> > move_vertex_token;
   const double max_dist2move;
   const bool apply_presel;
   const unsigned njets_req;
   const unsigned nbjets_req;
-  // const unsigned nlep_req;
+  const unsigned nlep_req;
   const bool for_mctruth;
 };
 
@@ -47,28 +47,28 @@ MFVMovedTracksTreer::MFVMovedTracksTreer(const edm::ParameterSet& cfg)
     gentruth_filler(nt.gentruth(), cfg, consumesCollector()),
     vertices_token(consumes<MFVVertexAuxCollection>(cfg.getParameter<edm::InputTag>("vertices_src"))),
     sel_tracks_token(consumes<std::vector<reco::TrackRef>>(cfg.getParameter<edm::InputTag>("sel_tracks_src"))),
-    // sel_mutracks_token(consumes<std::vector<reco::TrackRef>>(cfg.getParameter<edm::InputTag>("sel_mutracks_src"))),
-    // sel_eletracks_token(consumes<std::vector<reco::TrackRef>>(cfg.getParameter<edm::InputTag>("sel_eletracks_src"))),
+    sel_mutracks_token(consumes<std::vector<reco::TrackRef>>(cfg.getParameter<edm::InputTag>("sel_mutracks_src"))),
+    sel_eletracks_token(consumes<std::vector<reco::TrackRef>>(cfg.getParameter<edm::InputTag>("sel_eletracks_src"))),
     mover_src(cfg.getParameter<std::string>("mover_src")),
     all_tracks_token(consumes<reco::TrackCollection>(edm::InputTag(mover_src))),
     moved_tracks_token(consumes<reco::TrackCollection>(edm::InputTag(mover_src, "moved"))),
-    // moved_electron_tracks_token(consumes<reco::TrackCollection>(edm::InputTag(mover_src, "movedele"))),
-    // moved_muon_tracks_token(consumes<reco::TrackCollection>(edm::InputTag(mover_src, "movedmu"))),    
+    moved_electron_tracks_token(consumes<reco::TrackCollection>(edm::InputTag(mover_src, "movedele"))),
+    moved_muon_tracks_token(consumes<reco::TrackCollection>(edm::InputTag(mover_src, "movedmu"))),    
     npreseljets_token(consumes<int>(edm::InputTag(mover_src, "npreseljets"))),
     npreselbjets_token(consumes<int>(edm::InputTag(mover_src, "npreselbjets"))),
-    // npreselmu_token(consumes<int>(edm::InputTag(mover_src, "npreselmu"))),
-    // npreselele_token(consumes<int>(edm::InputTag(mover_src, "npreselele"))),
+    npreselmu_token(consumes<int>(edm::InputTag(mover_src, "npreselmu"))),
+    npreselele_token(consumes<int>(edm::InputTag(mover_src, "npreselele"))),
     jets_used_token(consumes<pat::JetCollection>(edm::InputTag(mover_src, "jetsUsed"))),
     bjets_used_token(consumes<pat::JetCollection>(edm::InputTag(mover_src, "bjetsUsed"))),
-    // muons_used_token(consumes<pat::MuonCollection>(edm::InputTag(mover_src, "muonsUsed"))),
-    // ele_used_token(consumes<pat::ElectronCollection>(edm::InputTag(mover_src, "eleUsed"))),
+    muons_used_token(consumes<pat::MuonCollection>(edm::InputTag(mover_src, "muonsUsed"))),
+    ele_used_token(consumes<pat::ElectronCollection>(edm::InputTag(mover_src, "eleUsed"))),
 
     move_vertex_token(consumes<std::vector<double> >(edm::InputTag(mover_src, "moveVertex"))),
     max_dist2move(cfg.getParameter<double>("max_dist2move")),
     apply_presel(cfg.getParameter<bool>("apply_presel")),
     njets_req(cfg.getParameter<unsigned>("njets_req")),
     nbjets_req(cfg.getParameter<unsigned>("nbjets_req")),
-    // nlep_req(cfg.getParameter<unsigned>("nlep_req")),
+    nlep_req(cfg.getParameter<unsigned>("nlep_req")),
     for_mctruth(cfg.getParameter<bool>("for_mctruth"))
 {}
 
@@ -86,11 +86,11 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     edm::Handle<std::vector<reco::TrackRef>> sel_tracks;
     event.getByToken(sel_tracks_token, sel_tracks);
 
-    // edm::Handle<std::vector<reco::TrackRef>> sel_mutracks;
-    // event.getByToken(sel_mutracks_token, sel_mutracks);
+    edm::Handle<std::vector<reco::TrackRef>> sel_mutracks;
+    event.getByToken(sel_mutracks_token, sel_mutracks);
 
-    // edm::Handle<std::vector<reco::TrackRef>> sel_eletracks;
-    // event.getByToken(sel_eletracks_token, sel_eletracks);
+    edm::Handle<std::vector<reco::TrackRef>> sel_eletracks;
+    event.getByToken(sel_eletracks_token, sel_eletracks);
 
     for (reco::TrackRef tk : *sel_tracks) {
       const int whichtk = nt.tracks().n();
@@ -102,26 +102,27 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
       nt.tracks().set_which_pv(whichtk, whichpv);
     }
 
-    // //same as above but for muons, electrons ... 
-    // for (reco::TrackRef mutk : *sel_mutracks) {
-    //   const int whichtk = nt.tracks().n();
-    //   tks_push_back(*mutk);
-    //   nt.set_mtk_moved(whichtk); // not really "moved" but this is to distinguish sel tracks from tracks coming in from jets below
+    //same as above but for muons, electrons ... 
+    for (reco::TrackRef mutk : *sel_mutracks) {
+      const int whichtk = nt.tracks().n();
+      tks_push_back(*mutk);
+      nt.set_mtk_moved(whichtk); // not really "moved" but this is to distinguish sel tracks from tracks coming in from jets below
 
-    //   auto vf = nt_filler.pvs_filler();
-    //   const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, mutk);
-    //   nt.tracks().set_which_pv(whichtk, whichpv);
-    // }
+      auto vf = nt_filler.pvs_filler();
+      const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, mutk);
+      nt.tracks().set_which_pv(whichtk, whichpv);
+    }
 
-    // for (reco::TrackRef eletk : *sel_eletracks) {
-    //   const int whichtk = nt.tracks().n();
-    //   tks_push_back(*eletk);
-    //   nt.set_etk_moved(whichtk); // not really "moved" but this is to distinguish sel tracks from tracks coming in from jets below
+    for (reco::TrackRef eletk : *sel_eletracks) {
+      const int whichtk = nt.tracks().n();
+      tks_push_back(*eletk);
+      nt.set_etk_moved(whichtk); // not really "moved" but this is to distinguish sel tracks from tracks coming in from jets below
 
-    //   auto vf = nt_filler.pvs_filler();
-    //   const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, eletk);
-    //   nt.tracks().set_which_pv(whichtk, whichpv);
-    // }
+      auto vf = nt_filler.pvs_filler();
+      const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, eletk);
+      nt.tracks().set_which_pv(whichtk, whichpv);
+
+    }
 
     // JMTBAD use TracksSubNtupleFiller::which_jet?
     for (const pat::Jet& jet : nt_filler.jets_filler().jets(event)) {
@@ -169,41 +170,41 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     }
   }
   else {
-    edm::Handle<reco::TrackCollection> all_tracks, moved_tracks;
-    // edm::Handle<reco::TrackCollection> all_tracks, moved_tracks, moved_electron_tracks, moved_muon_tracks;
+    // edm::Handle<reco::TrackCollection> all_tracks, moved_tracks;
+    edm::Handle<reco::TrackCollection> all_tracks, moved_tracks, moved_electron_tracks, moved_muon_tracks;
     edm::Handle<std::vector<reco::TrackRef>> sel_tracks;
-    // edm::Handle<std::vector<reco::TrackRef>> sel_mutracks;
-    // edm::Handle<std::vector<reco::TrackRef>> sel_eletracks;
-    edm::Handle<int> npreseljets, npreselbjets; //, npreselmu, npreselele;
+    edm::Handle<std::vector<reco::TrackRef>> sel_mutracks;
+    edm::Handle<std::vector<reco::TrackRef>> sel_eletracks;
+    edm::Handle<int> npreseljets, npreselbjets, npreselmu, npreselele;
     edm::Handle<pat::JetCollection> jets_used, bjets_used;
-    // edm::Handle<pat::ElectronCollection> ele_used;
-    // edm::Handle<pat::MuonCollection> muons_used;
+    edm::Handle<pat::ElectronCollection> ele_used;
+    edm::Handle<pat::MuonCollection> muons_used;
     edm::Handle<std::vector<double> > move_vertex;
     event.getByToken(all_tracks_token,   all_tracks);
     event.getByToken(sel_tracks_token,   sel_tracks);
-    // event.getByToken(sel_mutracks_token,   sel_mutracks);
-    // event.getByToken(sel_eletracks_token,   sel_eletracks);
+    event.getByToken(sel_mutracks_token,   sel_mutracks);
+    event.getByToken(sel_eletracks_token,   sel_eletracks);
     event.getByToken(moved_tracks_token, moved_tracks);
-    // event.getByToken(moved_electron_tracks_token, moved_electron_tracks);
-    // event.getByToken(moved_muon_tracks_token, moved_muon_tracks);
+    event.getByToken(moved_electron_tracks_token, moved_electron_tracks);
+    event.getByToken(moved_muon_tracks_token, moved_muon_tracks);
     event.getByToken(npreseljets_token,  npreseljets);
     event.getByToken(npreselbjets_token, npreselbjets);
-    // event.getByToken(npreselele_token, npreselele);
-    // event.getByToken(npreselmu_token, npreselmu);
+    event.getByToken(npreselele_token, npreselele);
+    event.getByToken(npreselmu_token, npreselmu);
     event.getByToken(jets_used_token,    jets_used);
     event.getByToken(bjets_used_token,   bjets_used);
-    // event.getByToken(muons_used_token,   muons_used);
-    // event.getByToken(ele_used_token,     ele_used);
+    event.getByToken(muons_used_token,   muons_used);
+    event.getByToken(ele_used_token,     ele_used);
     event.getByToken(move_vertex_token,  move_vertex);
 
-    // nt.tm().set(all_tracks->size(), moved_tracks->size(), moved_electron_tracks->size(), moved_muon_tracks->size(), *npreseljets, *npreselbjets, *npreselmu, *npreselele,
-    //             (*move_vertex)[0] - nt_filler.bs().x((*move_vertex)[2]), // JMTBAD get rid of beamspot subtraction everywhere
-    //             (*move_vertex)[1] - nt_filler.bs().y((*move_vertex)[2]),
-    //             (*move_vertex)[2]);
-    nt.tm().set(all_tracks->size(), moved_tracks->size(), *npreseljets, *npreselbjets,
+    nt.tm().set(all_tracks->size(), moved_tracks->size(), moved_electron_tracks->size(), moved_muon_tracks->size(), *npreseljets, *npreselbjets, *npreselmu, *npreselele,
                 (*move_vertex)[0] - nt_filler.bs().x((*move_vertex)[2]), // JMTBAD get rid of beamspot subtraction everywhere
                 (*move_vertex)[1] - nt_filler.bs().y((*move_vertex)[2]),
                 (*move_vertex)[2]);
+    // nt.tm().set(all_tracks->size(), moved_tracks->size(), *npreseljets, *npreselbjets, *npreselmu, *npreselele,
+    //             (*move_vertex)[0] - nt_filler.bs().x((*move_vertex)[2]), // JMTBAD get rid of beamspot subtraction everywhere
+    //             (*move_vertex)[1] - nt_filler.bs().y((*move_vertex)[2]),
+    //             (*move_vertex)[2]);
 
 
     for (reco::TrackRef tk : *sel_tracks) {
@@ -214,21 +215,23 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
       nt.tracks().set_which_pv(whichtk, whichpv);
     }
 
-    // for (reco::TrackRef mtk : *sel_mutracks) {
-    //   const int whichtk = nt.tracks().n();
-    //   tks_push_back(*mtk);
-    //   auto vf = nt_filler.pvs_filler();
-    //   const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, mtk);
-    //   nt.tracks().set_which_pv(whichtk, whichpv);
-    // }
+    for (reco::TrackRef mtk : *sel_mutracks) {
+      const int whichtk = nt.tracks().n();
+      tks_push_back(*mtk);
+      auto vf = nt_filler.pvs_filler();
+      const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, mtk);
+      nt.tracks().set_which_pv(whichtk, whichpv);
 
-    // for (reco::TrackRef etk : *sel_eletracks) {
-    //   const int whichtk = nt.tracks().n();
-    //   tks_push_back(*etk);
-    //   auto vf = nt_filler.pvs_filler();
-    //   const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, etk);
-    //   nt.tracks().set_which_pv(whichtk, whichpv);
-    // }
+    }
+
+    for (reco::TrackRef etk : *sel_eletracks) {
+      const int whichtk = nt.tracks().n();
+      tks_push_back(*etk);
+      auto vf = nt_filler.pvs_filler();
+      const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, etk);
+      nt.tracks().set_which_pv(whichtk, whichpv);
+
+    }
 
 
     for (const reco::Track& tk : *moved_tracks) {
@@ -251,51 +254,65 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
       nt.set_tk_moved(which);
     }
 
-    // for (const reco::Track& mtk : *moved_muon_tracks) {
-    //   double dist2min = 0.1;
-    //   int which = -1;
-    //   for (int i = 0, ie = nt.tracks().n(); i < ie; ++i) {
-    //     const double dist2 = mag2(mtk.charge() * mtk.pt() - nt.tracks().qpt(i),
-    //                               mtk.eta()              - nt.tracks().eta(i),
-    //                               mtk.phi()              - nt.tracks().phi(i));
-    //     if (dist2 < dist2min) {
-    //       dist2min = dist2;
-    //       which = i;
-    //     }
-    //   }
+    const size_t nmovedmu = muons_used->size();
+    std::vector<int> whichs_mu(nmovedmu, -1);
 
-    //   if (which == -1) {
-    //     which = nt.tracks().n();
-    //     tks_push_back(mtk);
-    //   }
-    //   nt.set_mtk_moved(which);
-    // }
+    int m = -1;
+    for (const pat::MuonCollection* muons : {&*muons_used}) {
+      for (const pat::Muon& mu : *muons) {
+        ++m;
+        double dist2min = 0.1;
+        int which = -1;
 
-    // for (const reco::Track& etk : *moved_electron_tracks) {
-    //   double dist2min = 0.1;
-    //   int which = -1;
-    //   for (int i = 0, ie = nt.tracks().n(); i < ie; ++i) {
-    //     const double dist2 = mag2(etk.charge() * etk.pt() - nt.tracks().qpt(i),
-    //                               etk.eta()              - nt.tracks().eta(i),
-    //                               etk.phi()              - nt.tracks().phi(i));
-    //     if (dist2 < dist2min) {
-    //       dist2min = dist2;
-    //       which = i;
-    //     }
-    //   }
+        for (int i = 0, im = nt.muons().n(); i < im; ++i) { 
+          const double dist2 = mag2(mu.pt()     - nt.muons().pt(i),
+                                    mu.eta()    - nt.muons().eta(i),
+                                    mu.phi()    - nt.muons().phi(i));
+          if (dist2 < dist2min) {
+            dist2min = dist2;
+            which = i;
+          }
+        }
+        assert(which != -1);
+        whichs_mu[m] = which;
+        nt.set_mtk_moved(which);
+      }
+    }
 
-    //   if (which == -1) {
-    //     which = nt.tracks().n();
-    //     tks_push_back(etk);
-    //   }
-    //   nt.set_etk_moved(which);
-    // }
 
+    const size_t nmovedele = ele_used->size();
+    std::vector<int> whichs_ele(nmovedele, -1);
+
+    int e = -1;
+    for (const pat::ElectronCollection* electrons : { &*ele_used }) {
+      for (const pat::Electron& ele : *electrons) {
+        ++e;
+        double dist2min = 0.1;
+        int which = -1;
+
+        for (int i = 0, ie = nt.electrons().n(); i < ie; ++i) { 
+          const double dist2 = mag2(ele.pt()     - nt.electrons().pt(i),
+                                    ele.eta()    - nt.electrons().eta(i),
+                                    ele.phi()    - nt.electrons().phi(i));
+          if (dist2 < dist2min) {
+            dist2min = dist2;
+            which = i;
+          }
+        }
+        assert(which != -1);
+        whichs_ele[e] = which;
+        nt.set_etk_moved(which);
+      }
+    }
+
+    //this has trouble when there is a lepton moved to the jet 
     for (const pat::Jet& jet : nt_filler.jets_filler().jets(event)) {
       double dist2min = 0.1;
       int whichjet = -1;
-
+      
       for (int j = 0, je = nt.jets().n(); j < je; ++j) {
+        // std::cout << "(from jets_filler) jet idx, pt, eta, phi, energy : " << j << " " << jet.pt() << " " << jet.eta() << " " << jet.phi() << " " << jet.energy() << std::endl;
+        // std::cout << "(from nt.jets()) jet idx, pt, eta, phi, energy : " << j << " " << nt.jets().pt(j) << " " << nt.jets().eta(j) << " " << nt.jets().phi(j) << " " << nt.jets().energy(j) << std::endl;
         const double dist2 = mag2(jet.pt()     - nt.jets().pt(j),
                                   jet.eta()    - nt.jets().eta(j),
                                   jet.phi()    - nt.jets().phi(j),
@@ -322,9 +339,9 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
               whichtk = i;
             }
           }
-          if (whichtk != -1)
+          if (whichtk != -1) {
             nt.tracks().set_which_jet(whichtk, whichjet);
-    
+          }
 
  
         }
@@ -416,8 +433,8 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
   }
 
   if (apply_presel) {
-    // if ((!for_mctruth && (nt.tm().npreseljets() < njets_req || nt.tm().npreselbjets() < nbjets_req || (nt.tm().npreselele() + nt.tm().npreselmu()) < nlep_req))) // || nt.jets().ht() < 1000)
-    if ((!for_mctruth && (nt.tm().npreseljets() < njets_req || nt.tm().npreselbjets() < nbjets_req))) // || nt.jets().ht() < 1000)
+    if ((!for_mctruth && (nt.tm().npreseljets() < njets_req || nt.tm().npreselbjets() < nbjets_req || (nt.tm().npreselele() + nt.tm().npreselmu()) < nlep_req))) // || nt.jets().ht() < 1000)
+    // if ((!for_mctruth && (nt.tm().npreseljets() < njets_req || nt.tm().npreselbjets() < nbjets_req))) // || nt.jets().ht() < 1000)
       return;
   }
   nt_filler.finalize();

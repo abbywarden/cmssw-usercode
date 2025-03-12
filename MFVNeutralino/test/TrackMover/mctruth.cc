@@ -513,7 +513,7 @@ int main(int argc, char** argv) {
 
       for (int j = 0, je = jets.n(); j < je; ++j) {
         // std::cout << jets.pt(j)<<std::endl;
-        std::cout << jets.ntracks(j)<<std::endl;
+        std::cout << int(jets.ntracks(j))<<std::endl;
       }
 
       if (dijet) {

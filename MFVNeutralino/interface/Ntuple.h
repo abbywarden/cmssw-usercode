@@ -280,12 +280,16 @@ namespace mfv {
     virtual void read_from_tree(TTree*);
     virtual void copy_vectors() {}
 
-    void set(ushort nalltracks, uchar nmovedtracks, uchar npreseljets, uchar npreselbjets,
+    void set(ushort nalltracks, uchar nmovedtracks, uchar nmovedeletracks, uchar nmovedmutracks, uchar npreseljets, uchar npreselbjets, uchar npreselele, uchar npreselmu,
              float move_x, float move_y, float move_z) {
       nalltracks_ = nalltracks;
       nmovedtracks_ = nmovedtracks;
+      nmovedeletracks_ = nmovedeletracks;
+      nmovedmutracks_ = nmovedmutracks;
       npreseljets_ = npreseljets;
       npreselbjets_ = npreselbjets;
+      npreselele_ = npreselele;
+      npreselmu_ = npreselmu;
       move_x_ = move_x;
       move_y_ = move_y;
       move_z_ = move_z;
@@ -293,8 +297,12 @@ namespace mfv {
 
     ushort nalltracks() const { return nalltracks_; }
     uchar nmovedtracks() const { return nmovedtracks_; }
+    uchar nmovedeletracks() const { return nmovedeletracks_; }
+    uchar nmovedmutracks() const { return nmovedmutracks_; }
     uchar npreseljets() const { return npreseljets_; }
     uchar npreselbjets() const { return npreselbjets_; }
+    uchar npreselele() const { return npreselele_; }
+    uchar npreselmu() const { return npreselmu_; }
 
     float move_x() const { return move_x_; }
     float move_y() const { return move_y_; }
@@ -304,9 +312,13 @@ namespace mfv {
   private:
     ushort nalltracks_;
     uchar nmovedtracks_;
+    uchar nmovedeletracks_;
+    uchar nmovedmutracks_;
     // JMTBAD "presel" on these two really doesn't mean anything other than they have pt > 20 and pass the jet id
     uchar npreseljets_; // JMTBAD this is actually # of jets with bdisc < veto
     uchar npreselbjets_;
+    uchar npreselele_;
+    uchar npreselmu_;
 
     float move_x_;
     float move_y_;
@@ -448,6 +460,15 @@ namespace mfv {
     static const unsigned b_tk_moved = 0;
     bool tk_moved    (int i) { return test_bit(tracks().misc(i), b_tk_moved); }
     void set_tk_moved(int i) { unsigned x = tracks().misc(i); set_bit(x, b_tk_moved, 1); tracks().set_misc(i,x); }
+
+    static const unsigned ele_tk_moved = 0;
+    bool etk_moved    (int i) { return test_bit(tracks().misc(i), ele_tk_moved); }
+    void set_etk_moved(int i) { unsigned x = tracks().misc(i); set_bit(x, ele_tk_moved, 1); tracks().set_misc(i,x); }
+
+    static const unsigned mu_tk_moved = 0;
+    bool mtk_moved    (int i) { return test_bit(tracks().misc(i), mu_tk_moved); }
+    void set_mtk_moved(int i) { unsigned x = tracks().misc(i); set_bit(x, mu_tk_moved, 1); tracks().set_misc(i,x); }
+
 
     TVector3 move_vector() const { return TVector3(tm().move_x() + bs().x(tm().move_z()) - (pvs().x(0) + bs().x(pvs().z(0))),
                                                    tm().move_y() + bs().y(tm().move_z()) - (pvs().y(0) + bs().y(pvs().z(0))),

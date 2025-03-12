@@ -2,9 +2,12 @@ include $(CMSSW_BASE)/src/JMTucker/MFVNeutralino/NtupleMakefile.in
 
 SHADOWDEPS += utils.h
 
-all: hists.exe mctruth.exe tests.exe
+all: hists.exe mctruth.exe tests.exe hists1j.exe
 
 hists.exe: hists.cc BTagSFHelper.o $(SHADOWDEPS)
+	g++ -o $@ $< BTagSFHelper.o $(FLAGS)
+
+hists1j.exe: hists1j.cc BTagSFHelper.o $(SHADOWDEPS)
 	g++ -o $@ $< BTagSFHelper.o $(FLAGS)
 
 BTagCalibrationStandalone.h:

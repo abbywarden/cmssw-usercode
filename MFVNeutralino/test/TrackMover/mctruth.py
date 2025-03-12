@@ -44,15 +44,15 @@ process.p = cms.Path(process.mfvEventFilterSequence *process.mfvGenParticles*pro
 tree = cms.EDAnalyzer('MFVMovedTracksTreer',
                                              jmtNtupleFiller_pset(settings.is_miniaod, True, False),
                                              sel_tracks_src = cms.InputTag('mfvVertexTracks','all'),
-                                            #  sel_mutracks_src = cms.InputTag('mfvVertexTracks', 'allmu'),
-                                            #  sel_eletracks_src = cms.InputTag('mfvVertexTracks', 'allele'),
+                                             sel_mutracks_src = cms.InputTag('mfvVertexTracks', 'allmu'),
+                                             sel_eletracks_src = cms.InputTag('mfvVertexTracks', 'allele'),
                                              mover_src = cms.string(''),
                                              vertices_src = cms.InputTag('mfvVerticesAux'),
                                              max_dist2move = cms.double(-1),
                                              apply_presel = cms.bool(False), #not a usual preselection cuts -- TM moved-jet cuts 
                                              njets_req = cms.uint32(0),
                                              nbjets_req = cms.uint32(0),
-                                            #  nlep_req = cms.uint32(0),
+                                             nlep_req = cms.uint32(0),
                                              for_mctruth = cms.bool(True),
                                              )
 
@@ -67,7 +67,12 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     #samples = pick_samples(dataset, all_signal='only')
     
     #samples = [getattr(Samples, 'ZHToSSTodddd_tau1mm_M55_20161')] 
-    samples = [getattr(Samples, 'mfv_stopbbarbbar_tau001000um_M0200_20161')] 
+    #samples = [getattr(Samples, 'mfv_stopbbarbbar_tau001000um_M0200_20161')] 
+    samples = [getattr(Samples, 'mfv_stoplb_tau001000um_M0200_2018')] 
+    samples += [getattr(Samples, 'mfv_stoplb_tau001000um_M1000_2018')]
+    samples += [getattr(Samples,  'mfv_stopld_tau001000um_M0200_2018')]
+    samples += [getattr(Samples, 'mfv_stopld_tau001000um_M1000_2018')]
+
     #samples = [getattr(Samples, 'ggHToSSTodddd_tau1mm_M55_20161')]
     set_splitting(samples, dataset, 'ntuple')
     ms = MetaSubmitter('TrackMoverMCTruth' + version, dataset=dataset)
