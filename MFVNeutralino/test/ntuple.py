@@ -4,7 +4,7 @@ from JMTucker.MFVNeutralino.NtupleCommon import *
 from JMTucker.Tools.Year import year
 
 settings = NtupleSettings()
-settings.is_mc = True
+settings.is_mc = True 
 settings.is_miniaod = True
 
 settings.run_n_tk_seeds = False
@@ -37,13 +37,16 @@ settings.randpars_filter = False
 
 process = ntuple_process(settings)
 dataset = 'miniaod' if settings.is_miniaod else 'main'
-#sample_files(process, 'ttbar_semilep_2018', dataset, 3)
-sample_files(process, 'mfv_stoplb_tau000300um_M0800_2018', dataset, 1)
-#sample_files(process, 'SingleMuon2018A', dataset, 2)
-#sample_files(process, 'qcdbctoept030_2017', dataset, 4)
+sample_files(process, 'ttbar_semilep_2018', dataset, 1)
+#sample_files(process, 'mfv_stoplb_tau000300um_M0800_2018', dataset, 1)
+#sample_files(process, 'SingleMuon2018D', dataset, 1)
+#sample_files(process, 'EGamma2018A', dataset, 1)
+#sample_files(process, 'qcdbctoept030_2018', dataset, 2)
+#sample_files(process, 'mfv_stopld_tau010000um_M0800_2017', dataset, 1)
 #sample_files(process, 'mfv_stopld_tau010000um_M0800_20161', dataset, 1)
+#sample_files(process, 'mfv_stopld_tau000100um_M1400_20162', dataset, 1)
 
-max_events(process, 1000)
+max_events(process, 5000)
 cmssw_from_argv(process)
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
@@ -55,11 +58,6 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
        samples = [getattr(Samples, 'ggHToSSTodddd_tau1mm_M55_2017')] 
     elif use_MET_triggers :
        samples = pick_samples(dataset, qcd=True, ttbar=False, data=False, leptonic=True, splitSUSY=True, Zvv=True, met=True, span_signal=False)
-    elif use_Lepton_triggers :
-        #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=True, leptonic=True, diboson=True, Lepton_data=False)
-        #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=True, leptonic=False, diboson=False, Lepton_data=False)
-        #samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=False, leptonic=False, diboson=False, Lepton_data=False)
-        samples = [getattr(Samples, 'WplusHToSSTodddd_tau1mm_M40_2018')] 
     elif use_Muon_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=True, leptonic=True, met=True, diboson=True, Lepton_data=True)
         #samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
@@ -68,12 +66,14 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     elif use_Electron_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=True, leptonic=True, met=True, diboson=True, Lepton_data=False)
     elif use_Lepton_triggers :
-        samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, met=False, leptonic=False, ttbar=False, diboson=False, Zqq=False, Lepton_data=True)
+        #samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, met=False, leptonic=True, ttbar=False, diboson=False, Zqq=False, Lepton_data=False)
+        #samples = [getattr(Samples, 'mfv_stoplb_tau030000um_M0200_2018'), getattr(Samples, 'mfv_stoplb_tau001000um_M0300_2018'), getattr(Samples, 'mfv_stoplb_tau010000um_M0300_2018'), getattr(Samples, 'mfv_stoplb_tau000300um_M0400_2018'), getattr(Samples, 'mfv_stoplb_tau030000um_M0400_2018'), getattr(Samples, 'mfv_stoplb_tau000100um_M0600_2018'), getattr(Samples, 'mfv_stoplb_tau010000um_M0600_2018') ]
+        samples = [getattr(Samples, 'EGamma2018C')]
     else :
         samples = pick_samples(dataset, qcd=False, ttbar=False, data=False, all_signal=not settings.run_n_tk_seeds)
         
         
-    set_splitting(samples, dataset, 'ntuple', data_json=json_path('ana_2018_SingleLept.json'), limit_ttbar=False)
+    set_splitting(samples, dataset, 'ntuple', data_json=json_path('ana_2018_EgammaMu.json'), limit_ttbar=False)
 
     ms = MetaSubmitter(settings.batch_name(), dataset=dataset)
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, npu_filter_modifier(settings.is_miniaod), signals_no_event_filter_modifier)#, bjet_trigger_veto_modifier)

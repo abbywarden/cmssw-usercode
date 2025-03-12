@@ -102,7 +102,10 @@ def basic_process(name, filenames=['file:input.root']):
     process = cms.Process(name)
     process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))
     process.maxLuminosityBlocks = cms.untracked.PSet(input = cms.untracked.int32(-1))
-    process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
+    #process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False))
+    process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(False),
+                                         SkipEvent = cms.untracked.vstring('ProductNotFound')) #when have handful of events that don't have everythings saved in ntuple stage
+
     process.source = cms.Source('PoolSource', fileNames = cms.untracked.vstring(*filenames))
     return process
 

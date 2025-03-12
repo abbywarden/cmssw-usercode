@@ -31,7 +31,7 @@ for i in range(0,len(args.plots)):
   h.SetName(args.legend[i])
   h.SetLineColor(args.color[i])
   h.SetLineWidth(2)
-  #h.Rebin(5)
+  h.Rebin(10)
   #if args.norm:
   h.Scale(1.0/h.Integral())
   h_list.append(h)
@@ -46,6 +46,7 @@ for ih in range(len(h_list)):
   else:
     h_list[ih].Draw("sames")
   R.gPad.Update()
+  #R.gPad.SetLogy(1) #set log scale on y axis
   s = h_list[ih].FindObject('stats')
   s.SetTextColor(h_list[ih].GetLineColor())
   s.SetLineColor(h_list[ih].GetLineColor())

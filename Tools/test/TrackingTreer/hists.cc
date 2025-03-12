@@ -17,9 +17,10 @@ int main(int argc, char** argv) {
   if (!nr.parse_options(argc, argv) || !nr.init()) return 1;
   auto& nt = nr.nt();
   auto& ntt = nt.tracks();
-  auto& ntm = nt.mu_tracks();
-  auto& nte = nt.ele_tracks();
-
+  // auto& ntm = nt.mu_tracks();
+  // auto& nte = nt.ele_tracks();
+  auto& ntm = nt.muons();
+  auto& nte = nt.electrons();
   //slimming 
   // TH1D* h_npv = new TH1D("h_npv", ";number of primary vertices", 50, 0, 50);
   // TH1D* h_bsx = new TH1D("h_bsx", ";beamspot x", 400, -0.15, 0.15);
@@ -1460,8 +1461,8 @@ int main(int argc, char** argv) {
 	
       };
 
-      const bool etalt1p5 = fabs(ntt.eta(itk)) < 1.5;
-      const bool etagt1p5 = !etalt1p5;
+      // const bool etalt1p5 = fabs(ntt.eta(itk)) < 1.5;
+      // const bool etagt1p5 = !etalt1p5;
       const bool sel = nm1[0] && nm1[1] && nm1[2] && nm1[3];
       // const bool seed = sel && nm1[4];
 

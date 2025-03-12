@@ -523,14 +523,15 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
 
 bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
   if (verbose) std::cout << "MFVVertexTracks " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
-  const int track_rescaler_which = jmt::TrackRescaler::w_SingleLep; //FIXME Abby
+  // const int track_rescaler_which = -1; //FIXME Abby // TEST 
+  const int track_rescaler_which = jmt::TrackRescaler::w_SingleLep; //FIXME Abby 
   //  const int track_rescaler_which = jmt::TrackRescaler::w_BTagDispJet; //FIXME Alec
   // const int track_rescaler_which = jmt::TrackRescaler::w_JetHT; // JMTBAD which rescaling if ever a different one
 
   // track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
   //                      jmt::AnalysisEras::pick(event, this),
   //                      track_rescaler_which);
-
+  // std::cout << event.isRealData() << std::endl;
   track_rescaler.setup(!event.isRealData() && track_rescaler_which != -1 && min_track_rescaled_sigmadxy > 0,
                        jmt::AnalysisEras::pick(event, this),
                        track_rescaler_which,
@@ -782,6 +783,9 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
     /////////////
 
     if (use) {
+      // if (fabs(rescaled_dxyerr) == 0) std::cout << " seed track failed rescaled dxyerr; sigmadxybs : "<< sigmadxybs << std::endl;
+      // if (fabs(rescaled_dxyerr) ==0) std::cout << " seed track failed rescaled dxyerr; rescaled sigmadxybs  : "<< rescaled_sigmadxybs << std::endl;
+
       seed_tracks->push_back(tk);
       seed_tracks_copy->push_back(*tk);
     }
@@ -977,8 +981,8 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
           pt >= min_leptrack_pt &&
           fabs(dxybs) > min_track_dxy &&
           dxyerr < max_track_dxyerr &&
-          fabs(sigmadxybs) > min_track_sigmadxy &&
-          fabs(rescaled_sigmadxybs) > min_leptrack_rescaled_sigmadxy &&
+          fabs(sigmadxybs) > 3 && //Relaxed for leptracks 
+          fabs(rescaled_sigmadxybs) > min_leptrack_rescaled_sigmadxy && 
           fabs(sigmadxypv) > min_track_sigmadxypv &&
           nhits >= min_track_nhits &&
           npxhits >= min_track_npxhits &&
@@ -1002,6 +1006,9 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
       }();
 
       if (use_mu) {
+      // if (fabs(rescaled_dxyerr) == 0) std::cout << " mu seed track failed rescaled dxyerr; sigmadxybs : "<< sigmadxybs << std::endl;
+      // if (fabs(rescaled_dxyerr) ==0) std::cout << " mu seed track failed rescaled dxyerr; rescaled sigmadxybs  : "<< rescaled_sigmadxybs << std::endl;
+
         seed_tracks->push_back(mtk);
         muon_seed_tracks->push_back(mtk);
         seed_tracks_copy->push_back(*mtk);
@@ -1144,7 +1151,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
           pt >= min_leptrack_pt &&
           fabs(dxybs) > min_track_dxy &&
           dxyerr < max_track_dxyerr &&
-          fabs(sigmadxybs) > min_track_sigmadxy &&
+          fabs(sigmadxybs) > 3 &&
           fabs(rescaled_sigmadxybs) > min_leptrack_rescaled_sigmadxy &&
           fabs(sigmadxypv) > min_track_sigmadxypv &&
           nhits >= min_track_nhits &&
@@ -1168,6 +1175,9 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         return true;
       }();
       if (use_ele) {
+        // if (fabs(rescaled_dxyerr) == 0) std::cout << " ele seed track failed rescaled dxyerr; sigmadxybs : "<< sigmadxybs << std::endl;
+        // if (fabs(rescaled_dxyerr) ==0) std::cout << " ele seed track failed rescaled dxyerr; rescaled sigmadxybs  : "<< rescaled_sigmadxybs << std::endl;
+
         seed_tracks->push_back(etk);
         electron_seed_tracks->push_back(etk);
         seed_tracks_copy->push_back(*etk);

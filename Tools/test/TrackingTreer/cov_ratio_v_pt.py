@@ -10,13 +10,14 @@ set_style()
 do_fits = False
 compare_rescaled = False
 
-#year = '2018'
-year = '2017'
+year = '2018'
+#year = '2017'
 #year = '20161'
 #year = '20162'
 cov = ['dxyerr', 'dszerr', 'absdxydszcov']
 #cov = ['dxyerr', 'dszerr']
 
+cov_dxy = ['dxy']
 
 etabins = ['lt1p5', 'gt1p5']
 #make better bin organization for use 
@@ -46,9 +47,11 @@ seltracks_bins_gt1p5 += [x for x in range(10, 20, 5)]
 seltracks_bins_gt1p5 += [x for x in range(20, 60, 20)]
 seltracks_bins_gt1p5 += [x for x in range(60, 140, 40)]
 seltracks_bins_gt1p5 += [x for x in range(140,260,60)]
-                    
 
-ps = plot_saver(plot_dir('cov_v_pt_ratio_rescaledbyera_v2_%s' % year), size=(600,600), pdf=True, log=False)
+
+
+#ps = plot_saver(plot_dir('cov_v_pt_ratio_rescaledbyera_v2_%s' % year), size=(600,600), pdf=True, log=False)
+ps = plot_saver(plot_dir('dxy_data_vs_mc_v2_%s' % year), size=(600,600), pdf=True, log=False)
 
 
 eras = ['B', 'C', 'D', 'E', 'F']
@@ -68,24 +71,25 @@ datasets = ['SingleLepton%(yr)s' % locals() for yr in [year]]  #when combined er
 
 
 # hn = 'h_sel_mu_tracks_%s_v_pt'
-# track = 'sel_mu_track'
+#track = 'sel_mu_track'
 is_muon = False
+hndxy = 'h_sel_tracks_dxy'
 
 hn = 'h_sel_ele_tracks_%s_v_pt'
-track = 'sel_ele_track'
-is_ele = True
+#track = 'sel_ele_track'
+is_ele = False
 #hn_1d = 'h_pass_ele_tracks_pt'
 
 # hn = 'h_sel_tracks_%s_v_pt'
-# track = 'sel_track'
-is_seltracks = False
+track = 'sel_track'
+is_seltracks = True
 
 #pt_slices = ['pt_20', 'pt_40', 'pt_60', 'pt_90', 'pt_130', 'pt_200']
 
 
 
-
-fn_string = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV2_Lepm_cut0_eta%s_2017/%s.root'
+#need to find them in nfs_scratch probably? -> have to move them back at least the data and background_leptonpresel 
+fn_string = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV2_Lepm_cut0_eta%s_2018/%s.root'
 fn_scale_string = '/afs/hep.wisc.edu/home/acwarden/crabdirs/TrackingTreerULV2_Lepm_eta%s_rescaled_2017/%s.root'
 
 #location once they are moved outside of my afs area : (doesn't work)
@@ -109,6 +113,8 @@ def get_profile(fn, hn):
 def get_1D(fn, hn) :
     f = ROOT.TFile(fn)
     h = f.Get(hn)
+    h.Scale(1/h.Integral())
+
     buff.append(f)
     return h
 
@@ -136,8 +142,8 @@ def ratio_hist(num, den):
 
 
 #names = ['%(yr)s%(era)s Data' % locals() for yr in [year] for era in eras]
-names = ['%(yr)s%(era)s' % locals() for yr in [year] for era in eras]
-#names = ['%(yr)s' % locals() for yr in [year]] #not separated by era
+#names = ['%(yr)s%(era)s' % locals() for yr in [year] for era in eras]
+names = ['%(yr)s' % locals() for yr in [year]] #not separated by era
 
 if compare_rescaled:
   #idata = 0
@@ -167,8 +173,8 @@ if compare_rescaled:
         #mcrescaled = get_profile(fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % era)
         mcrescaled = get_profile(fn_scale_string % (etabin, bkgr), hn % var)
         #print fn_scale_string % (etabin, era, bkgr)
-        
-        newmc = mc.Rebin(len(bins)-1, 'newmc', array('d', bins))
+        newmc = mc.Rebin(5)
+        #newmc = mc.Rebin(len(bins)-1, 'newmc', array('d', bins))
         newmc.SetLineColor(ROOT.kBlack)
         newmc.SetLineWidth(2)
         newmc.SetFillColor(0)
@@ -187,7 +193,8 @@ if compare_rescaled:
         for idata, data in enumerate(datasets):
             d = get_profile(fn_string % (etabin, data), hn % var)
             #print fn_string % (etabin, data)
-            newd = d.Rebin(len(bins)-1, 'newd', array('d', bins))
+            newd = d.Rebin(5)
+            #newd = d.Rebin(len(bins)-1, 'newd', array('d', bins))
             newd.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var))
             newd.SetLineColor(colors[idata])
             newd.SetLineWidth(2)
@@ -202,44 +209,52 @@ if compare_rescaled:
         ps.save('%s_eta%s_rescaled_%s' % (var, etabin, track))
 
 
-for var in cov:
+#for var in cov:
+for var in cov_dxy:
     for etabin in etabins:
 
         leg0 = ROOT.TLegend(0.65,0.7,0.9,0.9)
 
-        if etabin == 'lt1p5':
-            if is_muon or is_ele: 
-                bins = lep_bins_lt1p5
-            else :
-                bins = seltracks_bins_lt1p5
-        else :
-            if is_muon : 
-                bins = mu_bins_gt1p5
-            elif is_ele :
-                bins = ele_bins_gt1p5
-            else :
-                bins = seltracks_bins_gt1p5
+        #commenting out for now
+        # if etabin == 'lt1p5':
+        #     if is_muon or is_ele: 
+        #         bins = lep_bins_lt1p5
+        #     else :
+        #         bins = seltracks_bins_lt1p5
+        # else :
+        #     if is_muon : 
+        #         bins = mu_bins_gt1p5
+        #     elif is_ele :
+        #         bins = ele_bins_gt1p5
+        #     else :
+        #         bins = seltracks_bins_gt1p5
         
-        mc = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % era) #-> iff absdxydszcov
+        #mc = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % era) #-> iff absdxydszcov (was uncommented previously)
         #mc = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), hn % var)
-        newmc = mc.Rebin(len(bins)-1, 'newmc', array('d', bins))
+        mc = get_1D(fn_string % (etabin, bkgr), hndxy)
+        newmc = mc.Rebin(5)
+        #newmc = mc.Rebin(len(bins)-1, 'newmc', array('d', bins)) #(commenting out )
         newmc.SetLineColor(ROOT.kBlack)
         newmc.SetLineWidth(2)
         newmc.SetFillColor(0)
         newmc.SetStats(0)
-        #newmc.GetYaxis().SetRangeUser(0, 0.01)
+        newmc.GetYaxis().SetRangeUser(0, 1)
         #for absdxydszcov muon (2018)
         #newmc.GetYaxis().SetRangeUser(0, 0.00000035)
         #for ele absdxydszcov 
-        newmc.GetYaxis().SetRangeUser(0, 0.000003)
-        newmc.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var))
-                   
+        #newmc.GetYaxis().SetRangeUser(0, 0.000003) #was uncommented prev
+        #newmc.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var)) (was uncommented previously)
+        newmc.SetTitle(';track %s;' % (var))
+
         newmc.Draw('hist e')
         leg0.AddEntry(newmc, 'background MC')
         for idata, data in enumerate(datasets):
-            d = get_profile(fn_string % (etabin, data), hn % var)
-            newd = d.Rebin(len(bins)-1, 'newd', array('d', bins))
-            newd.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var))
+            #d = get_profile(fn_string % (etabin, data), hn % var) (was uncommented prev)
+            d = get_1D(fn_string % (etabin, data), hndxy)
+            newd = d.Rebin(5)
+            #newd = d.Rebin(len(bins)-1, 'newd', array('d', bins)) #( uncommented prev)
+            #newd.SetTitle('mean %s vs. p_{T};track p_{T} (GeV);mean %s' % (var, var)) (was uncommented previously)
+            newd.SetTitle(';track %s;' % (var))
             newd.SetLineColor(colors[idata])
             newd.SetLineWidth(2)
             newd.SetFillColor(0)
@@ -251,35 +266,43 @@ for var in cov:
         ps.save('%s_%s_eta%s' % (track, var, etabin))
  
 
-for var in cov:
+#for var in cov:
+for var in cov_dxy:
     for etabin in etabins:
         leg1 = ROOT.TLegend(0.65,0.2,0.9,0.4)
         for idata, data in enumerate(datasets):
-            num = get_profile(fn_string % (etabin, data), hn % var)
+            #num = get_profile(fn_string % (etabin, data), hn % var) #was uncommented previously 
+            num = get_1D(fn_string % (etabin, data), hndxy) #was uncommented previously 
             #den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, eras[idata], bkgr), hn % var)
             #den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), hn % var) #no era argument (for dxyerr and dszerr)
-            den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % eras_lc[idata]) #for absdxydszerr; if 2017 era_lc, not era
+            #den = get_profile(fn_string % (etabin, bkgr) if 'absdxydszcov' not in cov else fn_scale_string % (etabin, bkgr), (hn % var)+"_%s" % eras_lc[idata]) #for absdxydszerr; if 2017 era_lc, not era #was uncommented prev
+            den = get_1D(fn_string % (etabin, bkgr), hndxy) #for absdxydszerr; if 2017 era_lc, not era
 
-            if etabin == 'lt1p5':
-                if is_muon or is_ele: 
-                    bins = lep_bins_lt1p5
-                else :
-                    bins = seltracks_bins_lt1p5
-            else :
-                if is_muon : 
-                    bins = mu_bins_gt1p5
-                elif is_ele :
-                    bins = ele_bins_gt1p5
-                else :
-                    bins = seltracks_bins_gt1p5     
-                
-            newnum = num.Rebin(len(bins)-1, 'newnum', array('d', bins))
-            newden = den.Rebin(len(bins)-1, 'newden', array('d', bins))
-            
+            #commenting out right now
+            # if etabin == 'lt1p5':
+            #     if is_muon or is_ele: 
+            #         bins = lep_bins_lt1p5
+            #     else :
+            #         bins = seltracks_bins_lt1p5
+            # else :
+            #     if is_muon : 
+            #         bins = mu_bins_gt1p5
+            #     elif is_ele :
+            #         bins = ele_bins_gt1p5
+            #     else :
+            #         bins = seltracks_bins_gt1p5     
+            #newnum = num.Rebin(len(bins)-1, 'newnum', array('d', bins))
+            #newden = den.Rebin(len(bins)-1, 'newden', array('d', bins))
+            newnum = num.Rebin(20)
+            newden = den.Rebin(20)
             
             ratio = ratio_hist(newnum, newden)
+            ratio.GetYaxis().SetRangeUser(0, 5)
+
             #ratio = ratio_hist(num, den)
-            ratio.SetTitle('mean %s ratio vs. p_{T};track p_{T} (GeV);mean %s data/MC ratio' % (var, var))
+            #ratio.SetTitle('mean %s ratio vs. p_{T};track p_{T} (GeV);mean %s data/MC ratio' % (var, var))
+            ratio.SetTitle(';track %s;track %s data/MC ratio' % (var, var))
+
             #ratio.SetTitle('mean %s ratio vs. eta;track eta;mean %s data/MC ratio' % (var, var))
            
             leg1.AddEntry(ratio, '%s' % (names[idata]))
@@ -622,6 +645,7 @@ if do_fits:
                 tratioplot = ROOT.TRatioPlot(ratio)
     
                 ratio.Draw('hist e')
+                ratio.SetTitle('mean %s ratio vs. p_{T};track p_{T} (GeV);mean %s data/MC ratio' % (var, var)) #try this out
                 ROOT.gStyle.SetOptFit(0)
                 fnc.Draw('same')
                 #new_fit.Draw('same')

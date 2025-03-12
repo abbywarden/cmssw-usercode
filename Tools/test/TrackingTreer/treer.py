@@ -9,10 +9,12 @@ tfileservice(process, 'trackingtreer.root')
 dataset = 'miniaod'
 #sample_files(process, 'qcdmupt15_20161', dataset)
 #sample_files(process, 'SingleMuon2017B', dataset)
-sample_files(process, 'qcdmupt15_2017', dataset)
+#sample_files(process, 'qcdmupt15_2017', dataset)
 #sample_files(process, 'qcdht2000_2017', dataset)
 #sample_files(process, 'mfv_neu_tau001000um_M0800_2017', dataset)
 #sample_files(process, 'ttbar_semilep_2018', dataset)
+
+input_files(process, '/store/mc/RunIISummer20UL16MiniAODAPVv2/WW_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/130000/0252F60D-9705-0140-BCF1-E598A04A8D1F.root')
 
 max_events(process, 1000)
 cmssw_from_argv(process)

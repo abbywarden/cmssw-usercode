@@ -488,6 +488,7 @@ namespace jmt {
     p_minhit_ = 0;
     p_maxhit_ = 0;
     p_maxpxhit_ = 0;
+    p_losthit_ = 0;
   }
 
   void MuonsSubNtuple::clear() {
@@ -514,6 +515,7 @@ namespace jmt {
     minhit_.clear();
     maxhit_.clear();
     maxpxhit_.clear();
+    losthit_.clear();
 
   }
 
@@ -541,6 +543,7 @@ namespace jmt {
     t->Branch(TString::Format("%s_minhit", pfx()), &minhit_);
     t->Branch(TString::Format("%s_maxhit", pfx()), &maxhit_);
     t->Branch(TString::Format("%s_maxpxhit", pfx()), &maxpxhit_);
+    t->Branch(TString::Format("%s_losthit", pfx()), &losthit_);
 
     t->SetAlias(TString::Format("%s_q", pfx_), TString::Format("%s_qpt > 0 ? 1 : -1", pfx()));
     t->SetAlias(TString::Format("%s_pt", pfx_), TString::Format("abs(%s_qpt)", pfx()));
@@ -583,6 +586,7 @@ namespace jmt {
     t->SetBranchAddress(TString::Format("%s_minhit", pfx()), &p_minhit_);
     t->SetBranchAddress(TString::Format("%s_maxhit", pfx()), &p_maxhit_);
     t->SetBranchAddress(TString::Format("%s_maxpxhit", pfx()), &p_maxpxhit_);
+    t->SetBranchAddress(TString::Format("%s_losthit", pfx()), &p_losthit_);
   }
   
   void MuonsSubNtuple::copy_vectors() {
@@ -609,6 +613,7 @@ namespace jmt {
     minhit_ = *p_minhit_;
     maxhit_ = *p_maxhit_;
     maxpxhit_ = *p_maxpxhit_;
+    losthit_ = *p_losthit_;
   }
     
 
@@ -641,6 +646,7 @@ namespace jmt {
     p_minhit_ = 0;
     p_maxhit_ = 0;
     p_maxpxhit_ = 0;
+    p_losthit_ = 0;
   }
   
   void ElectronsSubNtuple::clear() {
@@ -669,6 +675,7 @@ namespace jmt {
     minhit_.clear();
     maxhit_.clear();
     maxpxhit_.clear();
+    losthit_.clear();
   }
 
   void ElectronsSubNtuple::write_to_tree(TTree* t) {
@@ -697,6 +704,7 @@ namespace jmt {
     t->Branch(TString::Format("%s_minhit", pfx()), &minhit_);
     t->Branch(TString::Format("%s_maxhit", pfx()), &maxhit_);
     t->Branch(TString::Format("%s_maxpxhit", pfx()), &maxpxhit_);
+    t->Branch(TString::Format("%s_losthit", pfx()), &losthit_);
 
     t->SetAlias(TString::Format("n%ss", pfx()), TString::Format("%s_qpt@.size()", pfx()));
     t->SetAlias(TString::Format("%s_q", pfx_), TString::Format("%s_qpt > 0 ? 1 : -1", pfx()));
@@ -713,6 +721,7 @@ namespace jmt {
     t->SetAlias(TString::Format("%s_max_z", pfx_), TString::Format("%s_maxhit >> 4", pfx()));
     t->SetAlias(TString::Format("%s_maxpx_r", pfx_), TString::Format("%s_maxpxhit & 0xf", pfx()));
     t->SetAlias(TString::Format("%s_maxpx_z", pfx_), TString::Format("%s_maxpxhit >> 4", pfx()));
+
     
   }
 
@@ -742,6 +751,8 @@ namespace jmt {
     t->SetBranchAddress(TString::Format("%s_minhit", pfx()), &p_minhit_);
     t->SetBranchAddress(TString::Format("%s_maxhit", pfx()), &p_maxhit_);
     t->SetBranchAddress(TString::Format("%s_maxpxhit", pfx()), &p_maxpxhit_);
+    t->SetBranchAddress(TString::Format("%s_losthit", pfx()), &p_losthit_);
+
   }
   void ElectronsSubNtuple::copy_vectors() {
     qpt_ = *p_qpt_;
@@ -769,6 +780,7 @@ namespace jmt {
     minhit_ = *p_minhit_;
     maxhit_ = *p_maxhit_;
     maxpxhit_ = *p_maxpxhit_;
+    losthit_ = *p_losthit_;
   }
 
 }

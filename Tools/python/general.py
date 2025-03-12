@@ -208,7 +208,8 @@ def wisc_sub_popen(cmd):
     return subprocess.Popen([';'.join(setup+[cmd])], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)
 
 def wisc_popen(cmd, return_exit_code=False, print_output=False):
-    child = wisc_sub_popen(cmd)
+    #child = wisc_sub_popen(cmd)
+    child = sub_popen(cmd)
     output = []
     for line in child.stdout:
         if print_output:

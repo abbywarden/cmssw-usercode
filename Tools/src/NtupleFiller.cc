@@ -152,6 +152,7 @@ namespace jmt {
 	      hp.numberOfValidStripHits(),
 	      hp.pixelLayersWithMeasurement(),
 	      hp.stripLayersWithMeasurement(),
+        hp.numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS),
 	      ex.min_r < 2e9 ? ex.min_r : 0,
 	      ex.min_z < 2e9 ? ex.min_z : 0,
 	      ex.max_r > -2e9 ? ex.max_r : 0,
@@ -192,6 +193,7 @@ namespace jmt {
 	     hp.numberOfValidStripHits(),
 	     hp.pixelLayersWithMeasurement(),
 	     hp.stripLayersWithMeasurement(),
+       hp.numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS),
 	     ex.min_r < 2e9 ? ex.min_r : 0,
 	     ex.min_z < 2e9 ? ex.min_z : 0,
 	     ex.max_r > -2e9 ? ex.max_r : 0,
@@ -301,6 +303,7 @@ namespace jmt {
     }
     return which_jet;
   }
+
   
   int TracksSubNtupleFiller::which_pv(const edm::Event& e, PrimaryVerticesSubNtupleFiller* vf, reco::TrackRef& tk) {
     int which_pv = -1;
@@ -311,6 +314,8 @@ namespace jmt {
         if (nti != -1 && nti < 128) {
           const int q = trg_.has_track(e, reco::VertexRef(vh,i), tk);
           const int loosebit = int(q == pat::PackedCandidate::UsedInFitLoose) << 7;
+          // std::cout << "printing info : pv idx; nti; has_track; loosebit : " << ie << " " << nti << " " << q << " " << loosebit << std::endl;
+
           if (q == pat::PackedCandidate::UsedInFitTight || loosebit)
             which_pv = nti | loosebit;
         }

@@ -600,7 +600,7 @@ namespace jmt {
 	     float vx, float vy, float vz,
              float cov_00, float cov_11, float cov_14, float cov_22, float cov_23, float cov_33, float cov_34, float cov_44,
              float chi2dof,
-	     int npxh, int nsth, int npxl, int nstl,
+	     int npxh, int nsth, int npxl, int nstl, int losthit,
              int minhit_r, int minhit_z, int maxhit_r, int maxhit_z, int maxpxhit_r, int maxpxhit_z) {
       qpt_.push_back(q*pt);
       eta_.push_back(eta);
@@ -621,6 +621,7 @@ namespace jmt {
       cov_34_.push_back(cov_34);
       cov_44_.push_back(cov_44);
       chi2dof_.push_back(chi2dof);
+      losthit_.push_back(losthit);
 
       assert(npxh >= 0 && nsth >= 0 && npxl >= 0 && nstl >= 0);
       if (npxh > 15) npxh = 15;
@@ -663,6 +664,7 @@ namespace jmt {
     uchar    minhit   (int i) const { return p_get(i, minhit_,    p_minhit_    ); }
     uchar    maxhit   (int i) const { return p_get(i, maxhit_,    p_maxhit_    ); }
     uchar    maxpxhit (int i) const { return p_get(i, maxpxhit_,  p_maxpxhit_  ); }
+    uchar    losthit  (int i) const { return p_get(i, losthit_,   p_losthit_   ); }
 
     int q(int i) const { return qpt(i) > 0 ? 1 : -1; }
     float pt(int i) const { return std::abs(qpt(i)); }
@@ -740,6 +742,7 @@ namespace jmt {
     vuchar minhit_;      vuchar* p_minhit_;
     vuchar maxhit_;      vuchar* p_maxhit_;
     vuchar maxpxhit_;    vuchar* p_maxpxhit_;
+    vuchar losthit_;     vuchar* p_losthit_;
   };
   
   class ElectronsSubNtuple : public INtuple {
@@ -754,7 +757,7 @@ namespace jmt {
 	     float vx, float vy, float vz,
              float cov_00, float cov_11, float cov_14, float cov_22, float cov_23, float cov_33, float cov_34, float cov_44,
              float chi2dof,
-	     int npxh, int nsth, int npxl, int nstl,
+	     int npxh, int nsth, int npxl, int nstl, int losthit,
              int minhit_r, int minhit_z, int maxhit_r, int maxhit_z, int maxpxhit_r, int maxpxhit_z) {
       qpt_.push_back(q*pt);
       eta_.push_back(eta);
@@ -777,6 +780,7 @@ namespace jmt {
       cov_34_.push_back(cov_34);
       cov_44_.push_back(cov_44);
       chi2dof_.push_back(chi2dof);
+      losthit_.push_back(losthit);
 
       assert(npxh >= 0 && nsth >= 0 && npxl >= 0 && nstl >= 0);
       if (npxh > 15) npxh = 15;
@@ -821,6 +825,7 @@ namespace jmt {
     uchar    minhit   (int i) const { return p_get(i, minhit_,    p_minhit_    ); }
     uchar    maxhit   (int i) const { return p_get(i, maxhit_,    p_maxhit_    ); }
     uchar    maxpxhit (int i) const { return p_get(i, maxpxhit_,  p_maxpxhit_  ); }
+    uchar    losthit  (int i) const { return p_get(i, losthit_,   p_losthit_   ); }
 
     int q(int i) const { return qpt(i) > 0 ? 1 : -1; }
     float pt(int i) const { return std::abs(qpt(i)); }
@@ -900,7 +905,7 @@ namespace jmt {
     vuchar minhit_;      vuchar* p_minhit_;
     vuchar maxhit_;      vuchar* p_maxhit_;
     vuchar maxpxhit_;    vuchar* p_maxpxhit_;
-    
+    vuchar losthit_;     vuchar* p_losthit_;
   };
 
 

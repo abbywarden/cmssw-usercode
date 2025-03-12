@@ -212,7 +212,7 @@ class secondary_files_modifier:
 def set_splitting(samples, dataset, jobtype='default', data_json=None, default_files_per=10, limit_ttbar=False):
     if jobtype == 'histos' or jobtype == 'minitree':
         d = {
-            # 'SingleMuon': 8,
+            'SingleMuon': 8,
             'MuonEG': 4,
             'SingleElectron': 8,
             'DisplacedJet': 4,
@@ -241,11 +241,11 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
             'qcdht2000_20162': 9,
             'ttbar_20162': 3,
             'ttbar_ll_20162': 3,
-#            'SingleMuon2017B': 3,
-#            'SingleMuon2017C': 3,
-#            'SingleMuon2017D': 3,
-#            'SingleMuon2017E': 3,
-#            'SingleMuon2017F': 3,
+           'SingleMuon2017B': 8,
+           'SingleMuon2017C': 8,
+           'SingleMuon2017D': 8,
+           'SingleMuon2017E': 8,
+           'SingleMuon2017F': 8,
             'qcdht0300_2017': 2,
             'qcdht0500_2017': 2,
             'qcdht0700_2017': 2,
@@ -378,6 +378,10 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
             sample.files_per, sample.events_per = d[dataset].get(name, (10, 100000))
 
             if jobtype == 'trackmover':
+                #want to just do a quick check cause haven't figured out local testing histos 
+                if name.startswith('ww'):
+                    sample.total_files = 1
+                    sample.total_events = 1000
                 if name.startswith('ttbarht'):
                     fp = sample.files_per
                     sample.events_per /= fp
@@ -453,6 +457,7 @@ def pick_samples(dataset, both_years=False,
                 if   yr == 20161 : yr = "20161"
                 elif yr == 20162 : yr = "20162"
                 samples += getattr(Samples, '%s_samples_%s' % (a, yr))
+                
     return [s for s in samples if s.has_dataset(dataset)]
 
 ####
@@ -480,7 +485,6 @@ class MetaSubmitter:
 
     def submit(self, samples):
         self.normalize()
-
         crab_samples, condor_samples = [], []
         for s in samples:
             s.set_curr_dataset(self.common.dataset)

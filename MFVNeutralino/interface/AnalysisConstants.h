@@ -83,7 +83,7 @@ namespace mfv {
     int_lumi_2017 = 41478.;
 
     const char*
-    int_lumi_nice_2017 = "  40.6 fb^{-1} (13 TeV)";
+    int_lumi_nice_2017 = "  41.5 fb^{-1} (13 TeV)";
 
     const double
     scale_factor_2017 = 1.00;
@@ -97,7 +97,7 @@ namespace mfv {
     int_lumi_2018 = 59823.;
     
     const char*
-    int_lumi_nice_2018 = "  11.94 fb^{-1} (13 TeV)";
+    int_lumi_nice_2018 = "  59.8 fb^{-1} (13 TeV)";
 
     const double
     scale_factor_2018 = 1.00;

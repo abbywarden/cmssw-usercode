@@ -27,7 +27,7 @@ def cmd_hadd_vertexer_histos():
             #Samples.ttbar_samples_2018 + Samples.diboson_samples_2018 + Samples.leptonic_samples_2018 + Samples.qcd_lep_samples_2018
             #Samples.mfv_stopld_samples_2018[27:28]
             #Samples.qcd_lep_samples_2018
-            Samples.Lepton_data_samples_2018
+            Samples.Lepton_data_samples_2018[3:4]
     )
     for s in samples:
         print(s.name)
@@ -143,9 +143,12 @@ def _background_samples(year=2018):
         x += ['qcdbctoept%03i' % x for x in [15,20,30,80,170,250]]
     elif _leptonpresel:
         x = ['ttbar_had', 'ttbar_lep', 'ttbar_semilep', 'wjetstolnu_0j', 'wjetstolnu_1j', 'wjetstolnu_2j', 'dyjetstollM10', 'dyjetstollM50', 'ww', 'wz', 'zz']
-        x += ['qcdmupt15']
-        x += ['qcdempt%03i' % x for x in [15,20,30,50,80,120,170,300]]
-        x += ['qcdbctoept%03i' % x for x in [15,20,30,80,170,250]]
+        #x = ['ttbar_had', 'ttbar_lep', 'ttbar_semilep', 'wjetstolnu', 'dyjetstollM10', 'dyjetstollM50', 'ww', 'wz', 'zz']
+        
+        #x += ['qcdmupt15']
+        #x += ['qcdempt%03i' % x for x in [15,20,30,50,80,120,170,300]]
+        #x += ['qcdbctoept%03i' % x for x in [15,20,30,80,170,250]]
+        
         #x += ['zjetstoqqht%04i' % x for x in [200, 400, 600, 800]]
         #x += ['wjetstoqqht%04i' % x for x in [200, 400, 600, 800]]
 

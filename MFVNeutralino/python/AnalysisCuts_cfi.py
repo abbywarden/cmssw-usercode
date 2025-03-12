@@ -11,8 +11,6 @@ elif use_Muon_triggers:
   apply_presel = cms.int32(2)
 elif use_Electron_triggers:
   apply_presel = cms.int32(2)
-elif use_Lepton_triggers:
-  apply_presel = cms.int32(2)
 else:
   apply_presel = cms.int32(1)
 
