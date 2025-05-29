@@ -41,6 +41,7 @@ private:
   EffectiveAreas electron_effective_areas;
   const edm::EDGetTokenT<mfv::TriggerFloats> triggerfloats_token;
 
+
   jmt::TrackRefGetter track_ref_getter;
 
   const double min_jet_pt;
@@ -67,8 +68,7 @@ MFVTrackMover::MFVTrackMover(const edm::ParameterSet& cfg)
     electrons_token(consumes<pat::ElectronCollection>(cfg.getParameter<edm::InputTag>("electrons_src"))),
     rho_token(consumes<double>(cfg.getParameter<edm::InputTag>("rho_src"))),
     electron_effective_areas(cfg.getParameter<edm::FileInPath>("electron_effective_areas").fullPath()),
-	  triggerfloats_token(consumes<mfv::TriggerFloats>(cfg.getParameter<edm::InputTag>("triggerfloats_src"))),
-
+    triggerfloats_token(consumes<mfv::TriggerFloats>(cfg.getParameter<edm::InputTag>("triggerfloats_src"))),
     track_ref_getter(cfg.getParameter<std::string>("@module_label"),
                          cfg.getParameter<edm::ParameterSet>("track_ref_getter"),
                          consumesCollector()),
@@ -207,7 +207,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
       double best_hltmatchdR = 5.;
       TLorentzVector hltmatch;
       for (auto hlt : triggerfloats->hltmuons) {
-        const double dist2 = reco::deltaR2(muon.eta(), muon.phi(), hlt.Eta(), hlt.Phi());
+        const double dist2 = reco::deltaR(muon.eta(), muon.phi(), hlt.Eta(), hlt.Phi());
         if (dist2 < best_hltmatchdR) best_hltmatchdR = dist2;
         if (dist2 < hltmatchdist2) {
           hltmatchdist2 = dist2;
@@ -218,7 +218,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
       bool isHLTMu = hltmatch.Pt() > 0;
       bool isMedMuon = muon.passed(reco::Muon::CutBasedIdMedium);
       // bool isTightMuon = muon.passed(reco::Muon::CutBasedIdTight); //for the dz, d0 cuts... but could go tighter
-      if (isMedMuon && muon.pt() > 5 && abs(muon.eta()) < 2.4 && isHLTMu) {
+      if (isMedMuon && muon.pt() > 20 && abs(muon.eta()) < 2.4 && isHLTMu) {
         const float iso = (muon.pfIsolationR04().sumChargedHadronPt + std::max(0., muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt -0.5*muon.pfIsolationR04().sumPUPt))/muon.pt();
         if (iso < 0.1) {
           presel_mu.push_back(&muon);
@@ -231,7 +231,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
       double best_hltmatchdR = 5.;
       TLorentzVector hltmatch;
       for (auto hlt : triggerfloats->hltelectrons) {
-        const double dist2 = reco::deltaR2(electron.eta(), electron.phi(), hlt.Eta(), hlt.Phi());
+        const double dist2 = reco::deltaR(electron.eta(), electron.phi(), hlt.Eta(), hlt.Phi());
         if (dist2 < best_hltmatchdR) best_hltmatchdR = dist2;
         if (dist2 < hltmatchdist2) {
           hltmatchdist2 = dist2;
@@ -244,7 +244,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
       const bool passveto = electron.passConversionVeto();
 
 
-      if (isTightEl && passveto && electron.pt() > 5 && abs(electron.eta()) < 2.4 && isHLTEle) {
+      if (isTightEl && passveto && electron.pt() > 20 && abs(electron.eta()) < 2.4 && isHLTEle) {
 
         // const bool eleprompt_dxy = fabs(electron.eta()) < 1.479 ? (electron.gsfTrack()->dxy(primary_vertices->at(0).position()) < 0.05) : (electron.gsfTrack()->dxy(primary_vertices->at(0).position()) < 0.10);
         // const bool eleprompt_dz = fabs(electron.eta()) < 1.479 ? (electron.gsfTrack()->dz(primary_vertices->at(0).position()) < 0.05) : (electron.gsfTrack()->dz(primary_vertices->at(0).position()) < 0.10);

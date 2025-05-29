@@ -67,6 +67,7 @@ int main(int argc, char** argv) {
   auto& pf = nt.pf();
   auto& tks = nt.tracks();
   auto& vs = nt.vertices();
+  auto& lepinsv = nt.lepinvertices();
 
   ////
 
@@ -77,7 +78,9 @@ int main(int argc, char** argv) {
   const std::vector<std::string> jet_2d_kin_weights_hists = {
     // "nocuts_llp_sump_jetdr_den",  //FIXME
     // "nocuts_jet0_sump_jetlepdr_den",
-    "nocuts_lep1_pT_jetdr_den", 
+    // "nocuts_lep1_pT_jetdr_den", 
+    "nocuts_ele1_pT_jetdr_den",
+    "nocuts_mu1_pT_jetdr_den"
     // "nocuts_mu1_p_eta_den",
     // "nocuts_ele1_p_eta_den",
     // "nocuts_jet0_sump_lep1_p_den",
@@ -92,10 +95,10 @@ int main(int argc, char** argv) {
     // "nocuts_jetele_dr_den",
     // "nocuts_mu1_p_den",
     // "nocuts_ele1_p_den",
-    // "nocuts_jet0_sump_den",
+    "nocuts_jet0_sump_den",
     // "nocuts_elept1_den",
     // "nocuts_mupt1_den",
-    "nocuts_pt0_den",
+    // "nocuts_pt0_den",
   };
   const std::vector<std::string> jet_2d_move_weights_hists = {
     "nocuts_movedist3_movedist2_den",
@@ -130,7 +133,8 @@ int main(int argc, char** argv) {
   const int num_numdens = 3;
   numdens nds[num_numdens] = { // JMTBAD why multiple dens here?
     numdens("nocuts"),
-    numdens("ntracks"),
+    // numdens("ntracks"),
+    numdens("lep"),
     numdens("all")
   };
   enum { k_movedist2, k_movedist3, k_movevectoreta, k_npv, k_pvx, k_pvy, k_pvz, k_pvrho, k_pvntracks, k_pvscore, 
@@ -161,6 +165,8 @@ int main(int argc, char** argv) {
          k_mu1jet0_trk_dx, k_mu1jet0_trk_dy, k_mu1jet0_trk_dz, k_ele1jet0_trk_dx, k_ele1jet0_trk_dy, k_ele1jet0_trk_dz, 
          k_mu1jet0_trk_dist2d, k_ele1jet0_trk_dist2d, 
 
+         k_mu1_trk_nsigmadxy, k_ele1_trk_nsigmadxy, k_avgptno_ele1, k_avgptno_mu1, k_trackpairdravg_ele1, k_trackpairdravg_mu1,
+        
          k_jet0_trk_dz, k_mu1_trk_dz, k_ele1_trk_dz,
          k_jet0_trk_vtxdxy, k_mu1_trk_vtxdxy, k_ele1_trk_vtxdxy, k_jet0_trk_vtxdz, k_mu1_trk_vtxdz, k_ele1_trk_vtxdz, 
          k_jet0_trk_nsigmavtxdz, k_mu1_trk_nsigmavtxdz, k_ele1_trk_nsigmavtxdz, k_jet0_trk_nsigmavtxdxy, k_mu1_trk_nsigmavtxdxy,  
@@ -170,7 +176,7 @@ int main(int argc, char** argv) {
          k_ele1_trk_gennsigmamissdist, k_jet0_trk_genmissdist, k_mu1_trk_genmissdist, k_ele1_trk_genmissdist,
          k_jet0_trk_gendz, k_mu1_trk_gendz, k_ele1_trk_gendz, k_jet0_trk_gennsigmadz, k_mu1_trk_gennsigmadz, k_ele1_trk_gennsigmadz,
          k_jet0_trk_whichpv, k_mu1_trk_whichpv, k_ele1_trk_whichpv, k_jet0_trk_dsz, k_mu1_trk_dsz, k_ele1_trk_dsz, k_jet0_trk_dxy, k_mu1_trk_dxy, 
-         k_ele1_trk_dxy, k_jet0_trk_nsigmadxy, k_mu1_trk_nsigmadxy, k_ele1_trk_nsigmadxy, k_nmovedtracks, k_dphi_sum_jmu_mv, 
+         k_ele1_trk_dxy, k_jet0_trk_nsigmadxy, k_nmovedtracks, k_dphi_sum_jmu_mv, 
          k_deta_sum_jmu_mv, k_dphi_sum_jele_mv, k_deta_sum_jele_mv, k_jetpt0_jmasymm, k_jetpt0_jeasymm, k_mupt1_asymm, k_elept1_asymm, 
          k_jeteta0_jmasymm, k_jeteta0_jeasymm, k_mueta1_asymm, k_eleeta1_asymm, k_jetmudr_asymm, k_jeteledr_asymm, k_nalltracks, 
          k_nseedtracks, k_seedtracks_jetmudr, k_seedtracks_jeteledr,
@@ -184,7 +190,12 @@ int main(int argc, char** argv) {
          k_eleangle1, k_dphi_j0_mv, k_dphi_mu1_mv, k_dphi_ele1_mv, k_deta_j0_mv, k_deta_mu1_mv, k_deta_ele1_mv, k_dphi_j0_mv_jdeta, k_jetsumntracks,
          k_jetsumseedtracks, k_miscseedtracks, k_misccloseseedtracks, k_closeseedtks, k_tightcloseseedtks, k_movedseedtks, 
          k_movedseedtks_jetmudr, k_movedseedtks_jeteledr, k_movedvtxseedtks, k_movedcloseseedtks, k_rat_moved_to_closetks, k_rat_moved_to_vtxtks, 
-         k_jetntracks_v_jetp, k_nvtx, k_vtxbs2derr, k_vtxbs2derr_avgtkdr, k_vtxbs2derr_jdeta, k_vtxbs2derr_dphi_j0_mv, 
+         k_jetntracks_v_jetp, 
+         
+         k_leppt_insv, k_lepdxy_insv, k_lepdxyerr_insv, k_lepnsigmadxy_insv, k_lepiso_insv, k_leptype_insv, k_lepid_insv,
+         k_lepeta_insv, k_lephltmatched_insv, k_leppasstrigpt_insv, k_lepjet_pairdr, k_vtx_trackpairdravg, k_vtx_avgptnolep,
+
+         k_nvtx, k_vtxbs2derr, k_vtxbs2derr_avgtkdr, k_vtxbs2derr_jdeta, k_vtxbs2derr_dphi_j0_mv, 
          k_vtxbs2derr_jdr, k_vtxunc, k_vtxunc2d, k_vtxeta, k_vtxz, k_vtxdbv, k_vtx3dbv, k_vtxntk, k_vtxnm1_dbv, k_vtxnm1_ntk, 
          k_vtxnm1_bs2derr, k_vtx4tkchi2, k_vtx4tkdbv, k_vtx4tkzdbv, k_vtx4tkunc, k_vtx5tkchi2, k_vtx5tkdbv, k_vtx5tkzdbv, 
          k_vtx5tkunc, k_vtx6tkchi2, k_vtx6tkdbv, k_vtx6tkzdbv, k_vtx6tkunc};
@@ -414,13 +425,19 @@ int main(int argc, char** argv) {
     nd.book(k_mu1_trk_dxy, "mu1_trk_dxy", "; mu1-movedquality-track's dxybs; arb. units", 50, -0.5, 0.5); //check #
     nd.book(k_ele1_trk_dxy, "ele1_trk_dxy", "; ele1-movedquality-track's dxybs; arb. units", 50, -0.5, 0.5); //check #
     nd.book(k_jet0_trk_nsigmadxy, "jet0_trk_nsigmadxy", "; jet0-movedquality-track's nsigmadxybs; arb. units", 160, -20, 20);
-    nd.book(k_mu1_trk_nsigmadxy, "mu1_trk_nsigmadxy", "; mu1-movedquality-track's nsigmadxybs; arb. units", 160, -20, 20); //check #
-    nd.book(k_ele1_trk_nsigmadxy, "ele1_trk_nsigmadxy", "; ele1-movedquality-track's nsigmadxybs; arb. units", 160, -20, 20); //check #
     nd.book(k_nmovedtracks, "nmovedtracks", ";# moved tracks;events/2", 30, 0, 30);
     nd.book(k_dphi_sum_jmu_mv, "dphi_sum_jmu_mv", ";#Delta #phi between jet0+mu1 and move vec;events/bin", 70, -3.5, 3.5); //check # 
     nd.book(k_deta_sum_jmu_mv, "deta_sum_jmu_mv", ";abs #Delta #eta between jet0+mu1 and move vec;events/bin", 25, 0, 4); //check #
     nd.book(k_dphi_sum_jele_mv, "dphi_sum_jele_mv", ";#Delta #phi between jet0+ele1 and move vec;events/bin", 70, -3.5, 3.5); //check #
     nd.book(k_deta_sum_jele_mv, "deta_sum_jele_mv", ";abs #Delta #eta between jet0+ele1 and move vec;events/bin", 25, 0, 4); //check #
+
+    nd.book(k_mu1_trk_nsigmadxy, "mu1_trk_nsigmadxy", "; mu1-movedquality-track's nsigmadxybs; arb. units", 160, -20, 20); //check #
+    nd.book(k_ele1_trk_nsigmadxy, "ele1_trk_nsigmadxy", "; ele1-movedquality-track's nsigmadxybs; arb. units", 160, -20, 20); //check #
+    nd.book(k_avgptno_ele1, "avgptno_ele1", "; avgpT minus ele1's pT; arb. units", 100, 0, 50); //check #
+    nd.book(k_avgptno_mu1, "avgptno_mu1", "; avgpT minus mu1's pT; arb. units", 100, 0, 50); //check #
+    nd.book(k_trackpairdravg_ele1, "trackpairdravg_ele1", "; track-pair dR avg; arb. units", 100, 0, 5); //check #
+    nd.book(k_trackpairdravg_mu1, "trackpairdravg_mu1", "; track-pair dR avg; arb. units", 100, 0, 5); //check #
+
 
     nd.book(k_jetpt0_jmasymm, "jetpt0_jmasymm", ";jet p_{T} 0; jetmu asymm. A_{J}", 50, 0, 1000, 50, -1, 1); //check #
     nd.book(k_jetpt0_jeasymm, "jetpt0_jeasymm", ";jet p_{T} 0; jetele asymm. A_{J}", 50, 0, 1000, 50, -1, 1); //check #
@@ -506,6 +523,21 @@ int main(int argc, char** argv) {
     nd.book(k_rat_moved_to_closetks, "rat_moved_to_closetks", ";#frac{# moved seed tracks 5#sigma to LLP}{# seed tracks 5#sigma to LLP};count", 50, 0, 1);
     nd.book(k_rat_moved_to_vtxtks, "rat_moved_to_vtxtks", ";#frac{# moved seed tracks in vtx}{# vtx ntrack};count", 50, 0, 1);
     nd.book(k_jetntracks_v_jetp, "jetntracks_v_jetp01", ";jet momentum (GeV);jet # tracks", 200, 0, 2000, 50, 0, 50);
+    
+    nd.book(k_leppt_insv, "leppt_insv", ";leading lepton pT assoc to SV;events", 200, 0, 1000);
+    nd.book(k_lepdxy_insv, "lepdxy_insv", ";leading lepton dxy assoc to SV;events", 50, 0, 0.25);
+    nd.book(k_lepdxyerr_insv, "lepdxyerr_insv", ";leading lepton dxyerr assoc to SV;events", 50, 0, 0.015);
+    nd.book(k_lepnsigmadxy_insv, "lepnsigmadxy_insv", ";leading lepton nsigmadxy assoc to SV;events", 100, 0, 100);
+    nd.book(k_lepiso_insv, "lepiso_insv", ";leading lepton iso assoc to SV;events", 100, 0, 0.5);
+    nd.book(k_leptype_insv, "leptype_insv", ";leading lepton type assoc to SV;events", 2, 0, 2);
+    nd.book(k_lepid_insv, "lepid_insv", ";leading lepton ID assoc to SV;events", 10, 0, 10);
+    nd.book(k_lepeta_insv, "lepeta_insv", ";leading lepton eta assoc to SV;events", 50, -3.5, 3.5);
+    nd.book(k_lephltmatched_insv, "lephltmatched_insv", ";leading lepton assoc to SV is hltmatched?;events", 2, 0, 2);
+    nd.book(k_leppasstrigpt_insv, "leppasstrigpt_insv", ";leading lepton assoc to SV pass trigpt?;events", 2, 0, 2);
+    nd.book(k_lepjet_pairdr, "lepjet_pairdr", ";min leading lepton - jet deltaR;events", 50, 0, 6);
+    nd.book(k_vtx_trackpairdravg, "vtx_trackpairdravg", ";trackpairdravg;events", 50, 0, 5);
+    nd.book(k_vtx_avgptnolep, "vtx_avgptnolep", ";avgptnolep;events", 100, 0, 100);
+    
     nd.book(k_nvtx, "nvtx", ";number of vertices;events/1", 8, 0, 8);
     nd.book(k_vtxbs2derr, "vtxbs2derr", ";bs2derr of vertex;events", 500, 0, 0.05);
     nd.book(k_vtxbs2derr_avgtkdr, "vtxbs2derr_avgtkdr", ";bs2derr of vertex; avg tk #Delta R", 100, 0, 0.025, 31, 0, M_PI);
@@ -788,6 +820,7 @@ int main(int argc, char** argv) {
     const double movedist3 = move_vector.Mag();
     const double movevectoreta = move_vector.Eta();
     const int nseedtracks = tks.nseed(bs);
+
     int n_movedseedtks = 0;
     int n_movedseedtks0 = 0;
     int n_movedmuseedtks = 0;
@@ -1154,10 +1187,16 @@ int main(int argc, char** argv) {
     int ele1trk_idx = -1;
     double mup_1 = 0;
     double elep_1 = 0;
+    std::vector<TLorentzVector> track_p4;
+    float sv_sumptnolep = 0.0;
+    float trackpairdr_sum = 0.0;
 
     for (int j = 0; j < tks.n(); ++j) {
       if (nt.tk_moved(j) || nt.mtk_moved(j) || nt.etk_moved(j))
         // printf("track %i: pt: %10.3f eta: %10.3f phi: %10.3f pass sel? : %d tk_moved? : %d  mu track moved? : %d  ele track moved? : %d \n", j, tks.pt(j), tks.eta(j), tks.phi(j), tks.pass_sel(j), nt.tk_moved(j), nt.mtk_moved(j), nt.etk_moved(j) );
+
+      if ( (nt.tk_moved(j) && !nt.mtk_moved(j) && !nt.etk_moved(j) && tks.pass_sel(j))) sv_sumptnolep += tks.pt(j);
+      track_p4.push_back(tks.p4(j));
 
       const TLorentzVector jp4 = tks.p4(j);
       auto it0 = std::find(jet0_tracks.begin(), jet0_tracks.end(), j);
@@ -1180,6 +1219,7 @@ int main(int argc, char** argv) {
         // std::cout << "moved track : " << tks.phi(j) << " " << tks.eta(j) << std::endl;
 
         // if (dr > 0.1) std::cout << "MISMATCH MOVED TRACK - MUON " << dr << std::endl;
+        n_movedtks++;
         mu1trk_idx = j;
         mup_1 = tks.p(j);
         if (fabs(tks.eta(j)) > fabs(maxeta_1)) maxeta_1 = tks.eta(j);
@@ -1197,6 +1237,7 @@ int main(int argc, char** argv) {
         // if (dr > 0.1) std::cout << "MISMATCH MOVED TRACK - ELECTRON " << dr << std::endl;
         ele1trk_idx = j;
         elep_1 = tks.p(j);
+        n_movedtks++;
         if (fabs(tks.eta(j)) > fabs(maxeta_1)) maxeta_1 = tks.eta(j);
         if (tks.pass_seed(j, bs)) {
           n_movedseedtks++;
@@ -1205,6 +1246,10 @@ int main(int argc, char** argv) {
         }
       }
     }
+    if (n_movedtks >= 2) 
+      for (size_t i = 0, ie = n_movedtks-1; i < ie; ++i)
+        for (size_t j = i+1, je = n_movedtks; j < je; ++j)
+          trackpairdr_sum += track_p4[i].DeltaR(track_p4[j]);
     // std::cout << "nmoved ele(mu) seedtracks " << n_movedeleseedtks << " , " << n_movedmuseedtks << std::endl;
     // std::cout << "nmoved ele(mu)  " << nmovedele << " , " << nmovedmu << std::endl;
 
@@ -1370,21 +1415,22 @@ int main(int argc, char** argv) {
         //   v = mu1_p;
         // else if (name == "nocuts_ele1_p_den" && lep_isele)
         //   v = ele1_p;
-        // if (name == "nocuts_jet0_sump_den")
-        //   v = sump_0;
+        if (name == "nocuts_jet0_sump_den")
+          v = sump_0;
 
         // if (name == "nocuts_mupt1_den" && lep_ismu)
         //   v = mu1_pt;
         // else if (name == "nocuts_elept1_den" && lep_isele)
         //   v = ele1_pt;
-        if (name == "nocuts_pt0_den")
-          v = jet0_pt;
+        // if (name == "nocuts_pt0_den")
+        //   v = jet0_pt;
 
-        if (v == -1e99) {
-          // std::cout << "there's a mismatch so let's continue "<< std::endl;
-          continue; //if the lepton was an electron, skip the weights from mu hists and vise versa 
-        }
-        assert(v > -1e98);
+        //this is needed if separating lepton cases 
+        // if (v == -1e99) {
+        //   continue; //if the lepton was an electron, skip the weights from mu hists and vise versa 
+        // }
+        // assert(v > -1e98);
+        // 
         TH1D* hw = (TH1D*)jetlep_weights_1d_kin->Get(name.c_str());
         assert(hw);
         const int bin = hw->FindBin(v);
@@ -1415,8 +1461,8 @@ int main(int argc, char** argv) {
          }
       }
       for (const auto& name : jet_2d_kin_weights_hists) {
-         double vx = -1e99;
-         double vy = -1e99;
+        double vx = -1e99;
+        double vy = -1e99;
          
         //  if (name == "nocuts_llp_sump_jetdr_den"){
         // //  vx = sump_0 + sump_1 + miscp;  //FIXME
@@ -1430,16 +1476,18 @@ int main(int argc, char** argv) {
         //   if (lep_isele) vy = jetele_dr;
         //   if (lep_ismu)  vy = jetmu_dr;
         //  }
-         if (name == "nocuts_lep1_pT_jetdr_den"){
+        if (name == "nocuts_ele1_pT_jetdr_den"){
           if (lep_isele) {
             vx = ele1_pt;
             vy = jetele_dr;
           }
+        }
+        else if (name == "nocuts_mu1_pT_jetdr_den"){
           if (lep_ismu)  {
             vx = mu1_pt;
             vy = jetmu_dr;
           }
-         }
+        }
         
         //  if (name == "nocuts_jet0_sump_lep1_p_den"){
         //   vx = sump_0;
@@ -1456,12 +1504,17 @@ int main(int argc, char** argv) {
         //   vy = ele1_eta;
         // }
 
-         TH2D* hw2 = (TH2D*)jet_weights_2d_kin->Get(name.c_str());
-         assert(hw2);
-         int bin = hw2->FindBin(vx, vy);
-         if (bin >= 1 && bin <= hw2->GetNcells()){
-         w *= hw2->GetBinContent(bin);
-         }
+
+        if (vx == -1e99 && vy == -1e99) {
+          continue; //if the lepton was an electron, skip the weights from mu hists and vise versa 
+        }
+        assert(vx > -1e98 && vy > -1e98);
+        TH2D* hw2 = (TH2D*)jet_weights_2d_kin->Get(name.c_str());
+        assert(hw2);
+        int bin = hw2->FindBin(vx, vy);
+        if (bin >= 1 && bin <= hw2->GetNcells()){
+          w *= hw2->GetBinContent(bin);
+        }
       }
 
     //   for (const auto& name : jet_2d_ang_weights_hists) {
@@ -1544,13 +1597,29 @@ int main(int argc, char** argv) {
     
 
     int n_pass_nocuts = 0;
-    int n_pass_ntracks = 0;
+    // int n_pass_ntracks = 0;
+    int n_pass_lep = 0;
     int n_pass_all = 0;
     double dist2move = -9.9;
     double dist2move2d = -9.9;
     jmt::MinValue dist2min(100);
     jmt::MinValue dist2min2d(100);
     double vtx_bs2derr = -9.9, vtx_eta = -9.9, vtx_z = -999.9, vtx_dbv = -999.9, vtx_chi2 = -999.9, vtx_3dbv = -999.9, vtx_ntk = -9; // JMTBAD ??? these end up with what???
+    
+    float leading_leppt_inSV = -99.0;
+    float leading_lepdxy_inSV = 99.0;
+    float leading_lepdxyerr_inSV = 99.0;
+    float leading_lepnsigmadxy_inSV = -99.0;
+    float leading_lepiso_inSV = 99.0;
+    float leading_leptype_inSV = 99.0;
+    float leading_lepID_inSV = 99.0;
+    float leading_lepeta_inSV = 99.0;
+    float leading_lephltmatched_inSV = 99.0;
+    float leading_leppasstrigpt_inSV = 99.0;
+    float leading_lepjet_pairdr = 99.0;
+    float trackpairdravg = 99.0;
+    float avgptnolep = 99.0;
+
     std::vector<int> first_vtx_to_pass(num_numdens, -1);
     auto set_it_if_first = [](int& to_set, int to_set_to) { if (to_set == -1) to_set = to_set_to; };
 
@@ -1569,17 +1638,39 @@ int main(int argc, char** argv) {
       vtx_3dbv    = vs.pos(ivtx).Mag();
       vtx_ntk     = vs.ntracks(ivtx);
       vtx_chi2    = vs.chi2(ivtx)/vs.ndof(ivtx);
+
+      leading_leppt_inSV = lepinsv.leading_leppt_inSV(ivtx);
+      leading_lepdxy_inSV = lepinsv.leading_lepdxy_inSV(ivtx);
+      leading_lepdxyerr_inSV = lepinsv.leading_lepdxyerr_inSV(ivtx);
+      leading_lepnsigmadxy_inSV = lepinsv.leading_lepnsigmadxy_inSV(ivtx);
+      leading_lepiso_inSV = lepinsv.leading_lepiso_inSV(ivtx);
+      leading_leptype_inSV = lepinsv.leading_leptype_inSV(ivtx);
+      leading_lepID_inSV = lepinsv.leading_lepID_inSV(ivtx);
+      leading_lepeta_inSV = lepinsv.leading_lepeta_inSV(ivtx);
+      leading_lephltmatched_inSV = lepinsv.leading_lephltmatched_inSV(ivtx);
+      leading_leppasstrigpt_inSV = lepinsv.leading_leppasstrigpt_inSV(ivtx);
+      leading_lepjet_pairdr = lepinsv.leading_lepjet_pairdr(ivtx);
+      trackpairdravg = lepinsv.trackpairdravg(ivtx);
+      avgptnolep = lepinsv.avgptnolep(ivtx);
+
       // std::cout << "vtx i : bs2derr, ntracks, dbv " << ivtx << " " << vtx_bs2derr << " " << vtx_ntk << " " << vtx_dbv << std::endl;
       
       const bool pass_beams = vtx_dbv >= 0.0100 && vtx_dbv < 2.0;
-      const bool pass_ntracks = vs.ntracks(ivtx) >= 4 && pass_beams; //CHANGE TO 4 FOR DISPLACED LEPTON ... 
+      // const bool pass_ntracks = vs.ntracks(ivtx) >= 4 && pass_beams; //CHANGE TO 4 FOR DISPLACED LEPTON ... 
       const bool pass_bs2derr = vs.bs2derr(ivtx) < 0.0050 && pass_beams; // JMTBAD use rescale_bs2derr and in plots below //FIXME 
+      const bool pass_lep = leading_leppt_inSV > 0 && leading_leptype_inSV != 99.0 && leading_lepjet_pairdr > 0.4 && pass_beams;  //barebone pass lep for now - check distributions and assess 
+      
 
+      //for lepinSV analysis, more imperative for the lepton cut, not ntracks, since all go through BDT -> replace 
       if (1)                            { set_it_if_first(first_vtx_to_pass[0], ivtx); ++n_pass_nocuts;  }
-      if (pass_ntracks )                 { set_it_if_first(first_vtx_to_pass[1], ivtx); ++n_pass_ntracks; }
-      if (pass_ntracks && pass_bs2derr) { set_it_if_first(first_vtx_to_pass[2], ivtx); ++n_pass_all;     }
+      // if (pass_ntracks )                 { set_it_if_first(first_vtx_to_pass[1], ivtx); ++n_pass_ntracks; }
+      if (pass_lep )                 { set_it_if_first(first_vtx_to_pass[1], ivtx); ++n_pass_lep; }
+      // if (pass_ntracks && pass_bs2derr) { set_it_if_first(first_vtx_to_pass[2], ivtx); ++n_pass_all;     }
+      if (pass_lep && pass_bs2derr) { set_it_if_first(first_vtx_to_pass[2], ivtx); ++n_pass_all;     }
 
-      if (pass_ntracks && pass_bs2derr && nr.is_mc() && nr.use_weights() && ntks_weights)
+      // if (pass_ntracks && pass_bs2derr && nr.is_mc() && nr.use_weights() && ntks_weights)
+      if (pass_lep && pass_bs2derr && nr.is_mc() && nr.use_weights() && ntks_weights)
+
         w *= ntks_weight(vs.ntracks(ivtx));
     }
 
@@ -1595,14 +1686,33 @@ int main(int argc, char** argv) {
       vtx_ntk     = vs.ntracks(mindist2move_iv);
       vtx_chi2     = vs.chi2(mindist2move_iv)/vs.ndof(mindist2move_iv);
       const std::vector<int> its = tks.tks_for_sv(mindist2move_iv);
+
+      // std::cout << " ----------------------------------------------------- " << std::endl;
       for (int it : its){
         auto it0 = std::find(jet0trk_idx.begin(), jet0trk_idx.end(), it);
-        // auto it1 = std::find(jet1trk_idx.begin(), jet1trk_idx.end(), it);
-        if (it0 != jet0trk_idx.end()) n_movedvtxseedtks++;
-        // if (it0 != jet0trk_idx.end() || it1 != jet1trk_idx.end()) n_movedvtxseedtks++;
-
+        if (it0 != jet0trk_idx.end() || it == mu1trk_idx || it == ele1trk_idx) n_movedvtxseedtks++;
+        // std::cout << "vertex track pT : " << tks.pt(it) << std::endl;
+        // std::cout << "vertex track eta, phi : " << tks.eta(it) << " " << tks.phi(it) << std::endl;
+        // if (it == mu1trk_idx || it == ele1trk_idx) std::cout << "track is a lepton!" << std::endl;
       }
+
+      //now all the lepton in SV variables... but what is the difference here vs. above?
+      leading_leppt_inSV = lepinsv.leading_leppt_inSV(mindist2move_iv);
+      leading_lepdxy_inSV = lepinsv.leading_lepdxy_inSV(mindist2move_iv);
+      leading_lepdxyerr_inSV = lepinsv.leading_lepdxyerr_inSV(mindist2move_iv);
+      leading_lepnsigmadxy_inSV = lepinsv.leading_lepnsigmadxy_inSV(mindist2move_iv);
+      leading_lepiso_inSV = lepinsv.leading_lepiso_inSV(mindist2move_iv);
+      leading_leptype_inSV = lepinsv.leading_leptype_inSV(mindist2move_iv);
+      leading_lepID_inSV = lepinsv.leading_lepID_inSV(mindist2move_iv);
+      leading_lepeta_inSV = lepinsv.leading_lepeta_inSV(mindist2move_iv);
+      leading_lephltmatched_inSV = lepinsv.leading_lephltmatched_inSV(mindist2move_iv);
+      leading_leppasstrigpt_inSV = lepinsv.leading_leppasstrigpt_inSV(mindist2move_iv);
+      leading_lepjet_pairdr = lepinsv.leading_lepjet_pairdr(mindist2move_iv);
+      trackpairdravg = lepinsv.trackpairdravg(mindist2move_iv);
+      avgptnolep = lepinsv.avgptnolep(mindist2move_iv);
+      
     }
+
     
 
     if (dist2move > 0.0400 && dist2move < 100) //FIXME 
@@ -1740,6 +1850,9 @@ int main(int argc, char** argv) {
         nd.den(k_mu1_trk_nsigmadxy, tks.dxybs(mu1trk_idx, bs)/tks.err_dxy(mu1trk_idx));
         nd.den(k_mu1_trk_dxyerr, tks.err_dxy(mu1trk_idx));
         
+        nd.den(k_avgptno_mu1, sv_sumptnolep/vtx_ntk);
+        nd.den(k_trackpairdravg_mu1, trackpairdr_sum/vtx_ntk);
+        
         nd.den(k_jet0_maxeta_mu1_eta, maxeta_0, mu1_eta);
         nd.den(k_jet0_sump_mu1_p, sump_0, mu1_p);
         nd.den(k_jet0_sump_lep1_p, sump_0, mu1_p);
@@ -1846,6 +1959,9 @@ int main(int argc, char** argv) {
         nd.den(k_ele1_trk_dxy, tks.dxybs(ele1trk_idx, bs));
         nd.den(k_ele1_trk_nsigmadxy, tks.dxybs(ele1trk_idx, bs)/tks.err_dxy(ele1trk_idx));
         nd.den(k_ele1_trk_dxyerr, tks.err_dxy(ele1trk_idx));
+        
+        nd.den(k_avgptno_ele1, sv_sumptnolep/vtx_ntk);
+        nd.den(k_trackpairdravg_ele1, trackpairdr_sum/vtx_ntk);
         
         nd.den(k_jet0_maxeta_ele1_eta, maxeta_0, ele1_eta);
         nd.den(k_jet0_sump_ele1_p, sump_0, ele1_p);
@@ -1979,6 +2095,20 @@ int main(int argc, char** argv) {
       nd.den(k_rat_moved_to_vtxtks, n_movedvtxseedtks/vtx_ntk); 
       nd.den(k_jetntracks_v_jetp, jet0_p, jet0_ntracks);
 
+      nd.den(k_leppt_insv, leading_leppt_inSV);
+      nd.den(k_lepdxy_insv, leading_lepdxy_inSV);
+      nd.den(k_lepdxyerr_insv, leading_lepdxyerr_inSV);
+      nd.den(k_lepnsigmadxy_insv, leading_lepnsigmadxy_inSV);
+      nd.den(k_lepiso_insv, leading_lepiso_inSV);
+      nd.den(k_leptype_insv, leading_leptype_inSV);
+      nd.den(k_lepid_insv, leading_lepID_inSV);
+      nd.den(k_lepeta_insv, leading_lepeta_inSV);
+      nd.den(k_lephltmatched_insv, leading_lephltmatched_inSV);
+      nd.den(k_leppasstrigpt_insv, leading_leppasstrigpt_inSV);
+      nd.den(k_lepjet_pairdr, leading_lepjet_pairdr);
+      nd.den(k_vtx_trackpairdravg, trackpairdravg);
+      nd.den(k_vtx_avgptnolep, avgptnolep);
+
       nd.den(k_nvtx, nvtx);
       nd.den(k_vtxbs2derr, vtx_bs2derr);
       nd.den(k_vtxbs2derr_avgtkdr, vtx_bs2derr, jet0_avg_trackpair_dr);
@@ -2072,12 +2202,14 @@ int main(int argc, char** argv) {
     }
 
     if (n_pass_nocuts)  nums["nocuts"]  += w;
-    if (n_pass_ntracks) nums["ntracks"] += w;
+    // if (n_pass_ntracks) nums["ntracks"] += w;
+    if (n_pass_lep)     nums["lep"]     += w;
     if (n_pass_all)     nums["all"]     += w;
 
     const int npasses[num_numdens] = {
       n_pass_nocuts,
-      n_pass_ntracks,
+      // n_pass_ntracks,
+      n_pass_lep,
       n_pass_all
     };
     for (int i = 0; i < num_numdens; ++i) {
@@ -2208,6 +2340,9 @@ int main(int argc, char** argv) {
         nd.num(k_mu1_trk_nsigmadxy, tks.dxybs(mu1trk_idx, bs)/tks.err_dxy(mu1trk_idx));
         nd.num(k_mu1_trk_dxyerr, tks.err_dxy(mu1trk_idx));
 
+        nd.num(k_avgptno_mu1, sv_sumptnolep/vtx_ntk);
+        nd.num(k_trackpairdravg_mu1, trackpairdr_sum/vtx_ntk);
+        
         nd.num(k_jet0_maxeta_mu1_eta, maxeta_0, mu1_eta);
         nd.num(k_jet0_sump_mu1_p, sump_0, mu1_p);
         nd.num(k_jet0_sump_lep1_p, sump_0, mu1_p);
@@ -2313,6 +2448,9 @@ int main(int argc, char** argv) {
         nd.num(k_ele1_trk_dxy, tks.dxybs(ele1trk_idx, bs));
         nd.num(k_ele1_trk_nsigmadxy, tks.dxybs(ele1trk_idx, bs)/tks.err_dxy(ele1trk_idx));
         nd.num(k_ele1_trk_dxyerr, tks.err_dxy(ele1trk_idx));
+        
+        nd.num(k_avgptno_ele1, sv_sumptnolep/vtx_ntk);
+        nd.num(k_trackpairdravg_ele1, trackpairdr_sum/vtx_ntk);
         
         nd.num(k_jet0_maxeta_ele1_eta, maxeta_0, ele1_eta);
         nd.num(k_jet0_sump_jeteledr, sump_0, jetele_dr);
@@ -2438,6 +2576,20 @@ int main(int argc, char** argv) {
       nd.num(k_rat_moved_to_closetks, n_movedcloseseedtks/n_closeseedtks); 
       nd.num(k_rat_moved_to_vtxtks, n_movedvtxseedtks/vtx_ntk); 
       nd.num(k_jetntracks_v_jetp, jet0_p, jet0_ntracks);
+
+      nd.num(k_leppt_insv, leading_leppt_inSV);
+      nd.num(k_lepdxy_insv, leading_lepdxy_inSV);
+      nd.num(k_lepdxyerr_insv, leading_lepdxyerr_inSV);
+      nd.num(k_lepnsigmadxy_insv, leading_lepnsigmadxy_inSV);
+      nd.num(k_lepiso_insv, leading_lepiso_inSV);
+      nd.num(k_leptype_insv, leading_leptype_inSV);
+      nd.num(k_lepid_insv, leading_lepID_inSV);
+      nd.num(k_lepeta_insv, leading_lepeta_inSV);
+      nd.num(k_lephltmatched_insv, leading_lephltmatched_inSV);
+      nd.num(k_leppasstrigpt_insv, leading_leppasstrigpt_inSV);
+      nd.num(k_lepjet_pairdr, leading_lepjet_pairdr);
+      nd.num(k_vtx_trackpairdravg, trackpairdravg);
+      nd.num(k_vtx_avgptnolep, avgptnolep);
 
       nd.num(k_nvtx, npasses[i]);
       nd.num(k_vtxbs2derr, vtx_bs2derr);

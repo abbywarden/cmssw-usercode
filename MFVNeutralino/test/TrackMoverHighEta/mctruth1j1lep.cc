@@ -6,7 +6,7 @@ int main(int argc, char** argv) {
 
   jmt::NtupleReader<mfv::MovedTracksNtuple> nr;
   namespace po = boost::program_options;
-  nr.init_options("mfvMovedTreeMCTruth/t", "TrackMoverMCTruth_LowEta", "trackmovermctruthulv14lepmv6", "all_signal = True")
+  nr.init_options("mfvMovedTreeMCTruth/t", "TrackMoverMCTruth_HighEta", "trackmovermctruthulv13lepmv6", "all_signal = True")
   // nr.init_options("mfvMovedTreeMCTruth/t", "TrackMoverMCTruth_LowEta_HighdVV_NoPreSelRelaxBSPVetodR0p4VetoMissLLPVetoTrkJetByMiniJetHistsOnnormdzUlv30lepmumv6", "trackmovermctruthonnormdzulv30lepmumv6", "all_signal = True")
     ("min-lspdist3", po::value<double>(&min_lspdist3)->default_value(0.00), "min distance between LSP decays to use event") //FIXME 0.02
     ;
@@ -25,8 +25,6 @@ int main(int argc, char** argv) {
   auto& tks = nt.tracks();
   auto& gen = nt.gentruth();
   auto& vs = nt.vertices();
-  auto& lepinsv = nt.lepinvertices();
-
   ////
 
   const int num_numdens = 3;
@@ -34,8 +32,7 @@ int main(int argc, char** argv) {
   const bool semilep    = true; //for displaced SUSY - 1jet 1lep case 
   numdens nds[num_numdens] = {
     numdens("nocuts"),
-    // numdens("ntracks"),
-    numdens("lep"),
+    numdens("ntracks"),
     numdens("all")
   };
 
@@ -44,7 +41,7 @@ int main(int argc, char** argv) {
          k_npv, k_pvz, k_dist2dpvbs, k_pvrho, k_pvntracks, k_pvscore, k_ht, k_njets, 
          k_jetmu_asymm, k_jetele_asymm, k_jet0_eta, k_mu1_eta, k_ele1_eta, k_jetmu_dr, k_jetele_dr, k_jetmu_costheta, k_jetele_costheta, 
          k_jetmu_asymsump, k_jetele_asymsump, k_jetmu_deta, k_jetele_deta, 
-         k_jetmu_dphi, k_jetele_dphi, k_jetele_deta_dphi, k_jetmu_deta_dphi, k_jetlep_deta_dphi,
+         k_jetmu_dphi, k_jetele_dphi, k_jetmu_deta_dphi, k_jetele_deta_dphi, k_jetlep_deta_dphi,
          k_pt0, k_mupt1, k_elept1, k_ntks_j0, k_jet_dr_minj0_q0, k_mu_dr_minl1_l1, k_ele_dr_minl1_l1, k_boost0_boost1, 
 
          k_movedseedinvtx_trk_whichjet, k_miscclose_trk_whichjet, k_miscclose_trk_p, k_miscclose_trk_eta, k_miscclose_trk_dzerr, 
@@ -55,22 +52,8 @@ int main(int argc, char** argv) {
          k_jet0_trk_dr_gennsigma, k_jet0_trk_dr_genmissdist, k_jet0_trk_dr_gendz, k_jet0_trk_eta_gennsigma,
          k_jet0_trk_eta_gendz, k_jet0_trk_dz, k_jet0_trk_vtxdxy, k_jet0_trk_vtxdz, 
          k_jet0_trk_nsigmavtxdz, k_jet0_trk_nsigmavtxdxy, k_jet0_trk_nsigmavtx, k_jet0_trk_dzerr, k_jet0_trk_nsigmadz, k_jet0_trk_dxyerr,
-         
-         k_mu1_trk_dz, k_ele1_trk_dz, k_mu1_trk_vtxdxy, k_ele1_trk_vtxdxy, k_mu1_trk_vtxdz, k_ele1_trk_vtxdz, 
-         k_mu1_trk_nsigmavtxdz, k_ele1_trk_nsigmavtxdz, k_mu1_trk_nsigmavtxdxy, k_ele1_trk_nsigmavtxdxy,
-         k_mu1_trk_nsigmavtx, k_ele1_trk_nsigmavtx, k_mu1_trk_dzerr, k_ele1_trk_dzerr, k_mu1_trk_dxyerr, k_ele1_trk_dxyerr, 
-         k_mu1_trk_gennsigma, k_ele1_trk_gennsigma, k_mu1_trk_gennsigmamissdist, k_ele1_trk_gennsigmamissdist, k_mu1_trk_genmissdist, k_ele1_trk_genmissdist,
-         k_mu1_trk_gendz, k_ele1_trk_gendz, k_mu1_trk_gennsigmadz, k_ele1_trk_gennsigmadz,
-         k_mu1_trk_dsz, k_ele1_trk_dsz, k_mu1_trk_dxy, k_ele1_trk_dxy, k_mu1_trk_whichpv, k_ele1_trk_whichpv,
-
-         k_mu1_trk_nsigmadxy, k_ele1_trk_nsigmadxy,k_avgptno_ele1, k_avgptno_mu1, k_trackpairdravg_ele1, k_trackpairdravg_mu1,
-
-         k_mu1jet0_trk_dx, k_mu1jet0_trk_dy, k_mu1jet0_trk_dz, k_ele1jet0_trk_dx, k_ele1jet0_trk_dy, k_ele1jet0_trk_dz, 
-         k_mu1jet0_trk_dist2d, k_ele1jet0_trk_dist2d, 
-
          k_jet0_trk_eta, k_jet0_sump, k_mu1_p_eta, k_ele1_p_eta, k_lep1_p_eta,
-         k_mu1_p, k_ele1_p, k_jet0_sump_mu1_p, k_jet0_sump_ele1_p, k_jet0_sump_lep1_p,
-         k_jetmudr_qrk0_dxybs, k_jeteledr_qrk0_dxybs, k_jetmudr_genmu1_dxybs, k_jeteledr_genele1_dxybs, 
+         k_mu1_p, k_ele1_p, k_jet0_sump_mu1_p, k_jet0_sump_ele1_p, k_jet0_sump_lep1_p, k_jetmudr_qrk0_dxybs, k_jeteledr_qrk0_dxybs, k_jetmudr_genmu1_dxybs, k_jeteledr_genele1_dxybs, 
          k_jetmudphi_qrk0_dxybs, k_jeteledphi_qrk0_dxybs, k_jetmudphi_genmu1_dxybs, k_jeteledphi_genele1_dxybs, 
          k_closeseedtks_qrk0_dxybs, k_closeseedtks_genmu1_dxybs, k_closeseedtks_genele1_dxybs, k_nmovedtks_jetmu_dr, k_nmovedtks_jetele_dr, k_nmovedtks0_qrk0_dxybs, 
          k_nmovedseedtks0_qrk0_dxybs, k_nmovedtks0_jet0_sump, k_nmovedseedtks0_jet0_sump, 
@@ -121,11 +104,7 @@ int main(int argc, char** argv) {
          k_jetmupt01, k_jetelept01, 
          k_pt_angle0, k_pt_anglemu1, k_pt_angleele1, 
          k_eta_angle0, k_eta_anglemu1, k_eta_angleele1, 
-
-         k_leppt_insv, k_lepdxy_insv, k_lepdxyerr_insv, k_lepnsigmadxy_insv, k_lepiso_insv, k_leptype_insv, k_lepid_insv,
-         k_lepeta_insv, k_lephltmatched_insv, k_leppasstrigpt_insv, k_lepjet_pairdr, k_vtx_trackpairdravg, k_vtx_avgptnolep,
-
-         k_nvtx, k_vtxcat, k_vtxbs2derr, k_vtxunc, k_vtxunc2d, k_vtxeta, k_vtxz, k_vtxdbv, k_vtx3dbv, k_vtxntk, k_dr, 
+         k_nvtx, k_vtxcat, k_vtxbs2derr, k_vtxunc, k_vtxeta, k_vtxz, k_vtxdbv, k_vtx3dbv, k_vtxntk, k_dr, 
          k_dvv, k_dvv_2vtx, k_movedist3_movedist2_2vtx, k_dvv2d, k_vtxnm1_dbv, k_vtxnm1_ntk, k_vtxnm1_bs2derr, k_vtx3tkchi2, k_vtx3tkdbv, 
          k_vtx3tkdvv, k_vtx3tkzdbv, k_vtx3tkunc, k_vtx4tkchi2, k_vtx4tkdbv, k_vtx4tkdvv, k_vtx4tkzdbv, k_vtx4tkunc, k_vtx5tkchi2, k_vtx5tkdbv, 
          k_vtx5tkdvv, k_vtx5tkzdbv, k_vtx5tkunc};
@@ -189,8 +168,8 @@ int main(int argc, char** argv) {
     // nd.book(k_wjet_dphi, "wjet_dphi", ";W(Z)-jet |#DeltaPhi|; arb. units", 70, 0.0, 3.5);
     // nd.book(k_zjet_dphi, "zjet_dphi", ";Z-jet |#DeltaPhi|; arb. units", 70, 0.0, 3.5);
    
-    nd.book(k_jetmu_asymm, "jetmu_asymm", ";jet-mu pT asymmetry A_{J}; arb. units", 50, -1, 1);
-    nd.book(k_jetele_asymm, "jetele_asymm", ";jet-ele pT asymmetry A_{J}; arb. units", 50, -1, 1);
+    nd.book(k_jetmu_asymm, "jetmu_asymm", ";jet-mu pT asymmetry A_{J}; arb. units", 25, 0, 1);
+    nd.book(k_jetele_asymm, "jetele_asymm", ";jet-ele pT asymmetry A_{J}; arb. units", 25, 0, 1);
     nd.book(k_jet0_eta, "jet0_eta", ";jet0's Eta; arb. units", 60, -4, 4);
     // nd.book(k_jet1_eta, "jet1_eta", ";jet1's Eta; arb. units", 60, -3, 3);
     nd.book(k_mu1_eta, "mu1_eta", ";mu1's Eta; arb. units", 60, -4, 4);
@@ -198,7 +177,6 @@ int main(int argc, char** argv) {
     nd.book(k_mu1_p_eta, "mu1_p_eta", ";mu1's momentum p; mu1's Eta", 100, 0, 500, 60, -4, 4); //check ##
     nd.book(k_ele1_p_eta, "ele1_p_eta", ";ele1's momentum p; ele1's Eta", 100, 0, 500, 60, -4, 4); //check ##
     nd.book(k_lep1_p_eta, "lep1_p_eta", ";lep1's momentum p; lep1's Eta", 100, 0, 500, 60, -4, 4); //check ##
-
 
     // nd.book(k_jet_dr, "jet_dr", ";jets' #DeltaR; arb. units", 60, 0, 6);
     nd.book(k_jetmu_dr, "jetmu_dr", ";jet-mu #DeltaR; arb. units", 60, 0, 6);
@@ -221,11 +199,9 @@ int main(int argc, char** argv) {
 
     // nd.book(k_jet_dind, "jet_dind", ";jets' #DeltaIndex; arb. units", 20, 0, 20);
     nd.book(k_pt0, "pt0", ";RECO jet0 pT [GeV]", 100, 0, 500);
-
     // nd.book(k_pt1, "pt1", ";RECO jet1 pT [GeV]", 50, 0, 150);
     nd.book(k_mupt1, "mupt1", ";RECO mu1 pT [GeV]", 100, 0, 500);
     nd.book(k_elept1, "elept1", ";RECO ele1 pT [GeV]", 100, 0, 500);
-
     nd.book(k_ntks_j0, "ntks_j0", ";Ntks in jet0", 25, 0, 25);
     // nd.book(k_ntks_j1, "ntks_j1", ";Ntks in jet1", 25, 0, 25);
     nd.book(k_jet_dr_minj0_q0, "jet_dr_minj0_q0", ";#DeltaR(j0,quark0)", 70, 0, 7);
@@ -251,6 +227,7 @@ int main(int argc, char** argv) {
     // nd.book(k_llp_sump_jetdr, "llp_sump_jetdr", "; llp-moved-misc-quality-track's sum p;jets #DeltaR", 300, 0, 300, 60, 0, 6.0);
     nd.book(k_llp_sump_jetmudr, "llp_sump_jetmudr", "; llp-moved-misc-quality-track's sum p;jet-mu #DeltaR", 300, 0, 300, 60, 0, 6.0);
     nd.book(k_llp_sump_jeteledr, "llp_sump_jeteledr", "; llp-moved-misc-quality-track's sum p;jet-ele #DeltaR", 300, 0, 300, 60, 0, 6.0);
+    // nd.book(k_jet0_sump_jetdr, "jet0_sump_jetdr", "; jet0-movedquality-track's sum p;jets #DeltaR", 80, 0, 80, 60, 0, 6.0);
     nd.book(k_jet0_sump_jetmudr, "jet0_sump_jetmudr", "; jet0-movedquality-track's sum p;jet-mu #DeltaR", 100, 0, 500, 60, 0, 6.0); //check #
     nd.book(k_jet0_sump_jeteledr, "jet0_sump_jeteledr", "; jet0-movedquality-track's sum p;jet-ele #DeltaR", 100, 0, 500, 60, 0, 6.0); //check #
     nd.book(k_jet0_sump_jetlepdr, "jet0_sump_jetlepdr", "; jet0-movedquality-track's sum p;jet-lep #DeltaR", 100, 0, 500, 60, 0, 6.0); //check #
@@ -285,8 +262,8 @@ int main(int argc, char** argv) {
     nd.book(k_angle2d_jetmudr, "angle2d_jetmudr", ";  movedist2/movedist3;jet-mu #DeltaR", 50, 0, 1.5, 60, 0, 6.0);  
     nd.book(k_angle2d_jeteledr, "angle2d_jeteledr", ";  movedist2/movedist3;jet-ele #DeltaR", 50, 0, 1.5, 60, 0, 6.0);  
     // nd.book(k_angle2d_jet1_sump, "angle2d_jet1_sump", ";  movedist2/movedist3; jet1-movedquality-track's sum p", 50, 0, 1.5, 40, 0, 80); 
-    nd.book(k_angle2d_mu1_p, "angle2d_mu1_sump", ";  movedist2/movedist3; mu1-movedquality-track's p", 50, 0, 1.5, 40, 0, 80); 
-    nd.book(k_angle2d_ele1_p, "angle2d_ele1_sump", ";  movedist2/movedist3; ele1-movedquality-track's p", 50, 0, 1.5, 40, 0, 80); 
+    nd.book(k_angle2d_mu1_p, "angle2d_jet1_sump", ";  movedist2/movedist3; jet1-movedquality-track's sum p", 50, 0, 1.5, 40, 0, 80); 
+    nd.book(k_angle2d_ele1_p, "angle2d_jet1_sump", ";  movedist2/movedist3; jet1-movedquality-track's sum p", 50, 0, 1.5, 40, 0, 80); 
     // nd.book(k_movedist2_jetdr, "movedist2_jetdr", "; movement 2-dist;jets #DeltaR", 50, 0, 2.5, 60, 0, 6.0);  
     nd.book(k_movedist2_jetmudr, "movedist2_jetmudr", "; movement 2-dist;jet-mu #DeltaR", 50, 0, 2.5, 60, 0, 6.0);  
     nd.book(k_movedist2_jeteledr, "movedist2_jeteledr", "; movement 2-dist;jet-ele #DeltaR", 50, 0, 2.5, 60, 0, 6.0);  
@@ -331,9 +308,9 @@ int main(int argc, char** argv) {
     nd.book(k_jet0_maxeta_mu1_eta, "jet0_maxeta_mu1_eta", "; max(jet0-movedquality-track's Eta); mu1-movedquality-track's Eta", 60, -3, 3, 60, -3, 3); 
     nd.book(k_jet0_maxeta_ele1_eta, "jet0_maxeta_ele1_eta", "; max(jet0-movedquality-track's Eta); ele1-movedquality-track's Eta", 60, -3, 3, 60, -3, 3); 
     // nd.book(k_jet0_sump_jet1_sump, "jet0_sump_jet1_sump", "; jet0-movedquality-track's sum p; jet1-movedquality-track's sum p", 80, 0, 80, 80, 0, 80); 
-    nd.book(k_jet0_sump_mu1_p, "jet0_sump_mu1_p", "; jet0-movedquality-track's sum p; mu1-movedquality-track's p", 100, 0, 200, 100, 0, 200); 
-    nd.book(k_jet0_sump_ele1_p, "jet0_sump_ele1_p", "; jet0-movedquality-track's sum p; ele1-movedquality-track's p", 100, 0, 200, 100, 0, 200); 
-    nd.book(k_jet0_sump_lep1_p, "jet0_sump_lep1_p", "; jet0-movedquality-track's sum p; ele1-movedquality-track's p", 100, 0, 200, 100, 0, 200); 
+    nd.book(k_jet0_sump_mu1_p, "jet0_sump_mu1_p", "; jet0-movedquality-track's sum p; mu1-movedquality-track's p", 100, 0, 500, 100, 0, 500); 
+    nd.book(k_jet0_sump_ele1_p, "jet0_sump_ele1_p", "; jet0-movedquality-track's sum p; ele1-movedquality-track's p", 100, 0, 500, 100, 0, 500); 
+    nd.book(k_jet0_sump_lep1_p, "jet0_sump_lep1_p", "; jet0-movedquality-track's sum p; ele1-movedquality-track's p", 100, 0, 500, 100, 0, 500); 
 
     // nd.book(k_jetdr_qrk0_dxybs, "jetdr_qrk0_dxybs", "; jets' #DeltaR; quark0's dxybs", 60, 0, 6, 20, 0, 0.2);
     nd.book(k_jetmudr_qrk0_dxybs, "jetmudr_qrk0_dxybs", "; jet-mu #DeltaR; quark0's dxybs", 60, 0, 6, 20, 0, 0.2);
@@ -409,16 +386,6 @@ int main(int argc, char** argv) {
     // nd.book(k_2genlogm, "2genlogm", "; log(2*p_{quark0}*p_{quark1}) + log(1-cos(#Delta#Theta))", 70, 0, 7);
     nd.book(k_2genlogm_mu, "2genlogm_mu", "; log(2*p_{quark0}*p_{genmu1}) + log(1-cos(#Delta#Theta))", 70, 0, 7);
     nd.book(k_2genlogm_ele, "2genlogm_ele", "; log(2*p_{quark0}*p_{genele1}) + log(1-cos(#Delta#Theta))", 70, 0, 7);
-    
-    nd.book(k_mu1jet0_trk_dx, "mu1jet0_trk_dx", "; jet0 x pos - mu1 x pos; arb. units", 50, -1.0, 1.0);
-    nd.book(k_mu1jet0_trk_dy, "mu1jet0_trk_dy", "; jet0 y pos - mu1 y pos; arb. units", 50, -1.0, 1.0);
-    nd.book(k_mu1jet0_trk_dz, "mu1jet0_trk_dz", "; jet0 z pos - mu1 z pos; arb. units", 50, -1.0, 1.0);
-    nd.book(k_ele1jet0_trk_dx, "ele1jet0_trk_dx", "; jet0 x pos - ele1 x pos; arb. units", 50, -1.0, 1.0);
-    nd.book(k_ele1jet0_trk_dy, "ele1jet0_trk_dy", "; jet0 y pos - ele1 y pos; arb. units", 50, -1.0, 1.0);
-    nd.book(k_ele1jet0_trk_dz, "ele1jet0_trk_dz", "; jet0 z pos - ele1 z pos; arb. units", 50, -1.0, 1.0);
-    nd.book(k_mu1jet0_trk_dist2d, "mu1jet0_trk_dist2d", "; 2d distance between jet0 and mu1; arb. units", 50, 0.0, 5.0);
-    nd.book(k_ele1jet0_trk_dist2d, "ele1jet0_trk_dist2d", "; 2d distance between jet0 and ele1; arb. units", 50, 0.0, 5.0);
-    
     // nd.book(k_asymjet_jetdr, "asymjet_jetdr", ";jet's quality tracks sum mom. asymm. A_{J}; jets's movedquality-track p4 #DeltaR ", 20, -1, 1, 60, 0, 6.0);
     nd.book(k_asymjetmu_jetmudr, "asymjetmu_jetmudr", ";mu mom. - jet's quality tracks sum mom. asymm. A_{J}; jet-mu movedquality-track p4 #DeltaR ", 20, -1, 1, 60, 0, 6.0);
     nd.book(k_asymjetele_jeteledr, "asymjetele_jeteledr", ";ele mom. - jet's quality tracks sum mom. asymm. A_{J}; jet-ele movedquality-track p4 #DeltaR ", 20, -1, 1, 60, 0, 6.0);
@@ -454,47 +421,6 @@ int main(int argc, char** argv) {
     // nd.book(k_jet1_trk_dxyerr, "jet1_trk_dxyerr", "; jet1-movedquality-track's dxy err; arb. units", 100, 0.0, 0.05);
     nd.book(k_jet0_trk_eta, "jet0_trk_eta", "; jet0-movedquality-track's eta; arb. units", 70, -3.5, 3.5);
     // nd.book(k_jet1_trk_eta, "jet1_trk_eta", "; jet1-movedquality-track's eta; arb. units", 70, -3.5, 3.5);
-    
-    nd.book(k_mu1_trk_dz, "mu1_trk_dz", "; mu1-movedquality's dzpv; arb. units", 50, -1.0, 1.0); //check #
-    nd.book(k_ele1_trk_dz, "ele1_trk_dz", "; ele1-movedquality's dzpv; arb. units", 50, -1.0, 1.0); //check #
-    nd.book(k_mu1_trk_dsz, "mu1_trk_dsz", "; mu1-movedquality-track's dsz; arb. units", 50, -1.0, 1.0); //check #
-    nd.book(k_ele1_trk_dsz, "ele1_trk_dsz", "; ele1-movedquality-track's dsz; arb. units", 50, -1.0, 1.0); //check #
-    nd.book(k_mu1_trk_dxy, "mu1_trk_dxy", "; mu1-movedquality-track's dxybs; arb. units", 50, -0.5, 0.5); //check #
-    nd.book(k_ele1_trk_dxy, "ele1_trk_dxy", "; ele1-movedquality-track's dxybs; arb. units", 50, -0.5, 0.5); //check #
-    nd.book(k_mu1_trk_vtxdxy, "mu1_trk_vtxdxy", "; mu1-movedquality's dxy to vtx; arb. units", 50, -1.0, 1.0); //check #
-    nd.book(k_ele1_trk_vtxdxy, "ele1_trk_vtxdxy", "; ele1-movedquality's dxy to vtx; arb. units", 50, -1.0, 1.0); //check #
-    nd.book(k_mu1_trk_vtxdz, "mu1_trk_vtxdz", "; mu1-movedquality's dz to vtx; arb. units", 50, -1.0, 1.0); //check #
-    nd.book(k_ele1_trk_vtxdz, "ele1_trk_vtxdz", "; ele1-movedquality's dz to vtx; arb. units", 50, -1.0, 1.0); //check #
-    nd.book(k_mu1_trk_nsigmavtxdz, "mu1_trk_nsigmavtxdz", "; mu1-movedquality's nsigmavtxdz; arb. units", 80, -10, 10); //check #
-    nd.book(k_ele1_trk_nsigmavtxdz, "ele1_trk_nsigmavtxdz", "; ele1-movedquality's nsigmavtxdz; arb. units", 80, -10, 10); //check #
-    nd.book(k_mu1_trk_nsigmavtxdxy, "mu1_trk_nsigmavtxdxy", "; mu1-movedquality-track's nsigmavtxdxy; arb. units", 80, -10, 10); //check #
-    nd.book(k_ele1_trk_nsigmavtxdxy, "ele1_trk_nsigmavtxdxy", "; ele1-movedquality-track's nsigmavtxdxy; arb. units", 80, -10, 10); //check #
-
-    nd.book(k_mu1_trk_nsigmavtx, "mu1_trk_nsigmavtx", "; mu1-movedquality-track's nsigmavtx; arb. units", 80, -10, 10); //check #
-    nd.book(k_ele1_trk_nsigmavtx, "ele1_trk_nsigmavtx", "; ele1-movedquality-track's nsigmavtx; arb. units", 80, -10, 10); //check #
-    nd.book(k_mu1_trk_dzerr, "mu1_trk_dzerr", "; mu1-movedquality-track's dz err; arb. units", 100, 0.0, 0.05); //check #
-    nd.book(k_ele1_trk_dzerr, "ele1_trk_dzerr", "; ele1-movedquality-track's dz err; arb. units", 100, 0.0, 0.05); //check #
-    nd.book(k_mu1_trk_dxyerr, "mu1_trk_dxyerr", "; mu1-movedquality-track's dxy err; arb. units", 100, 0.0, 0.05); //check #
-    nd.book(k_ele1_trk_dxyerr, "ele1_trk_dxyerr", "; ele1-movedquality-track's dxy err; arb. units", 100, 0.0, 0.05); //check #
-    nd.book(k_mu1_trk_gennsigma, "mu1_trk_gennsigma", "; mu1-movedquality's n#sigma to LLP; arb. units", 80, -10, 10); //check #
-    nd.book(k_ele1_trk_gennsigma, "ele1_trk_gennsigma", "; ele1-movedquality's n#sigma to LLP; arb. units", 80, -10, 10); //check #
-    nd.book(k_mu1_trk_gennsigmamissdist, "mu1_trk_gennsigmamissdist", "; mu1-movedquality's n#sigma missdist to LLP; arb. units", 80, -10, 10); //check #
-    nd.book(k_ele1_trk_gennsigmamissdist, "ele1_trk_gennsigmamissdist", "; ele1-movedquality's n#sigma missdist to LLP; arb. units", 80, -10, 10); //check #
-    nd.book(k_mu1_trk_genmissdist, "mu1_trk_genmissdist", "; mu1-movedquality's missdist to LLP; arb. units", 50, -0.05, 0.05); //check #
-    nd.book(k_ele1_trk_genmissdist, "ele1_trk_genmissdist", "; ele1-movedquality's missdist to LLP; arb. units", 50, -0.05, 0.05); //check  #
-    nd.book(k_mu1_trk_gendz, "mu1_trk_gendz", "; mu1-movedquality's dz to LLP; arb. units", 50, -0.05, 0.05); //check #
-    nd.book(k_ele1_trk_gendz, "ele1_trk_gendz", "; ele1-movedquality's dz to LLP; arb. units", 50, -0.05, 0.05); //check #
-    nd.book(k_mu1_trk_gennsigmadz, "mu1_trk_gennsigmadz", "; mu1-movedquality-track's n#sigma dz to LLP; arb. units", 80, -10, 10); //check #
-    nd.book(k_ele1_trk_gennsigmadz, "ele1_trk_gennsigmadz", "; ele1-movedquality-track's n#sigma dz to LLP; arb. units", 80, -10, 10); //check #
-    
-    nd.book(k_mu1_trk_nsigmadxy, "mu1_trk_nsigmadxy", "; mu1-movedquality-track's nsigmadxybs; arb. units", 160, -20, 20); //check #
-    nd.book(k_ele1_trk_nsigmadxy, "ele1_trk_nsigmadxy", "; ele1-movedquality-track's nsigmadxybs; arb. units", 160, -20, 20); //check #
-    nd.book(k_avgptno_ele1, "avgptno_ele1", "; avgpT minus ele1's pT; arb. units", 100, 0, 50); //check #
-    nd.book(k_avgptno_mu1, "avgptno_mu1", "; avgpT minus mu1's pT; arb. units", 100, 0, 50); //check #
-    nd.book(k_trackpairdravg_ele1, "trackpairdravg_ele1", "; track-pair dR avg; arb. units", 100, 0, 5); //check #
-    nd.book(k_trackpairdravg_mu1, "trackpairdravg_mu1", "; track-pair dR avg; arb. units", 100, 0, 5); //check #
-
-    
     nd.book(k_movedseedinvtx_trk_whichjet, "movedseedinvtx_trk_whichjet", "; movedquality-invtx-track's whichjet; arb. units", 258, 0.0, 258.0);
     nd.book(k_miscclose_trk_whichjet, "miscclose_trk_whichjet", "; misc-closeseed-track's whichjet; arb. units", 258, 0.0, 258.0);
     
@@ -533,8 +459,6 @@ int main(int argc, char** argv) {
     nd.book(k_jet0_trk_gendz, "jet0_trk_gendz", "; jet0-movedquality-track's dz to LLP; arb. units", 50, -0.05, 0.05);
     // nd.book(k_jet1_trk_gendz, "jet1_trk_gendz", "; jet1-movedquality-track's dz to LLP; arb. units", 50, -0.05, 0.05);
     nd.book(k_jet0_trk_whichpv, "jet0_trk_whichpv", "; jet1-movedquality-track's which_pv; arb. units", 260, 0.0, 260);
-    nd.book(k_mu1_trk_whichpv, "mu1_trk_whichpv", "; mu1-movedquality-track's which_pv; arb. units", 40, 0.0, 40); //check #
-    nd.book(k_ele1_trk_whichpv, "ele1_trk_whichpv", "; ele1-movedquality-track's which_pv; arb. units", 40, 0.0, 40); //check #
     // nd.book(k_jet1_trk_whichpv, "jet1_trk_whichpv", "; jet1-movedquality-track's which_pv; arb. units", 260, 0.0, 260);
     nd.book(k_jet0_trk_dsz, "jet0_trk_dsz", "; jet0-movedquality-track's dsz; arb. units", 50, -1.0, 1.0);
     // nd.book(k_jet1_trk_dsz, "jet1_trk_dsz", "; jet1-movedquality-track's dsz; arb. units", 50, -1.0, 1.0);
@@ -551,20 +475,20 @@ int main(int argc, char** argv) {
     nd.book(k_dphi_sum_jele_mv, "dphi_sum_jele_mv", ";abs #Delta #phi between jet0+ele1 and move vec;events/bin", 63, 0, M_PI);
     nd.book(k_deta_sum_jele_mv, "deta_sum_jele_mv", ";abs #Delta #eta between jet0+ele1 and move vec;events/bin", 25, 0, 4);
     nd.book(k_dphi_sum_qge_mv, "dphi_sum_qge_mv", ";abs #Delta #phi between jet0+ele1 and move vec;events/bin", 63, 0, M_PI);
-    nd.book(k_jetpt0_asymm_mu, "jetpt0_asymm_mu", ";jet p_{T} 0; jet mu asymm. A_{J}", 50, 0, 1000, 50, -1, 1);
-    nd.book(k_jetpt0_asymm_ele, "jetpt0_asymm_ele", ";jet p_{T} 0; jet ele asymm. A_{J}", 50, 0, 1000, 50, -1, 1);
+    nd.book(k_jetpt0_asymm_mu, "jetpt0_asymm_mu", ";jet p_{T} 0; jet mu asymm. A_{J}", 50, 0, 1000, 25, 0, 1);
+    nd.book(k_jetpt0_asymm_ele, "jetpt0_asymm_ele", ";jet p_{T} 0; jet ele asymm. A_{J}", 50, 0, 1000, 25, 0, 1);
     // nd.book(k_jetpt1_asymm, "jetpt1_asymm", ";jet p_{T} 1; jet asymm. A_{J}", 50, 0, 1000, 25, 0, 1);
-    nd.book(k_mupt1_asymm, "mupt1_asymm", ";mu p_{T} 1; jet mu asymm. A_{J}", 50, 0, 1000, 50, -1, 1);
-    nd.book(k_elept1_asymm, "elept1_asymm", ";ele p_{T} 1; jet ele asymm. A_{J}", 50, 0, 1000, 50, -1, 1);
+    nd.book(k_mupt1_asymm, "mupt1_asymm", ";mu p_{T} 1; jet mu asymm. A_{J}", 50, 0, 1000, 25, 0, 1);
+    nd.book(k_elept1_asymm, "elept1_asymm", ";ele p_{T} 1; jet ele asymm. A_{J}", 50, 0, 1000, 25, 0, 1);
     // nd.book(k_jeteta0_asymm, "jeteta0_asymm", ";jet #eta 0; jet asymm. A_{J}", 100, -4, 4, 25, 0, 1);
-    nd.book(k_jeteta0_asymm_mu, "jeteta0_asymm_mu", ";jet #eta 0; jet mu asymm. A_{J}", 100, -4, 4, 50, -1, 1);
-    nd.book(k_jeteta0_asymm_ele, "jeteta0_asymm_ele", ";jet #eta 0; jet ele asymm. A_{J}", 100, -4, 4, 50, -1, 1);
+    nd.book(k_jeteta0_asymm_mu, "jeteta0_asymm_mu", ";jet #eta 0; jet mu asymm. A_{J}", 100, -4, 4, 25, 0, 1);
+    nd.book(k_jeteta0_asymm_ele, "jeteta0_asymm_ele", ";jet #eta 0; jet ele asymm. A_{J}", 100, -4, 4, 25, 0, 1);
     // nd.book(k_jeteta1_asymm, "jeteta1_asymm", ";jet #eta 1; jet asymm. A_{J}", 100, -4, 4, 25, 0, 1);
-    nd.book(k_mueta1_asymm, "mueta1_asymm", ";mu #eta 1; jet mu asymm. A_{J}", 100, -4, 4, 50, -1, 1);
-    nd.book(k_eleeta1_asymm, "eleeta1_asymm", ";ele #eta 1; jet ele asymm. A_{J}", 100, -4, 4, 50, -1, 1);
+    nd.book(k_mueta1_asymm, "mueta1_asymm", ";mu #eta 1; jet mu asymm. A_{J}", 100, -4, 4, 25, 0, 1);
+    nd.book(k_eleeta1_asymm, "eleeta1_asymm", ";ele #eta 1; jet ele asymm. A_{J}", 100, -4, 4, 25, 0, 1);
     // nd.book(k_jetdr_asymm, "jetdr_asymm", ";jets #DeltaR; jet asymm. A_{J}", 60, 0, 6, 25, 0, 1);
-    nd.book(k_jetmudr_asymm, "jetmudr_asymm", ";jet-mu #DeltaR; jet mu asymm. A_{J}", 60, 0, 6, 50, -1, 1);
-    nd.book(k_jeteledr_asymm, "jeteledr_asymm", ";jet-ele #DeltaR; jet ele asymm. A_{J}", 60, 0, 6, 50, -1, 1);
+    nd.book(k_jetmudr_asymm, "jetmudr_asymm", ";jet-mu #DeltaR; jet mu asymm. A_{J}", 60, 0, 6, 25, 0, 1);
+    nd.book(k_jeteledr_asymm, "jeteledr_asymm", ";jet-ele #DeltaR; jet ele asymm. A_{J}", 60, 0, 6, 25, 0, 1);
     // nd.book(k_jetdravg, "jetdravg", ";avg jet #Delta R;events/0.1", 70, 0, 7);
     nd.book(k_jetmudravg, "jetmudravg", ";avg jet-mu #Delta R;events/0.1", 70, 0, 7);
     nd.book(k_jeteledravg, "jeteledravg", ";avg jet-ele #Delta R;events/0.1", 70, 0, 7);
@@ -628,26 +552,10 @@ int main(int argc, char** argv) {
     nd.book(k_eta_anglemu1,    "eta_anglemu1"  , ";Eta of SV decay vector; Angle between mu1 and SV", 60, -5, 5, 63, 0, M_PI);
     nd.book(k_eta_angleele1,    "eta_angleele1"  , ";Eta of SV decay vector; Angle between ele1 and SV", 60, -5, 5, 63, 0, M_PI);
 
-    nd.book(k_leppt_insv, "leppt_insv", ";leading lepton pT assoc to SV;events", 200, 0, 1000);
-    nd.book(k_lepdxy_insv, "lepdxy_insv", ";leading lepton dxy assoc to SV;events", 50, 0, 0.25);
-    nd.book(k_lepdxyerr_insv, "lepdxyerr_insv", ";leading lepton dxyerr assoc to SV;events", 50, 0, 0.015);
-    nd.book(k_lepnsigmadxy_insv, "lepnsigmadxy_insv", ";leading lepton nsigmadxy assoc to SV;events", 100, 0, 100);
-    nd.book(k_lepiso_insv, "lepiso_insv", ";leading lepton iso assoc to SV;events", 100, 0, 0.5);
-    nd.book(k_leptype_insv, "leptype_insv", ";leading lepton type assoc to SV;events", 2, 0, 2);
-    nd.book(k_lepid_insv, "lepid_insv", ";leading lepton ID assoc to SV;events", 10, 0, 10);
-    nd.book(k_lepeta_insv, "lepeta_insv", ";leading lepton eta assoc to SV;events", 50, -3.5, 3.5);
-    nd.book(k_lephltmatched_insv, "lephltmatched_insv", ";leading lepton assoc to SV is hltmatched?;events", 2, 0, 2);
-    nd.book(k_leppasstrigpt_insv, "leppasstrigpt_insv", ";leading lepton assoc to SV pass trigpt?;events", 2, 0, 2);
-    nd.book(k_lepjet_pairdr, "lepjet_pairdr", ";min leading lepton - jet deltaR;events", 50, 0, 6);
-    nd.book(k_vtx_trackpairdravg, "vtx_trackpairdravg", ";trackpairdravg;events", 50, 0, 5);
-    nd.book(k_vtx_avgptnolep, "vtx_avgptnolep", ";avgptnolep;events", 100, 0, 100);
-    
     nd.book(k_nvtx, "nvtx", ";number of vertices;events/1", 8, 0, 8);
     nd.book(k_vtxcat, "vtxcat", ";no-vtx:fail vtxunc: fail dbv: fail both;events", 6, 0, 6);
     nd.book(k_vtxbs2derr, "vtxbs2derr", ";bs2derr of vertex;events", 500, 0, 0.05);
     nd.book(k_vtxunc, "vtxunc", ";dist3d(move vector, vtx) cm; arb. units", 200, 0, 0.2);
-    nd.book(k_vtxunc2d, "vtxunc2d", ";dist2d(move vector, vtx) cm; arb. units", 200, 0, 0.2);
-
     nd.book(k_vtxeta, "vtxeta", ";eta of vertex;events", 100, -4, 4);
     nd.book(k_vtxz, "vtxz", ";z pos of vertex;events", 100, -10, 10);
     nd.book(k_vtxdbv, "vtxdbv", ";2D displacement of vertex to a beamspot;events", 50, 0, 2); //FIXME
@@ -751,8 +659,8 @@ int main(int argc, char** argv) {
 
     // float   jet_aj = -9.9, jet_dr = -9.9, jet_deta = -9.9, jet_dphi = -9.9, jet_dind = -9.9, jet_pt_0 = -9.9, jet_pt_1 = -9.9;
     float   jet_pt_0 = -9.9;
-    float   jetele_aj = -999.9, jetele_dr = -9.9, jetele_deta = -9.9, jetele_dphi = -9.9, ele_pt_1 = -9.9;
-    float   jetmu_aj = -999.9, jetmu_dr = -9.9, jetmu_deta = -9.9, jetmu_dphi = -9.9, mu_pt_1 = -9.9;
+    float   jetele_aj = -9.9, jetele_dr = -9.9, jetele_deta = -9.9, jetele_dphi = -9.9, ele_pt_1 = -9.9;
+    float   jetmu_aj = -9.9, jetmu_dr = -9.9, jetmu_deta = -9.9, jetmu_dphi = -9.9, mu_pt_1 = -9.9;
     float   jet_dr_minjq0 = -9.9, ele_dr_minl1 = -9.9, mu_dr_minl1 = -9.9;
     // float   jet_eta_0 = -100.0, jet_eta_1 = -100.0;
     float   jet_eta_0 = -100.0,  ele_eta_1 = -100.0, mu_eta_1 = -100.0;
@@ -794,6 +702,7 @@ int main(int argc, char** argv) {
     double ele1_reco_pt = 0;
 
     double miscp = 0;
+    double sumpreco_0 = 0;
     // double sumpreco_1 = 0;
     // double sumpreco_mu1 = 0;
     // double sumpreco_ele1 =0;
@@ -830,10 +739,6 @@ int main(int argc, char** argv) {
     // std::vector<int> jet1trk_idx;
     int mu1trk_idx;
     int ele1trk_idx;
-    float sv_sumptnolep = 0.0;
-    float trackpairdr_sum = 0.0;
-    std::vector<TLorentzVector> track_p4;
-
     std::vector<int> movedseedinvtxtrk_idx;
     std::vector<int> movedseedoutvtxtrk_idx;
     // double  wjet_dphi = 99, zjet_dphi = 99;
@@ -856,7 +761,6 @@ int main(int argc, char** argv) {
     double movedist2d1 = lspdecay1.Perp();
     
     int count_llp = 0;
-
 
     // Loop over each LSP
     for (int ilsp = 0; ilsp < 2; ++ilsp) {
@@ -1020,43 +924,30 @@ int main(int argc, char** argv) {
         int closest_mu = -1;
 
         jmt::MinValue m(0.4);
-        for (int j = 0, je = jets.n(); j < je; ++j) 
+        for (int j = 0, je = jets.n(); j < je; ++j)
           m(j, gen.p4(2+ilsp*2).DeltaR(jets.p4(j)));
-        closest_jet = m.i();
-        // std::cout << " ----------------------------------------------- " << std::endl;
-        // std::cout << "the gen jet's pT : " << gen.pt(2+ilsp*2) << std::endl;
-        // std::cout << "the gen jet's eta, phi : " << gen.eta(2+ilsp*2) <<  " " << gen.phi(2+ilsp*2) << std::endl;
 
-        // std::cout << " the distance of closest approach and jet idx " << m.v() << " " << m.i() << std::endl;
+        closest_jet = m.i();
+
         jmt::MinValue em(0.1);
         for (int e = 0, ee = electrons.n(); e < ee; ++e)
           em(e, gen.p4(3+ilsp*2).DeltaR(electrons.p4(e)));
-        
         closest_ele = em.i();
-        // std::cout << "the gen ele's pT : " << gen.pt(3+ilsp*2) << std::endl;
-        // std::cout << " the distance of closest approach and ele idx " << em.v() << " " << em.i() << std::endl;
+
         jmt::MinValue mm(0.1);
         for (int im=0, me = muons.n(); im < me; ++im)
           mm(im, gen.p4(3+ilsp*2).DeltaR(muons.p4(im)));
         closest_mu = mm.i();
-        // std::cout << "the gen mu's pT : " << gen.pt(3+ilsp*2) << std::endl;
-        // std::cout << " the distance of closest approach and mu idx " << mm.v() << " " << mm.i() << std::endl;
+
         //then between the two leptons : 
-        if (em.v() < mm.v()) {
-          lep_isele = true;
-          // std::cout << " the electron's pT " << electrons.pt(em.i()) << std::endl;
-        }
-        if (mm.v() < em.v()) {
-          lep_ismu = true;
-          // std::cout << " the muons's pT " << muons.pt(mm.i()) << std::endl;
-        }
-        // std::cout << " But what is the lepton? " << lep_ismu << std::endl;
+        if (em.v() < mm.v()) lep_isele = true;
+        if (mm.v() < em.v()) lep_ismu = true;
+
 
         // Last hidden part of the preselection: skip events where
         // daughter doesn't match to a jet or both match to the same
         // jet // JMTBAD how many are we skipping?
         TLorentzVector jet_p4_0;
-
         TLorentzVector mu_p4_1;
         TLorentzVector ele_p4_1;
 
@@ -1079,6 +970,10 @@ int main(int argc, char** argv) {
           // mu1_reco_pt = muons.p4(closest_mu).Pt();
         }
 
+        if (lep_isele) genele_p4_1 = gen.p4(3+ilsp*2);
+        if (lep_ismu) genmu_p4_1 = gen.p4(3+ilsp*2);
+
+
         // //if (closest_jets[0] == -1 || closest_jets[1] == -1 || closest_jets[0] == closest_jets[1])
         // //   continue;
 
@@ -1092,7 +987,6 @@ int main(int argc, char** argv) {
         //make certain that there is a lepton that matches with the genlepton 
         if (!lep_ismu && !lep_isele)
           continue;
-
 
         const std::vector<int> jet0_tracks = tks.tks_for_jet(closest_jet);
         // const std::vector<int> jet1_tracks = tks.tks_for_jet(closest_jets[1]);
@@ -1127,32 +1021,48 @@ int main(int argc, char** argv) {
         ele1trk_idx = -1;
         //for reco leptons 
         mu1_reco_p4.SetPxPyPzE(0,0,0,0);
-        ele1_reco_p4.SetPxPyPzE(0,0,0,0);
+        ele1_reco_p4.SetPxPyPzE(0,0,0,0); 
         ele1_reco_p = 0;
         mu1_reco_p = 0;
         ele1_reco_pt = 0;
         mu1_reco_pt = 0;
+        // jet1trk_idx = {};
 
         movedseedinvtxtrk_idx = {};
         movedseedoutvtxtrk_idx = {};
+        sumpreco_0 = 0;
         // sumpreco_mu1 = 0;
         // sumpreco_ele1 = 0;
 
-
-        jet_p4_0 = jets.p4(m.i());
-
-        //note : sump_0 is a "minijet" variable 
         for (int j = 0; j < tks.n(); ++j) {
           const TLorentzVector jp4 = tks.p4(j);
           auto jit0 = std::find(jet0_tracks.begin(), jet0_tracks.end(), j);
-          if ( tks.pass_sel(j) && jit0 != jet0_tracks.end()){  
-            track_p4.push_back(tks.p4(j));
-            sv_sumptnolep += tks.pt(j);
+          if ( tks.pass_sel(j) && jit0 != jet0_tracks.end()){ 
+            sumpreco_0 += tks.p(j);
+          }
+
+          // if (tks.pass_sel(j) && nt.mtk_moved(j)){
+          //   double tkmudr = tks.p4(j).DeltaR(genmu_p4_1); //check and make sure that this mtk is the one corresponding to the genmu 
+          //   if (tkmudr < 0.1) sumpreco_mu1 = tks.p(j);
+          // }
+          // if (tks.pass_sel(j) && nt.etk_moved(j)){
+          //   double tkedr = tks.p4(j).DeltaR(genele_p4_1);
+          //   if (tkedr < 0.1) sumpreco_ele1 = tks.p(j);
+          // }
+
+        }  
+        for (int j = 0; j < tks.n(); ++j) {
+          const TLorentzVector jp4 = tks.p4(j);
+          if ( tks.pass_sel(j) && jp4.DeltaR(quark_p4_0) < 0.4 ){ //FIXME 
             // auto mt = std::find(minijettrk_idx.begin(), minijettrk_idx.end(), j);
             // if (mt != minijettrk_idx.end()) continue;
+            double jet0_gennsigmadz = tks.dz(j, gen.decay_x(ilsp), gen.decay_y(ilsp), gen.decay_z(ilsp))/tks.err_dz(j);
+            double jet0_gennsigmamissdist = tks.dxy(j, gen.decay_x(ilsp), gen.decay_y(ilsp))/tks.err_dxy(j);  
+            double jet0_gennsigma = sqrt((jet0_gennsigmamissdist*jet0_gennsigmamissdist) + (jet0_gennsigmadz*jet0_gennsigmadz)); 
+            if (jet0_gennsigma > 10) continue; 
+            jet_p4_0 += tks.p4(j);
             // minijet_p4_0 += tks.p4(j);
             // minijet_ntk_0 += 1;
-            // jet_p4_0 += tks.p4(j);
             jet_ntk_0 += 1;
             jet0trk_idx.push_back(j);
             // minijettrk_idx.push_back(j);
@@ -1163,15 +1073,12 @@ int main(int argc, char** argv) {
               n_movedseedtks0++;
             }
           }
-
- 
           if (lep_ismu){ 
             if (tks.pass_sel(j) && nt.mtk_moved(j) && jp4.DeltaR(genmu_p4_1) < 0.1){
               double mu1_gennsigmadz = tks.dz(j, gen.decay_x(ilsp), gen.decay_y(ilsp), gen.decay_z(ilsp))/tks.err_dz(j);
               double mu1_gennsigmamissdist = tks.dxy(j, gen.decay_x(ilsp), gen.decay_y(ilsp))/tks.err_dxy(j);  
               double mu1_gennsigma = sqrt((mu1_gennsigmamissdist*mu1_gennsigmamissdist) + (mu1_gennsigmadz*mu1_gennsigmadz)); 
               if (mu1_gennsigma > 10) continue; 
-              track_p4.push_back(tks.p4(j));
               mu_p4_1 = tks.p4(j);
               mu1trk_idx = j;
               p_mu1 = tks.p(j);
@@ -1180,7 +1087,7 @@ int main(int argc, char** argv) {
                 n_movedseedtks++;
                 n_movedseedtks1++;
               }
-              //reco mu 
+              //for reco mu : 
               mu1_reco_p4 = muons.p4(closest_mu);
               mu1_reco_p = mu1_reco_p4.P();
               mu1_reco_pt = muons.pt(closest_mu);
@@ -1192,7 +1099,6 @@ int main(int argc, char** argv) {
               double ele1_gennsigmamissdist = tks.dxy(j, gen.decay_x(ilsp), gen.decay_y(ilsp))/tks.err_dxy(j);  
               double ele1_gennsigma = sqrt((ele1_gennsigmamissdist*ele1_gennsigmamissdist) + (ele1_gennsigmadz*ele1_gennsigmadz)); 
               if (ele1_gennsigma > 10) continue; 
-              track_p4.push_back(tks.p4(j));
               ele_p4_1 = tks.p4(j);
               ele1trk_idx = j;
               p_ele1 = tks.p(j);
@@ -1208,15 +1114,13 @@ int main(int argc, char** argv) {
             }
           } 
         }
-
         jet_eta_0 = jet_p4_0.Eta();
+        // jet_p4_0 = minijet_p4_0;
+        // jet_p4_1 = minijet_p4_1;
+        // jet_eta_0 = minijet_p4_0.Eta();
+        // jet_eta_1 = minijet_p4_1.Eta();
         jet_ntks_0 = jet_ntk_0;
-
-        size_t n_movedtks = jet_ntk_0 + 1; //(one for the lepton?)
-        if (n_movedtks >= 2) 
-        for (size_t i = 0, ie = n_movedtks-1; i < ie; ++i)
-          for (size_t j = i+1, je = n_movedtks; j < je; ++j)
-            trackpairdr_sum += track_p4[i].DeltaR(track_p4[j]);
+        // jet_ntks_1 = minijet_ntk_1;
 
         miscclosetrk_idx = {}; //FIXME
         closeseedtrk_idx = {};
@@ -1241,6 +1145,7 @@ int main(int argc, char** argv) {
               sigs_quad.push_back(sum_sq_sig);
             }      
 
+            //HERE 
             // Count how many 'close' seed tracks there are
             if ( sigs_quad[0] < close_criteria && sigs_quad[1] < close_criteria )
               n_sharedcloseseedtks++;
@@ -1364,7 +1269,6 @@ int main(int argc, char** argv) {
           jetmu_costheta = ((jet_p4_0.X()*mu_p4_1.X()) + (jet_p4_0.Y()*mu_p4_1.Y()) + (jet_p4_0.Z()*mu_p4_1.Z()))/(jet_p4_0.P()*mu_p4_1.P()); 
           jetmu_dphi =  quark_p4_0.DeltaPhi(genmu_p4_1); //jet_p4_0.DeltaPhi(jet_p4_1);
           jetmu_aj    = (jet_pt_0 - mu_pt_1) / (jet_pt_0 + mu_pt_1); 
-          // std::cout << "jetmu aj check (jet pt, mu pt, aj):  ( " << jet_pt_0 << " " << mu_pt_1 << " " << jetmu_aj << " )" << std::endl;
           jetmu_deta = fabs(quark_p4_0.Eta() - genmu_p4_1.Eta()); //fabs(jet_eta_0 - jet_eta_1);
           jetmu_dphi_max = jet_p4_0.DeltaPhi(mu_p4_1);
           jetmu_deta_max = jet_eta_0 - mu_eta_1; // JMTBAD fabs?
@@ -1411,7 +1315,7 @@ int main(int argc, char** argv) {
         // }
 
         //FIXME
-        // check that there is a reco lepton
+        // check that there is a reco lepton 
         if (mu1_reco_p == 0 && ele1_reco_p == 0)
           continue;
 
@@ -1427,9 +1331,10 @@ int main(int argc, char** argv) {
         if (fabs(jetlep_dr) < 0.4)
           continue;
 
-        //Low-Eta
+
+        //High-Eta
         // if (fabs(quark_p4_0.Eta()) > 1.5 || fabs(quark_p4_1.Eta()) > 1.5)
-        if (fabs(quark_p4_0.Eta()) > 1.5 || fabs(genlep_eta) > 1.5)
+        if (fabs(quark_p4_0.Eta()) < 1.5 || fabs(genlep_eta) < 1.5)
           continue;
 
 
@@ -1443,37 +1348,16 @@ int main(int argc, char** argv) {
 
 
       int n_pass_nocuts = 0;
-      // int n_pass_ntracks = 0;
-      int n_pass_lep = 0;   
-      int n_pass_all = 0; //all does not include ntracks anymore? 
+      int n_pass_ntracks = 0;
+      int n_pass_all = 0;
       double  dist2move = -9.9;
-      double dist2move2d = -9.9;
       jmt::MinValue dist2min(100);
-      jmt::MinValue dist2min2d(100);
       std::vector<int> first_vtx_to_pass(num_numdens, -1);
       double vtx_cat = 0.0, vtx_bs2derr = -9.9, vtx_eta = -9.9, vtx_z = -999.9, vtx_dbv = -999.9, vtx_3dbv = -999.9, vtx_ntk = -9, vtx_chi2 = -9.9; // JMTBAD ??? these end up with what???
-      
-      float leading_leppt_inSV = -99.0;
-      float leading_lepdxy_inSV = 99.0;
-      float leading_lepdxyerr_inSV = 99.0;
-      float leading_lepnsigmadxy_inSV = -99.0;
-      float leading_lepiso_inSV = 99.0;
-      float leading_leptype_inSV = 99.0;
-      float leading_lepID_inSV = 99.0;
-      float leading_lepeta_inSV = 99.0;
-      float leading_lephltmatched_inSV = 99.0;
-      float leading_leppasstrigpt_inSV = 99.0;
-      float leading_lepjet_pairdr = 99.0;
-      float trackpairdravg = 99.0;
-      float avgptnolep = 99.0;
-      
       auto set_it_if_first = [](int& to_set, int to_set_to) { if (to_set == -1) to_set = to_set_to; };
-
       for (size_t i = 0; i < nvtx; ++i) {
         dist2move = (gen.decay(ilsp, bs) - vs.pos(i)).Mag();
-        dist2move2d = (gen.decay(ilsp, bs) - vs.pos(i)).Perp();
         dist2min(i, dist2move);
-        dist2min2d(i, dist2move2d);
         if (dist2move > 0.0400) //FIXME
           continue;
 
@@ -1484,36 +1368,16 @@ int main(int argc, char** argv) {
         vtx_3dbv    = vs.pos(i).Mag();
         vtx_ntk     = vs.ntracks(i);
         vtx_chi2    = vs.chi2(i)/vs.ndof(i);
-
-        leading_leppt_inSV = lepinsv.leading_leppt_inSV(i);
-        leading_lepdxy_inSV = lepinsv.leading_lepdxy_inSV(i);
-        leading_lepdxyerr_inSV = lepinsv.leading_lepdxyerr_inSV(i);
-        leading_lepnsigmadxy_inSV = lepinsv.leading_lepnsigmadxy_inSV(i);
-        leading_lepiso_inSV = lepinsv.leading_lepiso_inSV(i);
-        leading_leptype_inSV = lepinsv.leading_leptype_inSV(i);
-        leading_lepID_inSV = lepinsv.leading_lepID_inSV(i);
-        leading_lepeta_inSV = lepinsv.leading_lepeta_inSV(i);
-        leading_lephltmatched_inSV = lepinsv.leading_lephltmatched_inSV(i);
-        leading_leppasstrigpt_inSV = lepinsv.leading_leppasstrigpt_inSV(i);
-        leading_lepjet_pairdr = lepinsv.leading_lepjet_pairdr(i);
-        trackpairdravg = lepinsv.trackpairdravg(i);
-        avgptnolep = lepinsv.avgptnolep(i);
-
-        
         const bool pass_beams = vtx_dbv >= 0.0100 && vtx_dbv < 2.0;
-        // const bool pass_ntracks = vs.ntracks(i) >= 4 && pass_beams;
+        const bool pass_ntracks = vs.ntracks(i) >= 4 && pass_beams;
         const bool pass_bs2derr = vs.bs2derr(i) < 0.0050 && pass_beams; // JMTBAD rescale_bs2derr // FIXME
-        const bool pass_lep = leading_leppt_inSV > 0 && leading_leptype_inSV != 99.0 && leading_lepjet_pairdr > 0.4 && pass_beams;  //barebone pass lep for now - check distributions and assess 
 
         if (1) { set_it_if_first(first_vtx_to_pass[0], i); ++n_pass_nocuts; }
-        // if (pass_ntracks) { set_it_if_first(first_vtx_to_pass[1], i); ++n_pass_ntracks; }
-        // if (pass_ntracks && pass_bs2derr) { set_it_if_first(first_vtx_to_pass[2], i); ++n_pass_all; }
-        if (pass_lep )                 { set_it_if_first(first_vtx_to_pass[1], i); ++n_pass_lep; }
-        if (pass_lep && pass_bs2derr) { set_it_if_first(first_vtx_to_pass[2], i); ++n_pass_all;     }
+        if (pass_ntracks) { set_it_if_first(first_vtx_to_pass[1], i); ++n_pass_ntracks; }
+        if (pass_ntracks && pass_bs2derr) { set_it_if_first(first_vtx_to_pass[2], i); ++n_pass_all; }
 
       }
       dist2move = dist2min.v();
-      dist2move2d = dist2min2d.v();
       double mindist2move_iv = dist2min.i();
       if (mindist2move_iv != -1){
         vtx_bs2derr = vs.bs2derr(mindist2move_iv); // JMTBAD ???
@@ -1524,28 +1388,14 @@ int main(int argc, char** argv) {
         vtx_ntk     = vs.ntracks(mindist2move_iv);
         vtx_chi2    = vs.chi2(mindist2move_iv)/vs.ndof(mindist2move_iv);
 
-        leading_leppt_inSV = lepinsv.leading_leppt_inSV(mindist2move_iv);
-        leading_lepdxy_inSV = lepinsv.leading_lepdxy_inSV(mindist2move_iv);
-        leading_lepdxyerr_inSV = lepinsv.leading_lepdxyerr_inSV(mindist2move_iv);
-        leading_lepnsigmadxy_inSV = lepinsv.leading_lepnsigmadxy_inSV(mindist2move_iv);
-        leading_lepiso_inSV = lepinsv.leading_lepiso_inSV(mindist2move_iv);
-        leading_leptype_inSV = lepinsv.leading_leptype_inSV(mindist2move_iv);
-        leading_lepID_inSV = lepinsv.leading_lepID_inSV(mindist2move_iv);
-        leading_lepeta_inSV = lepinsv.leading_lepeta_inSV(mindist2move_iv);
-        leading_lephltmatched_inSV = lepinsv.leading_lephltmatched_inSV(mindist2move_iv);
-        leading_leppasstrigpt_inSV = lepinsv.leading_leppasstrigpt_inSV(mindist2move_iv);
-        leading_lepjet_pairdr = lepinsv.leading_lepjet_pairdr(mindist2move_iv);
-        trackpairdravg = lepinsv.trackpairdravg(mindist2move_iv);
-        avgptnolep = lepinsv.avgptnolep(mindist2move_iv);
-        
         if (vtx_dbv > 0.0100 && dist2move < 0.0200) vtx_cat = 1.0;
         if (vtx_dbv < 0.0100 && dist2move > 0.0200) vtx_cat = 2.0;
         if (vtx_dbv < 0.0100 && dist2move > 0.0200) vtx_cat = 3.0;
-        
         const std::vector<int> its = tks.tks_for_sv(mindist2move_iv);
-
         for (int it : its){
           auto it0 = std::find(jet0trk_idx.begin(), jet0trk_idx.end(), it);
+          // auto it1 = std::find(jet1trk_idx.begin(), jet1trk_idx.end(), it);
+          // if (it0 != jet0trk_idx.end() || it1 != jet1trk_idx.end()){
           if (it0 != jet0trk_idx.end() || it == mu1trk_idx || it == ele1trk_idx) { 
             n_movedvtxseedtks++;
             movedseedinvtxtrk_idx.push_back(it);
@@ -1627,7 +1477,6 @@ int main(int argc, char** argv) {
         nd.den(k_jet0_eta, jet_eta_0);
         // nd.den(k_jet_dind, jet_dind);
         nd.den(k_pt0, jet_pt_0);
-
         nd.den(k_ntks_j0, jet_ntks_0);
         // nd.den(k_ntks_j1, jet_ntks_1);
         nd.den(k_jet_dr_minj0_q0, jet_dr_minjq0);
@@ -1721,42 +1570,6 @@ int main(int argc, char** argv) {
           nd.den(k_jetmu_deta_dphi, jetmu_deta, jetmu_dphi);
           nd.den(k_jetlep_deta_dphi, jetmu_deta, jetmu_dphi);
           nd.den(k_mupt1, mu1_reco_pt);
-
-          for (size_t j = 0; j < jet0trk_idx.size(); ++j){
-            nd.den(k_mu1jet0_trk_dx, (tks.vx(mu1trk_idx) - tks.vx(jet0trk_idx[j])));
-            nd.den(k_mu1jet0_trk_dy, (tks.vy(mu1trk_idx) - tks.vy(jet0trk_idx[j])));
-            nd.den(k_mu1jet0_trk_dz, (tks.vz(mu1trk_idx) - tks.vz(jet0trk_idx[j])));
-            nd.den(k_mu1jet0_trk_dist2d, (std::sqrt( pow(2.0, (tks.vx(mu1trk_idx) - tks.vx(jet0trk_idx[j])) ) + pow(2.0, (tks.vy(mu1trk_idx) - tks.vy(jet0trk_idx[j]))))));
-          }
-
-          nd.den(k_mu1_trk_dz, tks.dzpv(mu1trk_idx, pvs));
-          nd.den(k_mu1_trk_dsz, tks.dsz(mu1trk_idx, pvs.x(0) + bs.x(pvs.z(0)), pvs.y(0) + bs.y(pvs.z(0)), pvs.z(0)));
-          nd.den(k_mu1_trk_dxy, tks.dxybs(mu1trk_idx, bs));
-          nd.den(k_mu1_trk_dzerr, tks.err_dz(mu1trk_idx));
-          nd.den(k_mu1_trk_dxyerr, tks.err_dxy(mu1trk_idx));
-          nd.den(k_mu1_trk_whichpv, tks.which_pv(mu1trk_idx));
-          
-          nd.den(k_mu1_trk_nsigmadxy, tks.dxybs(mu1trk_idx, bs)/tks.err_dxy(mu1trk_idx));
-          nd.den(k_avgptno_mu1, sv_sumptnolep/vtx_ntk);
-          nd.den(k_trackpairdravg_mu1, trackpairdr_sum/vtx_ntk);
-
-          if (mindist2move_iv != -1) {
-            const double mu1_vtxdz = tks.dz(mu1trk_idx, vs.x(mindist2move_iv) + bs.x(vs.z(mindist2move_iv)),vs.y(mindist2move_iv) + bs.y(vs.z(mindist2move_iv)),vs.z(mindist2move_iv)); 
-            const double mu1_vtxdxy = tks.dxy(mu1trk_idx, vs.x(mindist2move_iv) + bs.x(vs.z(mindist2move_iv)), vs.y(mindist2move_iv) + bs.y(vs.z(mindist2move_iv)));
-            nd.den(k_mu1_trk_vtxdxy, mu1_vtxdxy);
-            nd.den(k_mu1_trk_vtxdz, mu1_vtxdz);
-            nd.den(k_mu1_trk_nsigmavtxdz, mu1_vtxdz/tks.err_dz(mu1trk_idx));
-            nd.den(k_mu1_trk_nsigmavtxdxy, mu1_vtxdxy/tks.err_dxy(mu1trk_idx));
-            nd.den(k_mu1_trk_nsigmavtx, sqrt((mu1_vtxdxy/tks.err_dxy(mu1trk_idx))*(mu1_vtxdxy/tks.err_dxy(mu1trk_idx)) + (mu1_vtxdz/tks.err_dz(mu1trk_idx))*(mu1_vtxdz/tks.err_dz(mu1trk_idx))));
-          }
-          const double mu1_gennsigmadz = tks.dz(mu1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp), gen.decay_z(ilsp))/tks.err_dz(mu1trk_idx);
-          const double mu1_gennsigmamissdist = tks.dxy(mu1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp))/tks.err_dxy(mu1trk_idx);  
-          nd.den(k_mu1_trk_gennsigma, sqrt((mu1_gennsigmamissdist*mu1_gennsigmamissdist) + (mu1_gennsigmadz*mu1_gennsigmadz)));
-          nd.den(k_mu1_trk_gennsigmamissdist, mu1_gennsigmamissdist);
-          nd.den(k_mu1_trk_genmissdist, tks.dxy(mu1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp)));
-          nd.den(k_mu1_trk_gennsigmadz, mu1_gennsigmadz);
-          nd.den(k_mu1_trk_gendz, tks.dz(mu1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp), gen.decay_z(ilsp)));
-
           nd.den(k_mu_dr_minl1_l1, mu_dr_minl1);
           nd.den(k_llp_sump_jetmudphi, sump_0+p_mu1+miscp, jetmu_dphi);
           nd.den(k_llp_sump_jetmudr, sump_0+p_mu1+miscp, jetmu_dr);
@@ -1766,6 +1579,7 @@ int main(int argc, char** argv) {
           nd.den(k_lep1_p_jetlepdr, mu1_reco_p, jetmu_dr);
           nd.den(k_mu1_pT_jetmudr, mu1_reco_pt, jetmu_dr);
           nd.den(k_lep1_pT_jetlepdr, mu1_reco_pt, jetmu_dr);
+
           nd.den(k_movedist3_jetmudr, movedist3, jetmu_dr);
           nd.den(k_movedist3_mu1_p, movedist3, p_mu1);
           nd.den(k_angle2d_jetmudr, movedist2/movedist3, jetmu_dr);
@@ -1840,44 +1654,7 @@ int main(int argc, char** argv) {
           nd.den(k_jetele_dphi, jetele_dphi);
           nd.den(k_jetele_deta_dphi, jetele_deta, jetele_dphi);
           nd.den(k_jetlep_deta_dphi, jetele_deta, jetele_dphi);
-
           nd.den(k_elept1, ele1_reco_pt);
-          for (size_t j = 0; j < jet0trk_idx.size(); ++j){
-            nd.den(k_ele1jet0_trk_dx, (tks.vx(ele1trk_idx) - tks.vx(jet0trk_idx[j])));
-            nd.den(k_ele1jet0_trk_dy, (tks.vy(ele1trk_idx) - tks.vy(jet0trk_idx[j])));
-            nd.den(k_ele1jet0_trk_dz, (tks.vz(ele1trk_idx) - tks.vz(jet0trk_idx[j])));
-            nd.den(k_ele1jet0_trk_dist2d, (std::sqrt( pow(2.0, (tks.vx(ele1trk_idx) - tks.vx(jet0trk_idx[j])) ) + pow(2.0, (tks.vy(ele1trk_idx) - tks.vy(jet0trk_idx[j]))))));
-          }
-
-          nd.den(k_ele1_trk_dz, tks.dzpv(ele1trk_idx, pvs));
-          nd.den(k_ele1_trk_dsz, tks.dsz(ele1trk_idx, pvs.x(0) + bs.x(pvs.z(0)), pvs.y(0) + bs.y(pvs.z(0)), pvs.z(0)));
-          nd.den(k_ele1_trk_dxy, tks.dxybs(ele1trk_idx, bs));
-          nd.den(k_ele1_trk_dzerr, tks.err_dz(ele1trk_idx));
-          nd.den(k_ele1_trk_dxyerr, tks.err_dxy(ele1trk_idx));
-          nd.den(k_ele1_trk_whichpv, tks.which_pv(ele1trk_idx));
-          
-          nd.den(k_ele1_trk_nsigmadxy, tks.dxybs(ele1trk_idx, bs)/tks.err_dxy(ele1trk_idx));
-          nd.den(k_avgptno_ele1, sv_sumptnolep/vtx_ntk);
-          nd.den(k_trackpairdravg_ele1, trackpairdr_sum/vtx_ntk);
-
-
-          if (mindist2move_iv != -1) {
-            const double ele1_vtxdz = tks.dz(ele1trk_idx, vs.x(mindist2move_iv) + bs.x(vs.z(mindist2move_iv)),vs.y(mindist2move_iv) + bs.y(vs.z(mindist2move_iv)),vs.z(mindist2move_iv)); 
-            const double ele1_vtxdxy = tks.dxy(ele1trk_idx, vs.x(mindist2move_iv) + bs.x(vs.z(mindist2move_iv)), vs.y(mindist2move_iv) + bs.y(vs.z(mindist2move_iv)));
-            nd.den(k_ele1_trk_vtxdxy, ele1_vtxdxy);
-            nd.den(k_ele1_trk_vtxdz, ele1_vtxdz);
-            nd.den(k_ele1_trk_nsigmavtxdz, ele1_vtxdz/tks.err_dz(ele1trk_idx));
-            nd.den(k_ele1_trk_nsigmavtxdxy, ele1_vtxdxy/tks.err_dxy(ele1trk_idx));
-            nd.den(k_ele1_trk_nsigmavtx, sqrt((ele1_vtxdxy/tks.err_dxy(ele1trk_idx))*(ele1_vtxdxy/tks.err_dxy(ele1trk_idx)) + (ele1_vtxdz/tks.err_dz(ele1trk_idx))*(ele1_vtxdz/tks.err_dz(ele1trk_idx))));
-          }
-          const double ele1_gennsigmadz = tks.dz(ele1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp), gen.decay_z(ilsp))/tks.err_dz(ele1trk_idx);
-          const double ele1_gennsigmamissdist = tks.dxy(ele1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp))/tks.err_dxy(ele1trk_idx);  
-          nd.den(k_ele1_trk_gennsigma, sqrt((ele1_gennsigmamissdist*ele1_gennsigmamissdist) + (ele1_gennsigmadz*ele1_gennsigmadz)));
-          nd.den(k_ele1_trk_gennsigmamissdist, ele1_gennsigmamissdist);
-          nd.den(k_ele1_trk_genmissdist, tks.dxy(ele1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp)));
-          nd.den(k_ele1_trk_gennsigmadz, ele1_gennsigmadz);
-          nd.den(k_ele1_trk_gendz, tks.dz(ele1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp), gen.decay_z(ilsp)));
-
           nd.den(k_ele_dr_minl1_l1, ele_dr_minl1);
           nd.den(k_llp_sump_jeteledphi, sump_0+p_ele1+miscp, jetele_dphi);
           nd.den(k_llp_sump_jeteledr, sump_0+p_ele1+miscp, jetele_dr);
@@ -1887,7 +1664,6 @@ int main(int argc, char** argv) {
           nd.den(k_lep1_p_jetlepdr, ele1_reco_p, jetele_dr);
           nd.den(k_ele1_pT_jeteledr, ele1_reco_pt, jetele_dr);
           nd.den(k_lep1_pT_jetlepdr, ele1_reco_pt, jetele_dr);
-
           nd.den(k_movedist3_jeteledr, movedist3, jetele_dr);
           nd.den(k_movedist3_ele1_p, movedist3, p_ele1);
           nd.den(k_angle2d_jeteledr, movedist2/movedist3, jetele_dr);
@@ -2149,25 +1925,10 @@ int main(int argc, char** argv) {
         // nd.den(k_eta_angle1, lsp_p4.Eta(), jet1_lsp_angle);
         // std::cout << "here 5 " << std::endl;
 
-        nd.den(k_leppt_insv, leading_leppt_inSV);
-        nd.den(k_lepdxy_insv, leading_lepdxy_inSV);
-        nd.den(k_lepdxyerr_insv, leading_lepdxyerr_inSV);
-        nd.den(k_lepnsigmadxy_insv, leading_lepnsigmadxy_inSV);
-        nd.den(k_lepiso_insv, leading_lepiso_inSV);
-        nd.den(k_leptype_insv, leading_leptype_inSV);
-        nd.den(k_lepid_insv, leading_lepID_inSV);
-        nd.den(k_lepeta_insv, leading_lepeta_inSV);
-        nd.den(k_lephltmatched_insv, leading_lephltmatched_inSV);
-        nd.den(k_leppasstrigpt_insv, leading_leppasstrigpt_inSV);
-        nd.den(k_lepjet_pairdr, leading_lepjet_pairdr);
-        nd.den(k_vtx_trackpairdravg, trackpairdravg);
-        nd.den(k_vtx_avgptnolep, avgptnolep);
-  
         nd.den(k_nvtx, nvtx);
         nd.den(k_vtxcat, vtx_cat);
         nd.den(k_vtxbs2derr, vtx_bs2derr);
         nd.den(k_vtxunc, dist2move);
-        nd.den(k_vtxunc2d, dist2move2d);
         nd.den(k_vtxeta, vtx_eta);
         nd.den(k_vtxz, vtx_z);
         nd.den(k_vtxdbv, vtx_dbv);
@@ -2214,14 +1975,12 @@ int main(int argc, char** argv) {
       }
 
       if (n_pass_nocuts)  nums["nocuts"]  += w;
-      // if (n_pass_ntracks) nums["ntracks"] += w;
-      if (n_pass_lep)     nums["lep"]     += w;
+      if (n_pass_ntracks) nums["ntracks"] += w;
       if (n_pass_all)     nums["all"]     += w;
 
       const int npasses[num_numdens] = {
         n_pass_nocuts,
-        // n_pass_ntracks,
-        n_pass_lep,
+        n_pass_ntracks,
         n_pass_all
       };
 
@@ -2295,7 +2054,6 @@ int main(int argc, char** argv) {
         // nd.num(k_jet_dphi, jet_dphi);
         // nd.num(k_jet_dind, jet_dind);
         nd.num(k_pt0, jet_pt_0);
-
         // nd.num(k_pt1, jet_pt_1);
         nd.num(k_ntks_j0, jet_ntks_0);
         // nd.num(k_ntks_j1, jet_ntks_1);
@@ -2378,7 +2136,7 @@ int main(int argc, char** argv) {
         }
         if (lep_ismu) { 
           nd.num(k_jetmu_asymm, jetmu_aj);
-          nd.num(k_mu1_eta, mu_eta_1);        
+          nd.num(k_mu1_eta, mu_eta_1);
           nd.num(k_mu1_p_eta, mu1_reco_p, mu_eta_1);
           nd.num(k_lep1_p_eta, mu1_reco_p, mu_eta_1);
           nd.num(k_jetmu_dr, jetmu_dr);
@@ -2388,51 +2146,16 @@ int main(int argc, char** argv) {
           nd.num(k_jetmu_deta_dphi, jetmu_deta, jetmu_dphi);
           nd.num(k_jetlep_deta_dphi, jetmu_deta, jetmu_dphi);
           nd.num(k_mupt1, mu1_reco_pt);
-          for (size_t j = 0; j < jet0trk_idx.size(); ++j){
-            nd.num(k_mu1jet0_trk_dx, (tks.vx(mu1trk_idx) - tks.vx(jet0trk_idx[j])));
-            nd.num(k_mu1jet0_trk_dy, (tks.vy(mu1trk_idx) - tks.vy(jet0trk_idx[j])));
-            nd.num(k_mu1jet0_trk_dz, (tks.vz(mu1trk_idx) - tks.vz(jet0trk_idx[j])));
-            nd.num(k_mu1jet0_trk_dist2d, (std::sqrt( pow(2.0, (tks.vx(mu1trk_idx) - tks.vx(jet0trk_idx[j])) ) + pow(2.0, (tks.vy(mu1trk_idx) - tks.vy(jet0trk_idx[j]))))));
-          }
-
-          nd.num(k_mu1_trk_dz, tks.dzpv(mu1trk_idx, pvs));
-          nd.num(k_mu1_trk_dsz, tks.dsz(mu1trk_idx, pvs.x(0) + bs.x(pvs.z(0)), pvs.y(0) + bs.y(pvs.z(0)), pvs.z(0)));
-          nd.num(k_mu1_trk_dxy, tks.dxybs(mu1trk_idx, bs));
-          nd.num(k_mu1_trk_dzerr, tks.err_dz(mu1trk_idx));
-          nd.num(k_mu1_trk_dxyerr, tks.err_dxy(mu1trk_idx));
-          nd.num(k_mu1_trk_whichpv, tks.which_pv(mu1trk_idx));
-
-          nd.num(k_mu1_trk_nsigmadxy, tks.dxybs(mu1trk_idx, bs)/tks.err_dxy(mu1trk_idx));
-          nd.num(k_avgptno_mu1, sv_sumptnolep/vtx_ntk);
-          nd.num(k_trackpairdravg_mu1, trackpairdr_sum/vtx_ntk);
-          
-          if (mindist2move_iv != -1) {
-            const double mu1_vtxdz = tks.dz(mu1trk_idx, vs.x(mindist2move_iv) + bs.x(vs.z(mindist2move_iv)),vs.y(mindist2move_iv) + bs.y(vs.z(mindist2move_iv)),vs.z(mindist2move_iv)); 
-            const double mu1_vtxdxy = tks.dxy(mu1trk_idx, vs.x(mindist2move_iv) + bs.x(vs.z(mindist2move_iv)), vs.y(mindist2move_iv) + bs.y(vs.z(mindist2move_iv)));
-            nd.num(k_mu1_trk_vtxdxy, mu1_vtxdxy);
-            nd.num(k_mu1_trk_vtxdz, mu1_vtxdz);
-            nd.num(k_mu1_trk_nsigmavtxdz, mu1_vtxdz/tks.err_dz(mu1trk_idx));
-            nd.num(k_mu1_trk_nsigmavtxdxy, mu1_vtxdxy/tks.err_dxy(mu1trk_idx));
-            nd.num(k_mu1_trk_nsigmavtx, sqrt((mu1_vtxdxy/tks.err_dxy(mu1trk_idx))*(mu1_vtxdxy/tks.err_dxy(mu1trk_idx)) + (mu1_vtxdz/tks.err_dz(mu1trk_idx))*(mu1_vtxdz/tks.err_dz(mu1trk_idx))));
-          }
-          const double mu1_gennsigmadz = tks.dz(mu1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp), gen.decay_z(ilsp))/tks.err_dz(mu1trk_idx);
-          const double mu1_gennsigmamissdist = tks.dxy(mu1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp))/tks.err_dxy(mu1trk_idx);  
-          nd.num(k_mu1_trk_gennsigma, sqrt((mu1_gennsigmamissdist*mu1_gennsigmamissdist) + (mu1_gennsigmadz*mu1_gennsigmadz)));
-          nd.num(k_mu1_trk_gennsigmamissdist, mu1_gennsigmamissdist);
-          nd.num(k_mu1_trk_genmissdist, tks.dxy(mu1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp)));
-          nd.num(k_mu1_trk_gennsigmadz, mu1_gennsigmadz);
-          nd.num(k_mu1_trk_gendz, tks.dz(mu1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp), gen.decay_z(ilsp)));
-
           nd.num(k_mu_dr_minl1_l1, mu_dr_minl1);
           nd.num(k_llp_sump_jetmudphi, sump_0+p_mu1+miscp, jetmu_dphi);
           nd.num(k_llp_sump_jetmudr, sump_0+p_mu1+miscp, jetmu_dr);
           nd.num(k_jet0_sump_jetmudr, sump_0, jetmu_dr);
           nd.num(k_jet0_sump_jetlepdr, sump_0, jetmu_dr);
-
           nd.num(k_mu1_p_jetmudr, mu1_reco_p, jetmu_dr);
           nd.num(k_lep1_p_jetlepdr, mu1_reco_p, jetmu_dr);
           nd.num(k_mu1_pT_jetmudr, mu1_reco_pt, jetmu_dr);
           nd.num(k_lep1_pT_jetlepdr, mu1_reco_pt, jetmu_dr);
+
           nd.num(k_movedist3_jetmudr, movedist3, jetmu_dr);
           nd.num(k_movedist3_mu1_p, movedist3, p_mu1);
           nd.num(k_angle2d_jetmudr, movedist2/movedist3, jetmu_dr);
@@ -2498,8 +2221,8 @@ int main(int argc, char** argv) {
         if (lep_isele) {
           nd.num(k_jetele_asymm, jetele_aj);
           nd.num(k_ele1_eta, ele_eta_1);
-          nd.num(k_ele1_p_eta, ele1_reco_p, ele_eta_1); 
-          nd.num(k_lep1_p_eta, ele1_reco_p, ele_eta_1); 
+          nd.den(k_ele1_p_eta, ele1_reco_p, ele_eta_1); 
+          nd.den(k_lep1_p_eta, ele1_reco_p, ele_eta_1); 
           nd.num(k_jetele_dr, jetele_dr);
           nd.num(k_jetele_costheta, jetele_costheta);
           nd.num(k_jetele_deta, jetele_deta);
@@ -2507,53 +2230,15 @@ int main(int argc, char** argv) {
           nd.num(k_jetele_deta_dphi, jetele_deta, jetele_dphi);
           nd.num(k_jetlep_deta_dphi, jetele_deta, jetele_dphi);
           nd.num(k_elept1, ele1_reco_pt);
-          for (size_t j = 0; j < jet0trk_idx.size(); ++j){
-            nd.num(k_ele1jet0_trk_dx, (tks.vx(ele1trk_idx) - tks.vx(jet0trk_idx[j])));
-            nd.num(k_ele1jet0_trk_dy, (tks.vy(ele1trk_idx) - tks.vy(jet0trk_idx[j])));
-            nd.num(k_ele1jet0_trk_dz, (tks.vz(ele1trk_idx) - tks.vz(jet0trk_idx[j])));
-            nd.num(k_ele1jet0_trk_dist2d, (std::sqrt( pow(2.0, (tks.vx(ele1trk_idx) - tks.vx(jet0trk_idx[j])) ) + pow(2.0, (tks.vy(ele1trk_idx) - tks.vy(jet0trk_idx[j]))))));
-          }
-
-          nd.num(k_ele1_trk_dz, tks.dzpv(ele1trk_idx, pvs));
-          nd.num(k_ele1_trk_dsz, tks.dsz(ele1trk_idx, pvs.x(0) + bs.x(pvs.z(0)), pvs.y(0) + bs.y(pvs.z(0)), pvs.z(0)));
-          nd.num(k_ele1_trk_dxy, tks.dxybs(ele1trk_idx, bs));
-          nd.num(k_ele1_trk_dzerr, tks.err_dz(ele1trk_idx));
-          nd.num(k_ele1_trk_dxyerr, tks.err_dxy(ele1trk_idx));
-          nd.num(k_ele1_trk_whichpv, tks.which_pv(ele1trk_idx));
-
-          nd.num(k_ele1_trk_nsigmadxy, tks.dxybs(ele1trk_idx, bs)/tks.err_dxy(ele1trk_idx));
-          nd.num(k_avgptno_ele1, sv_sumptnolep/vtx_ntk);
-          nd.num(k_trackpairdravg_ele1, trackpairdr_sum/vtx_ntk);
-          
-          if (mindist2move_iv != -1) {
-            const double ele1_vtxdz = tks.dz(ele1trk_idx, vs.x(mindist2move_iv) + bs.x(vs.z(mindist2move_iv)),vs.y(mindist2move_iv) + bs.y(vs.z(mindist2move_iv)),vs.z(mindist2move_iv)); 
-            const double ele1_vtxdxy = tks.dxy(ele1trk_idx, vs.x(mindist2move_iv) + bs.x(vs.z(mindist2move_iv)), vs.y(mindist2move_iv) + bs.y(vs.z(mindist2move_iv)));
-            nd.num(k_ele1_trk_vtxdxy, ele1_vtxdxy);
-            nd.num(k_ele1_trk_vtxdz, ele1_vtxdz);
-            nd.num(k_ele1_trk_nsigmavtxdz, ele1_vtxdz/tks.err_dz(ele1trk_idx));
-            nd.num(k_ele1_trk_nsigmavtxdxy, ele1_vtxdxy/tks.err_dxy(ele1trk_idx));
-            nd.num(k_ele1_trk_nsigmavtx, sqrt((ele1_vtxdxy/tks.err_dxy(ele1trk_idx))*(ele1_vtxdxy/tks.err_dxy(ele1trk_idx)) + (ele1_vtxdz/tks.err_dz(ele1trk_idx))*(ele1_vtxdz/tks.err_dz(ele1trk_idx))));
-          }
-          const double ele1_gennsigmadz = tks.dz(ele1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp), gen.decay_z(ilsp))/tks.err_dz(ele1trk_idx);
-          const double ele1_gennsigmamissdist = tks.dxy(ele1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp))/tks.err_dxy(ele1trk_idx);  
-          nd.num(k_ele1_trk_gennsigma, sqrt((ele1_gennsigmamissdist*ele1_gennsigmamissdist) + (ele1_gennsigmadz*ele1_gennsigmadz)));
-          nd.num(k_ele1_trk_gennsigmamissdist, ele1_gennsigmamissdist);
-          nd.num(k_ele1_trk_genmissdist, tks.dxy(ele1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp)));
-          nd.num(k_ele1_trk_gennsigmadz, ele1_gennsigmadz);
-          nd.num(k_ele1_trk_gendz, tks.dz(ele1trk_idx, gen.decay_x(ilsp), gen.decay_y(ilsp), gen.decay_z(ilsp)));
-
           nd.num(k_ele_dr_minl1_l1, ele_dr_minl1);
           nd.num(k_llp_sump_jeteledphi, sump_0+p_ele1+miscp, jetele_dphi);
           nd.num(k_llp_sump_jeteledr, sump_0+p_ele1+miscp, jetele_dr);
           nd.num(k_jet0_sump_jeteledr, sump_0, jetele_dr);
           nd.num(k_jet0_sump_jetlepdr, sump_0, jetele_dr);
-          nd.num(k_jet0_sump_ele1_p, sump_0, ele1_reco_p);
-          nd.num(k_jet0_sump_lep1_p, sump_0, ele1_reco_p);
           nd.num(k_ele1_p_jeteledr, ele1_reco_p, jetele_dr);
           nd.num(k_lep1_p_jetlepdr, ele1_reco_p, jetele_dr);
           nd.num(k_ele1_pT_jeteledr, ele1_reco_pt, jetele_dr);
           nd.num(k_lep1_pT_jetlepdr, ele1_reco_pt, jetele_dr);
-
           nd.num(k_movedist3_jeteledr, movedist3, jetele_dr);
           nd.num(k_movedist3_ele1_p, movedist3, p_ele1);
           nd.num(k_angle2d_jeteledr, movedist2/movedist3, jetele_dr);
@@ -2811,26 +2496,10 @@ int main(int argc, char** argv) {
         // nd.num(k_pt_angle1, jet_pt_1, jet1_lsp_angle);
         nd.num(k_eta_angle0, lsp_p4.Eta(), jet0_lsp_angle);
         // nd.num(k_eta_angle1, lsp_p4.Eta(), jet1_lsp_angle);
-
-        nd.num(k_leppt_insv, leading_leppt_inSV);
-        nd.num(k_lepdxy_insv, leading_lepdxy_inSV);
-        nd.num(k_lepdxyerr_insv, leading_lepdxyerr_inSV);
-        nd.num(k_lepnsigmadxy_insv, leading_lepnsigmadxy_inSV);
-        nd.num(k_lepiso_insv, leading_lepiso_inSV);
-        nd.num(k_leptype_insv, leading_leptype_inSV);
-        nd.num(k_lepid_insv, leading_lepID_inSV);
-        nd.num(k_lepeta_insv, leading_lepeta_inSV);
-        nd.num(k_lephltmatched_insv, leading_lephltmatched_inSV);
-        nd.num(k_leppasstrigpt_insv, leading_leppasstrigpt_inSV);
-        nd.num(k_lepjet_pairdr, leading_lepjet_pairdr);
-        nd.num(k_vtx_trackpairdravg, trackpairdravg);
-        nd.num(k_vtx_avgptnolep, avgptnolep);
-  
         nd.num(k_nvtx, npasses[in]);
         nd.num(k_vtxcat, vtx_cat);
         nd.num(k_vtxbs2derr, vtx_bs2derr);
         nd.num(k_vtxunc, dist2move);
-        nd.num(k_vtxunc2d, dist2move2d);
         nd.num(k_vtxeta, vtx_eta);
         nd.num(k_vtxz, vtx_z);
         nd.num(k_vtxdbv, vtx_dbv);

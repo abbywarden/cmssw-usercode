@@ -36,11 +36,13 @@ jmtNtupleFillerMiniAOD = jmtNtupleFiller.clone(
     track_ref_getter = jmtTrackRefGetterMiniAOD,
     )
 
+
 def jmtNtupleFiller_pset(miniaod, using_rescaled_tracks=False, corrected_met=True):
     p = jmtNtupleFillerMiniAOD if miniaod else jmtNtupleFiller
     if using_rescaled_tracks: # not necessarily rescaling them, but that they are in the workflow and track_ref_getter will hit them
         p.tracks_src = 'jmtRescaledTracks'
+        p.triggerfloats_src = 'mfvTriggerFloats' #moved this up to be out of the correct_met boolean; want for DVwLep analysis
+
     if corrected_met:
-        p.triggerfloats_src = 'mfvTriggerFloats'
         p.mets_src = cms.InputTag('slimmedMETs', '', 'Ntuple')
     return p

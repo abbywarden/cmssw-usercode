@@ -20,7 +20,9 @@ max_events(process, 1000)
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/ggH_HToSSTo4l_lowctau_MH-800_MS-350_ctauS-1_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/2550000/36A34C5C-7F31-7E4F-A8C7-43A72226A91D.root')
 #input_files(process, '/store/mc/RunIISummer20UL16MiniAODAPVv2/GluinoGluinoToNeutralinoNeutralinoTo2T2B2S_M-800_CTau-1mm_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/50000/91C7124F-ED8D-A441-B7D1-1B2A04EC78EC.root')
 #input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLBottom_M_800_0p3mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/30000/1140EC5A-A7C4-794C-9557-D64D8D5AFFC1.root')
-input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/30000/0A2EBAF3-6609-7C44-A775-5912EE87CD3E.root')
+# input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/30000/0A2EBAF3-6609-7C44-A775-5912EE87CD3E.root')
+# input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/212EEC0E-9FB3-BE42-B1DD-DAC4C6B0F23F.root')
+input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2560000/1F81898F-A3DA-944C-BC72-6DBEB24677C4.root')
 
 cmssw_from_argv(process)
 
@@ -28,6 +30,10 @@ cmssw_from_argv(process)
 from JMTucker.MFVNeutralino.Vertexer_cff import modifiedVertexSequence
 from JMTucker.Tools.NtupleFiller_cff import jmtNtupleFiller_pset
 from JMTucker.Tools.TrackRefGetter_cff import jmtTrackRefGetter
+from JMTucker.MFVNeutralino.AnalysisCuts_cfi import *
+from JMTucker.MFVNeutralino.WeightProducer_cfi import *
+from JMTucker.MFVNeutralino.VertexSelector_cfi import *
+process.load('JMTucker.MFVNeutralino.AnalysisCuts_cfi')
 jmtTrackRefGetter.input_is_miniaod = settings.is_miniaod
 
 process.load('JMTucker.MFVNeutralino.GenParticles_cff')
@@ -56,6 +62,15 @@ tree = cms.EDAnalyzer('MFVMovedTracksTreer',
                                              for_mctruth = cms.bool(True),
                                              )
 
+# mfvAnalysisCutsPreSelEvtFilt = mfvAnalysisCuts.clone(min_nvertex = 0, vertex_src = 'mfvSelecedVerticesLoose')
+# setattr(process, 'mfvSelectedVerticesLoose', mfvSelectedVerticesLoose)
+# setattr(process, 'mfvAnalysisCutsPreSelEvtFilt', mfvAnalysisCutsPreSelEvtFilt)
+# process.p *= mfvSelectedVerticesLoose
+mfvAnalysisCutsPreSelEvtFilt = mfvAnalysisCuts.clone(min_nvertex=0, vertex_src = 'mfvSelectedVerticesLoose')
+setattr(process, 'mfvSelectedVerticesLoose', mfvSelectedVerticesLoose)
+setattr(process, 'mfvAnalysisCutsPreSelEvtFilt', mfvAnalysisCutsPreSelEvtFilt)
+process.p *= mfvSelectedVerticesLoose 
+process.p *= mfvAnalysisCutsPreSelEvtFilt
 setattr(process, 'mfvMovedTreeMCTruth', tree)
 process.p *= tree 
 ReferencedTagsTaskAdder(process)('p')
@@ -68,11 +83,35 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     
     #samples = [getattr(Samples, 'ZHToSSTodddd_tau1mm_M55_20161')] 
     #samples = [getattr(Samples, 'mfv_stopbbarbbar_tau001000um_M0200_20161')] 
-    samples = [getattr(Samples, 'mfv_stoplb_tau001000um_M0200_2018')] 
-    samples += [getattr(Samples, 'mfv_stoplb_tau001000um_M1000_2018')]
-    samples += [getattr(Samples,  'mfv_stopld_tau001000um_M0200_2018')]
-    samples += [getattr(Samples, 'mfv_stopld_tau001000um_M1000_2018')]
+    samples = [getattr(Samples,  'mfv_stoplb_tau010000um_M0200_2018')] 
+    samples += [getattr(Samples, 'mfv_stoplb_tau001000um_M0200_2018')] #to have a different lifetime
+    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M0300_2018')] 
+    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M0400_2018')] 
+    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M0600_2018')] 
+    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M0800_2018')] 
+    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M1000_2018')]
+    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M1200_2018')]
+    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M1400_2018')]
+    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M1600_2018')]
+    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M1800_2018')]
 
+    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M0200_2018')]
+    samples += [getattr(Samples, 'mfv_stopld_tau001000um_M0200_2018')] #to have a different lifetime
+    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M0300_2018')]
+    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M0400_2018')]
+    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M0600_2018')]
+    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M0800_2018')]
+    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M1000_2018')] 
+    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M1200_2018')] 
+    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M1400_2018')] 
+    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M1600_2018')] 
+    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M1800_2018')] 
+
+    # samples += [getattr(Samples, 'mfv_stopld_tau000300um_M1000_2018')]
+    # samples += [getattr(Samples, 'mfv_stoplb_tau000300um_M1000_2018')]
+    # samples += [getattr(Samples,  'mfv_stopld_tau000300um_M0200_2018')]
+    # samples += [getattr(Samples, 'mfv_stopld_tau000300um_M1000_2018')]
+    
     #samples = [getattr(Samples, 'ggHToSSTodddd_tau1mm_M55_20161')]
     set_splitting(samples, dataset, 'ntuple')
     ms = MetaSubmitter('TrackMoverMCTruth' + version, dataset=dataset)
