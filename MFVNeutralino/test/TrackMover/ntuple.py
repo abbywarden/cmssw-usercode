@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-
+import FWCore.ParameterSet.Config as cms
 from JMTucker.Tools.general import named_product
 from JMTucker.MFVNeutralino.NtupleCommon import *
 
@@ -43,6 +43,7 @@ process = ntuple_process(settings)
 tfileservice(process, 'movedtree.root')
 max_events(process, 1000)
 dataset = 'miniaod' if settings.is_miniaod else 'main'
+#input_files(process, '/store/mc/RunIISummer20UL16MiniAODAPVv2/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/30000/F80DB8BA-EB71-E04B-A334-5B701A3FDF3E.root')
 #input_files(process, '/store/data/Run2016B/BTagCSV/MINIAOD/21Feb2020_ver2_UL2016_HIPM-v1/240000/FEBA5DAA-3D1A-384D-91EB-A10EF4E504F5.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/120001/A8C3978F-4BE4-A844-BEE8-8DEE129A02B7.root')
 #input_files(process, '/store/mc/RunIISummer20UL16MiniAODAPVv2/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/2540000/00AF8175-C641-344B-8777-F62041FD6308.root')
@@ -53,6 +54,7 @@ dataset = 'miniaod' if settings.is_miniaod else 'main'
 #input_files(process, '/store/data/Run2017B/SingleMuon/MINIAOD/09Aug2019_UL2017-v1/50000/D086C8A4-780B-7B49-85FF-AD8892AB2F1F.root')
 #input_files(process, '/store/data/Run2016D/SingleMuon/MINIAOD/HIPM_UL2016_MiniAODv2-v2/120000/A229E024-341D-6243-A3B9-8C1BED78C181.root')
 #input_files(process, '/store/data/Run2016C/SingleMuon/MINIAOD/HIPM_UL2016_MiniAODv2-v2/70000/510A870F-710D-B347-8F4A-E0460D6A5BD8.root')
+#input_files(process, '/store/data/Run2016F/SingleMuon/MINIAOD/UL2016_MiniAODv2-v2/70000/060F0B51-FCEF-F343-890C-3043A4B268C2.root')
 #input_files(process, '/store/mc/RunIISummer20UL16MiniAODAPVv2/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/280000/CADD920F-488D-2B47-9E9C-C78699A5F1A6.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/120001/A8C3978F-4BE4-A844-BEE8-8DEE129A02B7.root')
 #input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/120000/016D5B69-2F13-A94D-8A61-91551911BFBD.root')
@@ -138,7 +140,7 @@ for icfg, cfg in enumerate(cfgs):
                             electron_effective_areas = cms.FileInPath('RecoEgamma/ElectronIdentification/data/Fall17/effAreaElectrons_cone03_pfNeuHadronsAndPhotons_92X.txt'),
                             triggerfloats_src = cms.InputTag('mfvTriggerFloats'),
                             track_ref_getter = jmtTrackRefGetter,
-                            min_jet_pt = cms.double(0), 
+                            min_jet_pt = cms.double(20.0), #FIXME 
                             min_jet_ntracks = cms.uint32(2), 
                             njets = cms.uint32(cfg.njets),
                             nbjets = cms.uint32(cfg.nbjets),
@@ -156,10 +158,8 @@ for icfg, cfg in enumerate(cfgs):
                           min_track_sigmadxy = 0,
                           min_track_rescaled_sigmadxy = cfg.nsigmadxy,
                           )
-
-    for x in 'mfvVerticesToJets', 'mfvVerticesAuxTmp', 'mfvVerticesAuxPresel':
+    for x in  'mfvVerticesToJets', 'mfvVerticesAuxTmp', 'mfvVerticesAuxPresel':
        getattr(process, x + ex).track_ref_getter.tracks_maps_srcs.append(cms.InputTag(tracks_name))
-
     tree = cms.EDAnalyzer('MFVMovedTracksTreer',
                           jmtNtupleFiller_pset(settings.is_miniaod),
                           sel_tracks_src = cms.InputTag('mfvVertexTracks' + ex, 'all'),
@@ -174,7 +174,6 @@ for icfg, cfg in enumerate(cfgs):
                           nlep_req = cms.uint32(cfg.nlep),
                           for_mctruth = cms.bool(False),
                           )
-
     setattr(process, tracks_name, tracks)
     setattr(process, tree_name, tree)
     
@@ -185,6 +184,7 @@ for icfg, cfg in enumerate(cfgs):
     process.p *= mfvAnalysisCutsPreSelEvtFilt
     process.p *= tree
 
+ 
 ReferencedTagsTaskAdder(process)('p')
 random_service(process, random_dict)
 

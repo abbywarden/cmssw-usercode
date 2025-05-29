@@ -44,8 +44,6 @@ class MFVEventHistos : public edm::EDAnalyzer {
   TH1F* h_ntrack_sv;
   TH1F* h_sum_ntrack_sv;
   TH1F* h_sum_noutseedtrack;
-
-
   TH1F* h_eventid;
 
   //GEN 

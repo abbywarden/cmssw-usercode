@@ -37,14 +37,15 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
 
     if use_btag_triggers :
         samples = pick_samples(dataset, qcd=False, ttbar=False, all_signal=True, data=False, bjet=False) # no data currently; no sliced ttbar since inclusive is used
-        #samples =  Samples.ttbar_samples_2018 + Samples.qcd_samples_2018 + Samples.samples_for_minitree_2018
-        pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier(), half_mc_modifier())
+        pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
+    elif  use_btag_vetoLepHT_triggers:
+        samples = pick_samples(dataset, qcd=True, data = False, all_signal = False, qcd_lep=False, leptonic=False, ttbar=True, diboson=False, Lepton_data=False)
+        pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     elif use_MET_triggers :
         samples = pick_samples(dataset, qcd=False, ttbar=False, data=False, leptonic=False, splitSUSY=True, Zvv=False, met=False, span_signal=False)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier(), half_mc_modifier())
     elif use_Muon_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep = False, leptonic=False, met=False, diboson=False)
-        #samples = [getattr(Samples, 'WplusHToSSTodddd_tau1mm_M55_2017')] 
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     elif use_Electron_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep = False, leptonic=True, met=True, diboson=True)
@@ -58,11 +59,10 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     else :
         samples = pick_samples(dataset, qcd=True, ttbar=True, all_signal=False, data=False, splitSUSY=True)
-        #samples = pick_samples(dataset)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     set_splitting(samples, dataset, 'minitree', data_json=json_path('ana_2016_EgammaMu.json'))
 
-    cs = CondorSubmitter('MiniTree' + version,
+    cs = CondorSubmitter('MiniTree_LepIPCut_' + version,
                          ex = year,
                          dataset = dataset,
                          pset_modifier = pset_modifier,

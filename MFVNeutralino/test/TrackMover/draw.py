@@ -8,7 +8,8 @@ set_style()
 ROOT.TH1.AddDirectory(0)
 
 
-variables = ['_npv_', 'pt', '_deta_', '_dvv', '_jet_d', '_vtxunc', 'closeseedtks']
+#variables = ['_npv_', 'pt', '_deta_', '_dvv', '_jet_d', '_vtxunc', 'closeseedtks']
+variables = ['_npv_', 'pt', '_deta_', '_dvv_', 'closeseedtks']
 
 def get_em(fn, scale=1., alpha=1-0.6827):
     #f = ROOT.TFile(fn)
@@ -94,8 +95,8 @@ def get_em(fn, scale=1., alpha=1-0.6827):
             if 'dvv' in name:
               num.Rebin(8)
               den.Rebin(8)
-              num.GetXaxis().SetRangeUser(0.0,0.5)
-              den.GetXaxis().SetRangeUser(0.0,0.5)
+              #num.GetXaxis().SetRangeUser(0.0,0.5)
+              #den.GetXaxis().SetRangeUser(0.0,0.5)
             if 'close' in name:
               num.GetXaxis().SetRangeUser(0.0,45.0)
               den.GetXaxis().SetRangeUser(0.0,45.0)
@@ -185,27 +186,33 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.r
             mc.SetFillColor(ROOT.kRed)
             
             data.SetName("REWEIGHTED TM data")
+            #data.SetName("Gluino/Neu 1mm 400GeV via b/displ trig")
             data.SetMarkerSize(0.8)
             data.SetLineWidth(3)
             data.SetMarkerColor(ROOT.kBlack) 
             data.SetLineColor(ROOT.kBlack)
             data.SetFillColor(ROOT.kBlack)
             
-            signal.SetName("V(HSS4d) 1mm 55GeV MC")
+            #signal.SetName("V(HSS4d) 1mm 55GeV MC")
+            signal.SetName("Stop(dbardbar) 300um 400GeV")
+            #signal.SetName("gg(HSS4d) 1mm 55GeV")
             signal.SetMarkerSize(0.8)
             signal.SetLineWidth(3)
-            signal.SetMarkerColor(ROOT.kBlue)
-            signal.SetLineColor(ROOT.kBlue)
-            signal.SetFillColor(ROOT.kBlue)
+            signal.SetMarkerColor(ROOT.kMagenta+2)#Green+2)#Azure+8)#Yellow+2)
+            signal.SetLineColor(ROOT.kMagenta+2)#Green+2)#Azure+8)#Yellow+2)
+            signal.SetFillColor(ROOT.kMagenta+2)#Green+2)#Azure+8)#Yellow+2)
             
-            signalmid.SetName("REWEIGHTED TM data")
+            #signalmid.SetName("REWEIGHTED TM data")
+            #signalmid.SetName("Stopbbar 1mm 800GeV")
+            signalmid.SetName("Gluino/Neu 1mm 400GeV via HT trig")
             signalmid.SetMarkerSize(0.8)
             signalmid.SetLineWidth(3)
-            signalmid.SetMarkerColor(ROOT.kGray+2)
-            signalmid.SetLineColor(ROOT.kGray+2)
-            signalmid.SetFillColor(ROOT.kGray+2)
+            signalmid.SetMarkerColor(ROOT.kRed-3)#Gray+2)
+            signalmid.SetLineColor(ROOT.kRed-3)#Gray+2)
+            signalmid.SetFillColor(ROOT.kRed-3)#Gray+2)
 
-            signalnon.SetName("REWEIGHTED TM data")
+            #signalnon.SetName("REWEIGHTED TM data")
+            signalnon.SetName("Stopdbar 1mm 800GeV")
             signalnon.SetMarkerSize(0.8)
             signalnon.SetLineWidth(3)
             signalnon.SetMarkerColor(ROOT.kAzure+8)
@@ -219,14 +226,14 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.r
             if name.endswith('_rat'):
                 for g in both:
                     g.GetYaxis().SetTitle('efficiency')
-                objs = [(mc, 'P'),(data, 'P'),(signal, 'P')]
+                objs = [(mc, 'P'), (data, 'P'),(signal,'P')]
                 y_range = (0, 1.05)
             if 'bs2derr' in name:
                 x_range = (0, 0.01)
             if 'movedist' in name:
                 x_range = (0.0, 0.2)
-            if 'dvv' in name:
-                x_range = (0.0, 0.5)
+            #if 'dvv' in name:
+            #    x_range = (0.0, 0.5)
             if 'close' in name:
                 x_range = (0.0, 45.0)
             ratios_plot(name,
@@ -234,7 +241,7 @@ def comp(ex, fn1='data.root', fn2='mc.root', fn3='signal.root', fn4='signalmid.r
                         plot_saver=ps,
                         x_range=x_range,
                         y_range=y_range,
-                        res_y_range=(0.4,1.6),
+                        res_y_range=(0.7,1.3),
                         res_y_title='ratio',
                         res_fit=False,
                         res_divide_opt={'confint': propagate_ratio, 'force_le_1': False, 'allow_subset': True}, #name in ('all_jetsumntracks_rat', )},

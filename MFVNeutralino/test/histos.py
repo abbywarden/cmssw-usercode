@@ -1,5 +1,4 @@
 from JMTucker.Tools.BasicAnalyzer_cfg import *
-from JMTucker.Tools.Year import year
 
 is_mc = True # for blinding
 do_track = False # this can onlky be used for ntuple with keep_tk=True
@@ -20,16 +19,13 @@ sample_files(process, 'mfv_stoplb_tau000300um_M0300_2017' if is_mc else 'SingleM
 #sample_files(process, 'SingleMuon2018B', dataset, 1)
 
 tfileservice(process, 'histos.root')
-global_tag(process)
 cmssw_from_argv(process)
 
 process.load('JMTucker.MFVNeutralino.VertexSelector_cfi')
 process.load('JMTucker.MFVNeutralino.WeightProducer_cfi')
 process.load('JMTucker.MFVNeutralino.VertexHistos_cfi')
 process.load('JMTucker.MFVNeutralino.EventHistos_cfi')
-process.load('JMTucker.MFVNeutralino.TrackHistos_cfi')
-process.load('JMTucker.MFVNeutralino.FilterHistos_cfi')
-process.load('JMTucker.MFVNeutralino.JetTksHistos_cfi')
+#process.load('JMTucker.MFVNeutralino.FilterHistos_cfi')
 process.load('JMTucker.MFVNeutralino.AnalysisCuts_cfi')
 process.load('JMTucker.MFVNeutralino.CutFlowHistos_cfi')
 
@@ -148,7 +144,7 @@ process.EX1pPreSel     = cms.Path(common * process.mfvAnalysisCutsPreSel * proce
             #     ana.ntracks01_0 = 5
             #     ana.ntracks01_1 = 4
             ana_name = '%sana%iVNo' % (EX1, nv) + name
-
+            
             evt_hst = process.mfvEventHistos.clone()
             evt_hst_name = '%sevtHst%iVNo' % (EX1, nv) + name
 
@@ -161,13 +157,18 @@ process.EX1pPreSel     = cms.Path(common * process.mfvAnalysisCutsPreSel * proce
             setattr(process, vtx_hst_name, vtx_hst)
             setattr(process, '%sp%iV' % (EX1, nv) + name, cms.Path(process.mfvWeight * vtx * ana * evt_hst * vtx_hst))
 
+
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
 
     if use_btag_triggers :
-        #samples = Samples.DisplacedJet_data_samples_2016APV + Samples.qcd_samples_2016APV
-        #samples = Samples.ttbar_alt_samples_2016APV + Samples.MuonEG_data_samples_2016APV + Samples.ttbar_samples_2016APV + Samples.DisplacedJet_data_samples_2016APV + Samples.SingleMuon_data_samples_2016APV + Samples.qcd_samples_2016APV
-        samples = Samples.all_signal_samples_2016
+        samples = pick_samples(dataset, qcd=False, ttbar=False, all_signal=True, data=False, bjet=False) # no data currently; no sliced ttbar since inclusive is used
+        pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
+    elif  use_btag_vetoLepHT_triggers:
+        samples = pick_samples(dataset, qcd=True, data = False, all_signal = True, qcd_lep=False, leptonic=False, ttbar=True, diboson=False, Lepton_data=False)
+        pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
+    elif  use_Lepton_triggers:
+        samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=True, leptonic=True, ttbar=True, diboson=True, Lepton_data=False)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
     elif use_MET_triggers:
         #samples = pick_samples(dataset, qcd=True, ttbar=False, data=False, leptonic=True, splitSUSY=True, Zvv=True, met=True, span_signal=False)
@@ -189,7 +190,7 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = pick_samples(dataset, qcd=False, all_signal=False, qcd_lep = False, leptonic=False, met=False, diboson=False, Lepton_data=False)
         pset_modifier = chain_modifiers(is_mc_modifier, half_mc_modifier())
     else :
-        samples = pick_samples(dataset)
+        samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=True, leptonic=True, ttbar=True, diboson=True, Lepton_data=False)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
 
 

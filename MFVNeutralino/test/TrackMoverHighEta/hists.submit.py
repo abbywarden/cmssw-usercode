@@ -1,6 +1,6 @@
 from JMTucker.Tools.MetaSubmitter import *
 from JMTucker.Tools.BasicAnalyzer_cfg import *
-from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_btag_triggers
+from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset
 
 # version = '0p03onnormdzulv30lepmumv8'
 version = 'ulv13lepm1jet1lep' #bjet #CHANGE FOR BJET
@@ -17,13 +17,22 @@ for nl in 1,: # 3:
             for tm in ["sim"]:
               w_fn_2d_move = ""
               if tm == "sim":
-                samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, ttbar=True, diboson=True, Lepton_data=False)
-                w_fn_2d_move = "reweight_higheta_move_sim_vetodr_tau%06ium_M%02i_%s_2D.root" % (tau, mg, year) 
+                samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=True, ttbar=True, diboson=True, Lepton_data=False, BTagCSV_data=False, DisplacedJet_data=False)
+                if mg < 100 :
+                    w_fn_2d_move = "reweight_higheta_move_sim_vetodr_tau%06ium_M%02i_%s_2D.root" % (tau, mg, year) 
+                else :
+                    w_fn_2d_move = "reweight_higheta_move_sim_vetodr_tau%06ium_M%04i_%s_2D.root" % (tau, mg, year) 
               else:
-                samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=False, ttbar=False, diboson=False, Lepton_data=True)
-                w_fn_2d_move = "reweight_higheta_move_dat_vetodr_tau%06ium_M%02i_%s_2D.root" % (tau, mg, year) 
+                samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=False, leptonic=False, ttbar=False, diboson=False, Lepton_data=True, JetHT_data=False, BTagCSV_data=True, DisplacedJet_data=True)
+                if mg < 100 :
+                    w_fn_2d_move = "reweight_higheta_move_dat_vetodr_tau%06ium_M%02i_%s_2D.root" % (tau, mg, year) 
+                else :
+                    w_fn_2d_move = "reweight_higheta_move_dat_vetodr_tau%06ium_M%04i_%s_2D.root" % (tau, mg, year) 
               batch_tag = "2DCorrection"
-              w_fn_2d_kin = "reweight_all_kin_sim_vetodr_tau%06ium_M%02i_2D.root" % (tau, mg) 
+              if mg < 100 :
+                  w_fn_2d_kin = "reweight_all_kin_sim_vetodr_tau%06ium_M%02i_2D.root" % (tau, mg) 
+              else :
+                  w_fn_2d_kin = "reweight_all_kin_sim_vetodr_tau%06ium_M%04i_2D.root" % (tau, mg) 
               correction_args = '--jet-decayweights true --w_fn_2d_kin "%s" --w_fn_2d_move "%s" --tm "%s"' % (w_fn_2d_kin, w_fn_2d_move, tm)
               w_fns = [w_fn_2d_kin, w_fn_2d_move]
               batch = 'TrackMover_HighEta_NoPreSelRelaxBSPNotwVetodR0p4JetByJetHists' + version.capitalize() + '_%i%i_tau%06ium_M%02i_%s' % (nl, nb, tau, mg, batch_tag)

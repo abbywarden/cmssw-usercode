@@ -1,12 +1,12 @@
 from JMTucker.Tools.CMSSWTools import *
 from JMTucker.Tools.Year import year
 
-#ntuple_version_ = 'ULV12_ogdeltaz'
-#ntuple_version_ = 'ULV13'
-ntuple_version_ = 'ULV14' #just for TrackMover 
+ntuple_version_ = 'ULV13'
+#ntuple_version_ = 'ULV14' #just for TrackMover 
 
 lsp_id = 1000006 # should do that in a smarter way; currently for stop
 use_btag_triggers = False
+use_btag_vetoLepHT_triggers = False
 use_MET_triggers = False
 use_Muon_triggers = False
 use_Electron_triggers = False
@@ -14,6 +14,8 @@ use_Lepton_triggers = True
 use_DisplacedLepton_triggers = False
 if use_btag_triggers : 
     ntuple_version_ += "B" # for "Btag triggers"; also includes DisplacedDijet triggers
+elif use_btag_vetoLepHT_triggers : 
+    ntuple_version_ += "BvetoLHT" # for "Btag triggers"; also includes DisplacedDijet triggers
 elif use_MET_triggers :
     lsp_id = 1000021 # should do that in a smarter way would be -1 if not MET
     ntuple_version_ += "MET"

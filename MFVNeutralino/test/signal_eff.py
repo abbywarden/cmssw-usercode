@@ -5,13 +5,50 @@ from JMTucker.Tools.ROOTTools import *
 from JMTucker.Tools import Samples
 from JMTucker.MFVNeutralino.PerSignal import PerSignal
 
+lep = 'lep' in sys.argv
+bjet = 'bjet' in sys.argv
+year = '2017' if len(sys.argv) < 3 else sys.argv[1]
+trigname = 'NA' if len(sys.argv) < 4 else sys.argv[2] 
+signame = 'rpv' if len(sys.argv) < 5 else sys.argv[3] 
+print("trig channel: %s" % trigname)
+print("signal : %s" % signame)
+
+rpv = 'rpv' in sys.argv
+ggh = 'ggh' in sys.argv
+vh = 'vh' in sys.argv
+
 set_style()
 version = 'ULV13Lepm'
 ps = plot_saver(plot_dir('sigeff_%s' % version), size=(800,600), pdf=True, log=False)
 
 #CURRENTLY : Set up to compare cut and count Displaced SUSY with BDT results 
 multijet = Samples.mfv_signal_samples_2017
-dijet = Samples.mfv_stopdbardbar_samples_2017
+dijet_d  = Samples.mfv_stopdbardbar_samples_2017
+dijet_b  = Samples.mfv_stopbbarbbar_samples_2017
+higgs    = Samples.ggHToSSTodddd_samples_2017
+
+if year == '20161' :
+    WplusH = Samples.WplusHToSSTodddd_samples_20161
+    WminusH = Samples.WminusHToSSTodddd_samples_20161
+    ZH = Samples.ZHToSSTodddd_samples_20161
+
+    multijet = Samples.mfv_signal_samples_20161
+    dijet_d  = Samples.mfv_stopdbardbar_samples_20161
+    dijet_b  = Samples.mfv_stopbbarbbar_samples_20161
+    higgs    = Samples.ggHToSSTodddd_samples_20161
+elif year == '20162' :
+    WplusH = Samples.WplusHToSSTodddd_samples_20162
+    WminusH = Samples.WminusHToSSTodddd_samples_20162
+    ZH = Samples.ZHToSSTodddd_samples_20162
+
+    multijet = Samples.mfv_signal_samples_20162
+    dijet_d  = Samples.mfv_stopdbardbar_samples_20162
+    dijet_b  = Samples.mfv_stopbbarbbar_samples_20162
+    higgs    = Samples.ggHToSSTodddd_samples_20162
+elif year == '2018' :
+    WplusH = Samples.WplusHToSSTodddd_samples_2018
+    WminusH = Samples.WminusHToSSTodddd_samples_2018
+    ZH = Samples.ZHToSSTodddd_samples_2018
 
 semilep_ld = Samples.mfv_stopld_samples_2018
 semilep_lb = Samples.mfv_stoplb_samples_2018

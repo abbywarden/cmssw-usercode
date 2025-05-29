@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 
+import FWCore.ParameterSet.Config as cms
+from JMTucker.Tools.general import named_product
 from JMTucker.MFVNeutralino.NtupleCommon import *
 from JMTucker.Tools.Year import year
 
 settings = NtupleSettings()
-settings.is_mc = True
+settings.is_mc = True #FIXME
 settings.is_miniaod = True
 
 settings.run_n_tk_seeds = False
@@ -13,11 +15,13 @@ settings.prepare_vis = False
 settings.keep_all = False #FIXME 
 settings.keep_gen = True #FIXME needed to run histos currently :(
 settings.keep_tk = False
+#settings.event_filter = 'bjets OR displaced dijet veto leptons and HT' # for new trigger studies
+settings.event_filter = 'leptons only'
+"""
 if use_btag_triggers :
-    #settings.event_filter = 'dilepton only' # for new trigger studies
-    #settings.event_filter = 'leptons only' # for new trigger studies
-    #settings.event_filter = 'low HT online track test' # for new trigger studies
     settings.event_filter = 'bjets OR displaced dijet' # for new trigger studies
+if use_btag_vetoLepHT_triggers :
+    settings.event_filter = 'bjets OR displaced dijet veto leptons and HT' # for new trigger studies
 elif use_MET_triggers :
     settings.event_filter = 'met only'
 elif use_Lepton_triggers :
@@ -30,7 +34,7 @@ elif use_Lepton_triggers :
     settings.mode = 'leptons only'
 else :
     settings.event_filter = 'jets only'
-
+"""
 settings.randpars_filter = False
 # if want to test local : 
 #settings.randpars_filter = 'randpar HToSSTodddd M15_ct10-'
@@ -53,16 +57,25 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
 
     if use_btag_triggers :
-       #samples = pick_samples(dataset, qcd=True, ttbar=False, data=False) # no data currently; no sliced ttbar since inclusive is used
-       #samples = Samples.DisplacedJet_data_samples_2017 + Samples.qcd_samples_2017
-       samples = [getattr(Samples, 'ggHToSSTodddd_tau1mm_M55_2017')] 
+       samples = pick_samples(dataset, qcd=True, data=False, all_signal=False, qcd_lep=False, leptonic=False, ttbar=True, diboson=False, Lepton_data=False, BTagCSV_data=False, DisplacedJet_data=False)
+       #samples = pick_samples(dataset, qcd=False, data=False, all_signal=False, qcd_lep=False, leptonic=False, ttbar=False, diboson=False, Lepton_data=False, BTagCSV_data=True, DisplacedJet_data=True) #set settings.is_mc to False
+    elif use_btag_vetoLepHT_triggers :
+        #samples = [getattr(Samples, 'mfv_neu_tau001000um_M0400_2017')]
+        #samples = [getattr(Samples, 'mfv_stopdbardbar_tau000300um_M0400_2017')]
+        #samples = [getattr(Samples, 'mfv_stopdbardbar_tau001000um_M0200_2017')]
+        #samples = [getattr(Samples, 'ggHToSSTodddd_tau1mm_M55_2017')]
+
+        if settings.is_mc :
+            #samples = [getattr(Samples, 'mfv_stopdbardbar_tau010000um_M0400_2017')]
+            samples = pick_samples(dataset, qcd=False, data=False, all_signal=True, qcd_lep=False, leptonic=False, ttbar=False, diboson=False, Lepton_data=False, BTagCSV_data=False, DisplacedJet_data=False)
+            #samples = pick_samples(dataset, qcd=True, data=False, all_signal=False, qcd_lep=False, leptonic=False, ttbar=True, diboson=False, Lepton_data=False, BTagCSV_data=False, DisplacedJet_data=False)
+        else :
+            samples = pick_samples(dataset, qcd=False, data=False, all_signal=False, qcd_lep=False, leptonic=False, ttbar=False, diboson=False, Lepton_data=False, BTagCSV_data=True, DisplacedJet_data=True) #set settings.is_mc to False
+
     elif use_MET_triggers :
        samples = pick_samples(dataset, qcd=True, ttbar=False, data=False, leptonic=True, splitSUSY=True, Zvv=True, met=True, span_signal=False)
     elif use_Muon_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=True, leptonic=True, met=True, diboson=True, Lepton_data=True)
-        #samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
-        #samples = [getattr(Samples, 'WplusHToSSTodddd_tau1mm_M55_2017')] 
-        #samples = [getattr(Samples, 'mfv_stoplb_tau001000um_M0400_2017')] 
     elif use_Electron_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep=True, leptonic=True, met=True, diboson=True, Lepton_data=False)
     elif use_Lepton_triggers :
