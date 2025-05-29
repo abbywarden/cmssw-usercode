@@ -37,6 +37,8 @@ namespace jmt {
     const edm::EDGetTokenT<std::vector<PileupSummaryInfo>> pileup_token_;
     const edm::EDGetTokenT<reco::VertexCollection> pvs_token_;
     const edm::EDGetTokenT<double> rho_token_;
+    // EffectiveAreas electron_effective_areas_;
+
     
    
   public:
@@ -46,7 +48,8 @@ namespace jmt {
         pileup_token_(cc.consumes<std::vector<PileupSummaryInfo>>(cfg.getParameter<edm::InputTag>("pileup_info_src"))),
         pvs_token_(cc.consumes<reco::VertexCollection>(cfg.getParameter<edm::InputTag>("primary_vertices_src"))),
         rho_token_(cc.consumes<double>(cfg.getParameter<edm::InputTag>("rho_src")))
-	
+        // electron_effective_areas_(cfg.getParameter<edm::FileInPath>("electron_effective_areas").fullPath())
+
     {}
     void operator()(const edm::Event&);
   };
@@ -157,12 +160,19 @@ namespace jmt {
     const edm::InputTag tag_;
     const edm::EDGetTokenT<pat::MuonCollection> token_;
     edm::Handle<pat::MuonCollection> muons_;
+    const edm::InputTag triggerfloats_tag_;
+    bool triggerfloats_available_;
+    const edm::EDGetTokenT<mfv::TriggerFloats> triggerfloats_token_;
+    edm::Handle<mfv::TriggerFloats> triggerfloats_;
     std::vector<int> i2nti_;
   public:
     MuonsSubNtupleFiller(MuonsSubNtuple& nt, const edm::ParameterSet& cfg, edm::ConsumesCollector&& cc)
       : nt_(nt),
 	tag_(cfg.getParameter<edm::InputTag>("muons_src")),
-	token_(cc.consumes<pat::MuonCollection>(tag_))
+  token_(cc.consumes<pat::MuonCollection>(tag_)),
+  triggerfloats_tag_(cfg.getParameter<edm::InputTag>("triggerfloats_src")),
+  triggerfloats_available_(triggerfloats_tag_.label() != ""),
+  triggerfloats_token_( triggerfloats_available_ ? cc.consumes<mfv::TriggerFloats>(triggerfloats_tag_) : edm::EDGetTokenT<mfv::TriggerFloats>() )
     {}
     const edm::Handle<pat::MuonCollection>& hmuons(const edm::Event& e) { e.getByToken(token_, muons_); return muons_; }
     const pat::MuonCollection& muons(const edm::Event& e) { return *hmuons(e); }
@@ -177,6 +187,13 @@ namespace jmt {
     const edm::InputTag tag_;
     const edm::EDGetTokenT<pat::ElectronCollection> token_;
     edm::Handle<pat::ElectronCollection> electrons_;
+    const edm::InputTag jtag_;
+    const edm::EDGetTokenT<pat::JetCollection> jtoken_;
+    edm::Handle<pat::JetCollection> jets_;
+    const edm::InputTag triggerfloats_tag_;
+    bool triggerfloats_available_;
+    const edm::EDGetTokenT<mfv::TriggerFloats> triggerfloats_token_;
+    edm::Handle<mfv::TriggerFloats> triggerfloats_;
     const edm::EDGetTokenT<double> rho_token_;
     std::vector<int> i2nti_;
     edm::Handle<double> rho_;
@@ -187,20 +204,27 @@ namespace jmt {
     ElectronsSubNtupleFiller(ElectronsSubNtuple& nt, const edm::ParameterSet& cfg, edm::ConsumesCollector&& cc)
       : nt_(nt),
 	tag_(cfg.getParameter<edm::InputTag>("electrons_src")),
-	token_(cc.consumes<pat::ElectronCollection>(tag_)),
+  token_(cc.consumes<pat::ElectronCollection>(tag_)),
+  jtag_(cfg.getParameter<edm::InputTag>("jets_src")),
+  jtoken_(cc.consumes<pat::JetCollection>(jtag_)),
+  triggerfloats_tag_(cfg.getParameter<edm::InputTag>("triggerfloats_src")),
+  triggerfloats_available_(triggerfloats_tag_.label() != ""),
+  triggerfloats_token_( triggerfloats_available_ ? cc.consumes<mfv::TriggerFloats>(triggerfloats_tag_) : edm::EDGetTokenT<mfv::TriggerFloats>() ),
 	rho_token_(cc.consumes<double>(cfg.getParameter<edm::InputTag>("rho_src"))),
-	electron_effective_areas(cfg.getParameter<edm::FileInPath>("electron_effective_areas").fullPath())
-    {}
+  electron_effective_areas(cfg.getParameter<edm::FileInPath>("electron_effective_areas").fullPath())
 
+    {}
     const edm::Handle<pat::ElectronCollection>& helectrons(const edm::Event& e) {e.getByToken(token_, electrons_); return electrons_; }
-    const edm::Handle<double>& rho(const edm::Event& e) {e.getByToken(rho_token_, rho_); return rho_; }
     const pat::ElectronCollection& electrons(const edm::Event& e) { return *helectrons(e); }
+    const edm::Handle<pat::JetCollection>& hjets(const edm::Event& e) { e.getByToken(jtoken_, jets_); return jets_; }
+    const pat::JetCollection& jets(const edm::Event& e) { return *hjets(e); }
+    const edm::Handle<double>& rho(const edm::Event& e) {e.getByToken(rho_token_, rho_); return rho_; }
     void operator()(const edm::Event&);
     int i2nti(size_t i) const { return i2nti_[i]; }
   };
 
   
-  void NtupleAdd(TracksSubNtuple&, const reco::Track&, int which_jet=-1, int which_pv=-1, bool ismu=false, bool isel=false, bool isgoodmu=false, bool isgoodel=false, int which_sv=-1, unsigned misc=0);
+  void NtupleAdd(TracksSubNtuple&, const reco::Track&, int which_jet=-1, int which_pv=-1, int which_sv=-1, bool ismu=false, bool isel=false, bool isgoodmu=false, bool isgoodel=false,  unsigned misc=0, unsigned misc_mtk=0, unsigned misc_etk=0);
   typedef bool (*tracks_cut_fcn)(const reco::Track&);
 
   class TracksSubNtupleFiller {
@@ -213,7 +237,6 @@ namespace jmt {
     jmt::TrackRefGetter trg_;
     const edm::EDGetTokenT<double> rho_token_;
     edm::Handle<double> rho_;
-    EffectiveAreas electron_effective_areas;
 
     
   public:
@@ -224,8 +247,7 @@ namespace jmt {
         cut_level_(cut_level),
         cut_(cut),
         trg_("TracksSubNtupleFiller", cfg.getParameter<edm::ParameterSet>("track_ref_getter"), std::move(cc)),
-	rho_token_(cc.consumes<double>(cfg.getParameter<edm::InputTag>("rho_src"))),
-	electron_effective_areas(cfg.getParameter<edm::FileInPath>("electron_effective_areas").fullPath())
+	rho_token_(cc.consumes<double>(cfg.getParameter<edm::InputTag>("rho_src")))
 
     {}
     bool cut(const reco::Track&, const edm::Event&, BeamspotSubNtupleFiller* =0) const;

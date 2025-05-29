@@ -189,6 +189,91 @@ namespace jmt {
 
   ////
 
+  LeptonInVerticesSubNtuple::LeptonInVerticesSubNtuple() {
+    // set_pfx("v");
+    clear();
+    p_leading_leppt_inSV_ = 0;
+    p_leading_lepdxy_inSV_ = 0;
+    p_leading_lepdxyerr_inSV_ = 0;
+    p_leading_lepnsigmadxy_inSV_ = 0;
+    p_leading_lepiso_inSV_ = 0;
+    p_leading_leptype_inSV_ = 0;
+    p_leading_lepID_inSV_ = 0;
+    p_leading_lepeta_inSV_ = 0;
+    p_leading_lephltmatched_inSV_ = 0;
+    p_leading_leppasstrigpt_inSV_ = 0;
+    p_leading_lepjet_pairdr_ = 0;
+    p_trackpairdravg_ = 0;
+    p_avgptnolep_ = 0;
+  }
+
+  void LeptonInVerticesSubNtuple::clear() {
+    leading_leppt_inSV_.clear();
+    leading_lepdxy_inSV_.clear();
+    leading_lepdxyerr_inSV_.clear();
+    leading_lepnsigmadxy_inSV_.clear();
+    leading_lepiso_inSV_.clear();
+    leading_leptype_inSV_.clear();
+    leading_lepID_inSV_.clear();
+    leading_lepeta_inSV_.clear();
+    leading_lephltmatched_inSV_.clear();
+    leading_leppasstrigpt_inSV_.clear();
+    leading_lepjet_pairdr_.clear();
+    trackpairdravg_.clear();
+    avgptnolep_.clear();
+  }
+
+  void LeptonInVerticesSubNtuple::write_to_tree(TTree* t) {
+    t->Branch("leading_leppt_inSV", &leading_leppt_inSV_);
+    t->Branch("leading_lepdxy_inSV", &leading_lepdxy_inSV_);
+    t->Branch("leading_lepdxyerr_inSV", &leading_lepdxyerr_inSV_);
+    t->Branch("leading_lepnsigmadxy_inSV", &leading_lepnsigmadxy_inSV_);
+    t->Branch("leading_lepiso_inSV", &leading_lepiso_inSV_);
+    t->Branch("leading_leptype_inSV", &leading_leptype_inSV_);
+    t->Branch("leading_lepID_inSV", &leading_lepID_inSV_);
+    t->Branch("leading_lepeta_inSV", &leading_lepeta_inSV_);
+    t->Branch("leading_lephltmatched_inSV", &leading_lephltmatched_inSV_);
+    t->Branch("leading_leppasstrigpt_inSV", &leading_leppasstrigpt_inSV_);
+    t->Branch("leading_lepjet_pairdr", &leading_lepjet_pairdr_);
+    t->Branch("trackpairdravg", &trackpairdravg_);
+    t->Branch("avgptnolep", &avgptnolep_);
+    // t->SetAlias(TString::Format("n%ss", pfx()), TString::Format("%s_x@.size()", pfx()));
+  }
+
+  void LeptonInVerticesSubNtuple::read_from_tree(TTree* t) {
+    t->SetBranchAddress("leading_leppt_inSV", &p_leading_leppt_inSV_);
+    t->SetBranchAddress("leading_lepdxy_inSV", &p_leading_lepdxy_inSV_);
+    t->SetBranchAddress("leading_lepdxyerr_inSV", &p_leading_lepdxyerr_inSV_);
+    t->SetBranchAddress("leading_lepnsigmadxy_inSV", &p_leading_lepnsigmadxy_inSV_);
+    t->SetBranchAddress("leading_lepiso_inSV", &p_leading_lepiso_inSV_);
+    t->SetBranchAddress("leading_leptype_inSV", &p_leading_leptype_inSV_);
+    t->SetBranchAddress("leading_lepID_inSV", &p_leading_lepID_inSV_);
+    t->SetBranchAddress("leading_lepeta_inSV", &p_leading_lepeta_inSV_);
+    t->SetBranchAddress("leading_lephltmatched_inSV", &p_leading_lephltmatched_inSV_);
+    t->SetBranchAddress("leading_leppasstrigpt_inSV", &p_leading_leppasstrigpt_inSV_);
+    t->SetBranchAddress("leading_lepjet_pairdr", &p_leading_lepjet_pairdr_);
+    t->SetBranchAddress("trackpairdravg", &p_trackpairdravg_);
+    t->SetBranchAddress("avgptnolep", &p_avgptnolep_);
+
+  }
+
+  void LeptonInVerticesSubNtuple::copy_vectors() {
+    leading_leppt_inSV_ = *p_leading_leppt_inSV_;
+    leading_lepdxy_inSV_ = *p_leading_lepdxy_inSV_;
+    leading_lepdxyerr_inSV_ = *p_leading_lepdxyerr_inSV_;
+    leading_lepnsigmadxy_inSV_ = *p_leading_lepnsigmadxy_inSV_;
+    leading_lepiso_inSV_ = *p_leading_lepiso_inSV_;
+    leading_leptype_inSV_ = *p_leading_leptype_inSV_;
+    leading_lepID_inSV_ = *p_leading_lepID_inSV_;
+    leading_lepeta_inSV_ = *p_leading_lepeta_inSV_;
+    leading_lephltmatched_inSV_ = *p_leading_lephltmatched_inSV_;
+    leading_leppasstrigpt_inSV_ = *p_leading_leppasstrigpt_inSV_;
+    leading_lepjet_pairdr_ = *p_leading_lepjet_pairdr_;
+    trackpairdravg_ = *p_trackpairdravg_;
+    avgptnolep_ = *p_avgptnolep_;
+  }
+  //// 
+
   TracksSubNtuple::TracksSubNtuple() {
     set_pfx("tk");
     clear();
@@ -220,6 +305,8 @@ namespace jmt {
     p_isgoodmu_  = 0;
     p_isgoodel_ = 0;
     p_misc_ = 0;
+    p_misc_mtk_ = 0;
+    p_misc_etk_ = 0;
   }
 
   void TracksSubNtuple::clear() {
@@ -251,6 +338,8 @@ namespace jmt {
     isgoodmu_.clear();
     isgoodel_.clear();
     misc_.clear();
+    misc_mtk_.clear();
+    misc_etk_.clear();
   }
 
   void TracksSubNtuple::write_to_tree(TTree* t) {
@@ -282,6 +371,8 @@ namespace jmt {
     t->Branch(TString::Format("%s_isgoodmu", pfx()), &isgoodmu_);
     t->Branch(TString::Format("%s_isgoodel", pfx()), &isgoodel_);
     t->Branch(TString::Format("%s_misc", pfx()), &misc_);
+    t->Branch(TString::Format("%s_misc_mtk", pfx()), &misc_mtk_);
+    t->Branch(TString::Format("%s_misc_etk", pfx()), &misc_etk_);
 
     t->SetAlias(TString::Format("n%ss", pfx()), TString::Format("%s_qpt@.size()", pfx()));
     t->SetAlias(TString::Format("%s_q", pfx_), TString::Format("%s_qpt > 0 ? 1 : -1", pfx()));
@@ -329,6 +420,9 @@ namespace jmt {
     t->SetBranchAddress(TString::Format("%s_isgoodmu", pfx()), &p_isgoodmu_);
     t->SetBranchAddress(TString::Format("%s_isgoodel", pfx()), &p_isgoodel_);
     t->SetBranchAddress(TString::Format("%s_misc", pfx()), &p_misc_);
+    t->SetBranchAddress(TString::Format("%s_misc_mtk", pfx()), &p_misc_mtk_);
+    t->SetBranchAddress(TString::Format("%s_misc_etk", pfx()), &p_misc_etk_);
+
   }
 
   void TracksSubNtuple::copy_vectors() {
@@ -360,6 +454,9 @@ namespace jmt {
     isgoodmu_ = *p_isgoodmu_;
     isgoodel_ = *p_isgoodel_;
     misc_ = *p_misc_;
+    misc_mtk_ = *p_misc_mtk_;
+    misc_etk_ = *p_misc_etk_;
+
   }
 
   ////
@@ -468,6 +565,7 @@ namespace jmt {
     p_qpt_ = 0;
     p_eta_ = 0;
     p_phi_ = 0;
+    p_ID_  = 0;
     p_isLoose_ = 0;
     p_isMed_ = 0;
     p_isTight_ = 0;
@@ -489,12 +587,16 @@ namespace jmt {
     p_maxhit_ = 0;
     p_maxpxhit_ = 0;
     p_losthit_ = 0;
+    p_misc_ = 0;
+    p_hltmatched_ = 0;
+    p_passtrigpt_ = 0;
   }
 
   void MuonsSubNtuple::clear() {
     qpt_.clear();
     eta_.clear();
     phi_.clear();
+    ID_.clear();
     isLoose_.clear();
     isMed_.clear();
     isTight_.clear();
@@ -516,6 +618,9 @@ namespace jmt {
     maxhit_.clear();
     maxpxhit_.clear();
     losthit_.clear();
+    misc_.clear();
+    hltmatched_.clear();
+    passtrigpt_.clear();
 
   }
 
@@ -523,6 +628,7 @@ namespace jmt {
     t->Branch(TString::Format("%s_qpt", pfx()), &qpt_);
     t->Branch(TString::Format("%s_eta", pfx()), &eta_);
     t->Branch(TString::Format("%s_phi", pfx()), &phi_);
+    t->Branch(TString::Format("%s_ID", pfx()), &ID_);
     t->Branch(TString::Format("%s_isLoose", pfx()), &isLoose_);
     t->Branch(TString::Format("%s_isMed", pfx()), &isMed_);
     t->Branch(TString::Format("%s_isTight", pfx()), &isTight_);
@@ -544,6 +650,10 @@ namespace jmt {
     t->Branch(TString::Format("%s_maxhit", pfx()), &maxhit_);
     t->Branch(TString::Format("%s_maxpxhit", pfx()), &maxpxhit_);
     t->Branch(TString::Format("%s_losthit", pfx()), &losthit_);
+    t->Branch(TString::Format("%s_misc", pfx()), &misc_);
+    t->Branch(TString::Format("%s_hltmatched", pfx()), &hltmatched_);
+    t->Branch(TString::Format("%s_passtrigpt", pfx()), &passtrigpt_);
+
 
     t->SetAlias(TString::Format("%s_q", pfx_), TString::Format("%s_qpt > 0 ? 1 : -1", pfx()));
     t->SetAlias(TString::Format("%s_pt", pfx_), TString::Format("abs(%s_qpt)", pfx()));
@@ -566,6 +676,7 @@ namespace jmt {
     t->SetBranchAddress(TString::Format("%s_qpt", pfx()), &p_qpt_);
     t->SetBranchAddress(TString::Format("%s_eta", pfx()), &p_eta_);
     t->SetBranchAddress(TString::Format("%s_phi", pfx()), &p_phi_);
+    t->SetBranchAddress(TString::Format("%s_ID", pfx()), &p_ID_);
     t->SetBranchAddress(TString::Format("%s_isLoose", pfx()), &p_isLoose_);
     t->SetBranchAddress(TString::Format("%s_isMed", pfx()), &p_isMed_);
     t->SetBranchAddress(TString::Format("%s_isTight", pfx()), &p_isTight_);
@@ -587,12 +698,17 @@ namespace jmt {
     t->SetBranchAddress(TString::Format("%s_maxhit", pfx()), &p_maxhit_);
     t->SetBranchAddress(TString::Format("%s_maxpxhit", pfx()), &p_maxpxhit_);
     t->SetBranchAddress(TString::Format("%s_losthit", pfx()), &p_losthit_);
+    t->SetBranchAddress(TString::Format("%s_misc", pfx()), &p_misc_);
+    t->SetBranchAddress(TString::Format("%s_hltmatched", pfx()), &p_hltmatched_);
+    t->SetBranchAddress(TString::Format("%s_passtrigpt", pfx()), &p_passtrigpt_);
+
   }
   
   void MuonsSubNtuple::copy_vectors() {
     qpt_ = *p_qpt_;
     eta_ = *p_eta_;
     phi_ = *p_phi_;
+    ID_  = *p_ID_;
     isLoose_ = *p_isLoose_;
     isMed_ = *p_isMed_;
     isTight_ = *p_isTight_;
@@ -614,6 +730,10 @@ namespace jmt {
     maxhit_ = *p_maxhit_;
     maxpxhit_ = *p_maxpxhit_;
     losthit_ = *p_losthit_;
+    misc_ = *p_misc_;
+    hltmatched_ = *p_hltmatched_;
+    passtrigpt_ = *p_passtrigpt_;
+
   }
     
 
@@ -624,6 +744,7 @@ namespace jmt {
     p_qpt_ = 0;
     p_eta_ = 0;
     p_phi_ = 0;
+    p_ID_ = 0;
     p_isVeto_ = 0;
     p_isLoose_ = 0;
     p_isMed_ = 0;
@@ -647,12 +768,17 @@ namespace jmt {
     p_maxhit_ = 0;
     p_maxpxhit_ = 0;
     p_losthit_ = 0;
+    p_misc_ = 0;
+    p_hltmatched_ = 0;
+    p_passtrigpt_ = 0;
+
   }
   
   void ElectronsSubNtuple::clear() {
     qpt_.clear();
     eta_.clear();
     phi_.clear();
+    ID_.clear();
     isVeto_.clear();
     isLoose_.clear();
     isMed_.clear();
@@ -676,12 +802,17 @@ namespace jmt {
     maxhit_.clear();
     maxpxhit_.clear();
     losthit_.clear();
+    misc_.clear();
+    hltmatched_.clear();
+    passtrigpt_.clear();
+
   }
 
   void ElectronsSubNtuple::write_to_tree(TTree* t) {
     t->Branch(TString::Format("%s_qpt", pfx()), &qpt_);
     t->Branch(TString::Format("%s_eta", pfx()), &eta_);
     t->Branch(TString::Format("%s_phi", pfx()), &phi_);
+    t->Branch(TString::Format("%s_ID", pfx()), &ID_);
     t->Branch(TString::Format("%s_isVeto", pfx()), &isVeto_);
     t->Branch(TString::Format("%s_isLoose", pfx()), &isLoose_);
     t->Branch(TString::Format("%s_isMed", pfx()), &isMed_);
@@ -705,6 +836,10 @@ namespace jmt {
     t->Branch(TString::Format("%s_maxhit", pfx()), &maxhit_);
     t->Branch(TString::Format("%s_maxpxhit", pfx()), &maxpxhit_);
     t->Branch(TString::Format("%s_losthit", pfx()), &losthit_);
+    t->Branch(TString::Format("%s_misc", pfx()), &misc_);
+    t->Branch(TString::Format("%s_hltmatched", pfx()), &hltmatched_);
+    t->Branch(TString::Format("%s_passtrigpt", pfx()), &passtrigpt_);
+
 
     t->SetAlias(TString::Format("n%ss", pfx()), TString::Format("%s_qpt@.size()", pfx()));
     t->SetAlias(TString::Format("%s_q", pfx_), TString::Format("%s_qpt > 0 ? 1 : -1", pfx()));
@@ -729,6 +864,7 @@ namespace jmt {
     t->SetBranchAddress(TString::Format("%s_qpt", pfx()), &p_qpt_);
     t->SetBranchAddress(TString::Format("%s_eta", pfx()), &p_eta_);
     t->SetBranchAddress(TString::Format("%s_phi", pfx()), &p_phi_);
+    t->SetBranchAddress(TString::Format("%s_ID", pfx()), &p_ID_);
     t->SetBranchAddress(TString::Format("%s_isVeto", pfx()), &p_isVeto_);
     t->SetBranchAddress(TString::Format("%s_isLoose", pfx()), &p_isLoose_);
     t->SetBranchAddress(TString::Format("%s_isMed", pfx()), &p_isMed_);
@@ -752,12 +888,16 @@ namespace jmt {
     t->SetBranchAddress(TString::Format("%s_maxhit", pfx()), &p_maxhit_);
     t->SetBranchAddress(TString::Format("%s_maxpxhit", pfx()), &p_maxpxhit_);
     t->SetBranchAddress(TString::Format("%s_losthit", pfx()), &p_losthit_);
+    t->SetBranchAddress(TString::Format("%s_misc", pfx()), &p_misc_);
+    t->SetBranchAddress(TString::Format("%s_hltmatched", pfx()), &p_hltmatched_);
+    t->SetBranchAddress(TString::Format("%s_passtrigpt", pfx()), &p_passtrigpt_);
 
   }
   void ElectronsSubNtuple::copy_vectors() {
     qpt_ = *p_qpt_;
     eta_ = *p_eta_;
     phi_ = *p_phi_;
+    ID_  = *p_ID_;
     isVeto_ = *p_isVeto_;
     isLoose_ = *p_isLoose_;
     isMed_ = *p_isMed_;
@@ -781,6 +921,10 @@ namespace jmt {
     maxhit_ = *p_maxhit_;
     maxpxhit_ = *p_maxpxhit_;
     losthit_ = *p_losthit_;
+    misc_ = *p_misc_;
+    hltmatched_ = *p_hltmatched_;
+    passtrigpt_ = *p_passtrigpt_;
+
   }
 
 }

@@ -225,6 +225,101 @@ namespace mfv {
 
   ////
 
+  LeptonInVerticesSubNtuple::LeptonInVerticesSubNtuple() {
+    // set_pfx("v");
+    jmt::LeptonInVerticesSubNtuple::clear();
+    clear();
+    p_leading_leppt_inSV_ = 0;
+    p_leading_lepdxy_inSV_ = 0;
+    p_leading_lepdxyerr_inSV_ = 0;
+    p_leading_lepnsigmadxy_inSV_ = 0;
+    p_leading_lepiso_inSV_ = 0;
+    p_leading_leptype_inSV_ = 0;
+    p_leading_lepID_inSV_ = 0;
+    p_leading_lepeta_inSV_ = 0;
+    p_leading_lephltmatched_inSV_ = 0;
+    p_leading_leppasstrigpt_inSV_ = 0;
+    p_leading_lepjet_pairdr_ = 0;
+    p_trackpairdravg_ = 0;
+    p_avgptnolep_ = 0;
+
+  }
+
+  void LeptonInVerticesSubNtuple::clear() {
+    jmt::LeptonInVerticesSubNtuple::clear();
+    leading_leppt_inSV_.clear();
+    leading_lepdxy_inSV_.clear();
+    leading_lepdxyerr_inSV_.clear();
+    leading_lepnsigmadxy_inSV_.clear();
+    leading_lepiso_inSV_.clear();
+    leading_leptype_inSV_.clear();
+    leading_lepID_inSV_.clear();
+    leading_lepeta_inSV_.clear();
+    leading_lephltmatched_inSV_.clear();
+    leading_leppasstrigpt_inSV_.clear();
+    leading_lepjet_pairdr_.clear();
+    trackpairdravg_.clear();
+    avgptnolep_.clear();
+
+  }
+
+  void LeptonInVerticesSubNtuple::write_to_tree(TTree* t) {
+    jmt::LeptonInVerticesSubNtuple::write_to_tree(t);
+    t->Branch("leading_leppt_inSV", &leading_leppt_inSV_);
+    t->Branch("leading_lepdxy_inSV", &leading_lepdxy_inSV_);
+    t->Branch("leading_lepdxyerr_inSV", &leading_lepdxyerr_inSV_);
+    t->Branch("leading_lepnsigmadxy_inSV", &leading_lepnsigmadxy_inSV_);
+    t->Branch("leading_lepiso_inSV", &leading_lepiso_inSV_);
+    t->Branch("leading_leptype_inSV", &leading_leptype_inSV_);
+    t->Branch("leading_lepID_inSV", &leading_lepID_inSV_);
+    t->Branch("leading_lepeta_inSV", &leading_lepeta_inSV_);
+    t->Branch("leading_lephltmatched_inSV", &leading_lephltmatched_inSV_);
+    t->Branch("leading_leppasstrigpt_inSV", &leading_leppasstrigpt_inSV_);
+    t->Branch("leading_lepjet_pairdr", &leading_lepjet_pairdr_);
+    t->Branch("trackpairdravg", &trackpairdravg_);
+    t->Branch("avgptnolep", &avgptnolep_);
+
+  }
+
+  void LeptonInVerticesSubNtuple::read_from_tree(TTree* t) {
+    jmt::LeptonInVerticesSubNtuple::read_from_tree(t);
+    t->SetBranchAddress("leading_leppt_inSV", &p_leading_leppt_inSV_);
+    t->SetBranchAddress("leading_lepdxy_inSV", &p_leading_lepdxy_inSV_);
+    t->SetBranchAddress("leading_lepdxyerr_inSV", &p_leading_lepdxyerr_inSV_);
+    t->SetBranchAddress("leading_lepnsigmadxy_inSV", &p_leading_lepnsigmadxy_inSV_);
+    t->SetBranchAddress("leading_lepiso_inSV", &p_leading_lepiso_inSV_);
+    t->SetBranchAddress("leading_leptype_inSV", &p_leading_leptype_inSV_);
+    t->SetBranchAddress("leading_lepID_inSV", &p_leading_lepID_inSV_);
+    t->SetBranchAddress("leading_lepeta_inSV", &p_leading_lepeta_inSV_);
+    t->SetBranchAddress("leading_lephltmatched_inSV", &p_leading_lephltmatched_inSV_);
+    t->SetBranchAddress("leading_leppasstrigpt_inSV", &p_leading_leppasstrigpt_inSV_);
+    t->SetBranchAddress("leading_lepjet_pairdr", &p_leading_lepjet_pairdr_);
+    t->SetBranchAddress("trackpairdravg", &p_trackpairdravg_);
+    t->SetBranchAddress("avgptnolep", &p_avgptnolep_);
+
+  }
+
+  void LeptonInVerticesSubNtuple::copy_vectors() {
+    jmt::LeptonInVerticesSubNtuple::copy_vectors();
+    leading_leppt_inSV_ = *p_leading_leppt_inSV_;
+    leading_lepdxy_inSV_ = *p_leading_lepdxy_inSV_;
+    leading_lepdxyerr_inSV_ = *p_leading_lepdxyerr_inSV_;
+    leading_lepnsigmadxy_inSV_ = *p_leading_lepnsigmadxy_inSV_;
+    leading_lepiso_inSV_ = *p_leading_lepiso_inSV_;
+    leading_leptype_inSV_ = *p_leading_leptype_inSV_;
+    leading_lepID_inSV_ = *p_leading_lepID_inSV_;
+    leading_lepeta_inSV_ = *p_leading_lepeta_inSV_;
+    leading_lephltmatched_inSV_ = *p_leading_lephltmatched_inSV_;
+    leading_leppasstrigpt_inSV_ = *p_leading_leppasstrigpt_inSV_;
+    leading_lepjet_pairdr_ = *p_leading_lepjet_pairdr_;
+    trackpairdravg_ = *p_trackpairdravg_;
+    avgptnolep_ = *p_avgptnolep_;
+
+  }
+
+  /// 
+
+
   MiniNtuple2SubNtuple::MiniNtuple2SubNtuple() {
     clear();
   }
@@ -259,6 +354,14 @@ namespace mfv {
     move_x_ = 0;
     move_y_ = 0;
     move_z_ = 0;
+    move_lep_x_ = 0;
+    move_lep_y_ = 0;
+    move_lep_z_ = 0;
+    move_jet_x_ = 0;
+    move_jet_y_ = 0;
+    move_jet_z_ = 0;
+    jetlepdeltadz_ = 0;
+
   }
 
   void MovedTracksSubNtuple::write_to_tree(TTree* t) {
@@ -273,6 +376,13 @@ namespace mfv {
     t->Branch("move_x", &move_x_);
     t->Branch("move_y", &move_y_);
     t->Branch("move_z", &move_z_);
+    t->Branch("move_lep_x", &move_lep_x_);
+    t->Branch("move_lep_y", &move_lep_y_);
+    t->Branch("move_lep_z", &move_lep_z_);
+    t->Branch("move_jet_x", &move_jet_x_);
+    t->Branch("move_jet_y", &move_jet_y_);
+    t->Branch("move_jet_z", &move_jet_z_);
+    t->Branch("jetlepdeltadz", &jetlepdeltadz_);
   }
 
   void MovedTracksSubNtuple::read_from_tree(TTree* t) {
@@ -287,5 +397,12 @@ namespace mfv {
     t->SetBranchAddress("move_x", &move_x_);
     t->SetBranchAddress("move_y", &move_y_);
     t->SetBranchAddress("move_z", &move_z_);
+    t->SetBranchAddress("move_lep_x", &move_lep_x_);
+    t->SetBranchAddress("move_lep_y", &move_lep_y_);
+    t->SetBranchAddress("move_lep_z", &move_lep_z_);
+    t->SetBranchAddress("move_jet_x", &move_jet_x_);
+    t->SetBranchAddress("move_jet_y", &move_jet_y_);
+    t->SetBranchAddress("move_jet_z", &move_jet_z_);
+    t->SetBranchAddress("jetlepdeltadz", &jetlepdeltadz_);
   }
 }

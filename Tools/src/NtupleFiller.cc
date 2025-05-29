@@ -3,6 +3,7 @@
 #include "JMTucker/Tools/interface/TrackerSpaceExtent.h"
 #include "JMTucker/Tools/interface/TrackTools.h"
 #include "JMTucker/Tools/interface/Utilities.h"
+#include "JMTucker/Tools/interface/Year.h"
 
 namespace jmt {
   void BaseSubNtupleFiller::operator()(const edm::Event& event) {
@@ -24,6 +25,8 @@ namespace jmt {
     edm::Handle<double> r;
     event.getByToken(rho_token_, r);
     nt_.set_rho(*r);
+
+
 
     edm::Handle<reco::VertexCollection> pvs;
     event.getByToken(pvs_token_, pvs);
@@ -126,25 +129,25 @@ namespace jmt {
            0);
   }
 
-   void NtupleAdd(MuonsSubNtuple& nt, const pat::Muon& mu) {
+  void NtupleAdd(MuonsSubNtuple& nt, const pat::Muon& mu, bool hltmatched, bool passtrigpt) {
 
-     reco::TrackRef mtk = mu.track();
+    reco::TrackRef mtk = mu.track();
      
-     bool isLooseMuon = mu.passed(reco::Muon::CutBasedIdLoose);
-     bool isMedMuon = mu.passed(reco::Muon::CutBasedIdMedium);
-     bool isTightMuon = mu.passed(reco::Muon::CutBasedIdTight);
+    bool isLooseMuon = mu.passed(reco::Muon::CutBasedIdLoose);
+    bool isMedMuon = mu.passed(reco::Muon::CutBasedIdMedium);
+    bool isTightMuon = mu.passed(reco::Muon::CutBasedIdTight);
+    int ID = 0 + isLooseMuon + isMedMuon + isTightMuon; 
 
-     const float iso = (mu.pfIsolationR04().sumChargedHadronPt + std::max(0., mu.pfIsolationR04().sumNeutralHadronEt + mu.pfIsolationR04().sumPhotonEt -0.5*mu.pfIsolationR04().sumPUPt))/mu.pt();
-    
+    const float iso = (mu.pfIsolationR04().sumChargedHadronPt + std::max(0., mu.pfIsolationR04().sumNeutralHadronEt + mu.pfIsolationR04().sumPhotonEt -0.5*mu.pfIsolationR04().sumPUPt))/mu.pt();
+
      if(!mtk.isNull()) {
 
        const reco::HitPattern& hp = mtk->hitPattern();
-
        TrackerSpaceExtents te;
        NumExtents ex    = te.numExtentInRAndZ(hp, TrackerSpaceExtents::AllowAll);
        NumExtents ex_px = te.numExtentInRAndZ(hp, TrackerSpaceExtents::PixelOnly);
        
-       nt.add(mu.charge(), mu.pt(), mu.eta(), mu.phi(), isLooseMuon, isMedMuon, isTightMuon, iso,
+       nt.add(mu.charge(), mu.pt(), mu.eta(), mu.phi(), ID, isLooseMuon, isMedMuon, isTightMuon, iso,
 	      mtk->vx(), mtk->vy(), mtk->vz(),
 	      mtk->covariance(0,0), mtk->covariance(1,1), mtk->covariance(1,4), mtk->covariance(2,2), mtk->covariance(2,3),
 	      mtk->covariance(3,3), mtk->covariance(3,4), mtk->covariance(4,4), mtk->normalizedChi2(),
@@ -153,6 +156,9 @@ namespace jmt {
 	      hp.pixelLayersWithMeasurement(),
 	      hp.stripLayersWithMeasurement(),
         hp.numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS),
+        0,
+        hltmatched,
+        passtrigpt,
 	      ex.min_r < 2e9 ? ex.min_r : 0,
 	      ex.min_z < 2e9 ? ex.min_z : 0,
 	      ex.max_r > -2e9 ? ex.max_r : 0,
@@ -163,7 +169,7 @@ namespace jmt {
      }
   }
 
-  void NtupleAdd(ElectronsSubNtuple& nt, const pat::Electron& el, double rho, float eA) {
+  void NtupleAdd(ElectronsSubNtuple& nt, const pat::Electron& el, double rho, float eA, bool hltmatched, bool passtrigpt) {
     
     reco::GsfTrackRef etk = el.gsfTrack();
     
@@ -173,10 +179,11 @@ namespace jmt {
     bool isLooseEl = el.electronID("cutBasedElectronID-Fall17-94X-V2-loose");
     bool isMedEl = el.electronID("cutBasedElectronID-Fall17-94X-V2-medium");
     bool isTightEl = el.electronID("cutBasedElectronID-Fall17-94X-V2-tight");
+    int ID = 0 + isVetoEl + isLooseEl + isMedEl + isTightEl;
 
     const auto pfIso = el.pfIsolationVariables();
     const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - rho*eA)) / el.pt();
-    
+
     if (!etk.isNull()) {
       
       const reco::HitPattern& hp = etk->hitPattern();
@@ -185,7 +192,7 @@ namespace jmt {
       NumExtents ex    = te.numExtentInRAndZ(hp, TrackerSpaceExtents::AllowAll);
       NumExtents ex_px = te.numExtentInRAndZ(hp, TrackerSpaceExtents::PixelOnly);
 
-      nt.add(el.charge(), el.pt(), el.eta(), el.phi(), isVetoEl, isLooseEl, isMedEl, isTightEl, iso, passveto,
+      nt.add(el.charge(), el.pt(), el.eta(), el.phi(), ID, isVetoEl, isLooseEl, isMedEl, isTightEl, iso, passveto,
 	     etk->vx(), etk->vy(), etk->vz(),
 	     etk->covariance(0,0), etk->covariance(1,1), etk->covariance(1,4), etk->covariance(2,2), etk->covariance(2,3),
 	     etk->covariance(3,3), etk->covariance(3,4), etk->covariance(4,4), etk->normalizedChi2(),
@@ -194,6 +201,9 @@ namespace jmt {
 	     hp.pixelLayersWithMeasurement(),
 	     hp.stripLayersWithMeasurement(),
        hp.numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS),
+       0,
+       hltmatched,
+       passtrigpt,
 	     ex.min_r < 2e9 ? ex.min_r : 0,
 	     ex.min_z < 2e9 ? ex.min_z : 0,
 	     ex.max_r > -2e9 ? ex.max_r : 0,
@@ -238,25 +248,135 @@ namespace jmt {
 
   void MuonsSubNtupleFiller::operator()(const edm::Event& e) {
     auto ms = muons(e);
+    if (triggerfloats_available_){
+      e.getByToken(triggerfloats_token_, triggerfloats_);
+    }
     i2nti_.assign(ms.size(), -1);
+
+    //TODO clean up; currently hardcoded based on hltdecisions;
+    //HLT_Ele27_WPTight_Gsf_v, HLT_Ele32_WPTight_Gsf_v, HLT_Ele35_WPTight_Gsf_v, HLT_Ele115_CaloIdVT_GsfTrkIdT_v, HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v, HLT_IsoMu24_v, HLT_IsoMu27_v, HLT_Mu50_v, HLT_Photon175_v, HLT_Photon200_v
+    std::vector<float> offline_ptthresh = {30.0, 35.0, 38.0, 120.0, 55.0, 27.0, 30.0, 53.0, 180.0, 205.0};
+    int year = int(MFVNEUTRALINO_YEAR);
+
     for (size_t i = 0, ie = ms.size(); i < ie; ++i) {
+      //better to do hltmatching and asking if it passes trigger pt here : 
+      bool hltmatched = false;
+      bool passtrigpt = false;
+
+      
+      if (triggerfloats_available_) { 
+        //hltmatching 
+        double hltmatchdist2 = 0.1;
+        // double best_hltmatchdR = 5.;
+        TLorentzVector hltmatch;
+        for (auto hlt : triggerfloats_->hltmuons) {
+          const double dist2 = reco::deltaR(ms[i].eta(), ms[i].phi(), hlt.Eta(), hlt.Phi());
+          // if (dist2 < best_hltmatchdR) best_hltmatchdR = dist2;
+          if (dist2 < hltmatchdist2) {
+            hltmatchdist2 = dist2;
+            hltmatch = hlt;
+          }
+        }
+        if (hltmatch.Pt() > 0) hltmatched = true;
+
+        //next checking the pT
+        assert(triggerfloats_->HLTdecisions.size() == mfv::n_hlt_paths);
+        for (size_t j = 5; j < 8; ++j) { //leptons are in the first 10; with mu in idx 5,6,7
+          bool found = triggerfloats_->HLTdecisions[j] != -1;
+          if (found) {
+            // if (ms[i].pt() > offline_ptthresh[j]) std::cout << "found mu pT > offline pT cut; pT, i, year ? " << ms[i].pt() << " " << j << " " <<  year  << std::endl;
+            //make certain it's the correct year
+            if (j == 6 && year != 2017) continue; //isoMu27 only for 2017
+            if (j == 5 && year == 2017) continue; //isoMu24 for 2016 and 2018
+            if (ms[i].pt() > offline_ptthresh[j]) passtrigpt = true;
+            // if (ms[i].pt() > offline_ptthresh[j]) std::cout << "pass ? " << passtrigpt << std::endl;
+
+          } 
+        }
+
+      }
+
+
       i2nti_[i] = nt_.n();
-      NtupleAdd(nt_, ms[i]);
+      NtupleAdd(nt_, ms[i], hltmatched, passtrigpt);
     }
   }
 
   void ElectronsSubNtupleFiller::operator()(const edm::Event& e) {
     auto es = electrons(e);
+    auto js = jets(e);
     auto r = *rho(e);
+    if (triggerfloats_available_){
+      e.getByToken(triggerfloats_token_, triggerfloats_);
+    }
+    //FIXME : a quick workaround for TM mctruth 
+    // else {
+      
+    // }
     i2nti_.assign(es.size(), -1);
+
+    //TODO clean up; currently hardcoded based on hltdecisions;
+    //HLT_Ele27_WPTight_Gsf_v, HLT_Ele32_WPTight_Gsf_v, HLT_Ele35_WPTight_Gsf_v, HLT_Ele115_CaloIdVT_GsfTrkIdT_v, HLT_Ele50_CaloIdVT_GsfTrkIdT_PFJet165_v, HLT_IsoMu24_v, HLT_IsoMu27_v, HLT_Mu50_v, HLT_Photon175_v, HLT_Photon200_v
+    std::vector<float> offline_ptthresh = {30.0, 35.0, 38.0, 120.0, 55.0, 27.0, 30.0, 53.0, 180.0, 205.0};
+    int year = int(MFVNEUTRALINO_YEAR);
+
     for (size_t i = 0, ie = es.size(); i < ie; ++i) {
+
+      bool hltmatched = false;
+      bool passtrigpt = false;
+
+      if (triggerfloats_available_) { 
+
+        //hltmatching 
+        double hltmatchdist2 = 0.1;
+        // double best_hltmatchdR = 5.;
+        TLorentzVector hltmatch;
+        for (auto hlt : triggerfloats_->hltelectrons) {
+          const double dist2 = reco::deltaR(es[i].eta(), es[i].phi(), hlt.Eta(), hlt.Phi());
+          // if (dist2 < best_hltmatchdR) best_hltmatchdR = dist2;
+          if (dist2 < hltmatchdist2) {
+            hltmatchdist2 = dist2;
+            hltmatch = hlt;
+          }
+        }
+        if (hltmatch.Pt() > 0) hltmatched = true;
+
+        //next checking the pT
+        assert(triggerfloats_->HLTdecisions.size() == mfv::n_hlt_paths);
+        for (size_t j = 0; j < 10; ++j) { //leptons are in the first 10 so just loop over that
+          if (j > 4 && j < 8) continue; //just skip over the muons
+          bool found = triggerfloats_->HLTdecisions[j] != -1;
+          if (found) {
+            // if (es[i].pt() > offline_ptthresh[j]) std::cout << "found el pT > offline pT cut; pT, i, year ? " << es[i].pt() << " " << j << " " << year << std::endl;
+            //make certain it's the correct year 
+            if (j == 0 && (year != 20161 and year != 20162)) continue; //ele27 only for 2016
+            if (j == 1 && year != 2018) continue; // ele32 only for 2018
+            if (j == 2 && year != 2017) continue; // ele35 only for 2017 
+            if (j == 8 && (year != 20161 and year !=20162)) continue; //photon175 only for 2016 
+            if (j == 9 && (year !=2017 && year != 2018)) continue; //photon200 not for 2016
+            
+            if (es[i].pt() > offline_ptthresh[j]) passtrigpt = true;
+            //one trigger has requirement on jet. so make sure that passes as well. 
+            if (j == 4) { 
+              bool pass_jet = false;
+              for (size_t jj = 0, je = js.size(); jj < je; ++jj) { 
+                if (js[jj].pt() > 170) pass_jet = true; 
+              }
+              if (passtrigpt == true and pass_jet == false) passtrigpt = false; //if did not find a jet, set to false
+            }
+            // if (es[i].pt() > offline_ptthresh[j]) std::cout << "pass ? " << passtrigpt << std::endl;
+
+          } 
+        }
+      }
+      
       const float eA = electron_effective_areas.getEffectiveArea(fabs(es[i].superCluster()->eta()));
       i2nti_[i] = nt_.n();
-      NtupleAdd(nt_, es[i], r, eA);
+      NtupleAdd(nt_, es[i], r, eA, hltmatched, passtrigpt);
     }
   }
 
-  void NtupleAdd(TracksSubNtuple& nt, const reco::Track& tk, int which_jet, int which_pv, bool ismu, bool isel, bool isgoodmu, bool isgoodel, int which_sv, unsigned misc) {
+  void NtupleAdd(TracksSubNtuple& nt, const reco::Track& tk, int which_jet, int which_pv, int which_sv, bool ismu, bool isel, bool isgoodmu, bool isgoodel, unsigned misc, unsigned misc_mtk, unsigned misc_etk) {
     const reco::HitPattern& hp = tk.hitPattern();
 
     TrackerSpaceExtents te;
@@ -278,9 +398,8 @@ namespace jmt {
            ex.max_z > -2e9 ? ex.max_z : 0,
            ex_px.max_r > -2e9 ? ex_px.max_r : 0,
            ex_px.max_z > -2e9 ? ex_px.max_z : 0,
-           which_jet, which_pv, ismu, isel, isgoodmu, isgoodel,
-	   which_sv,
-	   misc
+           which_jet, which_pv, which_sv, ismu, isel, isgoodmu, isgoodel,
+	         misc, misc_mtk, misc_etk
            );
   }
 
@@ -419,7 +538,7 @@ namespace jmt {
   bool TracksSubNtupleFiller::isGoodEl(const edm::Event& e, ElectronsSubNtupleFiller* ef, reco::TrackRef& tk) {
     bool isgoodel = false;
     auto es = ef->electrons(e);
-    auto rh = *rho(e);
+    // auto rh = *rho(e);
 
     std::vector<reco::GsfTrackRef> r;
     
@@ -429,21 +548,21 @@ namespace jmt {
 
       if (!es[e].gsfTrack().isNull()) {
 	
-	if (etk->pt() > 1) {
-	  if (etk->eta() < 2.4) {
-	    if (es[e].electronID("cutBasedElectronID-Fall17-94X-V2-tight")) {
+	      if (etk->pt() > 1) {
+	        if (etk->eta() < 2.4) {
+	          if (es[e].electronID("cutBasedElectronID-Fall17-94X-V2-tight")) {
 	      
-	      const float eA = electron_effective_areas.getEffectiveArea(fabs(es[e].superCluster()->eta()));
-	      const auto pfIso = es[e].pfIsolationVariables();
-	      const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - rh*eA)) / es[e].pt();
-	      if (iso < 0.10) {
-		if (es[e].passConversionVeto()) {
-		  r.push_back(etk);
-		}
-	      }
-	    }
-	  }
-	}
+	            // const float eA = electron_effective_areas.getEffectiveArea(fabs(es[e].superCluster()->eta()));
+	            // const auto pfIso = es[e].pfIsolationVariables();
+	            // const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - rh*eA)) / es[e].pt();
+	            // if (iso < 0.10) {
+		          if (es[e].passConversionVeto()) {
+		            r.push_back(etk);
+		          }
+	            // }
+	          }
+	        }
+        }
       }
     }
       

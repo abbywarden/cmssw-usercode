@@ -39,6 +39,7 @@ namespace jmt {
     template <typename T> static T p_get(int i, const std::vector<T>& v, const std::vector<T>* p) { return p ? p->at(i) : v.at(i); }
 
     template <typename T> static bool test_bit(T v, size_t i) { return bool((v >> i) & 1); }
+
     template <typename T> static void set_bit(T& v, size_t i, bool x) { v ^= (-T(x) ^ v) & (T(1) << i); }
 
     static TVector3 p3_(double pt, double eta, double phi) { TVector3 v; v.SetPtEtaPhi(pt, eta, phi); return v; }
@@ -263,6 +264,68 @@ namespace jmt {
 
   ////
 
+  class LeptonInVerticesSubNtuple : public INtuple {
+    public:
+      LeptonInVerticesSubNtuple();
+      virtual void clear();
+      virtual void write_to_tree(TTree* tree);
+      virtual void read_from_tree(TTree* tree);
+      virtual void copy_vectors();
+  
+      void add(float leading_leppt_inSV, float leading_lepdxy_inSV, float leading_lepdxyerr_inSV, float leading_lepnsigmadxy_inSV,
+               float leading_lepiso_inSV, float leading_leptype_inSV, float leading_lepID_inSV, float leading_lepeta_inSV, 
+               float leading_lephltmatched_inSV, float leading_leppasstrigpt_inSV, float leading_lepjet_pairdr, 
+               float trackpairdravg, float avgptnolep) {
+
+        leading_leppt_inSV_.push_back(leading_leppt_inSV);
+        leading_lepdxy_inSV_.push_back(leading_lepdxy_inSV);
+        leading_lepdxyerr_inSV_.push_back(leading_lepdxyerr_inSV);
+        leading_lepnsigmadxy_inSV_.push_back(leading_lepnsigmadxy_inSV);
+        leading_lepiso_inSV_.push_back(leading_lepiso_inSV);
+        leading_leptype_inSV_.push_back(leading_leptype_inSV);
+        leading_lepID_inSV_.push_back(leading_lepID_inSV);
+        leading_lepeta_inSV_.push_back(leading_lepeta_inSV);
+        leading_lephltmatched_inSV_.push_back(leading_lephltmatched_inSV);
+        leading_leppasstrigpt_inSV_.push_back(leading_leppasstrigpt_inSV);
+        leading_lepjet_pairdr_.push_back(leading_lepjet_pairdr);
+        trackpairdravg_.push_back(trackpairdravg);
+        avgptnolep_.push_back(avgptnolep);
+      }
+  
+      float leading_leppt_inSV         (int i) const { return p_get(i, leading_leppt_inSV_,         p_leading_leppt_inSV_        ); }
+      float leading_lepdxy_inSV        (int i) const { return p_get(i, leading_lepdxy_inSV_,        p_leading_lepdxy_inSV_       ); }
+      float leading_lepdxyerr_inSV     (int i) const { return p_get(i, leading_lepdxyerr_inSV_,     p_leading_lepdxyerr_inSV_    ); }
+      float leading_lepnsigmadxy_inSV  (int i) const { return p_get(i, leading_lepnsigmadxy_inSV_,  p_leading_lepnsigmadxy_inSV_ ); }
+      float leading_lepiso_inSV        (int i) const { return p_get(i, leading_lepiso_inSV_,        p_leading_lepiso_inSV_       ); }
+      float leading_leptype_inSV       (int i) const { return p_get(i, leading_leptype_inSV_,       p_leading_leptype_inSV_      ); }
+      float leading_lepID_inSV         (int i) const { return p_get(i, leading_lepID_inSV_,         p_leading_lepID_inSV_        ); }
+      float leading_lepeta_inSV        (int i) const { return p_get(i, leading_lepeta_inSV_,        p_leading_lepeta_inSV_       ); }
+      float leading_lephltmatched_inSV (int i) const { return p_get(i, leading_lephltmatched_inSV_, p_leading_lephltmatched_inSV_); }
+      float leading_leppasstrigpt_inSV (int i) const { return p_get(i, leading_leppasstrigpt_inSV_, p_leading_leppasstrigpt_inSV_); }
+      float leading_lepjet_pairdr      (int i) const { return p_get(i, leading_lepjet_pairdr_,      p_leading_lepjet_pairdr_     ); }
+      float trackpairdravg             (int i) const { return p_get(i, trackpairdravg_,             p_trackpairdravg_            ); }
+      float avgptnolep                 (int i) const { return p_get(i, avgptnolep_,                 p_avgptnolep_                ); }
+
+    private:
+      vfloat leading_leppt_inSV_;           vfloat* p_leading_leppt_inSV_;
+      vfloat leading_lepdxy_inSV_;          vfloat* p_leading_lepdxy_inSV_;
+      vfloat leading_lepdxyerr_inSV_;       vfloat* p_leading_lepdxyerr_inSV_;
+      vfloat leading_lepnsigmadxy_inSV_;    vfloat* p_leading_lepnsigmadxy_inSV_;
+      vfloat leading_lepiso_inSV_;          vfloat* p_leading_lepiso_inSV_;
+      vfloat leading_leptype_inSV_;         vfloat* p_leading_leptype_inSV_;
+      vfloat leading_lepID_inSV_;           vfloat* p_leading_lepID_inSV_;
+      vfloat leading_lepeta_inSV_;          vfloat* p_leading_lepeta_inSV_;
+      vfloat leading_lephltmatched_inSV_;   vfloat* p_leading_lephltmatched_inSV_;
+      vfloat leading_leppasstrigpt_inSV_;   vfloat* p_leading_leppasstrigpt_inSV_;
+      vfloat leading_lepjet_pairdr_;        vfloat* p_leading_lepjet_pairdr_;
+      vfloat trackpairdravg_;               vfloat* p_trackpairdravg_;
+      vfloat avgptnolep_;                   vfloat* p_avgptnolep_;
+
+    };
+  
+
+  ///
+
   class TracksSubNtuple : public INtuple {
   public:
     TracksSubNtuple();
@@ -277,9 +340,9 @@ namespace jmt {
              float chi2dof,
              int npxh, int nsth, int npxl, int nstl, bool missinhit,
              int minhit_r, int minhit_z, int maxhit_r, int maxhit_z, int maxpxhit_r, int maxpxhit_z,
-             int which_jet, int which_pv, bool ismu, bool isel, bool isgoodmu, bool isgoodel,
-	     int which_sv,
-             unsigned misc) {
+             int which_jet, int which_pv, int which_sv, bool ismu, bool isel, bool isgoodmu, bool isgoodel,
+             unsigned misc, unsigned misc_mtk, unsigned misc_etk) {
+
       qpt_.push_back(q*pt);
       eta_.push_back(eta);
       phi_.push_back(phi);
@@ -321,6 +384,8 @@ namespace jmt {
       isgoodmu_.push_back(isgoodmu);
       isgoodel_.push_back(isgoodel);
       misc_.push_back(misc);
+      misc_mtk_.push_back(misc_mtk);
+      misc_etk_.push_back(misc_etk);
     }
 
     virtual int n() const { return p_size(qpt_, p_qpt_); }
@@ -352,7 +417,9 @@ namespace jmt {
     bool     isgoodmu     (int i) const { return p_get(i, isgoodmu_,      p_isgoodmu_      ); }
     bool     isgoodel     (int i) const { return p_get(i, isgoodel_,      p_isgoodel_      ); }
     
-    unsigned misc     (int i) const { return p_get(i, misc_,      p_misc_      ); }
+    unsigned misc     (int i) const { return p_get(i, misc_,      p_misc_          ); }
+    unsigned misc_mtk (int i) const { return p_get(i, misc_mtk_,  p_misc_mtk_      ); }
+    unsigned misc_etk (int i) const { return p_get(i, misc_etk_,  p_misc_etk_      ); }
 
     void set_which_jet(int i, uchar x) { assert(0 == p_which_jet_); which_jet_[i] = x; }
     void set_which_pv(int i, uchar x) { assert(0 == p_which_pv_); which_pv_[i] = x; }
@@ -361,6 +428,8 @@ namespace jmt {
     // void set_isel(int i, uchar x) {assert(0 == p_isel_); isel_[i] = x; }
     
     void set_misc(int i, unsigned x) { assert(0 == p_misc_); misc_[i] = x; }
+    void set_misc_mtk(int i, unsigned x) { assert(0 == p_misc_mtk_); misc_mtk_[i] = x; }
+    void set_misc_etk(int i, unsigned x) { assert(0 == p_misc_etk_); misc_etk_[i] = x; }
 
     int q(int i) const { return qpt(i) > 0 ? 1 : -1; }
     float pt(int i) const { return std::abs(qpt(i)); }
@@ -463,6 +532,9 @@ namespace jmt {
     vbool  isgoodmu_;        vbool* p_isgoodmu_;
     vbool  isgoodel_;        vbool* p_isgoodel_;
     vunsigned misc_;     vunsigned* p_misc_;
+    vunsigned misc_mtk_;     vunsigned* p_misc_mtk_;
+    vunsigned misc_etk_;     vunsigned* p_misc_etk_;
+
   };
 
   class RefitTracksSubNtuple : public TracksSubNtuple { public: RefitTracksSubNtuple  () { set_pfx("rftk"); }};
@@ -596,15 +668,16 @@ namespace jmt {
     virtual void copy_vectors();
 
  
-    void add(int q, float pt, float eta, float phi, bool isLoose, bool isMed, bool isTight, float iso,
-	     float vx, float vy, float vz,
+    void add(int q, float pt, float eta, float phi, int ID, bool isLoose, bool isMed, bool isTight, float iso,
+	           float vx, float vy, float vz,
              float cov_00, float cov_11, float cov_14, float cov_22, float cov_23, float cov_33, float cov_34, float cov_44,
              float chi2dof,
-	     int npxh, int nsth, int npxl, int nstl, int losthit,
+	           int npxh, int nsth, int npxl, int nstl, int losthit, unsigned misc, bool hltmatched, bool passtrigpt, 
              int minhit_r, int minhit_z, int maxhit_r, int maxhit_z, int maxpxhit_r, int maxpxhit_z) {
       qpt_.push_back(q*pt);
       eta_.push_back(eta);
       phi_.push_back(phi);
+      ID_.push_back(ID); //0 == none, 1 == loose, 2 == med, 3 == tight
       isLoose_.push_back(isLoose);
       isMed_.push_back(isMed);
       isTight_.push_back(isTight);
@@ -622,6 +695,9 @@ namespace jmt {
       cov_44_.push_back(cov_44);
       chi2dof_.push_back(chi2dof);
       losthit_.push_back(losthit);
+      misc_.push_back(misc);
+      hltmatched_.push_back(hltmatched);
+      passtrigpt_.push_back(passtrigpt);
 
       assert(npxh >= 0 && nsth >= 0 && npxl >= 0 && nstl >= 0);
       if (npxh > 15) npxh = 15;
@@ -644,6 +720,7 @@ namespace jmt {
     float    qpt      (int i) const { return p_get(i, qpt_,       p_qpt_       ); }
     float    eta      (int i) const { return p_get(i, eta_,       p_eta_       ); }
     float    phi      (int i) const { return p_get(i, phi_,       p_phi_       ); }
+    uchar    ID       (int i) const { return p_get(i, ID_,        p_ID_        ); }
     bool     isLoose  (int i) const { return p_get(i, isLoose_,   p_isLoose_   ); }
     bool     isMed    (int i) const { return p_get(i, isMed_,     p_isMed_     ); }
     bool     isTight  (int i) const { return p_get(i, isTight_,   p_isTight_   ); }
@@ -665,7 +742,13 @@ namespace jmt {
     uchar    maxhit   (int i) const { return p_get(i, maxhit_,    p_maxhit_    ); }
     uchar    maxpxhit (int i) const { return p_get(i, maxpxhit_,  p_maxpxhit_  ); }
     uchar    losthit  (int i) const { return p_get(i, losthit_,   p_losthit_   ); }
+    unsigned misc     (int i) const { return p_get(i, misc_,      p_misc_      ); }
+    bool   hltmatched (int i) const { return p_get(i, hltmatched_, p_hltmatched_); }
+    bool   passtrigpt (int i) const { return p_get(i, passtrigpt_, p_passtrigpt_); }
 
+    void set_misc(int i, unsigned x) { assert(0 == p_misc_); misc_[i] = x; }
+
+    
     int q(int i) const { return qpt(i) > 0 ? 1 : -1; }
     float pt(int i) const { return std::abs(qpt(i)); }
     float px(int i) const { return p3(i).X(); }
@@ -722,6 +805,7 @@ namespace jmt {
     vfloat qpt_;         vfloat* p_qpt_;
     vfloat eta_;         vfloat* p_eta_;
     vfloat phi_;         vfloat* p_phi_;
+    vuchar ID_;          vuchar* p_ID_;
     vbool  isLoose_;     vbool* p_isLoose_;
     vbool  isMed_;       vbool* p_isMed_;
     vbool  isTight_;     vbool* p_isTight_;
@@ -743,6 +827,9 @@ namespace jmt {
     vuchar maxhit_;      vuchar* p_maxhit_;
     vuchar maxpxhit_;    vuchar* p_maxpxhit_;
     vuchar losthit_;     vuchar* p_losthit_;
+    vunsigned misc_;     vunsigned* p_misc_;
+    vbool hltmatched_;   vbool* p_hltmatched_;
+    vbool passtrigpt_;   vbool* p_passtrigpt_;
   };
   
   class ElectronsSubNtuple : public INtuple {
@@ -753,15 +840,16 @@ namespace jmt {
     virtual void read_from_tree(TTree*);
     virtual void copy_vectors();
     
-    void add(int q, float pt, float eta, float phi, bool isVeto, bool isLoose, bool isMed, bool isTight, float iso, bool passveto,
+    void add(int q, float pt, float eta, float phi, int ID, bool isVeto, bool isLoose, bool isMed, bool isTight, float iso, bool passveto,
 	     float vx, float vy, float vz,
              float cov_00, float cov_11, float cov_14, float cov_22, float cov_23, float cov_33, float cov_34, float cov_44,
              float chi2dof,
-	     int npxh, int nsth, int npxl, int nstl, int losthit,
+	     int npxh, int nsth, int npxl, int nstl, int losthit, unsigned misc, bool hltmatched, bool passtrigpt,
              int minhit_r, int minhit_z, int maxhit_r, int maxhit_z, int maxpxhit_r, int maxpxhit_z) {
       qpt_.push_back(q*pt);
       eta_.push_back(eta);
       phi_.push_back(phi);
+      ID_.push_back(ID); //0 == none, 1 == vloose, 2 == loose, 3 == med, 4 == tight
       isVeto_.push_back(isVeto);
       isLoose_.push_back(isLoose);
       isMed_.push_back(isMed);
@@ -781,6 +869,9 @@ namespace jmt {
       cov_44_.push_back(cov_44);
       chi2dof_.push_back(chi2dof);
       losthit_.push_back(losthit);
+      misc_.push_back(misc);
+      hltmatched_.push_back(hltmatched);
+      passtrigpt_.push_back(passtrigpt);
 
       assert(npxh >= 0 && nsth >= 0 && npxl >= 0 && nstl >= 0);
       if (npxh > 15) npxh = 15;
@@ -803,6 +894,7 @@ namespace jmt {
     float    qpt      (int i) const { return p_get(i, qpt_,       p_qpt_       ); }
     float    eta      (int i) const { return p_get(i, eta_,       p_eta_       ); }
     float    phi      (int i) const { return p_get(i, phi_,       p_phi_       ); }
+    uchar    ID       (int i) const { return p_get(i, ID_,        p_ID_        ); }
     bool     isVeto   (int i) const { return p_get(i, isVeto_,    p_isVeto_    ); }
     bool     isLoose  (int i) const { return p_get(i, isLoose_,   p_isLoose_   ); }
     bool     isMed    (int i) const { return p_get(i, isMed_,     p_isMed_     ); }
@@ -826,6 +918,11 @@ namespace jmt {
     uchar    maxhit   (int i) const { return p_get(i, maxhit_,    p_maxhit_    ); }
     uchar    maxpxhit (int i) const { return p_get(i, maxpxhit_,  p_maxpxhit_  ); }
     uchar    losthit  (int i) const { return p_get(i, losthit_,   p_losthit_   ); }
+    unsigned misc     (int i) const { return p_get(i, misc_,      p_misc_      ); }
+    bool   hltmatched (int i) const { return p_get(i, hltmatched_, p_hltmatched_); }
+    bool   passtrigpt (int i) const { return p_get(i, passtrigpt_, p_passtrigpt_); }
+
+    void set_misc(int i, unsigned x) { assert(0 == p_misc_); misc_[i] = x; }
 
     int q(int i) const { return qpt(i) > 0 ? 1 : -1; }
     float pt(int i) const { return std::abs(qpt(i)); }
@@ -883,6 +980,7 @@ namespace jmt {
     vfloat qpt_;         vfloat* p_qpt_;
     vfloat eta_;         vfloat* p_eta_;
     vfloat phi_;         vfloat* p_phi_;
+    vuchar ID_;          vuchar* p_ID_;
     vbool isVeto_;       vbool* p_isVeto_;
     vbool isLoose_;      vbool* p_isLoose_;
     vbool isMed_;        vbool* p_isMed_;
@@ -906,6 +1004,10 @@ namespace jmt {
     vuchar maxhit_;      vuchar* p_maxhit_;
     vuchar maxpxhit_;    vuchar* p_maxpxhit_;
     vuchar losthit_;     vuchar* p_losthit_;
+    vunsigned misc_;     vunsigned* p_misc_;
+    vbool hltmatched_;   vbool* p_hltmatched_;
+    vbool passtrigpt_;   vbool* p_passtrigpt_;
+
   };
 
 
