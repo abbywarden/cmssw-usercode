@@ -960,7 +960,6 @@ bool MFVAnalysisCuts::satisfiesTrigger(edm::Handle<MFVEvent> mevent, size_t trig
 }
 
 
-//splitting up the satisfieslep trigger into muon/ele trigger 
 bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t trig, const edm::EventSetup& setup) { 
   if(!mevent->pass_hlt(trig)) return false;
 
@@ -981,9 +980,15 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
       if (mevent->electron_pt[ie] < 30) continue; //for 2016
       if (mevent->electron_ID[ie][3] == 1) {
         if (abs(mevent->electron_eta[ie]) < 2.4) { 
-          if (mevent->electron_iso[ie] < 0.10) {
+          // if (mevent->electron_iso[ie] < 0.10) {
+          if (abs(mevent->electron_eta[ie]) <= 1.479) {
+            if (mevent->electron_iso[ie] < 0.0287 + 0.506/mevent->electron_pt[ie])
+              passed_kinematics = true;
+          }
+          else if (abs(mevent->electron_eta[ie] > 1.479)) {
+            if (mevent->electron_iso[ie] < 0.0445 + 0.963/mevent->electron_pt[ie])
             passed_kinematics = true;
-          } 
+          }
         }
       }
     }
@@ -996,9 +1001,14 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
       if (mevent->electron_pt[ie] < 38) continue; //for 2017
       if (mevent->electron_ID[ie][3] == 1) {
         if (abs(mevent->electron_eta[ie]) < 2.4) { 
-          if (mevent->electron_iso[ie] < 0.10) {
+          if (abs(mevent->electron_eta[ie]) <= 1.479) {
+            if (mevent->electron_iso[ie] < 0.0287 + 0.506/mevent->electron_pt[ie])
+              passed_kinematics = true;
+          }
+          else if (abs(mevent->electron_eta[ie] > 1.479)) {
+            if (mevent->electron_iso[ie] < 0.0445 + 0.963/mevent->electron_pt[ie])
             passed_kinematics = true;
-          } 
+          }
         }
       }
     }
@@ -1011,9 +1021,14 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
         if (mevent->electron_pt[ie] < 35) continue; //for 2018
 	      if (mevent->electron_ID[ie][3] == 1) {
 	        if (abs(mevent->electron_eta[ie]) < 2.4) { 
-	          if (mevent->electron_iso[ie] < 0.10) {
-	            passed_kinematics = true;
-	          } 
+            if (abs(mevent->electron_eta[ie]) <= 1.479) {
+              if (mevent->electron_iso[ie] < 0.0287 + 0.506/mevent->electron_pt[ie])
+                passed_kinematics = true;
+            }
+            else if (abs(mevent->electron_eta[ie] > 1.479)) {
+              if (mevent->electron_iso[ie] < 0.0445 + 0.963/mevent->electron_pt[ie])
+              passed_kinematics = true;
+            }
 	        }
 	      }
       }
@@ -1026,9 +1041,14 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
       if (mevent->electron_pt[ie] < 180) continue; //for 2018
 	    if (mevent->electron_ID[ie][3] == 1) {
 	      if (abs(mevent->electron_eta[ie]) < 2.4) { 
-	        if (mevent->electron_iso[ie] < 0.10) {
-	          passed_kinematics = true;
-	        } 
+          if (abs(mevent->electron_eta[ie]) <= 1.479) {
+            if (mevent->electron_iso[ie] < 0.0287 + 0.506/mevent->electron_pt[ie])
+              passed_kinematics = true;
+          }
+          else if (abs(mevent->electron_eta[ie] > 1.479)) {
+            if (mevent->electron_iso[ie] < 0.0445 + 0.963/mevent->electron_pt[ie])
+            passed_kinematics = true;
+          }
 	      }
 	    }
     }
@@ -1041,9 +1061,14 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
       if (mevent->electron_pt[ie] < 205) continue; //for 2018
 	    if (mevent->electron_ID[ie][3] == 1) {
 	      if (abs(mevent->electron_eta[ie]) < 2.4) { 
-	        if (mevent->electron_iso[ie] < 0.10) {
-	          passed_kinematics = true;
-	        } 
+          if (abs(mevent->electron_eta[ie]) <= 1.479) {
+            if (mevent->electron_iso[ie] < 0.0287 + 0.506/mevent->electron_pt[ie])
+              passed_kinematics = true;
+          }
+          else if (abs(mevent->electron_eta[ie] > 1.479)) {
+            if (mevent->electron_iso[ie] < 0.0445 + 0.963/mevent->electron_pt[ie])
+            passed_kinematics = true;
+          }
 	      }
 	    }
     }
@@ -1057,7 +1082,7 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
       if (mevent->muon_pt[im] < 30) continue; 
       if (mevent->muon_ID[im][1] == 1) {
         if (abs(mevent->muon_eta[im]) < 2.4) {
-          if (mevent->muon_iso[im] < 0.15) {
+          if (mevent->muon_iso[im] < 0.10) {
             passed_kinematics = true;
           }
         }
@@ -1072,7 +1097,7 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
         if (mevent->muon_pt[im] < 27) continue;
 	      if (mevent->muon_ID[im][1] == 1) {
 	        if (abs(mevent->muon_eta[im]) < 2.4) {
-	          if (mevent->muon_iso[im] < 0.15) {
+	          if (mevent->muon_iso[im] < 0.10) {
 	            passed_kinematics = true;
 	          }
 	        }
@@ -1087,7 +1112,7 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
 	    if (mevent->muon_pt[im] < 53) continue;
 	      if (mevent->muon_ID[im][1] == 1) {
 	        if (abs(mevent->muon_eta[im]) < 2.4) {
-	          if (mevent->muon_iso[im] < 0.15) {
+	          if (mevent->muon_iso[im] < 0.10) {
 	            passed_kinematics = true;
 	          }
 	        }
@@ -1102,9 +1127,14 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
 	      if (mevent->electron_pt[ie] < 120) continue;
 	      if (mevent->electron_ID[ie][3] == 1) {
 	        if (abs(mevent->electron_eta[ie]) < 2.4) { 
-	          if (mevent->electron_iso[ie] < 0.10) {
-	            passed_kinematics = true;
-	          }
+            if (abs(mevent->electron_eta[ie]) <= 1.479) {
+              if (mevent->electron_iso[ie] < 0.0287 + 0.506/mevent->electron_pt[ie])
+                passed_kinematics = true;
+            }
+            else if (abs(mevent->electron_eta[ie] > 1.479)) {
+              if (mevent->electron_iso[ie] < 0.0445 + 0.963/mevent->electron_pt[ie])
+              passed_kinematics = true;
+            }
 	        }
 	      }
       }
@@ -1117,11 +1147,21 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
 	      if (mevent->electron_pt[ie] < 55) continue;
 	      if (mevent->electron_ID[ie][3] == 1) {
 	        if (abs(mevent->electron_eta[ie]) < 2.4) { 
-	          if (mevent->electron_iso[ie] < 0.10) {
-	            for(int j0=0; j0 < njets; ++j0){
-		            if (!jet_hlt_match(mevent, j0) || mevent->jet_pt[j0] < 170) continue;
-		            passed_kinematics = true;
+            if (abs(mevent->electron_eta[ie]) <= 1.479) {
+              if (mevent->electron_iso[ie] < 0.0287 + 0.506/mevent->electron_pt[ie]) { 
+                for(int j0=0; j0 < njets; ++j0){
+                  if (!jet_hlt_match(mevent, j0) || mevent->jet_pt[j0] < 170) continue;
+                  passed_kinematics = true;
+                }
 	            }
+            }
+            else if (abs(mevent->electron_eta[ie] > 1.479)) {
+              if (mevent->electron_iso[ie] < 0.0445 + 0.963/mevent->electron_pt[ie]) { 
+                for(int j0=0; j0 < njets; ++j0){
+                  if (!jet_hlt_match(mevent, j0) || mevent->jet_pt[j0] < 170) continue;
+                  passed_kinematics = true;
+                }
+              }
 	          }
 	        }
 	      }
@@ -1137,6 +1177,7 @@ bool MFVAnalysisCuts::satisfiesLepTrigger(edm::Handle<MFVEvent> mevent, size_t t
   return false;
 
 }
+
                     
 //displaced lepton trigger & per trigger preselection 
 bool MFVAnalysisCuts::satisfiesDispLepTrigger(edm::Handle<MFVEvent> mevent, size_t trig, const edm::EventSetup& setup) { 
