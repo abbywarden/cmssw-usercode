@@ -12,7 +12,7 @@ import JMTucker.Tools.Samples as sp
 
 #file_path = '/afs/hep.wisc.edu/home/acwarden/CMSSW_10_2_13/src/HiggsAnalysis/CombinedLimit/test_Asymptotic_201718/sig1fbxsec/wobserved/'
 #file_path = '/afs/hep.wisc.edu/home/acwarden/CMSSW_10_2_13/src/HiggsAnalysis/CombinedLimit/test_Asymptotic_201718/sig1fbxsec/'
-file_path = '/afs/hep.wisc.edu/home/acwarden/CMSSW_10_2_13/src/HiggsAnalysis/CombinedLimit/Mar_Asymptotic_201718/'
+file_path = '/afs/hep.wisc.edu/home/acwarden/CMSSW_10_2_13/src/HiggsAnalysis/CombinedLimit/Apr_Asymptotic_201718/using_data/wABCDsysttest/'
 
 def fmt(t, title, xtitle, color):
     t.SetLineColor(color)
@@ -240,26 +240,26 @@ def save_1d_plots():
         # ('dijet_tau300um',   lambda s: 'stopdbardbar' in sample.name and sample.tau  ==  0.3 and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
         # ('dijet_tau1mm',     lambda s: 'stopdbardbar' in sample.name and sample.tau  ==  1.  and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
         # ('dijet_tau10mm',    lambda s: 'stopdbardbar' in sample.name and sample.tau  == 10.  and sample.mass <= 3200, lambda s: s.sample.mass, 'mass'),
-        ('stopld_tau100um',       lambda s: 'stopld'       in sample.name and sample.tau ==   100   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        ('stopld_tau300um',       lambda s: 'stopld'       in sample.name and sample.tau ==   300   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        ('stopld_tau1mm',         lambda s: 'stopld'       in sample.name and sample.tau ==  1000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        ('stopld_tau10mm',        lambda s: 'stopld'       in sample.name and sample.tau == 10000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        ('stopld_tau30mm',        lambda s: 'stopld'       in sample.name and sample.tau == 30000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        ('stoplb_tau100um',       lambda s: 'stoplb'       in sample.name and sample.tau ==   100   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        ('stoplb_tau300um',       lambda s: 'stoplb'       in sample.name and sample.tau ==   300   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        ('stoplb_tau1mm',         lambda s: 'stoplb'       in sample.name and sample.tau ==  1000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        ('stoplb_tau10mm',        lambda s: 'stoplb'       in sample.name and sample.tau == 10000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        ('stoplb_tau30mm',        lambda s: 'stoplb'       in sample.name and sample.tau == 30000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
-        # ('stopld_M800',           lambda s: 'stopld'       in sample.name and sample.mass ==  800   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau',  800.)),
-        # ('stopld_M1000',          lambda s: 'stopld'       in sample.name and sample.mass == 1000   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1000.)),
-        # ('stopld_M1200',          lambda s: 'stopld'       in sample.name and sample.mass == 1200   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1200.)),
-        # ('stopld_M1400',          lambda s: 'stopld'       in sample.name and sample.mass == 1400   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1400.)),
-        # ('stopld_M1600',          lambda s: 'stopld'       in sample.name and sample.mass == 1600   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1600.)),
-        # ('stoplb_M800',           lambda s: 'stoplb'       in sample.name and sample.mass ==  800   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau',  800.)),
-        # ('stoplb_M1000',          lambda s: 'stoplb'       in sample.name and sample.mass == 1000   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1000.)),
-        # ('stoplb_M1200',          lambda s: 'stoplb'       in sample.name and sample.mass == 1200   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1200.)),
-        # ('stoplb_M1400',          lambda s: 'stoplb'       in sample.name and sample.mass == 1400   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1400.)),
-        # ('stoplb_M1600',          lambda s: 'stoplb'       in sample.name and sample.mass == 1600   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1600.)),
+        # ('stopld_tau100um',       lambda s: 'stopld'       in sample.name and sample.tau ==   100   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        # ('stopld_tau300um',       lambda s: 'stopld'       in sample.name and sample.tau ==   300   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        # ('stopld_tau1mm',         lambda s: 'stopld'       in sample.name and sample.tau ==  1000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        # ('stopld_tau10mm',        lambda s: 'stopld'       in sample.name and sample.tau == 10000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        # ('stopld_tau30mm',        lambda s: 'stopld'       in sample.name and sample.tau == 30000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        # ('stoplb_tau100um',       lambda s: 'stoplb'       in sample.name and sample.tau ==   100   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        # ('stoplb_tau300um',       lambda s: 'stoplb'       in sample.name and sample.tau ==   300   and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        # ('stoplb_tau1mm',         lambda s: 'stoplb'       in sample.name and sample.tau ==  1000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        # ('stoplb_tau10mm',        lambda s: 'stoplb'       in sample.name and sample.tau == 10000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        # ('stoplb_tau30mm',        lambda s: 'stoplb'       in sample.name and sample.tau == 30000.  and sample.mass <= 1800., lambda s: s.sample.mass, 'mass'),
+        ('stopld_M800',           lambda s: 'stopld'       in sample.name and sample.mass ==  800   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau',  800.)),
+        ('stopld_M1000',          lambda s: 'stopld'       in sample.name and sample.mass == 1000   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1000.)),
+        ('stopld_M1200',          lambda s: 'stopld'       in sample.name and sample.mass == 1200   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1200.)),
+        ('stopld_M1400',          lambda s: 'stopld'       in sample.name and sample.mass == 1400   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1400.)),
+        ('stopld_M1600',          lambda s: 'stopld'       in sample.name and sample.mass == 1600   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1600.)),
+        ('stoplb_M800',           lambda s: 'stoplb'       in sample.name and sample.mass ==  800   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau',  800.)),
+        ('stoplb_M1000',          lambda s: 'stoplb'       in sample.name and sample.mass == 1000   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1000.)),
+        ('stoplb_M1200',          lambda s: 'stoplb'       in sample.name and sample.mass == 1200   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1200.)),
+        ('stoplb_M1400',          lambda s: 'stoplb'       in sample.name and sample.mass == 1400   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1400.)),
+        ('stoplb_M1600',          lambda s: 'stoplb'       in sample.name and sample.mass == 1600   and sample.tau <= 30000., lambda s: s.sample.tau,  ('tau', 1600.)),
 
         ]
     
@@ -268,7 +268,7 @@ def save_1d_plots():
     #for which, years in [('run2', [2017, 2018])]:
     which = 'run2'
     #which = '2018'
-    out_f = ROOT.TFile('limits_1d_%s_test.root' % which, 'recreate')
+    out_f = ROOT.TFile('limits_1d_%s_May_mass_datawABCDsys.root' % which, 'recreate')
     for name, use, sorter, xkey in xxx:
         print(name, use, sorter, xkey)
         d = limits()
@@ -313,7 +313,7 @@ def save_2d_plots():
         #out_f = ROOT.TFile('limits_%s.root' % which, 'recreate')
 
     for which, years in [ ('run2', [2017,2018]) ]:
-        out_f = ROOT.TFile('limits_2d_%s.root' % which, 'recreate')
+        out_f = ROOT.TFile('limits_2d_%s_Apr25.root' % which, 'recreate')
 
         for kind in ['mfv_stoplb', 'mfv_stopld']:
             d = limits()
@@ -501,7 +501,7 @@ def to_r():
     # x == masses -> cannot go to 1800 (max mass)
     # y == lifetimes
     #f = ROOT.TFile('limits_run2.root')
-    f = ROOT.TFile('limits_2d_run2.root')
+    f = ROOT.TFile('limits_2d_run2_Apr25.root')
     print '''
 # if you didn't set up already, do this
 . /cvmfs/sft.cern.ch/lcg/views/LCG_89/x86_64-slc6-gcc62-opt/setup.sh
@@ -532,7 +532,7 @@ env R_LIBS=~/.R R --no-save <<EOF
 
 def one_from_r(ex, name):
     def read_csv(fn):
-        lines = [x.strip() for x in open(os.path.join('/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/One2Two/to_r/',fn)).read().replace('"', '').split('\n') if x.strip()]
+        lines = [x.strip() for x in open(os.path.join('/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/One2Two/to_r_Apr25/',fn)).read().replace('"', '').split('\n') if x.strip()]
         lines.pop(0)
         vs = []
         for line in lines:
@@ -576,7 +576,7 @@ def one_from_r(ex, name):
     return h
 
 def from_r():
-    f = ROOT.TFile('limits_fromr_test.root', 'recreate')
+    f = ROOT.TFile('limits_fromr_Apr25.root', 'recreate')
     for k in 'mfv_stopld', 'mfv_stoplb':
     #for k in 'mfv_stopdbardbar', 'mfv_neu':
         for opt in 'nm', 'up', 'dn':

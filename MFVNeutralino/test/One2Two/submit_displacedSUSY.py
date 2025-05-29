@@ -20,11 +20,11 @@ import sys, os
 # # #if want sig1fbxsec : use -> sig1fbxsec/<year> 
 # #if want test sig1fbxsec observed limits : use -> sig1fbxsec/observed_test/<year>
 # ######################################################################################
-# for datacard in os.listdir("/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_mar/%s"%(year_1)):
+# for datacard in os.listdir("/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_apr/using_data/wABCDsysttest/%s"%(year_1)):
 #     signal_name = datacard[:-18] 
-#     card1 = "/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_mar/%s/%s_%s_datacard.txt"%(year_1,signal_name, year_1, )
-#     card2 = "/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_mar/%s/%s_%s_datacard.txt"%(year_2, signal_name, year_2)
-#     combinedcard = "/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_mar/%s/%s_%s_datacard.txt"%(year, signal_name, year)
+#     card1 = "/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_apr/using_data/wABCDsysttest/%s/%s_%s_datacard.txt"%(year_1,signal_name, year_1, )
+#     card2 = "/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_apr/using_data/wABCDsysttest/%s/%s_%s_datacard.txt"%(year_2, signal_name, year_2)
+#     combinedcard = "/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_apr/using_data/wABCDsysttest/%s/%s_%s_datacard.txt"%(year, signal_name, year)
 #     cmd = 'combineCards.py Name1=%s Name2=%s > %s'%(card1, card2, combinedcard)
 #     print(cmd)
 #     os.system(cmd)
@@ -39,10 +39,11 @@ import sys, os
 ######################################
 
 year = '201718'
-for datacard in os.listdir("/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_mar/%s"%(year)):
+for datacard in os.listdir("/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_apr/%s"%(year)):
     signal_name = datacard[:-13] 
     #cmd = 'combine -M AsymptoticLimits --run blind /afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_jan/sig1fbxsec/%s/%s &> %s_limitsum.txt'%(year, datacard, signal_name)
-    cmd = 'combine -M AsymptoticLimits /afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_mar/%s/%s &> %s_limitsum.txt'%(year, datacard, signal_name)
+    cmd = 'combine -M AsymptoticLimits --run blind /afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_apr/using_data/wABCDsysttest/%s/%s &> %s_limitsum.txt'%(year, datacard, signal_name)
+    #cmd = 'combine -M AsymptoticLimits /afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_apr/%s/%s &> %s_limitsum.txt'%(year, datacard, signal_name)
     #cmd = 'combine -M MultiDimFit /afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_27/src/JMTucker/MFVNeutralino/test/datacards_jan/susyxsec/%s/%s &> %s_limitsum.txt'%(year, datacard, signal_name)
  
     print(cmd)

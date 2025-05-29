@@ -7,19 +7,42 @@ import ROOT
 import pandas as pd 
 import ctypes 
 import math 
-year = '2017'
+year = '2018'
 
-#TODO : Get ABCDSystematics; below are from Ang
+
+#Angs
+# '20161': 0.090,
+# '20162': 0.491,
+# '2017': 0.058,
+# '2018': 0.070,
+
+#testing by taking the higher systematic -- but probably could combine leptons? 
 def getABCDSyst(year):
-  #For BDT score = ; requiring leading lepton and isolation < 0.1
   s = {
-    '20161': 0.090,
-    '20162': 0.491,
-    '2017': 0.058,
-    '2018': 0.070,
+    '2016' : 0.14, 
+    '2017' : 0.15,
+    '2018' : 0.11, 
+    'run2' : 0.08
   }
-
   return s[str(year)]
+
+# def getABCDSyst_Mu(year):
+#   s = {
+#     '2016' : 0.35, 
+#     '2017' : 0.19,
+#     '2018' : 0.14, 
+#     'run2' : 0.10
+#   }
+#   return s[str(year)]
+
+# def getABCDSyst_Ele(year):
+#   s = {
+#     '2016' : 0.25, 
+#     '2017' : 0.24,
+#     '2018' : 0.23, 
+#     'run2' : 0.12
+#   }
+#   return s[str(year)]
 
 #TODO : get systematic sources in csv format; may be a mix of dependent and independent of signal model so keeping independent/dependent for now
 # dm == decay mode
@@ -32,6 +55,7 @@ def getSystUncert(dm, year):
     
     #source_dm_dependent = ["vtxreco", "BDT"] #TODO : determine vtxreco and BDT systematics 
     source_dm_independent = ["intlumi"] #TODO : trigger, l1 among others...?
+    
     s = {}
     # for source in source_dm_dependent:
     #     s[source] = df[str(year)][source+'_'+str(dm)]
@@ -55,28 +79,51 @@ def getNumEvents(fn, regions, SF=1, BDTcut=(-1,-1), useData=True):
     f = ROOT.TFile(filepath+fn+'.root')
     print(f)
     for r in regions:
-      h = f.Get(r+'/BDT_score')
-      nevt_uncert = ctypes.c_double(0)
-      #binH = 100000 if MLcut[1]==-1 else h.GetXaxis().FindBin(MLcut[1]) 
-      #binL = 0 if MLcut[0]==-1 else h.GetXaxis().FindBin(MLcut[0]) 
-      binL = 0
-      binH = h.GetXaxis().FindBin(1.0)-1 #BDT score 0.974 or similar
-      # binH = h.GetXaxis().FindBin(0.974)-1 #BDT score 0.974 or similar
-      nevt = h.IntegralAndError(binL,binH,nevt_uncert)
-      print(nevt)
-      if nevt<=0:
-        nevt = 0.000001
-      #nevt = 1
-      nevt_raw = h.GetEntries()
       if useData and (r=='highBDT_4tk'):
-          d['raw'].append(0)
-          d['weighted'].append(0)
-          d['stat_uncert'].append(0.00)
-      else:
-          print("raw, weighted, stat uncert : ", nevt_raw, nevt*SF, nevt_uncert.value*SF)
-          d['raw'].append(int(nevt_raw))
-          d['weighted'].append(nevt*SF)
-          d['stat_uncert'].append(nevt_uncert.value*SF)
+        d['raw'].append(0)
+        d['weighted'].append(0)
+        d['stat_uncert'].append(0.00)
+      else :
+        h = f.Get(r+'/BDT_score')
+        nevt_uncert = ctypes.c_double(0)
+        #binH = 100000 if MLcut[1]==-1 else h.GetXaxis().FindBin(MLcut[1]) 
+        #binL = 0 if MLcut[0]==-1 else h.GetXaxis().FindBin(MLcut[0]) 
+        binL = 0
+        binH = h.GetXaxis().FindBin(1.0)-1 #BDT score 0.974 or similar
+        # binH = h.GetXaxis().FindBin(0.974)-1 #BDT score 0.974 or similar
+        nevt = h.IntegralAndError(binL,binH,nevt_uncert)
+        if nevt<=0:
+          nevt = 0.000001
+        #nevt = 1
+        nevt_raw = h.GetEntries()
+        print("raw, weighted, stat uncert : ", nevt_raw, nevt*SF, nevt_uncert.value*SF)
+        d['raw'].append(int(nevt_raw))
+        d['weighted'].append(nevt*SF)
+        d['stat_uncert'].append(nevt_uncert.value*SF)
+    
+    # for r in regions:
+    #   h = f.Get(r+'/BDT_score')
+    #   nevt_uncert = ctypes.c_double(0)
+    #   #binH = 100000 if MLcut[1]==-1 else h.GetXaxis().FindBin(MLcut[1]) 
+    #   #binL = 0 if MLcut[0]==-1 else h.GetXaxis().FindBin(MLcut[0]) 
+    #   binL = 0
+    #   binH = h.GetXaxis().FindBin(1.0)-1 #BDT score 0.974 or similar
+    #   # binH = h.GetXaxis().FindBin(0.974)-1 #BDT score 0.974 or similar
+    #   nevt = h.IntegralAndError(binL,binH,nevt_uncert)
+    #   if nevt<=0:
+    #     nevt = 0.000001
+    #   #nevt = 1
+    #   nevt_raw = h.GetEntries()
+    #   if useData and (r=='highBDT_4tk'):
+    #       d['raw'].append(0)
+    #       d['weighted'].append(0)
+    #       d['stat_uncert'].append(0.00)
+    #   else:
+    #       print("raw, weighted, stat uncert : ", nevt_raw, nevt*SF, nevt_uncert.value*SF)
+    #       d['raw'].append(int(nevt_raw))
+    #       d['weighted'].append(nevt*SF)
+    #       d['stat_uncert'].append(nevt_uncert.value*SF)
+    
     return d
 
 def getNumEvents_multi(fna, fnb, regions, SF=1, BDTcut=(-1,-1), useData=True):
@@ -168,7 +215,7 @@ _SYSTUNCERTSIG_
 _ABCD_
 '''
 
-useData = False
+useData = True
 channels = ['highBDT_4tk'+year, 'midBDT_4tk'+year, 'lowBDT_4tk'+year, 'highBDT_3tk'+year, 'midBDT_3tk'+year, 'lowBDT_3tk'+year]
 dirs = ['highBDT_4tk', 'midBDT_4tk', 'lowBDT_4tk', 'highBDT_3tk', 'midBDT_3tk', 'lowBDT_3tk']
 processes = ['signal','background']
@@ -180,7 +227,7 @@ processnamerate = ('\t'+'\t'.join(processes))*len(channels)
 processidxrate = ('\t'+'\t'.join(processidx))*len(channels)
 
 
-filepath = '/afs/hep.wisc.edu/home/acwarden/BDT/BDT0p90_sellep/' 
+filepath = '/afs/hep.wisc.edu/home/acwarden/BDT/BDT0p95_fullsellep/' 
 #filepath = '/afs/hep.wisc.edu/home/acwarden/BDT/ABCD_BDT0p966_sellep/sig1fbxsec/'
 #filepath = '/afs/hep.wisc.edu/home/acwarden/BDT/ABCD_BDT_selmuele/'
 
@@ -192,7 +239,7 @@ decay = ['ld', 'lb']
 
 
 bkg = 'bkgmqcd_Histos_'+year
-data = 'data_Histos_'+year
+data = 'data100p_blind_Histos_'+year
 
 # bkg_mu = 'bkgmqcd_Histos_'+year+'_mu'
 # bkg_ele = 'bkgmqcd_Histos_'+year+'_ele'
@@ -221,11 +268,10 @@ bkg_stat_uncert = ''
 
 syst_uncert = ''
 
-#TODO : calculate ABCD syst uncertainty 
-# syst_uncert += 'ABCD_syst\tlnN' \
-#               +'\t-\t{:.5g}'.format(getABCDSyst(year)+1) \
-#               +'\t-'*((len(channels)-1)*len(processes))+'\n'
-# n_uncerts_bkg += 1
+syst_uncert += 'ABCD_syst\tlnN' \
+              +'\t-\t{:.5g}'.format(getABCDSyst(year)+1) \
+              +'\t-'*((len(channels)-1)*len(processes))+'\n'
+n_uncerts_bkg += 1
 
 abcd = '''
 a__YEAR_    rateParam   highBDT_4tk_YEAR_   background    ((@0*@1)/@2)  b__YEAR_,e__YEAR_,f__YEAR_
