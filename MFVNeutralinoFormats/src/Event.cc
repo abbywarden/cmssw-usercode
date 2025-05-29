@@ -8,7 +8,7 @@
 void MFVEvent::muon_push_back(const reco::Muon& muon,
 			      const reco::Track& trk,
 			      const float iso,
-			      const math::XYZPoint& beamspot,
+			      const reco::BeamSpot& beamspot,
 			      const math::XYZPoint& primary_vertex) {
 
   muon_pt.push_back(muon.pt());
@@ -48,7 +48,7 @@ void MFVEvent::muon_push_back(const reco::Muon& muon,
 void MFVEvent::electron_push_back(const reco::GsfElectron& electron,
 				  const reco::Track& trk,
 				  const float iso,
-				  const math::XYZPoint& beamspot,
+				  const reco::BeamSpot& beamspot,
 				  const math::XYZPoint& primary_vertex) {
 
   electron_pt.push_back(electron.pt());

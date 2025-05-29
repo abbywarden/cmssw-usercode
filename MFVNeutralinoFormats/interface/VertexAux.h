@@ -312,7 +312,7 @@ struct MFVVertexAux {
   std::vector<bool> track_injet;
   std::vector<short> track_inpv;
   std::vector<float> track_dxy;
-  std::vector<float> track_dxyerr; //not rescaled -- to check track_cov
+  std::vector<float> track_dxy_old; //not taking into account beamspot slope
   std::vector<float> track_dz;
   std::vector<double> track_vx;
   std::vector<double> track_vy;

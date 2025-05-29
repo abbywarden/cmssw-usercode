@@ -624,7 +624,8 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
               aux.electron_dxy.push_back(etk->dxy(primary_vertex->position()));
               aux.electron_dz.push_back(etk->dz(primary_vertex->position()));
             }
-            aux.electron_dxybs.push_back(etk->dxy(beamspot->position()));
+            // aux.electron_dxybs.push_back(etk->dxy(beamspot->position())); //doesn't use the beamspot slope 
+            aux.electron_dxybs.push_back(etk->dxy(*beamspot)); //uses the slope; more accurate and good to sync w/ vertextracks 
             aux.electron_dxyerr.push_back(etk->dxyError());
             aux.rescaled_electron_dxyerr.push_back(rs.rescaled_tk.dxyError());
             if (rs.rescaled_tk.dxyError() == 0) std::cout << etk->pt() << " " << electronref[iel]->pt() << std::endl;
@@ -698,7 +699,8 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
               aux.muon_dxy.push_back(mtk->dxy(primary_vertex->position()));
               aux.muon_dz.push_back(mtk->dz(primary_vertex->position()));
             }
-            aux.muon_dxybs.push_back(mtk->dxy(beamspot->position()));
+            // aux.muon_dxybs.push_back(mtk->dxy(beamspot->position()));
+            aux.muon_dxybs.push_back(mtk->dxy(*beamspot)); //sync w/ VertexTracks 
             aux.muon_dxyerr.push_back(mtk->dxyError());
             aux.rescaled_muon_dxyerr.push_back(rs.rescaled_tk.dxyError());
             aux.muon_dzerr.push_back(mtk->dzError());
@@ -772,8 +774,8 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
 
       aux.track_injet.push_back(track_in_a_jet(mfv::JByNtracks, trref)); // JMTBAD multiple jet assoc types
       aux.track_inpv.push_back(pv_for_track == tracks_in_pvs.end() ? -1 : pv_for_track->second);
-      aux.track_dxy.push_back(fabs(tri->dxy(beamspot->position())));
-      aux.track_dxyerr.push_back(tri->dxyError()); //not rescaled
+      aux.track_dxy_old.push_back(fabs(tri->dxy(beamspot->position())));
+      aux.track_dxy.push_back(fabs(tri->dxy(*beamspot))); //sync w/ VertexTracks 
       aux.track_dz.push_back(primary_vertex ? fabs(tri->dz(primary_vertex->position())) : 0); // JMTBAD not the previous behavior when no PV
       aux.track_vx.push_back(tri->vx());
       aux.track_vy.push_back(tri->vy());

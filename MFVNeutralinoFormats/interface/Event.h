@@ -428,13 +428,13 @@ struct MFVEvent {
   void muon_push_back(const reco::Muon& muon,
 		      const reco::Track& trk,
 		      const float iso,
-		      const math::XYZPoint& beamspot,
+		      const reco::BeamSpot& beamspot,
 		      const math::XYZPoint& primary_vertex);
 
   void electron_push_back(const reco::GsfElectron& electron,
 			  const reco::Track& trk,
 			  const float iso,
-			  const math::XYZPoint& beamspot,
+			  const reco::BeamSpot& beamspot,
 			  const math::XYZPoint& primary_vertex);
 
   void muon_pfiso_push_back(const float muhad_iso,

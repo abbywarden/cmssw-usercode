@@ -127,6 +127,17 @@ private:
   TH1F* h_seed_nm1_sigmadxybs;
   TH1F* h_seed_nm1_sigmadxybs_rescaled;
 
+  TH1F* h_seed_track_dxystarbs;
+  TH1F* h_seed_track_dxybsposition;
+  TH1F* h_seed_track_diffdxy;
+  // TH1F* h_seed_track_diffdxy_pt;
+  TH1F* h_seed_track_diffdxy_dz;
+  TH1F* h_seed_track_diffdxy_dx;
+  TH1F* h_seed_track_diffdxy_dy;
+  TH1F* h_seed_track_samedxy_dz;
+  TH1F* h_seed_track_samedxy_dx;
+  TH1F* h_seed_track_samedxy_dy;
+
   TH1F* h_n_all_eletracks;
   TH1F* h_all_eletrack_pars[7];
   TH1F* h_all_eletrack_errs[7];
@@ -416,6 +427,16 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
     h_seed_track_nsthits    = fs->make<TH1F>("h_seed_track_nsthits",    "", 28,   0, 28);
     h_seed_track_npxlayers  = fs->make<TH1F>("h_seed_track_npxlayers",  "", 10,   0, 10);
     h_seed_track_nstlayers  = fs->make<TH1F>("h_seed_track_nstlayers",  "", 30,   0, 30);
+    
+    h_seed_track_dxystarbs = fs->make<TH1F>("h_seed_track_dxystarbs", "", 500, -0.2, 0.2);
+    h_seed_track_dxybsposition = fs->make<TH1F>("h_seed_track_dxybsposition", "", 500, -0.2, 0.2);
+    h_seed_track_diffdxy = fs->make<TH1F>("h_seed_track_diffdxy", "", 50, 0, 0.01);
+    h_seed_track_diffdxy_dz = fs->make<TH1F>("h_seed_track_diffdxy_dz", "", 1000, 0, 10);
+    h_seed_track_diffdxy_dy = fs->make<TH1F>("h_seed_track_diffdxy_dy", "", 100, 0, 0.1);
+    h_seed_track_diffdxy_dx = fs->make<TH1F>("h_seed_track_diffdxy_dx", "", 100, 0, 0.1);
+    h_seed_track_samedxy_dz = fs->make<TH1F>("h_seed_track_samedxy_dz", "", 1000, 0, 10);
+    h_seed_track_samedxy_dy = fs->make<TH1F>("h_seed_track_samedxy_dy", "", 100, 0, 0.1);
+    h_seed_track_samedxy_dx = fs->make<TH1F>("h_seed_track_samedxy_dx", "", 100, 0, 0.1);
 
     h_seed_nm1_pt = fs->make<TH1F>("h_seed_nm1_pt", "", 50, 0, 10);
     h_seed_nm1_npxlayers = fs->make<TH1F>("h_seed_nm1_npxlayers", "", 10, 0, 10);
@@ -523,6 +544,7 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
 
 bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
   if (verbose) std::cout << "MFVVertexTracks " << module_label << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << "\n";
+
   // const int track_rescaler_which = -1; //FIXME Abby // TEST 
   const int track_rescaler_which = jmt::TrackRescaler::w_SingleLep; //FIXME Abby 
   //  const int track_rescaler_which = jmt::TrackRescaler::w_BTagDispJet; //FIXME Alec
@@ -783,9 +805,6 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
     /////////////
 
     if (use) {
-      // if (fabs(rescaled_dxyerr) == 0) std::cout << " seed track failed rescaled dxyerr; sigmadxybs : "<< sigmadxybs << std::endl;
-      // if (fabs(rescaled_dxyerr) ==0) std::cout << " seed track failed rescaled dxyerr; rescaled sigmadxybs  : "<< rescaled_sigmadxybs << std::endl;
-
       seed_tracks->push_back(tk);
       seed_tracks_copy->push_back(*tk);
     }
@@ -903,6 +922,20 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         h_seed_track_nsthits->Fill(nsthits);
         h_seed_track_npxlayers->Fill(npxlayers);
         h_seed_track_nstlayers->Fill(nstlayers);
+
+        h_seed_track_dxystarbs->Fill(tk->dxy(*beamspot));
+        h_seed_track_dxybsposition->Fill(tk->dxy(beamspot->position()));
+        h_seed_track_diffdxy->Fill(fabs(tk->dxy(*beamspot) - tk->dxy(beamspot->position())));
+        if (fabs(tk->dxy(*beamspot) - tk->dxy(beamspot->position())) > 0.0002) {
+          h_seed_track_diffdxy_dz->Fill(fabs(tk->referencePoint().z() - beamspot->z0()));
+          h_seed_track_diffdxy_dx->Fill(fabs(tk->referencePoint().x() - beamspot->x0()));
+          h_seed_track_diffdxy_dy->Fill(fabs(tk->referencePoint().y() - beamspot->y0()));
+        }
+        else {
+          h_seed_track_samedxy_dz->Fill(fabs(tk->referencePoint().z() - beamspot->z0()));
+          h_seed_track_samedxy_dx->Fill(fabs(tk->referencePoint().x() - beamspot->x0()));
+          h_seed_track_samedxy_dy->Fill(fabs(tk->referencePoint().y() - beamspot->y0()));
+        }
         
       }
     }
@@ -1006,9 +1039,6 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
       }();
 
       if (use_mu) {
-      // if (fabs(rescaled_dxyerr) == 0) std::cout << " mu seed track failed rescaled dxyerr; sigmadxybs : "<< sigmadxybs << std::endl;
-      // if (fabs(rescaled_dxyerr) ==0) std::cout << " mu seed track failed rescaled dxyerr; rescaled sigmadxybs  : "<< rescaled_sigmadxybs << std::endl;
-
         seed_tracks->push_back(mtk);
         muon_seed_tracks->push_back(mtk);
         seed_tracks_copy->push_back(*mtk);
@@ -1019,6 +1049,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         if (use_mu)
           printf(" muon selected for seed! (#%lu)", seed_tracks->size()-1);
         printf("\n");
+
       }
 
       if (histos) {
@@ -1175,9 +1206,6 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         return true;
       }();
       if (use_ele) {
-        // if (fabs(rescaled_dxyerr) == 0) std::cout << " ele seed track failed rescaled dxyerr; sigmadxybs : "<< sigmadxybs << std::endl;
-        // if (fabs(rescaled_dxyerr) ==0) std::cout << " ele seed track failed rescaled dxyerr; rescaled sigmadxybs  : "<< rescaled_sigmadxybs << std::endl;
-
         seed_tracks->push_back(etk);
         electron_seed_tracks->push_back(etk);
         seed_tracks_copy->push_back(*etk);
