@@ -19,6 +19,7 @@ mfvMiniTree = cms.EDAnalyzer('MFVMiniTreerBDT',
                              vertex_src = cms.InputTag('mfvSelectedVerticesTight'),
                              weight_src = cms.InputTag('mfvWeight'),
                              do_genmatching = cms.bool(False), #should only turn on for signal to train. turn off and run signal again for the full evaluation? turned on will only work for signal; may need rework?
+                            #  isData = cms.bool(False)
                              )
 
 

@@ -46,8 +46,12 @@ namespace mfv {
     leading_lepeta_inSV.clear();
     leading_lepphi_inSV.clear();
     leading_lephltmatched_inSV.clear();
-    leading_jetlep_pairdr.clear();
+    leading_leppasstrigpt_inSV.clear();
+
+    leading_lepjet_pairdr.clear();
     leading_jetpt_inSV.clear();
+    closestdR_track_leadinglep.clear();
+    avgptnolep.clear();
 
     // nbtags[3].clear();
     // nbtks[3].clear();
@@ -78,9 +82,9 @@ namespace mfv {
     chi2dof.clear();
     maxtrackpt.clear();
     avgpt.clear();
-    sumptx.clear();
-    sumpty.clear();
-    sumptz.clear();
+    // sumptx.clear();
+    // sumpty.clear();
+    // sumptz.clear();
     sumpt2.clear();
     tracketaavg.clear();
     trackphiavg.clear();
@@ -112,18 +116,19 @@ namespace mfv {
     trackdxynsigmaavg.clear();
     trackdxynsigmamax.clear();
     trackdxynsigmamin.clear();
+    trackdxynsigmarms.clear();
     sum_trackdxynsigma.clear();
 
     ntracksptgt10.clear();
     // jetsntkpt.clear();
     // tksjetsntkpt.clear();
     tksjetsntkmass.clear();
-    costhtkmomvtxdispmin.clear();
-    costhtkmomvtxdispmax.clear();
-    costhtkmomvtxdispavg.clear();
-    costhjetmomvtxdispmin.clear();
-    costhjetmomvtxdispmax.clear();
-    costhjetmomvtxdispavg.clear();
+    // costhtkmomvtxdispmin.clear();
+    // costhtkmomvtxdispmax.clear();
+    // costhtkmomvtxdispavg.clear();
+    // costhjetmomvtxdispmin.clear();
+    // costhjetmomvtxdispmax.clear();
+    // costhjetmomvtxdispavg.clear();
     alljetsvdeltaphi.clear();
     minjetsvdeltaphi.clear();
     maxjetsvdeltaphi.clear();
@@ -226,9 +231,9 @@ namespace mfv {
     tree->Branch("ntracksetagt1p5", &nt.ntracksetagt1p5);
     tree->Branch("maxtrackpt", &nt.maxtrackpt);
     tree->Branch("avgpt", &nt.avgpt);
-    tree->Branch("sumptx", &nt.sumptx);
-    tree->Branch("sumpty", &nt.sumpty);
-    tree->Branch("sumptz", &nt.sumptz);
+    // tree->Branch("sumptx", &nt.sumptx);
+    // tree->Branch("sumpty", &nt.sumpty);
+    // tree->Branch("sumptz", &nt.sumptz);
     tree->Branch("sumpt2", &nt.sumpt2);
     tree->Branch("nele_inSV", &nt.nele_inSV);
     tree->Branch("nmu_inSV", &nt.nmu_inSV);
@@ -251,8 +256,12 @@ namespace mfv {
     tree->Branch("leading_lepeta_inSV", &nt.leading_lepeta_inSV);
     tree->Branch("leading_lepphi_inSV", &nt.leading_lepphi_inSV);
     tree->Branch("leading_lephltmatched_inSV", &nt.leading_lephltmatched_inSV);
-    tree->Branch("leading_jetlep_pairdr", &nt.leading_jetlep_pairdr);
+    tree->Branch("leading_leppasstrigpt_inSV", &nt.leading_leppasstrigpt_inSV);
+    tree->Branch("leading_lepjet_pairdr", &nt.leading_lepjet_pairdr);
     tree->Branch("leading_jetpt_inSV", &nt.leading_jetpt_inSV);
+    tree->Branch("closestdR_track_leadinglep", &nt.closestdR_track_leadinglep);
+    tree->Branch("avgptnolep", &nt.avgptnolep);
+
     tree->Branch("nbtags_loose", &nt.nbtags_loose);
     tree->Branch("nbtags_med", &nt.nbtags_med);
     tree->Branch("nbtags_tight", &nt.nbtags_tight);
@@ -318,6 +327,7 @@ namespace mfv {
     tree->Branch("trackdxynsigmaavg", &nt.trackdxynsigmaavg);
     tree->Branch("trackdxynsigmamax", &nt.trackdxynsigmamax);
     tree->Branch("trackdxynsigmamin", &nt.trackdxynsigmamin);
+    tree->Branch("trackdxynsigmarms", &nt.trackdxynsigmarms);
     tree->Branch("sum_trackdxynsigma", &nt.sum_trackdxynsigma);
     tree->Branch("costhmombs", &nt.costhmombs);
     tree->Branch("costhtksjetsntkmombs", &nt.costhtksjetsntkmombs);
@@ -326,12 +336,12 @@ namespace mfv {
     // tree->Branch("jetsntkpt", &nt.jetsntkpt);
     // tree->Branch("tksjetsntkpt", &nt.tksjetsntkpt);
     tree->Branch("tksjetsntkmass", &nt.tksjetsntkmass);
-    tree->Branch("costhtkmomvtxdispmin", &nt.costhtkmomvtxdispmin);
-    tree->Branch("costhtkmomvtxdispmax", &nt.costhtkmomvtxdispmax);
-    tree->Branch("costhtkmomvtxdispavg", &nt.costhtkmomvtxdispavg);
-    tree->Branch("costhjetmomvtxdispmin", &nt.costhjetmomvtxdispmin);
-    tree->Branch("costhjetmomvtxdispmax", &nt.costhjetmomvtxdispmax);
-    tree->Branch("costhjetmomvtxdispavg", &nt.costhjetmomvtxdispavg);
+    // tree->Branch("costhtkmomvtxdispmin", &nt.costhtkmomvtxdispmin);
+    // tree->Branch("costhtkmomvtxdispmax", &nt.costhtkmomvtxdispmax);
+    // tree->Branch("costhtkmomvtxdispavg", &nt.costhtkmomvtxdispavg);
+    // tree->Branch("costhjetmomvtxdispmin", &nt.costhjetmomvtxdispmin);
+    // tree->Branch("costhjetmomvtxdispmax", &nt.costhjetmomvtxdispmax);
+    // tree->Branch("costhjetmomvtxdispavg", &nt.costhjetmomvtxdispavg);
     tree->Branch("alljetsvdeltaphi", &nt.alljetsvdeltaphi);
     tree->Branch("minjetsvdeltaphi", &nt.minjetsvdeltaphi);
     tree->Branch("maxjetsvdeltaphi", &nt.maxjetsvdeltaphi);
@@ -412,9 +422,9 @@ namespace mfv {
     tree->SetBranchAddress("ntracksetagt1p5", & nt.ntracksetagt1p5);
     tree->SetBranchAddress("maxtrackpt", &nt.maxtrackpt);
     tree->SetBranchAddress("avgpt", &nt.avgpt);
-    tree->SetBranchAddress("sumptx", &nt.sumptx);
-    tree->SetBranchAddress("sumpty", &nt.sumpty);
-    tree->SetBranchAddress("sumptz", &nt.sumptz);
+    // tree->SetBranchAddress("sumptx", &nt.sumptx);
+    // tree->SetBranchAddress("sumpty", &nt.sumpty);
+    // tree->SetBranchAddress("sumptz", &nt.sumptz);
     tree->SetBranchAddress("sumpt2", &nt.sumpt2);
     tree->SetBranchAddress("nele_inSV", &nt.nele_inSV);
     tree->SetBranchAddress("nmu_inSV", &nt.nmu_inSV);
@@ -437,8 +447,11 @@ namespace mfv {
     tree->SetBranchAddress("leading_lepeta_inSV", &nt.leading_lepeta_inSV);
     tree->SetBranchAddress("leading_lepphi_inSV", &nt.leading_lepphi_inSV);
     tree->SetBranchAddress("leading_lephltmatched_inSV", &nt.leading_lephltmatched_inSV);
-    tree->SetBranchAddress("leading_jetlep_pairdr", &nt.leading_jetlep_pairdr);
+    tree->SetBranchAddress("leading_leppasstrigpt_inSV", &nt.leading_leppasstrigpt_inSV);
+    tree->SetBranchAddress("leading_lepjet_pairdr", &nt.leading_lepjet_pairdr);
     tree->SetBranchAddress("leading_jetpt_inSV", &nt.leading_jetpt_inSV);
+    tree->SetBranchAddress("closestdR_track_leadinglep", &nt.closestdR_track_leadinglep);
+    tree->SetBranchAddress("avgptnolep", &nt.avgptnolep);
     tree->SetBranchAddress("nbtags_loose", &nt.nbtags_loose);
     tree->SetBranchAddress("nbtags_med", &nt.nbtags_med);
     tree->SetBranchAddress("nbtags_tight", &nt.nbtags_tight);
@@ -504,6 +517,8 @@ namespace mfv {
     tree->SetBranchAddress("trackdxynsigmaavg", &nt.trackdxynsigmaavg);
     tree->SetBranchAddress("trackdxynsigmamax", &nt.trackdxynsigmamax);
     tree->SetBranchAddress("trackdxynsigmamin", &nt.trackdxynsigmamin);
+    tree->SetBranchAddress("trackdxynsigmarms", &nt.trackdxynsigmarms);
+
     tree->SetBranchAddress("sum_trackdxynsigma", &nt.sum_trackdxynsigma);
     tree->SetBranchAddress("costhmombs", &nt.costhmombs);
     tree->SetBranchAddress("costhtksjetsntkmombs", &nt.costhtksjetsntkmombs);
@@ -511,12 +526,12 @@ namespace mfv {
     // tree->SetBranchAddress("jetsntkpt", &nt.jetsntkpt);
     // tree->SetBranchAddress("tksjetsntkpt", &nt.tksjetsntkpt);
     tree->SetBranchAddress("tksjetsntkmass", &nt.tksjetsntkmass);
-    tree->SetBranchAddress("costhtkmomvtxdispmin", &nt.costhtkmomvtxdispmin);
-    tree->SetBranchAddress("costhtkmomvtxdispmax", &nt.costhtkmomvtxdispmax);
-    tree->SetBranchAddress("costhtkmomvtxdispavg", &nt.costhtkmomvtxdispavg);
-    tree->SetBranchAddress("costhjetmomvtxdispmin", &nt.costhjetmomvtxdispmin);
-    tree->SetBranchAddress("costhjetmomvtxdispmax", &nt.costhjetmomvtxdispmax);
-    tree->SetBranchAddress("costhjetmomvtxdispavg", &nt.costhjetmomvtxdispavg);
+    // tree->SetBranchAddress("costhtkmomvtxdispmin", &nt.costhtkmomvtxdispmin);
+    // tree->SetBranchAddress("costhtkmomvtxdispmax", &nt.costhtkmomvtxdispmax);
+    // tree->SetBranchAddress("costhtkmomvtxdispavg", &nt.costhtkmomvtxdispavg);
+    // tree->SetBranchAddress("costhjetmomvtxdispmin", &nt.costhjetmomvtxdispmin);
+    // tree->SetBranchAddress("costhjetmomvtxdispmax", &nt.costhjetmomvtxdispmax);
+    // tree->SetBranchAddress("costhjetmomvtxdispavg", &nt.costhjetmomvtxdispavg);
     tree->SetBranchAddress("alljetsvdeltaphi", &nt.alljetsvdeltaphi);
     tree->SetBranchAddress("minjetsvdeltaphi", &nt.minjetsvdeltaphi);
     tree->SetBranchAddress("maxjetsvdeltaphi", &nt.maxjetsvdeltaphi);

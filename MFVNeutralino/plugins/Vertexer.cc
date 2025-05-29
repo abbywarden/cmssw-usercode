@@ -66,12 +66,12 @@ class MFVVertexer : public edm::EDProducer {
     template <typename T>
       void print_track_set(const T & ts, const reco::Vertex & v) const {
         for (auto r : ts)
-          printf(" %u%s", r.key(), (v.trackWeight(r) < mfv::track_vertex_weight_min ? "!" : ""));
+          printf(" %u%s\n", r.key(), (v.trackWeight(r) < mfv::track_vertex_weight_min ? "!" : ""));
       }
 
     void print_track_set(const reco::Vertex & v) const {
       for (auto r = v.tracks_begin(), re = v.tracks_end(); r != re; ++r)
-        printf(" %lu%s", r->key(), (v.trackWeight(*r) < mfv::track_vertex_weight_min ? "!" : ""));
+        printf(" %lu%s\n", r->key(), (v.trackWeight(*r) < mfv::track_vertex_weight_min ? "!" : ""));
     }
 
     bool is_track_subset(const track_set & a, const track_set & b) const {
@@ -95,7 +95,6 @@ class MFVVertexer : public edm::EDProducer {
         const double w = v.trackWeight(*it);
         const bool use = w >= min_weight;
         assert(use);
-        //if (verbose) ("trk #%2i pt %6.3f eta %6.3f phi %6.3f dxy %6.3f dz %6.3f w %5.3f  use? %i\n", int(it-v.tracks_begin()), (*it)->pt(), (*it)->eta(), (*it)->phi(), (*it)->dxy(), (*it)->dz(), w, use);
         if (use)
           result.insert(it->castTo<reco::TrackRef>());
       }
@@ -839,7 +838,6 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
       for (auto tk : tracks[0])
         if (tracks[1].count(tk) > 0)
           shared_tracks.push_back(tk);
-
       if (verbose) {
         if (shared_tracks.size()) {
           printf("   shared tracks are: ");

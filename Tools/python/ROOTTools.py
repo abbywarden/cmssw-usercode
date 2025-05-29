@@ -556,6 +556,9 @@ def compare_hists(ps, samples, **kwargs):
         nostat = no_stats(name, hist_list, None)
         for hist in hists:
             hist.SetLineWidth(2)
+            
+            #hardcoded - should change later 
+            #hist.Rebin(10)
 
             if not is2d and hist.cah_scaling is not None:
                 if hist.cah_scaling > 0 and hist.cah_integral > 0:

@@ -110,7 +110,6 @@ for wd in wds:
         files = []
         if options.lpc_shortcut:
             path = crab_get_output_dir(wd)
-            print path
             #working on wisc machine... cannot use eos command #TODO CLEANUP
             #zero_dirs = [x.strip() for x in popen('eos root://cmseos.fnal.gov ls /eos/uscms%s' % path).split('\n') if x.strip()]
            
@@ -124,12 +123,24 @@ for wd in wds:
                 
             #this is used when jobs are saved in wisc /hdfs 
             #either below or : davs://cmsxrootd.hep.wisc.edu:1094/%s
-            zero_dirs = [x.strip() for x in wisc_popen('gfal-ls davs://cmsxrootd.hep.wisc.edu:1094/%s' % path).split('\n') if x.strip()]
+            #/store/user/awarden/TTTo2L2Nu_TuneCP5_13TeV-powheg-pythia8/TrackMoverULV13Lepmofftossv8_2018/250428_163612
+            #zero_dirs = [x.strip() for x in wisc_popen('gfal-ls davs://cmsxrootd.hep.wisc.edu:1094/%s' % path).split('\n') if x.strip()] #no longer works ?!?!?!
+            zero_dirs = [x.strip() for x in wisc_popen('xrdfs pubxrootd.hep.wisc.edu:1094 ls %s' % path).split('\n') if x.strip()]
+
             for zd in zero_dirs:
-                d = os.path.join(path, zd) + '/'
+                #print 'zd %s' % (zd)
+                #use for gfal -ls
+                #d = os.path.join(path, zd) + '/'
                 #print 'd: %s' % (d)
+                ####
+                #use for xrdfs 
+                d = zd.replace("//", "/")
+                #print 'd: %s' % (d)
+
                 #files += [d + x.strip() for x in popen('eos root://cmseos.fnal.gov ls /eos/uscms%s/%s' % (path, zd)).split() if x.strip() and fn_ok(x.strip())]
-                files += [d + x.strip() for x in wisc_popen('gfal-ls davs://cmsxrootd.hep.wisc.edu:1094/%s/%s' % (path,zd)).split() if x.strip() and fn_ok(x.strip())]
+                #files += [d + x.strip() for x in wisc_popen('gfal-ls davs://cmsxrootd.hep.wisc.edu:1094/%s/%s' % (path,zd)).split() if x.strip() and fn_ok(x.strip())] #no longer works? 
+                files += [x.strip() for x in wisc_popen('xrdfs pubxrootd.hep.wisc.edu:1094 ls /%s' %d).split() if x.strip() and fn_ok(x.strip())]
+
                 #print 'files: %s' % (files)
 
             if options.dbs and set(files) != set(dbs_files):

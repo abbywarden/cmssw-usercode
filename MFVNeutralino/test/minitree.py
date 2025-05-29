@@ -1,15 +1,17 @@
 from JMTucker.Tools.BasicAnalyzer_cfg import *
 
-is_mc = False # for blinding
+is_mc = True # for blinding
 
 from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, dataset, use_btag_triggers, use_MET_triggers, use_Muon_triggers, use_Electron_triggers, use_Lepton_triggers
-dataset += '_wgen'
+dataset += '_wgen' 
+
 #sample_files(process, 'qcdht0200_2017' if is_mc else 'JetHT2017B', dataset, 1)
-sample_files(process, 'mfv_stoplb_tau010000um_M0800_2018' if is_mc else 'SingleMuon2018B', dataset, 5)
-#sample_files(process, 'qcdmupt15_2018', dataset, 10)
-#sample_files(process, 'ttbar_semilep_2017' if is_mc else 'JetHT2017B', dataset, 2)
+#sample_files(process, 'mfv_stoplb_tau000100um_M0800_2017' if is_mc else 'SingleMuon2018B', dataset, 1)
+# sample_files(process, 'qcdmupt15_2017', dataset, 10)
+#sample_files(process, 'ttbar_semilep_2018' if is_mc else 'JetHT2017B', dataset, 2)
 #sample_files(process, 'test' if is_mc else 'JetHT2017B', dataset, 1)
 
+sample_files(process, 'mfv_stopld_tau010000um_M0200_2018', dataset, 1)
 
 tfileservice(process, 'minitree.root')
 cmssw_from_argv(process)
@@ -19,7 +21,7 @@ cmssw_from_argv(process)
 #process.load('JMTucker.MFVNeutralino.MiniTree_cff')
 #load the mini tree specific for bdt : (apply trigger, event preselection, require at least 1 vertex passing : bs2derr <= 50um and bs2ddist >= 100um)
 #TODO : add BDT specific minitree  
-process.load('JMTucker.MFVNeutralino.MiniTree_BDT_cff')
+process.load('JMTucker.MFVNeutralino.MiniTree_BDT_cff') 
 
 # blind btag triggered events
 #comment out for bdt 
@@ -48,7 +50,7 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, qcd_lep = False, leptonic=True, met=True, diboson=True)
     elif use_Lepton_triggers :
         samples = pick_samples(dataset, qcd=False, data = False, all_signal = False, ttbar = False, qcd_lep = False, leptonic=False, met=False, diboson=False, Lepton_data = True)
-        #samples = [getattr(Samples, 'mfv_stopld_tau030000um_M1000_2017')]
+        #samples = [getattr(Samples, 'dyjetstollM50_2017')]
         #samples = [getattr(Samples, 'wjetstolnu_0j_2017'), getattr(Samples, 'mfv_stopld_tau030000um_M1000_2017')]
                    #getattr(Samples, 'mfv_stopld_tau000300um_M1600_2018'), getattr(Samples, 'mfv_stopld_tau001000um_M1600_2018'), getattr(Samples, 'mfv_stopld_tau010000um_M1600_2018'), getattr(Samples, 'mfv_stopld_tau030000um_M1600_2018'), 
                    #getattr(Samples, 'mfv_stopld_tau000300um_M1800_2018'), getattr(Samples, 'mfv_stopld_tau001000um_M1800_2018'), getattr(Samples, 'mfv_stopld_tau010000um_M1800_2018'), getattr(Samples, 'mfv_stopld_tau030000um_M1800_2018')]
@@ -58,7 +60,7 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         samples = pick_samples(dataset, qcd=True, ttbar=True, all_signal=False, data=False, splitSUSY=True)
         #samples = pick_samples(dataset)
         pset_modifier = chain_modifiers(is_mc_modifier, per_sample_pileup_weights_modifier())
-    set_splitting(samples, dataset, 'minitree', data_json=json_path('ana_2017_EgammaMu.json'))
+    set_splitting(samples, dataset, 'minitree', data_json=json_path('ana_2016_EgammaMu.json'))
 
     cs = CondorSubmitter('MiniTree' + version,
                          ex = year,

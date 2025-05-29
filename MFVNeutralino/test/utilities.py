@@ -25,15 +25,16 @@ def cmd_hadd_vertexer_histos():
             #Samples.ttbar_samples + Samples.qcd_samples + Samples.qcd_samples_ext
             #Samples.mfv_stoplb_samples_2018 + Samples.mfv_stopld_samples_2018 + Samples.ttbar_samples_2018 + Samples.diboson_samples_2018 + Samples.leptonic_samples_2018 + Samples.qcd_lep_samples_2018
             #Samples.ttbar_samples_2018 + Samples.diboson_samples_2018 + Samples.leptonic_samples_2018 + Samples.qcd_lep_samples_2018
-            #Samples.mfv_stopld_samples_2018[27:28]
+            Samples.mfv_stopld_samples_2018[27:28]
             #Samples.qcd_lep_samples_2018
-            Samples.Lepton_data_samples_2018[3:4]
+            #Samples.Lepton_data_samples_2018[3:4]
     )
     for s in samples:
         print(s.name)
         s.set_curr_dataset(ntuple)
         #hadd(s.name + '.root', ['root://cmseos.fnal.gov/' + fn.replace('ntuple', 'vertex_histos') for fn in s.filenames])
         hadd(s.name + '.root', ['root://cmsxrootd.hep.wisc.edu/' + fn.replace('ntuple', 'vertex_histos') for fn in s.filenames])
+
 
 def cmd_report_data():
     for ds, ex in ('SingleMuon', '_mu'), ('JetHT', ''), ('SingleElectron', '_ele'), ('MET', '_met'):
@@ -145,9 +146,9 @@ def _background_samples(year=2018):
         x = ['ttbar_had', 'ttbar_lep', 'ttbar_semilep', 'wjetstolnu_0j', 'wjetstolnu_1j', 'wjetstolnu_2j', 'dyjetstollM10', 'dyjetstollM50', 'ww', 'wz', 'zz']
         #x = ['ttbar_had', 'ttbar_lep', 'ttbar_semilep', 'wjetstolnu', 'dyjetstollM10', 'dyjetstollM50', 'ww', 'wz', 'zz']
         
-        #x += ['qcdmupt15']
-        #x += ['qcdempt%03i' % x for x in [15,20,30,50,80,120,170,300]]
-        #x += ['qcdbctoept%03i' % x for x in [15,20,30,80,170,250]]
+        # x += ['qcdmupt15']
+        # x += ['qcdempt%03i' % x for x in [15,20,30,50,80,120,170,300]]
+        # x += ['qcdbctoept%03i' % x for x in [15,20,30,80,170,250]]
         
         #x += ['zjetstoqqht%04i' % x for x in [200, 400, 600, 800]]
         #x += ['wjetstoqqht%04i' % x for x in [200, 400, 600, 800]]

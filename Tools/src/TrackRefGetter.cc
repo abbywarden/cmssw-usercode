@@ -13,13 +13,20 @@ namespace jmt {
 
     last_cacheIdentifier = event.cacheIdentifier();
 
-    if (input_is_miniaod) 
+    if (input_is_miniaod) { 
       event.getByToken(unpacked_candidate_tracks_map_token, unpacked_candidate_tracks_map);
       // event.getByToken(unpacked_candidate_mutracks_map_token, unpacked_candidate_mutracks_map);
       // event.getByToken(unpacked_candidate_eletracks_map_token, unpacked_candidate_eletracks_map);
-
+    }
     for (size_t i = 0, ie = tracks_maps_tokens.size(); i < ie; ++i)
       event.getByToken(tracks_maps_tokens[i], tracks_maps[i]);
+
+    // //also for mu and ele tracks 
+    // for (size_t m = 0, imu = tracks_maps_tokens.size(); m < imu; ++m)
+    //   event.getByToken(mutracks_maps_tokens[m], mutracks_maps[m]);
+
+    // for (size_t e = 0, iel = tracks_maps_tokens.size(); e < iel; ++e)
+    //   event.getByToken(eletracks_maps_tokens[e], eletracks_maps[e]);
 
     if (verbose) {
       if (input_is_miniaod) {
@@ -32,6 +39,27 @@ namespace jmt {
           std::cout << "\n";
         }
         std::cout << "TrackRefGetter " << module_label << " END unpacked candidate tracks map\n";
+
+        //for muons 
+        // std::cout << "TrackRefGetter " << module_label << " unpacked candidate muon tracks map:\n";
+        // for (auto it : *unpacked_candidate_mutracks_map) {
+        //   std::cout << "  ";
+        //   jmt::dump_ptr(std::cout, it.first, &event);
+        //   std::cout << " -> ";
+        //   jmt::dump_ref(std::cout, it.second, &event);
+        //   std::cout << "\n";
+        // }
+        // std::cout << "TrackRefGetter " << module_label << " END unpacked candidate muon tracks map\n";
+        // //for electrons 
+        // std::cout << "TrackRefGetter " << module_label << " unpacked candidate electron tracks map:\n";
+        // for (auto it : *unpacked_candidate_eletracks_map) {
+        //   std::cout << "  ";
+        //   jmt::dump_ptr(std::cout, it.first, &event);
+        //   std::cout << " -> ";
+        //   jmt::dump_ref(std::cout, it.second, &event);
+        //   std::cout << "\n";
+        // }
+        // std::cout << "TrackRefGetter " << module_label << " END unpacked candidate electron tracks map\n";
       }
 
       std::cout << "TrackRefGetter " << module_label << " # tracks maps: " << tracks_maps.size() << ":\n";
@@ -52,6 +80,9 @@ namespace jmt {
   TrackRefGetter::TrackRefGetter(const std::string& label, const edm::ParameterSet& cfg, edm::ConsumesCollector&& cc)
     : input_is_miniaod(cfg.getParameter<bool>("input_is_miniaod")),
       unpacked_candidate_tracks_map_token(cc.consumes<jmt::UnpackedCandidateTracksMap>(cfg.getParameter<edm::InputTag>("unpacked_candidate_tracks_map_src"))),
+      // unpacked_candidate_mutracks_map_token(cc.consumes<jmt::UnpackedCandidateTracksMap>(cfg.getParameter<edm::InputTag>("unpacked_candidate_mutracks_map_src"))),
+      // unpacked_candidate_eletracks_map_token(cc.consumes<jmt::UnpackedCandidateTracksMap>(cfg.getParameter<edm::InputTag>("unpacked_candidate_eletracks_map_src"))),
+
       verbose(cfg.getUntrackedParameter<bool>("verbose", false)),
       module_label(label),
       last_cacheIdentifier(0)
@@ -59,6 +90,14 @@ namespace jmt {
     for (auto tag : cfg.getParameter<std::vector<edm::InputTag>>("tracks_maps_srcs"))
       tracks_maps_tokens.push_back(cc.consumes<jmt::TracksMap>(tag));
     tracks_maps.resize(tracks_maps_tokens.size());
+
+    // for (auto mutag : cfg.getParameter<std::vector<edm::InputTag>>("mutracks_maps_srcs"))
+    //   mutracks_maps_tokens.push_back(cc.consumes<jmt::TracksMap>(mutag));
+    // mutracks_maps.resize(mutracks_maps_tokens.size());
+
+    // for (auto eltag : cfg.getParameter<std::vector<edm::InputTag>>("eletracks_maps_srcs"))
+    //   eletracks_maps_tokens.push_back(cc.consumes<jmt::TracksMap>(eltag));
+    // eletracks_maps.resize(eletracks_maps_tokens.size());
   }
 
   // [TODO] : do similar for muon and electron
@@ -104,6 +143,51 @@ namespace jmt {
     
     return r;
   }
+
+  // std::vector<reco::TrackRef> TrackRefGetter::mutracks(const edm::Event& event, const pat::Muon& muon) {
+  //   setup_event(event);
+  //   std::vector<reco::TrackRef> rmu;
+
+  //   if (input_is_miniaod) {
+  //     if (verbose)
+  //       std::cout << "TrackRefGetter " << module_label << " muon " << muon.pt() << "," << muon.eta() << "," << muon.phi() << ":\n";
+
+  //     // for (const reco::CandidatePtr& p : jet.daughterPtrVector()) {
+  //     for (const reco::Candidate *muon : mu_cand) {
+
+  //       // if (verbose) {
+  //       //   std::cout << "  mu  " << mu_cand->charge()*p->pt() << "," << p->eta() << "," << p->phi() << " ";
+  //       //   jmt::dump_ptr(std::cout, p, &event);
+  //       //   std::cout << "\n";
+  //       // }
+
+  //       reco::TrackRef tk = unpacked_candidate_mutracks_map->find(mu_cand);
+  //       for (auto m : mutracks_maps)
+  //         tk = m->find(tk);
+
+  //       if (tk.isNonnull()) {
+  //         rmu.push_back(tk);
+
+  //         if (verbose) {
+  //           std::cout << "    in map -> track " << tk->charge()*tk->pt() << "," << tk->eta() << "," << tk->phi() << "," << tk->dxy() << "," << tk->dz() << " ";
+  //           jmt::dump_ref(std::cout, tk, &event);
+  //           std::cout << "\n";
+  //         }
+  //       }
+  //     }
+  //   }
+  //   // else {
+  //   //   for (const reco::PFCandidatePtr& pfcand : jet.getPFConstituents()) {
+  //   //     reco::TrackRef tk = pfcand->trackRef();
+  //   //     for (auto m : tracks_maps)
+  //   //       tk = m->find(tk);
+  //   //     if (tk.isNonnull())
+  //   //       r.push_back(tk);
+  //   //   }
+  //   // }
+    
+  //   return rmu;
+  // }
 
   std::vector<std::pair<reco::TrackRef,int>> TrackRefGetter::tracks(const edm::Event& event, const reco::VertexRef& v) {
     setup_event(event);

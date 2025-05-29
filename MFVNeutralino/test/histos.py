@@ -12,9 +12,9 @@ from JMTucker.MFVNeutralino.NtupleCommon import ntuple_version_use as version, d
 
 dataset += '_wgen'
 
-#sample_files(process, 'qcdempt015_2017' if is_mc else 'JetHT2017B', dataset, 1)
-sample_files(process, 'mfv_stopld_tau010000um_M0200_2018' if is_mc else 'SingleMuon2017B', dataset, 2)
-#sample_files(process, 'mfv_stoplb_tau000300um_M0300_2017' if is_mc else 'SingleMuon2017B', dataset, 2)
+#sample_files(process, 'qcdmupt15_2017' if is_mc else 'JetHT2017B', dataset, 10)
+#sample_files(process, 'mfv_stopld_tau010000um_M0200_2018' if is_mc else 'SingleMuon2017B', dataset, 2)
+sample_files(process, 'mfv_stoplb_tau000300um_M0300_2017' if is_mc else 'SingleMuon2017B', dataset, 2)
 #sample_files(process, 'test', dataset, 1)
 #sample_files(process, 'ttbar_semilep_2018' if is_mc else 'SingleMuon2017B', dataset, 3)
 #sample_files(process, 'SingleMuon2018B', dataset, 1)
@@ -173,9 +173,11 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         #samples = pick_samples(dataset, qcd=True, ttbar=False, data=False, leptonic=True, splitSUSY=True, Zvv=True, met=True, span_signal=False)
         samples = [getattr(Samples, 'wjetstolnu_2j_2017')]
     elif use_Lepton_triggers : 
-        #samples = pick_samples(dataset, qcd=False, ttbar=False, all_signal=False, qcd_lep = False, leptonic=False, met=False, diboson=False, Zqq=False, Lepton_data=True )
-        #samples = [getattr(Samples, 'mfv_stopld_tau001000um_M0300_2018'), getattr(Samples, 'mfv_stopld_tau001000um_M0600_2018'), getattr(Samples, 'mfv_stopld_tau001000um_M1000_2018'), getattr(Samples, 'mfv_stopld_tau001000um_M1600_2018')] 
-        samples = [getattr(Samples, 'SingleMuon2018D')]
+        samples = pick_samples(dataset, qcd=False, ttbar=False, all_signal=False, qcd_lep = False, leptonic=False, met=False, diboson=False, Zqq=False, Lepton_data=True )
+        #samples = [getattr(Samples, 'mfv_stopld_tau001000um_M0300_2017'), getattr(Samples, 'mfv_stopld_tau001000um_M0600_2017'), getattr(Samples, 'mfv_stopld_tau001000um_M1000_2017'), getattr(Samples, 'mfv_stopld_tau001000um_M1600_2017'), getattr(Samples, 'mfv_stopld_tau000100um_M1000_2017'), getattr(Samples, 'mfv_stopld_tau010000um_M1000_2017'), ] 
+        #samples = [getattr(Samples, 'qcdempt020_2018'), getattr(Samples, 'mfv_stopld_tau001000um_M0600_2018')]
+        #samples = [getattr(Samples, 'ttbar_semilep_2018')]
+        
         pset_modifier = chain_modifiers(is_mc_modifier)
     elif use_Muon_triggers :
         #samples = pick_samples(dataset, qcd=True, all_signal=True, qcd_lep = True, leptonic=True, met=True, diboson=True, Lepton_data=False )
@@ -184,7 +186,7 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
         #samples = [getattr(Samples, 'WplusHToSSTodddd_tau300um_M55_2017')] 
         pset_modifier = chain_modifiers(is_mc_modifier, half_mc_modifier())
     elif use_Electron_triggers :
-        samples = pick_samples(dataset, qcd=False, all_signal=False, qcd_lep = False, leptonic=False, met=False, diboson=False, Lepton_data=True)
+        samples = pick_samples(dataset, qcd=False, all_signal=False, qcd_lep = False, leptonic=False, met=False, diboson=False, Lepton_data=False)
         pset_modifier = chain_modifiers(is_mc_modifier, half_mc_modifier())
     else :
         samples = pick_samples(dataset)
@@ -192,7 +194,7 @@ if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
 
 
     #set_splitting(samples, dataset, 'histos', data_json=json_path('ana_2016.json' if year in [20161, 20162] else 'ana_2017p8.json'))
-    set_splitting(samples, dataset, 'histos', data_json=json_path('ana_2018_EgammaMu.json'))
+    set_splitting(samples, dataset, 'histos', data_json=json_path('ana_2017_EgammaMu.json'))
 
     cs = CondorSubmitter('Histos' + version + '_SingleLep',
                          ex = year,

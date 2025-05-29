@@ -24,8 +24,7 @@ namespace mfv {
     float l1_myhtt;
     float l1_myhttwbug;
     float hlt_ht;
-    
-    
+
     float bsx;
     float bsy;
     float bsz;
@@ -49,6 +48,7 @@ namespace mfv {
     float jet0_pt;
     float jet1_pt;
     float jetht;
+    float jet_hlt_pt[50];
 
     unsigned char nelectrons;
     float electron_pt[50];
@@ -135,12 +135,15 @@ namespace mfv {
     std::vector<float> leading_lepeta_inSV;
     std::vector<float> leading_lepphi_inSV;
     std::vector<float> leading_lephltmatched_inSV;
+    std::vector<float> leading_leppasstrigpt_inSV;
+    std::vector<float> closestdR_track_leadinglep;
+    std::vector<float> avgptnolep;
     // std::vector<float> max_lep_sv_2ddist;
     // std::vector<float> max_lep_sv_dphi;
     // std::vector<float> max_lep_sv_dphi_2;
 
     std::vector<float> leading_jetpt_inSV;
-    std::vector<float> leading_jetlep_pairdr;
+    std::vector<float> leading_lepjet_pairdr;
     
     std::vector<float> nbtags_loose; //
     std::vector<float> nbtags_med; //
@@ -192,6 +195,7 @@ namespace mfv {
     std::vector<float> trackdxynsigmaavg;
     std::vector<float> trackdxynsigmamax;
     std::vector<float> trackdxynsigmamin;
+    std::vector<float> trackdxynsigmarms;
     std::vector<float> sum_trackdxynsigma;
 
     std::vector<float> trackptmin;
