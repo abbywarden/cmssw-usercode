@@ -43,6 +43,7 @@ void MFVEvent::muon_push_back(const reco::Muon& muon,
     }
   }
   muon_minr.push_back(min_r);
+  muon_q.push_back(muon.charge());
 }
 
 void MFVEvent::electron_push_back(const reco::GsfElectron& electron,
@@ -84,6 +85,7 @@ void MFVEvent::electron_push_back(const reco::GsfElectron& electron,
     }
   }
   electron_minr.push_back(min_r);
+  electron_q.push_back(electron.charge());
 }
 
 void MFVEvent::jet_hlt_push_back(const reco::Candidate& jet, const std::vector<TLorentzVector>& hltjets, bool is_displaced_calojets){
@@ -115,7 +117,7 @@ void MFVEvent::jet_hlt_push_back(const reco::Candidate& jet, const std::vector<T
 
 void MFVEvent::mu_hlt_push_back(const reco::Muon& muon, const std::vector<TLorentzVector>& hlt_mu){
 
-  double hltmatchdist2 = 0.2*0.2;
+  double hltmatchdist2 = 0.1*0.1;
   TLorentzVector hltmatch;
   for (auto hlt : hlt_mu) {
     const double dist2 = reco::deltaR2(muon.eta(), muon.phi(), hlt.Eta(), hlt.Phi());
@@ -132,7 +134,7 @@ void MFVEvent::mu_hlt_push_back(const reco::Muon& muon, const std::vector<TLoren
 
 void MFVEvent::ele_hlt_push_back(const reco::GsfElectron& electron, const std::vector<TLorentzVector>& hlt_ele){
 
-  double hltmatchdist2 = 0.2*0.2;
+  double hltmatchdist2 = 0.1*0.1;
   TLorentzVector hltmatch;
   for (auto hlt : hlt_ele) {
     const double dist2 = reco::deltaR2(electron.eta(), electron.phi(), hlt.Eta(), hlt.Phi());

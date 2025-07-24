@@ -377,6 +377,7 @@ struct MFVEvent {
   std::vector<float> muon_dzerr;
   std::vector<float> muon_chi2dof;
   std::vector<float> muon_minr;
+  std::vector<float> muon_q; 
 
   std::vector<float> electron_pt;
   std::vector<float> electron_eta;
@@ -396,6 +397,7 @@ struct MFVEvent {
   std::vector<float> electron_dzerr;
   std::vector<float> electron_chi2dof;
   std::vector<float> electron_minr;
+  std::vector<float> electron_q; 
 
 
   std::vector<float> electron_isEB;

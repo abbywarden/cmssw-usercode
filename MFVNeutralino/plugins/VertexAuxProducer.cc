@@ -32,6 +32,7 @@
 
 #include "JMTucker/Tools/interface/StatCalculator.h"
 #include "JMTucker/Tools/interface/Utilities.h"
+#include "JMTucker/Tools/interface/Year.h"
 
 class MFVVertexAuxProducer : public edm::EDProducer {
  public:
@@ -101,6 +102,52 @@ bool cutBasedIDHelper(pat::ElectronRef el, double sigmaietaieta, double detain, 
 	  && expectedMissingInnerHits_ <= expectedmissinginnerhits
     && passveto
     );
+}
+
+// bool satisfiesLepTriggerPT(float pT, bool isMu, edm::Handle<mfv::TriggerFloats> triggerfloats){
+std::pair<bool,int> satisfiesLepTriggerPT(float pT, bool isMu, edm::Handle<mfv::TriggerFloats> triggerfloats){
+  int year = int(MFVNEUTRALINO_YEAR);
+  std::vector<float> offline_ptthresh = {30.0, 35.0, 38.0, 120.0, 55.0, 27.0, 30.0, 53.0, 180.0, 205.0};
+  bool passtrigpt = false;
+  int which_trig = -1;
+  //FIXME : hardcoded currently; leptons are in first 10 in mfv::n_hlt_paths
+  if (isMu) { 
+    for (size_t j = 5; j < 8; ++j) { 
+      const bool found = triggerfloats->HLTdecisions[j] != -1;
+      if (found) {
+        //make certain it's the correct year
+        if (j == 6 && year != 2017) continue; //isoMu27 only for 2017
+        if (j == 5 && year == 2017) continue; //isoMu24 for 2016 and 2018
+        if (pT > offline_ptthresh[j]) {
+          passtrigpt = true;
+          which_trig = j; 
+          break; //no need to loop over the rest 
+        }
+      }
+    }
+  }
+  else {
+    for (size_t j = 0; j < 10; ++j) { //leptons are in the first 10 so just loop over that
+      if (j > 4 && j < 8) continue; //just skip over the muons
+      bool found = triggerfloats->HLTdecisions[j] != -1;
+      if (found) {
+        //make certain it's the correct year 
+        if (j == 0 && (year != 20161 and year != 20162)) continue; //ele27 only for 2016
+        if (j == 1 && year != 2018) continue; // ele32 only for 2018
+        if (j == 2 && year != 2017) continue; // ele35 only for 2017 
+        if (j == 8 && (year != 20161 && year !=20162)) continue; //photon175 only for 2016 
+        if (j == 9 && (year !=2017 && year != 2018)) continue; //photon200 not for 2016
+        
+        if (pT > offline_ptthresh[j]) {
+          passtrigpt = true;
+          which_trig = j; 
+          break; //no need to loop over the rest 
+        }
+      }
+    }
+  }
+  // return passtrigpt;
+  return std::make_pair(passtrigpt, which_trig);
 }
 
 MFVVertexAuxProducer::MFVVertexAuxProducer(const edm::ParameterSet& cfg)
@@ -520,6 +567,11 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
     aux.nmuptgt20 = 0;
     aux.nlepptgt20 = 0;
 
+    //for saving the associated selected lepton (that passes ID,iso,pt,eta, hltmatched) and to find the leading lepton
+    std::vector<float> assoc_selleppt {-1};
+    std::vector<float> assoc_sellepeta {-10};
+    std::vector<int> assoc_selleptype {-1}; //0 == muon, 1 == electron
+    std::vector<int> assoc_sellephlt {-1}; // saving which hlt trigger was fired 
     //calculating transverse impact parameter between lepton and sv requires a trasient track
     std::vector<reco::TransientTrack> matchedmu_ttracks;
     std::vector<reco::TransientTrack> matchedele_ttracks;
@@ -547,6 +599,11 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
             bool isMedEl = electronref[iel]->electronID("cutBasedElectronID-Fall17-94X-V2-medium");
             bool isTightEl = electronref[iel]->electronID("cutBasedElectronID-Fall17-94X-V2-tight");
 
+            // bool isVetoEl = electronref[iel]->electronID("cutBasedElectronID_Fall17_94X_V2_veto");
+            // bool isLooseEl = electronref[iel]->electronID("cutBasedElectronID_Fall17_94X_V2_loose");
+            // bool isMedEl = electronref[iel]->electronID("cutBasedElectronID_Fall17_94X_V2_medium");
+            // bool isTightEl = electronref[iel]->electronID("cutBasedElectronID_Fall17_94X_V2_tight");
+
             aux.electron_iso.push_back(iso);
             std::vector<int> eleID;
             eleID.push_back(isVetoEl);
@@ -559,6 +616,7 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
             bool LooseEl_noiso = false;
             bool MedEl_noiso = false;
             bool TightEl_noiso = false;
+            bool in_gap = false; //check that the electron does not lie in the transition between barrel and endcap of ECAL (1.44 < |eta| < 1.57)
 
             if (fabs(electronref[iel]->superCluster()->eta()) <= 1.479) { 
               double  he_veto =  0.05 + 1.16/electronref[iel]->superCluster()->energy() + 0.0324 * *rho/electronref[iel]->superCluster()->energy();
@@ -597,6 +655,8 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
             aux.electron_eta.push_back(electronref[iel]->eta());
             aux.electron_phi.push_back(electronref[iel]->phi());
 
+            if (electronref[iel]->eta() > 1.44 && electronref[iel]->eta() < 1.57) in_gap = true; 
+
             // do hlt matching 
             double hltmatchdist2 = 0.1;
             double best_hltmatchdR = 5.;
@@ -630,6 +690,19 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
             aux.rescaled_electron_dxyerr.push_back(rs.rescaled_tk.dxyError());
             if (rs.rescaled_tk.dxyError() == 0) std::cout << etk->pt() << " " << electronref[iel]->pt() << std::endl;
             aux.electron_dzerr.push_back(etk->dzError());
+
+            if (hltmatch.Pt() > 0) {
+              if (fabs(electronref[iel]->eta()) < 2.4 && isTightEl && !in_gap) { 
+                std::pair<bool, int> result = satisfiesLepTriggerPT(electronref[iel]->pt(), false, triggerfloats);
+                // if(satisfiesLepTriggerPT(electronref[iel]->pt(), false, triggerfloats)) {
+                if (result.first) { //if satisfies the offline lepton pT 
+                  assoc_selleppt.push_back(electronref[iel]->pt());
+                  assoc_sellepeta.push_back(electronref[iel]->eta());
+                  assoc_selleptype.push_back(1); //1 == electron 
+                  assoc_sellephlt.push_back(result.second); //pushing back the hlt number 
+                }
+              }
+            }
           }
         }
         for (auto mettk : matchedele_ttracks ) {
@@ -704,6 +777,19 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
             aux.muon_dxyerr.push_back(mtk->dxyError());
             aux.rescaled_muon_dxyerr.push_back(rs.rescaled_tk.dxyError());
             aux.muon_dzerr.push_back(mtk->dzError());
+
+            if (hltmatch.Pt() > 0) {
+              if (fabs(muonref[imu]->eta()) < 2.4 && isMedMuon && iso < 0.1) {
+                // if (satisfiesLepTriggerPT(muonref[imu]->pt(), true, triggerfloats)) {
+                std::pair<bool, int> result = satisfiesLepTriggerPT(muonref[imu]->pt(), true, triggerfloats);
+                if (result.first) { //if satisfies the offline lepton pT 
+                  assoc_selleppt.push_back(muonref[imu]->pt());
+                  assoc_sellepeta.push_back(muonref[imu]->eta());
+                  assoc_selleptype.push_back(0); //0 == muon 
+                  assoc_sellephlt.push_back(result.second); //pushing back the hlt number
+                }
+              }
+            }
           }
         }
         for (auto mmttk : matchedmu_ttracks ) {
@@ -716,6 +802,23 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
     }
     aux.nleptons = int(matchedmu_ttracks.size() + matchedele_ttracks.size());
     aux.nlepptgt20 = aux.nmuptgt20 + aux.neleptgt20;
+
+    //now determining the leading lepton; 
+    float leading_leppt = *max_element(assoc_selleppt.begin(), assoc_selleppt.end());
+    int leading_lepidx = std::max_element(assoc_selleppt.begin(), assoc_selleppt.end()) - assoc_selleppt.begin();
+    if (assoc_selleptype[leading_lepidx] == 0) { 
+      aux.leading_selmu_pt.push_back(leading_leppt);
+      aux.leading_selmu_eta.push_back(assoc_sellepeta[leading_lepidx]);
+      aux.leading_selmu_hlt.push_back(assoc_sellephlt[leading_lepidx]);
+    }
+    else if (assoc_selleptype[leading_lepidx] == 1){
+      aux.leading_selele_pt.push_back(leading_leppt);
+      aux.leading_selele_eta.push_back(assoc_sellepeta[leading_lepidx]);
+      aux.leading_selele_hlt.push_back(assoc_sellephlt[leading_lepidx]);
+    }
+    
+
+
     if (verbose) printf("    momenta:\n");
     for (int i = 0; i < mfv::NMomenta; ++i) {
       aux.pt[i]   = p4s[i].pt();
@@ -730,14 +833,25 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
     float sumpt2 = 0;
 
     std::vector<double> costhtkmomvtxdisps;
+    // math::XYZTLorentzVector total_tk_p4;
+    // double sumtk_px = 0;
+    // double sumtk_py = 0;
+    // const math::XYZTLorentzVector& sv_mom = sv.p4();
 
     if (verbose) printf("    tracks %i:\n", int(trke-trkb));
+    int counter = 0;
     for (auto trki = trkb; trki != trke; ++trki) {
       const reco::TrackBaseRef& tri = *trki;
       const reco::TransientTrack sedtri = tt_builder->build(**trki); 
       const reco::TrackRef& trref = tri.castTo<reco::TrackRef>();
       const math::XYZTLorentzVector tri_p4(tri->px(), tri->py(), tri->pz(), tri->p());
+      // std::cout << " track i px, py, pz : " << counter << " " << tri->px() << " " << tri->py() << " " << tri->pz() << std::endl;
+      // total_tk_p4 += tri_p4;
+      // sumtk_px += tri->px();
+      // sumtk_py += tri->py();
+      // std::cout << sumtk_px << " " << sumtk_py << " " << std::endl;
       sumpt2 += pow(tri->pt(),2);
+      counter +=1;
 
       if (buffer_trackicity.count({tri.key(), tri.id().id()}) > 0)
         throw cms::Exception("VertexAuxProducer") << "trackicity > 1";
@@ -828,6 +942,20 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
     }
     else
       aux.pv2ddist = aux.pv3ddist = aux.pv2derr = aux.pv3derr = -1;
+    
+    // const math::XYZTLorentzVector& sv_mom = sv.p4();
+    // std::cout << " ---------------------------------- " << std::endl;
+    // std::cout << "bs2sv x, y, z: " << bs2sv.x() << " " << bs2sv.y() << " " << bs2sv.z() << std::endl;
+    // std::cout << "og costh2 : " << jmt::costh2(sv_mom, bs2sv) << std::endl;
+    // std::cout << "sv mom : " << sv_mom.x() << " " << sv_mom.y() << std::endl;
+    // std::cout << "check2 : " << jmt::costh2(total_tk_p4, bs2sv) << std::endl;
+    // std::cout << "total tk p4 : " << total_tk_p4.x() << " " << total_tk_p4.y() << std::endl;
+    // std::cout << "sumtk px, py : " << sumtk_px << " " << sumtk_py << std::endl;
+    // double cosinetheta = ((sv_mom.x() * bs2sv.x()) + (sv_mom.y() * bs2sv.y())) / ( std::sqrt(sv_mom.x()*sv_mom.x() + sv_mom.y()*sv_mom.y()) + std::sqrt(bs2sv.x()*bs2sv.x() + bs2sv.y()*bs2sv.y()) );
+
+    // std::cout << "check calc : " << cosinetheta << std::endl;
+
+    // std::cout << "total track p4 : " << total_tk_p4.x() << " " << total_tk_p4.y() << std::endl;
 
     for (int i = 0; i < mfv::NMomenta; ++i) {
       const math::XYZTLorentzVector& mom = p4s[i];
@@ -839,6 +967,8 @@ void MFVVertexAuxProducer::produce(edm::Event& event, const edm::EventSetup& set
 
       if (mom.pt() > 0) {
         aux.costhmombs(i, jmt::costh2(mom, bs2sv));
+        // std::cout << "i, costh : " << i << " " << jmt::costh2(mom, bs2sv) << std::endl;
+        // std::cout << "mom : " << mom.x() << " " << mom.y() << std::endl;
         if (primary_vertex != 0) {
           aux.costhmompv2d(i, jmt::costh2(mom, pv2sv));
           aux.costhmompv3d(i, jmt::costh3(mom, pv2sv));

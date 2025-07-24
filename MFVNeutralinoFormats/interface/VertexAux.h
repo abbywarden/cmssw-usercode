@@ -182,6 +182,15 @@ struct MFVVertexAux {
   std::vector<float> elevtxtiperr;
   std::vector<float> elevtxtipsig;
 
+  //selected mu/ele associated to SV : passes ID,iso,eta,pT,hltmatched and is leading lepton -> ie the lepton used for event selection 
+  //easier to save these for weightproducer to derive SF 
+  std::vector<float> leading_selmu_pt; 
+  std::vector<float> leading_selmu_eta;
+  std::vector<float> leading_selmu_hlt; //which hlt trigger was fired 
+  std::vector<float> leading_selele_pt;
+  std::vector<float> leading_selele_eta;
+  std::vector<float> leading_selele_hlt; //which hlt trigger was fired 
+
 
   TLorentzVector p4(int w=0) const {
     TLorentzVector v;
@@ -287,8 +296,8 @@ struct MFVVertexAux {
   }
   float pvdzsig() const { return sig(pvdz(), pvdzerr()); }
 
+  float costhmombs_jl; //costhmombs for jet lep analysis (when there are not just jets associated to the sv)
 
-  //for tracks associated to jets only (mfv::NMomenta)
   uchar costhmombs_  [mfv::NMomenta];
   uchar costhmompv2d_[mfv::NMomenta];
   uchar costhmompv3d_[mfv::NMomenta];
