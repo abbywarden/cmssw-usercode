@@ -78,7 +78,7 @@ MFVLeptonVertexAssociator::MFVLeptonVertexAssociator(const edm::ParameterSet& cf
     vertex_token(consumes<reco::VertexCollection>(cfg.getParameter<edm::InputTag>("vertex_src"))),
     input_is_refs(cfg.getParameter<bool>("input_is_refs")),
     min_vertex_track_weight(cfg.getParameter<double>("min_vertex_track_weight")),
-    histos(cfg.getUntrackedParameter<bool>("histos", true)),
+    histos(cfg.getUntrackedParameter<bool>("histos", false)),
     verbose(cfg.getUntrackedParameter<bool>("verbose"))
 {
   produces<MuAssociation>(mfv::muonsby_name);
@@ -92,19 +92,19 @@ MFVLeptonVertexAssociator::MFVLeptonVertexAssociator(const edm::ParameterSet& cf
     h_nlepinSV = fs->make<TH1F>("h_nlepinSV", ";# of leptons associated to SV;arb. units", 5, 0, 5);
     h_nmuinSV = fs->make<TH1F>("h_nmuinSV", ";# of muons associated to SV;arb. units", 5, 0, 5);
     h_neleinSV = fs->make<TH1F>("h_neleinSV", ";# of electrons associated to SV;arb. units", 5, 0, 5);
-    h_muinSV_pt = fs->make<TH1F>("h_muinSV_pt", ";pt of muons associated to SV (GeV);arb. units", 200, 0, 400);
-    h_eleinSV_pt = fs->make<TH1F>("h_eleinSV_pt", ";pt of electrons associated to SV (GeV);arb. units", 200, 0, 400);
-    h_muinSV_dxy = fs->make<TH1F>("h_muinSV_dxy", ";dxy of muons associated to SV (cm);arb. units", 200, 0, 0.2);
-    h_eleinSV_dxy = fs->make<TH1F>("h_eleinSV_dxy", ";dxy of electrons associated to SV (cm);arb. units", 200, 0, 0.2);
-    h_muinSV_pt_vs_dxy = fs->make<TH2F>("h_muinSV_pt_vs_dxy", ";pt of muons associated to SV (GeV);dxy of muons associated to SV (cm)", 200, 0, 400, 200, 0, 0.2);
-    h_eleinSV_pt_vs_dxy = fs->make<TH2F>("h_eleinSV_pt_vs_dxy", ";pt of electrons associated to SV (GeV);dxy of electrons associated to SV (cm)", 200, 0, 400, 200, 0, 0.2);
+    h_muinSV_pt = fs->make<TH1F>("h_muinSV_pt", ";pt of muons associated to SV (GeV);arb. units", 100, 0, 400);
+    h_eleinSV_pt = fs->make<TH1F>("h_eleinSV_pt", ";pt of electrons associated to SV (GeV);arb. units", 100, 0, 400);
+    h_muinSV_dxy = fs->make<TH1F>("h_muinSV_dxy", ";dxy of muons associated to SV (cm);arb. units", 100, 0, 0.2);
+    h_eleinSV_dxy = fs->make<TH1F>("h_eleinSV_dxy", ";dxy of electrons associated to SV (cm);arb. units", 100, 0, 0.2);
+    h_muinSV_pt_vs_dxy = fs->make<TH2F>("h_muinSV_pt_vs_dxy", ";pt of muons associated to SV (GeV);dxy of muons associated to SV (cm)", 100, 0, 400, 100, 0, 0.2);
+    h_eleinSV_pt_vs_dxy = fs->make<TH2F>("h_eleinSV_pt_vs_dxy", ";pt of electrons associated to SV (GeV);dxy of electrons associated to SV (cm)", 100, 0, 400, 100, 0, 0.2);
     
 
-    h_matchedtkpt_vs_matchedmupt = fs->make<TH2F>("h_matchedtkpt_vs_matchedmupt", ";pt of matched tk (GeV); pt of matched mu (GeV))", 200, 0, 400, 200, 0, 400);
-    h_matchedtkpt_vs_matchedelept = fs->make<TH2F>("h_matchedtkpt_vs_matchedelept", ";pt of matched tk (GeV); pt of matched ele (GeV))", 200, 0, 400, 200, 0, 400);
+    h_matchedtkpt_vs_matchedmupt = fs->make<TH2F>("h_matchedtkpt_vs_matchedmupt", ";pt of matched tk (GeV); pt of matched mu (GeV))", 100, 0, 400, 100, 0, 400);
+    h_matchedtkpt_vs_matchedelept = fs->make<TH2F>("h_matchedtkpt_vs_matchedelept", ";pt of matched tk (GeV); pt of matched ele (GeV))", 100, 0, 400, 100, 0, 400);
 
-    h_mu_pt = fs->make<TH1F>("h_nmu_pt", ";pt of muons not associated to SV (GeV);arb. units", 400, 0, 2000);
-    h_ele_pt = fs->make<TH1F>("h_nele_pt", ";pt of electrons not associated to SV (GeV);arb. units", 400, 0, 2000);
+    h_mu_pt = fs->make<TH1F>("h_nmu_pt", ";pt of muons not associated to SV (GeV);arb. units", 100, 0, 2000);
+    h_ele_pt = fs->make<TH1F>("h_nele_pt", ";pt of electrons not associated to SV (GeV);arb. units", 100, 0, 2000);
     h_nmu_vs_nmuinSV = fs->make<TH2F>("h_nmu_vs_nmuinSV", ";# of mu in SV;# of mu", 5, 0, 5, 5, 0, 5);
     h_nele_vs_neleinSV = fs->make<TH2F>("h_nele_vs_neleinSV", ";# of ele in SV;# of ele", 5, 0, 5, 5, 0, 5);
   }
@@ -198,7 +198,7 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
                 double dr = reco::deltaR(tk->eta(), tk->phi(), mtk->eta(), mtk->phi());
                 if (dr < 0.001 ) {
                   matchedmuons = std::make_tuple(dr, imuon, tt_builder->build(mtk));
-                  h_matchedtkpt_vs_matchedmupt->Fill(tk->pt(), muon.pt());
+                  // h_matchedtkpt_vs_matchedmupt->Fill(tk->pt(), muon.pt());
                 }
               }
             }
@@ -234,7 +234,7 @@ void MFVLeptonVertexAssociator::produce(edm::Event& event, const edm::EventSetup
                 double dr = reco::deltaR(tk->eta(), tk->phi(), etk->eta(), etk->phi());
                 if (dr < 0.001 ) {
                   matchedelectrons = std::make_tuple(dr, iel, tt_builder->build(etk));
-                  h_matchedtkpt_vs_matchedelept->Fill(tk->pt(), electron.pt());
+                  // h_matchedtkpt_vs_matchedelept->Fill(tk->pt(), electron.pt());
                 }
               }
             }

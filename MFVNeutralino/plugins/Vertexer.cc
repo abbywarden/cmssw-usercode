@@ -206,7 +206,7 @@ class MFVVertexer : public edm::EDProducer {
   TH1F* h_seed_vertex_r;
   TH1F* h_seed_vertex_paird2d;
   TH1F* h_seed_vertex_pairdphi;
-  TH2F* h_seed_vertex_pairdphi_v_2d;
+  // TH2F* h_seed_vertex_pairdphi_v_2d;
   TH1F* h_n_resets;
   TH1F* h_n_onetracks;
 
@@ -299,7 +299,7 @@ class MFVVertexer : public edm::EDProducer {
   TH1F* hs_output_vertex_paird2d[stepEnum::N_STEPS];
   TH1F* hs_output_vertex_paird2dsig[stepEnum::N_STEPS];
   TH1F* hs_output_vertex_pairdphi[stepEnum::N_STEPS];
-  TH2F* hs_output_vertex_pairdphi_v_2d[stepEnum::N_STEPS];
+  // TH2F* hs_output_vertex_pairdphi_v_2d[stepEnum::N_STEPS];
 
   TH1F* h_output_aftermerge_potential_merged_vertex_nm1_chi2;
   TH1F* h_output_aftermerge_potential_merged_vertex_nm1_ntracks;
@@ -310,29 +310,29 @@ class MFVVertexer : public edm::EDProducer {
 
   TH1F* h_output_aftersharedjets_n_onetracks;
 
-  TH2F* h_dzstage_droppedtk_pt_vs_sigma;
-  TH2F* h_dzstage_droppedleptk_pt_vs_sigma;
-  TH2F* h_dzstage_droppedtk_pt_vs_dz;
-  TH2F* h_dzstage_droppedleptk_pt_vs_dz;
-  TH2F* h_dzstage_droppedtk_dz_vs_sigma;
-  TH2F* h_dzstage_droppedleptk_dz_vs_sigma;
+  // TH2F* h_dzstage_droppedtk_pt_vs_sigma;
+  // TH2F* h_dzstage_droppedleptk_pt_vs_sigma;
+  // // TH2F* h_dzstage_droppedtk_pt_vs_dz;
+  // // TH2F* h_dzstage_droppedleptk_pt_vs_dz;
+  // // TH2F* h_dzstage_droppedtk_dz_vs_sigma;
+  // // TH2F* h_dzstage_droppedleptk_dz_vs_sigma;
 
-  TH1F* h_dzstage_droppedtk_pt;
-  TH1F* h_dzstage_droppedleptk_pt;
-  TH1F* h_dzstage_droppedtk_dz;
-  TH1F* h_dzstage_droppedleptk_dz;
-  TH1F* h_dzstage_droppedtk_sigma;
-  TH1F* h_dzstage_droppedleptk_sigma;
+  // TH1F* h_dzstage_droppedtk_pt;
+  // TH1F* h_dzstage_droppedleptk_pt;
+  // // TH1F* h_dzstage_droppedtk_dz;
+  // // TH1F* h_dzstage_droppedleptk_dz;
+  // TH1F* h_dzstage_droppedtk_sigma;
+  // TH1F* h_dzstage_droppedleptk_sigma;
 
-  TH2F* h_dzstage_droppedleptk_pt_vs_missdist; //miss dist of the lep track from the vnm1 vertex 
-  TH2F* h_dzstage_droppedleptk_missdist_vs_dz; 
-  TH2F* h_dzstage_droppedleptk_missdist_vs_sigma; 
-  TH1F* h_dzstage_droppedleptk_missdist; 
+  // TH2F* h_dzstage_droppedleptk_pt_vs_missdist; //miss dist of the lep track from the vnm1 vertex 
+  // // TH2F* h_dzstage_droppedleptk_missdist_vs_dz; 
+  // TH2F* h_dzstage_droppedleptk_missdist_vs_sigma; 
+  // TH1F* h_dzstage_droppedleptk_missdist; 
 
-  TH2F* h_dzstage_droppedleptk_missdist3d_vs_missdist2d; 
-  // TH2F* h_dzstage_droppedleptk50_missdist3d_vs_missdist2d;
+  // TH2F* h_dzstage_droppedleptk_missdist3d_vs_missdist2d; 
+  // // TH2F* h_dzstage_droppedleptk50_missdist3d_vs_missdist2d;
 
-  // TH2F* h_dzstage_droppedtk_dphi_vs_sigma;
+  // // TH2F* h_dzstage_droppedtk_dphi_vs_sigma;
 
 };
 
@@ -419,7 +419,7 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
     h_seed_vertex_r                  = fs->make<TH1F>("h_seed_vertex_r",                  ";vtxbsdist_r (cm.)", 20,   0,      2);
     h_seed_vertex_paird2d            = fs->make<TH1F>("h_seed_vertex_paird2d",            ";svdist2d (cm.) every pair", 100,   0,      0.2);
     h_seed_vertex_pairdphi           = fs->make<TH1F>("h_seed_vertex_pairdphi",           ";dPhi(vtx0,vtx1) every pair", 100,  -3.14,   3.14);
-    h_seed_vertex_pairdphi_v_2d      = fs->make<TH2F>("h_seed_vertex_pairdphi_v_2d",      ";dPhi(vtx0,vtx1) every pair;sv2dist2d (cm.) every pair", 100, -3.14, 3.14, 100, 0, 0.2);
+    // h_seed_vertex_pairdphi_v_2d      = fs->make<TH2F>("h_seed_vertex_pairdphi_v_2d",      ";dPhi(vtx0,vtx1) every pair;sv2dist2d (cm.) every pair", 100, -3.14, 3.14, 100, 0, 0.2);
 
     h_n_resets                       = fs->make<TH1F>("h_n_resets",                       "", 50,   0,   500);
     h_n_onetracks                    = fs->make<TH1F>("h_n_onetracks",                    "",  5,   0,     5);
@@ -485,9 +485,9 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
       hs_output_vertex_nleptracks[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_nleptracks", ";nleptracks/vtx", 10, 0, 10);
       
       hs_output_vertex_mostisotrack[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_mostisotrack", ";largest dR between tracks/vtx", 0, 0, 4);
-      hs_output_vertex_elept[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_elept", ";eletrack pt/vtx", 200, 0, 2000);
-      hs_output_vertex_mupt[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_mupt", ";mutrack pt/vtx", 200, 0, 2000);
-      hs_output_vertex_leppt[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_leppt", ";leptrack pt/vtx", 200, 0, 2000);
+      hs_output_vertex_elept[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_elept", ";eletrack pt/vtx", 100, 0, 2000);
+      hs_output_vertex_mupt[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_mupt", ";mutrack pt/vtx", 100, 0, 2000);
+      hs_output_vertex_leppt[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_leppt", ";leptrack pt/vtx", 100, 0, 2000);
       hs_output_vertex_elept_vs_nsigma[step] = fs->make<TH2F>("h_output_"+stepStrs[step]+"_vertex_elept_vs_nsigma", "", 100, 0, 1000, 20, 0, 20);
       hs_output_vertex_mupt_vs_nsigma[step] = fs->make<TH2F>("h_output_"+stepStrs[step]+"_vertex_mupt_vs_nsigma", "", 100, 0, 1000, 20, 0, 20);
 
@@ -504,7 +504,7 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
       hs_output_vertex_paird2d[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_paird2d", ";svdist2d (cm.) every pair", 100, 0, 0.2);
       hs_output_vertex_paird2dsig[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_paird2dsig", ";svdist2d significance every pair", 100, 0, 20);
       hs_output_vertex_pairdphi[step] = fs->make<TH1F>("h_output_"+stepStrs[step]+"_vertex_pairdphi", ";dPhi(vtx0,vtx1) every pair", 100, -3.14, 3.14);
-      hs_output_vertex_pairdphi_v_2d[step] = fs->make<TH2F>("h_output_"+stepStrs[step]+"_vertex_pairdphi_v_2d", ";dPhi(vtx0,vtx1) every pair;svdist2d (cm.) every pair", 100, -3.14, 3.14, 100, 0, 0.2);
+      // hs_output_vertex_pairdphi_v_2d[step] = fs->make<TH2F>("h_output_"+stepStrs[step]+"_vertex_pairdphi_v_2d", ";dPhi(vtx0,vtx1) every pair;svdist2d (cm.) every pair", 100, -3.14, 3.14, 100, 0, 0.2);
 
     }
     if (investigate_merged_vertices) {
@@ -522,29 +522,29 @@ MFVVertexer::MFVVertexer(const edm::ParameterSet& cfg)
       h_output_aftersharedjets_n_onetracks = fs->make<TH1F>("h_output_aftersharedjets_n_onetracks", "", 5, 0, 5);
     }
 
-    h_dzstage_droppedtk_pt_vs_sigma = fs->make<TH2F>("h_dzstage_droppedtk_pt_vs_sigma", "", 500, 0, 500, 50, 0, 10);
-    h_dzstage_droppedleptk_pt_vs_sigma = fs->make<TH2F>("h_dzstage_droppedleptk_pt_vs_sigma", "", 500, 0, 500, 50, 0, 10);
-    h_dzstage_droppedtk_pt_vs_dz = fs->make<TH2F>("h_dzstage_droppedtk_pt_vs_dz", "", 500, 0, 500, 50, 0, 0.05);
-    h_dzstage_droppedleptk_pt_vs_dz = fs->make<TH2F>("h_dzstage_droppedleptk_pt_vs_dz", "", 500, 0, 500, 50, 0, 0.05);
-    h_dzstage_droppedtk_dz_vs_sigma = fs->make<TH2F>("h_dzstage_droppedtk_dz_vs_sigma", "", 50, 0, 0.05, 50, 0, 10);
-    h_dzstage_droppedleptk_dz_vs_sigma = fs->make<TH2F>("h_dzstage_droppedleptk_dz_vs_sigma", "", 50, 0, 0.05, 50, 0, 10);
+    // h_dzstage_droppedtk_pt_vs_sigma = fs->make<TH2F>("h_dzstage_droppedtk_pt_vs_sigma", "", 100, 0, 500, 50, 0, 10);
+    // h_dzstage_droppedleptk_pt_vs_sigma = fs->make<TH2F>("h_dzstage_droppedleptk_pt_vs_sigma", "", 100, 0, 500, 50, 0, 10);
+    // // h_dzstage_droppedtk_pt_vs_dz = fs->make<TH2F>("h_dzstage_droppedtk_pt_vs_dz", "", 100, 0, 500, 50, 0, 0.05);
+    // // h_dzstage_droppedleptk_pt_vs_dz = fs->make<TH2F>("h_dzstage_droppedleptk_pt_vs_dz", "", 100, 0, 500, 50, 0, 0.05);
+    // // h_dzstage_droppedtk_dz_vs_sigma = fs->make<TH2F>("h_dzstage_droppedtk_dz_vs_sigma", "", 50, 0, 0.05, 50, 0, 10);
+    // // h_dzstage_droppedleptk_dz_vs_sigma = fs->make<TH2F>("h_dzstage_droppedleptk_dz_vs_sigma", "", 50, 0, 0.05, 50, 0, 10);
 
-    h_dzstage_droppedleptk_pt_vs_missdist = fs->make<TH2F>("h_dzstage_droppedleptk_pt_vs_missdist", "", 500, 0, 500, 50, 0, 0.05);
-    h_dzstage_droppedleptk_missdist_vs_dz = fs->make<TH2F>("h_dzstage_droppedleptk_missdist_vs_dz", "", 50, 0, 0.05, 50, 0, 0.05);
-    h_dzstage_droppedleptk_missdist_vs_sigma = fs->make<TH2F>("h_dzstage_droppedleptk_missdist_vs_sigma", "", 50, 0, 0.05, 50, 0, 10);
+    // h_dzstage_droppedleptk_pt_vs_missdist = fs->make<TH2F>("h_dzstage_droppedleptk_pt_vs_missdist", "", 100, 0, 500, 50, 0, 0.05);
+    // // h_dzstage_droppedleptk_missdist_vs_dz = fs->make<TH2F>("h_dzstage_droppedleptk_missdist_vs_dz", "", 50, 0, 0.05, 50, 0, 0.05);
+    // h_dzstage_droppedleptk_missdist_vs_sigma = fs->make<TH2F>("h_dzstage_droppedleptk_missdist_vs_sigma", "", 50, 0, 0.05, 50, 0, 10);
 
-    h_dzstage_droppedleptk_missdist3d_vs_missdist2d = fs->make<TH2F>("h_dzstage_droppedleptk_missdist3d_vs_missdist2d", "", 50, 0, 0.05, 50, 0, 0.05);
-    // h_dzstage_droppedleptk50_missdist3d_vs_missdist2d = fs->make<TH2F>("h_dzstage_droppedleptk50_missdist3d_vs_missdist2d", "", 50, 0, 0.05, 50, 0, 0.05);
+    // h_dzstage_droppedleptk_missdist3d_vs_missdist2d = fs->make<TH2F>("h_dzstage_droppedleptk_missdist3d_vs_missdist2d", "", 50, 0, 0.05, 50, 0, 0.05);
+    // // h_dzstage_droppedleptk50_missdist3d_vs_missdist2d = fs->make<TH2F>("h_dzstage_droppedleptk50_missdist3d_vs_missdist2d", "", 50, 0, 0.05, 50, 0, 0.05);
 
-    h_dzstage_droppedtk_pt = fs->make<TH1F>("h_dzstage_droppedtk_pt", "", 500, 0, 500);
-    h_dzstage_droppedleptk_pt = fs->make<TH1F>("h_dzstage_droppedleptk_pt", "", 500, 0, 500);
-    h_dzstage_droppedtk_dz = fs->make<TH1F>("h_dzstage_droppedtk_dz", "", 100, 0, 0.05);
-    h_dzstage_droppedleptk_dz = fs->make<TH1F>("h_dzstage_droppedleptk_dz", "", 100, 0, 0.05);
-    h_dzstage_droppedtk_sigma = fs->make<TH1F>("h_dzstage_droppedtk_sigma", "", 50, 0, 10);
-    h_dzstage_droppedleptk_sigma = fs->make<TH1F>("h_dzstage_droppedleptk_sigma", "", 50, 0, 10);
-    h_dzstage_droppedleptk_missdist = fs->make<TH1F>("h_dzstage_droppedleptk_missdist", "", 50, 0, 0.05);
+    // h_dzstage_droppedtk_pt = fs->make<TH1F>("h_dzstage_droppedtk_pt", "", 100, 0, 500);
+    // h_dzstage_droppedleptk_pt = fs->make<TH1F>("h_dzstage_droppedleptk_pt", "", 100, 0, 500);
+    // // h_dzstage_droppedtk_dz = fs->make<TH1F>("h_dzstage_droppedtk_dz", "", 50, 0, 0.05);
+    // // h_dzstage_droppedleptk_dz = fs->make<TH1F>("h_dzstage_droppedleptk_dz", "", 50, 0, 0.05);
+    // h_dzstage_droppedtk_sigma = fs->make<TH1F>("h_dzstage_droppedtk_sigma", "", 50, 0, 10);
+    // h_dzstage_droppedleptk_sigma = fs->make<TH1F>("h_dzstage_droppedleptk_sigma", "", 50, 0, 10);
+    // h_dzstage_droppedleptk_missdist = fs->make<TH1F>("h_dzstage_droppedleptk_missdist", "", 50, 0, 0.05);
 
-    // h_dzstage_droppedtk_dphi_vs_sigma = fs->make<TH2F>("h_dzstage_droppedtk_dphi_vs_sigma", "", 20, 0, 4, 10, 0, 10);
+    // // h_dzstage_droppedtk_dphi_vs_sigma = fs->make<TH2F>("h_dzstage_droppedtk_dphi_vs_sigma", "", 20, 0, 4, 10, 0, 10);
 
   }
 }
@@ -742,7 +742,7 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
         const double phi1 = atan2(v1y, v1x);
         h_seed_vertex_paird2d->Fill(mag(v0x - v1x, v0y - v1y));
         h_seed_vertex_pairdphi->Fill(reco::deltaPhi(phi0, phi1));
-        h_seed_vertex_pairdphi_v_2d->Fill(reco::deltaPhi(phi0, phi1), mag(v0x - v1x, v0y - v1y));
+        // h_seed_vertex_pairdphi_v_2d->Fill(reco::deltaPhi(phi0, phi1), mag(v0x - v1x, v0y - v1y));
       }
     }
   }
@@ -1399,11 +1399,11 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
 
       std::vector<reco::TransientTrack> ttks(ntks - 1);
       for (size_t i = 0; i < ntks; ++i) {
-        float tkpt_todrop = tks[i]->pt(); //for plots; regarding the track in question, but not necessarily dropped in the end 
-        float leptkpt_todrop = -1; //for plots; regarding the track in question, but not necessarily dropped in the end 
-        if (tks[i].id().id() == 166 || tks[i].id().id() == 167) { //#FIXME : id changes based on CMSSW env
-          leptkpt_todrop = tks[i]->pt();
-        }
+        // float tkpt_todrop = tks[i]->pt(); //for plots; regarding the track in question, but not necessarily dropped in the end 
+        // float leptkpt_todrop = -1; //for plots; regarding the track in question, but not necessarily dropped in the end 
+        // if (tks[i].id().id() == 166 || tks[i].id().id() == 167) { //#FIXME : id changes based on CMSSW env
+        //   leptkpt_todrop = tks[i]->pt();
+        // }
 
         // std::vector<float> track_dphis; //FIXME : is this needed/wanted? 
         for (size_t j = 0; j < ntks; ++j) {
@@ -1452,32 +1452,32 @@ void MFVVertexer::produce(edm::Event& event, const edm::EventSetup& setup) {
         
         const double distz_sig = distz/sqrt(mag(vnm1.covariance(2,2) - v[0]->covariance(2,2)));  
 
-        if (max_nm1_refit_distz > 0) {
-          h_dzstage_droppedtk_pt_vs_sigma->Fill(tkpt_todrop, fabs(distz_sig));  
-          h_dzstage_droppedtk_pt_vs_dz->Fill(tkpt_todrop, fabs(distz)); 
-          h_dzstage_droppedtk_dz_vs_sigma->Fill(fabs(distz), fabs(distz_sig)); 
+        // if (max_nm1_refit_distz > 0) {
+        //   h_dzstage_droppedtk_pt_vs_sigma->Fill(tkpt_todrop, fabs(distz_sig));  
+        //   // h_dzstage_droppedtk_pt_vs_dz->Fill(tkpt_todrop, fabs(distz)); 
+        //   // h_dzstage_droppedtk_dz_vs_sigma->Fill(fabs(distz), fabs(distz_sig)); 
 
-          h_dzstage_droppedtk_pt->Fill(tkpt_todrop); 
-          h_dzstage_droppedtk_dz->Fill(fabs(distz)); 
-          h_dzstage_droppedtk_sigma->Fill(fabs(distz_sig)); 
+        //   h_dzstage_droppedtk_pt->Fill(tkpt_todrop); 
+        //   // h_dzstage_droppedtk_dz->Fill(fabs(distz)); 
+        //   h_dzstage_droppedtk_sigma->Fill(fabs(distz_sig)); 
 
-          if (leptkpt_todrop > 0) {
-            h_dzstage_droppedleptk_pt_vs_sigma->Fill(leptkpt_todrop, fabs(distz_sig));
-            h_dzstage_droppedleptk_pt_vs_dz->Fill(leptkpt_todrop, fabs(distz)); 
-            h_dzstage_droppedleptk_dz_vs_sigma->Fill(fabs(distz), fabs(distz_sig));
+        //   if (leptkpt_todrop > 0) {
+        //     h_dzstage_droppedleptk_pt_vs_sigma->Fill(leptkpt_todrop, fabs(distz_sig));
+        //     // h_dzstage_droppedleptk_pt_vs_dz->Fill(leptkpt_todrop, fabs(distz)); 
+        //     // h_dzstage_droppedleptk_dz_vs_sigma->Fill(fabs(distz), fabs(distz_sig));
 
-            h_dzstage_droppedleptk_pt_vs_missdist->Fill(leptkpt_todrop, fabs(tk_vtx_dist.second.value()));
-            h_dzstage_droppedleptk_missdist_vs_dz->Fill(fabs(tk_vtx_dist.second.value()), fabs(distz)); 
-            h_dzstage_droppedleptk_missdist_vs_sigma->Fill(fabs(tk_vtx_dist.second.value()), fabs(distz_sig));
-            h_dzstage_droppedleptk_missdist3d_vs_missdist2d->Fill(fabs(IPTools::absoluteImpactParameter3D(tt_builder->build(tks[i]), vnm1).second.value()), 
-                                                            fabs(IPTools::absoluteTransverseImpactParameter(tt_builder->build(tks[i]), vnm1).second.value()));                                                            
+        //     h_dzstage_droppedleptk_pt_vs_missdist->Fill(leptkpt_todrop, fabs(tk_vtx_dist.second.value()));
+        //     // h_dzstage_droppedleptk_missdist_vs_dz->Fill(fabs(tk_vtx_dist.second.value()), fabs(distz)); 
+        //     h_dzstage_droppedleptk_missdist_vs_sigma->Fill(fabs(tk_vtx_dist.second.value()), fabs(distz_sig));
+        //     h_dzstage_droppedleptk_missdist3d_vs_missdist2d->Fill(fabs(IPTools::absoluteImpactParameter3D(tt_builder->build(tks[i]), vnm1).second.value()), 
+        //                                                     fabs(IPTools::absoluteTransverseImpactParameter(tt_builder->build(tks[i]), vnm1).second.value()));                                                            
             
-            h_dzstage_droppedleptk_pt->Fill(leptkpt_todrop);
-            h_dzstage_droppedleptk_dz->Fill(fabs(distz)); 
-            h_dzstage_droppedleptk_sigma->Fill(fabs(distz_sig));
-            h_dzstage_droppedleptk_missdist->Fill(fabs(tk_vtx_dist.second.value()));
-          }
-        }
+        //     h_dzstage_droppedleptk_pt->Fill(leptkpt_todrop);
+        //     // h_dzstage_droppedleptk_dz->Fill(fabs(distz)); 
+        //     h_dzstage_droppedleptk_sigma->Fill(fabs(distz_sig));
+        //     h_dzstage_droppedleptk_missdist->Fill(fabs(tk_vtx_dist.second.value()));
+        //   }
+        // }
 
         if (verbose) printf("  refit %lu chi2 %7.4f vtx %7.4f %7.4f %7.4f dist3 %7.4f distz %7.4f\n", i, vnm1.chi2(), vnm1.x(), vnm1.y(), vnm1.z(), sqrt(dist3_2), distz);
         if (verbose) printf(" distz_sig : %7.4f\n", distz_sig);
@@ -2297,7 +2297,7 @@ void MFVVertexer::fillCommonOutputHists(std::unique_ptr<reco::VertexCollection>&
       hs_output_vertex_paird2d[step]->Fill(mag(vx - vjx, vy - vjy));
       hs_output_vertex_paird2dsig[step]->Fill(v_dist.significance());
       hs_output_vertex_pairdphi[step]->Fill(reco::deltaPhi(phi, phij));
-      hs_output_vertex_pairdphi_v_2d[step]->Fill(reco::deltaPhi(phi, phij), mag(vx - vjx, vy - vjy));
+      // hs_output_vertex_pairdphi_v_2d[step]->Fill(reco::deltaPhi(phi, phij), mag(vx - vjx, vy - vjy));
 
     }
   }

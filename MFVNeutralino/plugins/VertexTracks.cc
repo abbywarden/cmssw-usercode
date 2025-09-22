@@ -29,6 +29,7 @@ public:
   MFVVertexTracks(const edm::ParameterSet&);
   virtual bool filter(edm::Event&, const edm::EventSetup&);
 
+
 private:
   bool match_track_jet(const reco::Track& tk, const pat::Jet& jet);
 
@@ -89,22 +90,22 @@ private:
   jmt::TrackRescaler track_rescaler;
 
   TH1F* h_n_all_tracks;
-  TH1F* h_all_track_pars[7];
-  TH1F* h_all_track_errs[7];
-  TH1F* h_all_track_absdxybs; //Alec added
-  TH1F* h_all_track_p;
-  TH1F* h_all_track_pt_barrel;
-  TH1F* h_all_track_pt_endcap;
-  TH1F* h_all_track_errdxybs;
-  TH2F* h_all_track_pt_errdxybs;
-  TH2F* h_all_track_pt_dxybs;
-  TH1F* h_all_track_sigmadxybs;
-  TH1F* h_all_track_sigmadxypv;
-  TH1F* h_all_track_nhits;
-  TH1F* h_all_track_npxhits;
-  TH1F* h_all_track_nsthits;
-  TH1F* h_all_track_npxlayers;
-  TH1F* h_all_track_nstlayers;
+  // TH1F* h_all_track_pars[7];
+  // TH1F* h_all_track_errs[7];
+  // TH1F* h_all_track_absdxybs; //Alec added
+  // TH1F* h_all_track_p;
+  // TH1F* h_all_track_pt_barrel;
+  // TH1F* h_all_track_pt_endcap;
+  // TH1F* h_all_track_errdxybs;
+  // TH2F* h_all_track_pt_errdxybs;
+  // TH2F* h_all_track_pt_dxybs;
+  // TH1F* h_all_track_sigmadxybs;
+  // TH1F* h_all_track_sigmadxypv;
+  // TH1F* h_all_track_nhits;
+  // TH1F* h_all_track_npxhits;
+  // TH1F* h_all_track_nsthits;
+  // TH1F* h_all_track_npxlayers;
+  // TH1F* h_all_track_nstlayers;
   TH1F* h_n_seed_tracks;
   TH1F* h_seed_track_pars[7];
   TH1F* h_seed_track_errs[7];
@@ -127,32 +128,32 @@ private:
   TH1F* h_seed_nm1_sigmadxybs;
   TH1F* h_seed_nm1_sigmadxybs_rescaled;
 
-  TH1F* h_seed_track_dxystarbs;
-  TH1F* h_seed_track_dxybsposition;
-  TH1F* h_seed_track_diffdxy;
-  // TH1F* h_seed_track_diffdxy_pt;
-  TH1F* h_seed_track_diffdxy_dz;
-  TH1F* h_seed_track_diffdxy_dx;
-  TH1F* h_seed_track_diffdxy_dy;
-  TH1F* h_seed_track_samedxy_dz;
-  TH1F* h_seed_track_samedxy_dx;
-  TH1F* h_seed_track_samedxy_dy;
+  // TH1F* h_seed_track_dxystarbs;
+  // TH1F* h_seed_track_dxybsposition;
+  // TH1F* h_seed_track_diffdxy;
+  // // TH1F* h_seed_track_diffdxy_pt;
+  // TH1F* h_seed_track_diffdxy_dz;
+  // TH1F* h_seed_track_diffdxy_dx;
+  // TH1F* h_seed_track_diffdxy_dy;
+  // TH1F* h_seed_track_samedxy_dz;
+  // TH1F* h_seed_track_samedxy_dx;
+  // TH1F* h_seed_track_samedxy_dy;
 
   TH1F* h_n_all_eletracks;
-  TH1F* h_all_eletrack_pars[7];
-  TH1F* h_all_eletrack_errs[7];
-  TH1F* h_all_eletrack_p;
-  TH1F* h_all_eletrack_pt_barrel;
-  TH1F* h_all_eletrack_pt_endcap;
-  TH1F* h_all_eletrack_errdxybs;
-  TH1F* h_all_eletrack_sigmadxybs;
-  TH1F* h_all_eletrack_sigmadxypv;
-  TH1F* h_all_eletrack_nhits;
-  TH1F* h_all_eletrack_npxhits;
-  TH1F* h_all_eletrack_nsthits;
-  TH1F* h_all_eletrack_npxlayers;
-  TH1F* h_all_eletrack_nstlayers;
-  TH1F* h_all_eletrack_minr;
+  // TH1F* h_all_eletrack_pars[7];
+  // TH1F* h_all_eletrack_errs[7];
+  // TH1F* h_all_eletrack_p;
+  // TH1F* h_all_eletrack_pt_barrel;
+  // TH1F* h_all_eletrack_pt_endcap;
+  // TH1F* h_all_eletrack_errdxybs;
+  // TH1F* h_all_eletrack_sigmadxybs;
+  // TH1F* h_all_eletrack_sigmadxypv;
+  // TH1F* h_all_eletrack_nhits;
+  // TH1F* h_all_eletrack_npxhits;
+  // TH1F* h_all_eletrack_nsthits;
+  // TH1F* h_all_eletrack_npxlayers;
+  // TH1F* h_all_eletrack_nstlayers;
+  // TH1F* h_all_eletrack_minr;
   TH1F* h_n_seed_eletracks;
   TH1F* h_seed_eletrack_pars[7];
   TH1F* h_seed_eletrack_errs[7];
@@ -180,12 +181,12 @@ private:
   TH2F* h_seed_track_dxybs_vs_pt;
   TH2F* h_seed_track_dxyerr_vs_pt;
 
-  TH2F* h_all_eletrack_sigmadxybs_vs_pt;
-  TH2F* h_all_eletrack_dxybs_vs_pt;
-  TH2F* h_all_eletrack_dxyerr_vs_pt;
-  TH2F* h_all_eletrack_minr_vs_pt;
-  TH2F* h_all_eletrack_npxlayers_vs_pt;
-  TH2F* h_all_eletrack_nstlayers_vs_pt;
+  // TH2F* h_all_eletrack_sigmadxybs_vs_pt;
+  // TH2F* h_all_eletrack_dxybs_vs_pt;
+  // TH2F* h_all_eletrack_dxyerr_vs_pt;
+  // TH2F* h_all_eletrack_minr_vs_pt;
+  // TH2F* h_all_eletrack_npxlayers_vs_pt;
+  // TH2F* h_all_eletrack_nstlayers_vs_pt;
   TH2F* h_seed_eletrack_sigmadxybs_vs_pt;
   TH2F* h_seed_eletrack_dxybs_vs_pt;
   TH2F* h_seed_eletrack_dxyerr_vs_pt;
@@ -193,10 +194,10 @@ private:
   TH2F* h_seed_eletrack_npxlayers_vs_pt;
   TH2F* h_seed_eletrack_nstlayers_vs_pt; 
 
-  TH2F* h_all_eletrack_sigmadxybs_vs_dxy;
-  TH2F* h_all_eletrack_minr_vs_dxy;
-  TH2F* h_all_eletrack_npxlayers_vs_dxy;
-  TH2F* h_all_eletrack_nstlayers_vs_dxy;
+  // TH2F* h_all_eletrack_sigmadxybs_vs_dxy;
+  // TH2F* h_all_eletrack_minr_vs_dxy;
+  // TH2F* h_all_eletrack_npxlayers_vs_dxy;
+  // TH2F* h_all_eletrack_nstlayers_vs_dxy;
   TH2F* h_all_eletrack_dxyerr_vs_dxy;
   TH2F* h_seed_eletrack_sigmadxybs_vs_dxy;
   TH2F* h_seed_eletrack_minr_vs_dxy;
@@ -205,20 +206,20 @@ private:
   TH2F* h_seed_eletrack_dxyerr_vs_dxy;
 
   TH1F* h_n_all_mutracks;
-  TH1F* h_all_mutrack_pars[7];
-  TH1F* h_all_mutrack_errs[7];
-  TH1F* h_all_mutrack_p;
-  TH1F* h_all_mutrack_pt_barrel;
-  TH1F* h_all_mutrack_pt_endcap;
-  TH1F* h_all_mutrack_errdxybs;
-  TH1F* h_all_mutrack_sigmadxybs;
-  TH1F* h_all_mutrack_sigmadxypv;
-  TH1F* h_all_mutrack_nhits;
-  TH1F* h_all_mutrack_npxhits;
-  TH1F* h_all_mutrack_nsthits;
-  TH1F* h_all_mutrack_npxlayers;
-  TH1F* h_all_mutrack_nstlayers;
-  TH1F* h_all_mutrack_minr;
+  // TH1F* h_all_mutrack_pars[7];
+  // TH1F* h_all_mutrack_errs[7];
+  // TH1F* h_all_mutrack_p;
+  // TH1F* h_all_mutrack_pt_barrel;
+  // TH1F* h_all_mutrack_pt_endcap;
+  // TH1F* h_all_mutrack_errdxybs;
+  // TH1F* h_all_mutrack_sigmadxybs;
+  // TH1F* h_all_mutrack_sigmadxypv;
+  // TH1F* h_all_mutrack_nhits;
+  // TH1F* h_all_mutrack_npxhits;
+  // TH1F* h_all_mutrack_nsthits;
+  // TH1F* h_all_mutrack_npxlayers;
+  // TH1F* h_all_mutrack_nstlayers;
+  // TH1F* h_all_mutrack_minr;
   TH1F* h_n_seed_mutracks;
   TH1F* h_seed_mutrack_pars[7];
   TH1F* h_seed_mutrack_errs[7];
@@ -244,12 +245,12 @@ private:
   TH1F* h_seed_nm1_musigmadxybs_rescaled;
   TH1F* h_seed_nm1_muminr;
 
-  TH2F* h_all_mutrack_sigmadxybs_vs_pt;
-  TH2F* h_all_mutrack_dxybs_vs_pt;
-  TH2F* h_all_mutrack_dxyerr_vs_pt;
-  TH2F* h_all_mutrack_minr_vs_pt;
-  TH2F* h_all_mutrack_npxlayers_vs_pt;
-  TH2F* h_all_mutrack_nstlayers_vs_pt;
+  // TH2F* h_all_mutrack_sigmadxybs_vs_pt;
+  // TH2F* h_all_mutrack_dxybs_vs_pt;
+  // TH2F* h_all_mutrack_dxyerr_vs_pt;
+  // TH2F* h_all_mutrack_minr_vs_pt;
+  // TH2F* h_all_mutrack_npxlayers_vs_pt;
+  // TH2F* h_all_mutrack_nstlayers_vs_pt;
   TH2F* h_seed_mutrack_sigmadxybs_vs_pt;
   TH2F* h_seed_mutrack_dxybs_vs_pt;
   TH2F* h_seed_mutrack_dxyerr_vs_pt;
@@ -257,11 +258,11 @@ private:
   TH2F* h_seed_mutrack_npxlayers_vs_pt;
   TH2F* h_seed_mutrack_nstlayers_vs_pt; 
 
-  TH2F* h_all_mutrack_sigmadxybs_vs_dxy;
-  TH2F* h_all_mutrack_minr_vs_dxy;
-  TH2F* h_all_mutrack_npxlayers_vs_dxy;
-  TH2F* h_all_mutrack_nstlayers_vs_dxy;
-  TH2F* h_all_mutrack_dxyerr_vs_dxy;
+  // TH2F* h_all_mutrack_sigmadxybs_vs_dxy;
+  // TH2F* h_all_mutrack_minr_vs_dxy;
+  // TH2F* h_all_mutrack_npxlayers_vs_dxy;
+  // TH2F* h_all_mutrack_nstlayers_vs_dxy;
+  // TH2F* h_all_mutrack_dxyerr_vs_dxy;
   TH2F* h_seed_mutrack_sigmadxybs_vs_dxy;
   TH2F* h_seed_mutrack_minr_vs_dxy;
   TH2F* h_seed_mutrack_npxlayers_vs_dxy;
@@ -347,64 +348,64 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
 
     h_n_all_tracks  = fs->make<TH1F>("h_n_all_tracks",  "", 200, 0, 2000);
     h_n_seed_tracks = fs->make<TH1F>("h_n_seed_tracks", "", 200, 0,  200);
-    h_n_all_eletracks  = fs->make<TH1F>("h_n_all_eletracks",  "", 200, 0, 200);
-    h_n_seed_eletracks = fs->make<TH1F>("h_n_seed_eletracks", "", 200, 0,  200);    
-    h_n_all_mutracks  = fs->make<TH1F>("h_n_all_mutracks",  "", 200, 0, 200);
-    h_n_seed_mutracks = fs->make<TH1F>("h_n_seed_mutracks", "", 200, 0,  200);
+    h_n_all_eletracks  = fs->make<TH1F>("h_n_all_eletracks",  "", 50, 0, 50);
+    h_n_seed_eletracks = fs->make<TH1F>("h_n_seed_eletracks", "", 50, 0,  50);    
+    h_n_all_mutracks  = fs->make<TH1F>("h_n_all_mutracks",  "", 50, 0, 50);
+    h_n_seed_mutracks = fs->make<TH1F>("h_n_seed_mutracks", "", 50, 0,  50);
 
     const char* par_names[7] = {"pt", "eta", "phi", "dxybs", "rescale_dxybs", "dxypv", "dz"};
-    const int par_nbins[7] = {  50, 50, 50, 500, 500, 100, 80 };
+    const int par_nbins[7] = {  50, 50, 50, 100, 100, 100, 80 };
     //const double par_lo[7] = {   0, -2.5, -3.15, -0.2, -0.2, -0.2, -20 };
     const double par_lo[7] = {   0, -2.5, -3.15, 0, 0, 0, -20 };
     const double par_hi[7] = {  10,  2.5,  3.15,  1,  1,  1,  20 };
     const double err_lo[7] = { 0 };
     const double err_hi[7] = { 0.15, 0.01, 0.01, 0.2, 0.2, 0.2, 0.4 };
-    for (int i = 0; i < 7; ++i) {
-      h_all_track_pars[i] = fs->make<TH1F>(TString::Format("h_all_track_%s",    par_names[i]), "", par_nbins[i], par_lo[i], par_hi[i]);
-      h_all_track_errs[i] = fs->make<TH1F>(TString::Format("h_all_track_err%s", par_names[i]), "", par_nbins[i], err_lo[i], err_hi[i]);
-      h_all_eletrack_pars[i] = fs->make<TH1F>(TString::Format("h_all_eletrack_%s",    par_names[i]), "", par_nbins[i], par_lo[i], par_hi[i]);
-      h_all_eletrack_errs[i] = fs->make<TH1F>(TString::Format("h_all_eletrack_err%s", par_names[i]), "", par_nbins[i], err_lo[i], err_hi[i]);      
-      h_all_mutrack_pars[i] = fs->make<TH1F>(TString::Format("h_all_mutrack_%s",    par_names[i]), "", par_nbins[i], par_lo[i], par_hi[i]);
-      h_all_mutrack_errs[i] = fs->make<TH1F>(TString::Format("h_all_mutrack_err%s", par_names[i]), "", par_nbins[i], err_lo[i], err_hi[i]);
-    }
-    h_all_track_absdxybs = fs->make<TH1F>("h_all_track_absdxybs", ";all track's |dxybs| (cm)", 500, 0, 1); //Alec added
+    // for (int i = 0; i < 7; ++i) {
+    //   h_all_track_pars[i] = fs->make<TH1F>(TString::Format("h_all_track_%s",    par_names[i]), "", par_nbins[i], par_lo[i], par_hi[i]);
+    //   h_all_track_errs[i] = fs->make<TH1F>(TString::Format("h_all_track_err%s", par_names[i]), "", par_nbins[i], err_lo[i], err_hi[i]);
+    //   // h_all_eletrack_pars[i] = fs->make<TH1F>(TString::Format("h_all_eletrack_%s",    par_names[i]), "", par_nbins[i], par_lo[i], par_hi[i]);
+    //   // h_all_eletrack_errs[i] = fs->make<TH1F>(TString::Format("h_all_eletrack_err%s", par_names[i]), "", par_nbins[i], err_lo[i], err_hi[i]);      
+    //   // h_all_mutrack_pars[i] = fs->make<TH1F>(TString::Format("h_all_mutrack_%s",    par_names[i]), "", par_nbins[i], par_lo[i], par_hi[i]);
+    //   // h_all_mutrack_errs[i] = fs->make<TH1F>(TString::Format("h_all_mutrack_err%s", par_names[i]), "", par_nbins[i], err_lo[i], err_hi[i]);
+    // }
+    // h_all_track_absdxybs = fs->make<TH1F>("h_all_track_absdxybs", ";all track's |dxybs| (cm)", 500, 0, 1); //Alec added
 
-    h_all_track_p = fs->make<TH1F>("h_all_track_p", ";all track's p (GeV)", 50, 0, 10);
-    h_all_track_pt_barrel = fs->make<TH1F>("h_all_track_pt_barrel", ";all track's p_{T} in barrel (GeV)", 50, 0, 10);
-    h_all_track_pt_endcap = fs->make<TH1F>("h_all_track_pt_endcap", ";all track's p_{T} in endcap (GeV)", 50, 0, 10);
-    h_all_track_sigmadxybs = fs->make<TH1F>("h_all_track_sigmadxybs", ";all track's nsigmadxybs", 40, -10, 10);
-    h_all_track_pt_dxybs = fs->make<TH2F>("h_all_track_pt_dxybs", ";all track's p_{T} (GeV);all track's dxybs (cm)", 500, 0, 100, 500, -0.2, 0.2);
-    h_all_track_pt_errdxybs = fs->make<TH2F>("h_all_track_pt_errdxybs", ";all track's p_{T} (GeV);all track's err_dxybs (cm)", 500, 0, 100, 500, 0, 0.2);
-    h_all_track_sigmadxypv = fs->make<TH1F>("h_all_track_sigmadxypv", ";all track's nsigmadxypv", 40, -10, 10);
-    h_all_track_nhits      = fs->make<TH1F>("h_all_track_nhits",      ";all track's nhits", 40,   0, 40);
-    h_all_track_npxhits    = fs->make<TH1F>("h_all_track_npxhits",    ";all track's npxhits", 12,   0, 12);
-    h_all_track_nsthits    = fs->make<TH1F>("h_all_track_nsthits",    ";all track's nsthits", 28,   0, 28);
-    h_all_track_npxlayers  = fs->make<TH1F>("h_all_track_npxlayers",  ";all track's npxlayers", 10,   0, 10);
-    h_all_track_nstlayers  = fs->make<TH1F>("h_all_track_nstlayers",  ";all track's nstlayers", 30,   0, 30);
+    // h_all_track_p = fs->make<TH1F>("h_all_track_p", ";all track's p (GeV)", 50, 0, 10);
+    // h_all_track_pt_barrel = fs->make<TH1F>("h_all_track_pt_barrel", ";all track's p_{T} in barrel (GeV)", 50, 0, 10);
+    // h_all_track_pt_endcap = fs->make<TH1F>("h_all_track_pt_endcap", ";all track's p_{T} in endcap (GeV)", 50, 0, 10);
+    // h_all_track_sigmadxybs = fs->make<TH1F>("h_all_track_sigmadxybs", ";all track's nsigmadxybs", 40, -10, 10);
+    // h_all_track_pt_dxybs = fs->make<TH2F>("h_all_track_pt_dxybs", ";all track's p_{T} (GeV);all track's dxybs (cm)", 50, 0, 100, 50, -0.2, 0.2);
+    // h_all_track_pt_errdxybs = fs->make<TH2F>("h_all_track_pt_errdxybs", ";all track's p_{T} (GeV);all track's err_dxybs (cm)", 50, 0, 100, 50, 0, 0.2);
+    // h_all_track_sigmadxypv = fs->make<TH1F>("h_all_track_sigmadxypv", ";all track's nsigmadxypv", 40, -10, 10);
+    // h_all_track_nhits      = fs->make<TH1F>("h_all_track_nhits",      ";all track's nhits", 40,   0, 40);
+    // h_all_track_npxhits    = fs->make<TH1F>("h_all_track_npxhits",    ";all track's npxhits", 12,   0, 12);
+    // h_all_track_nsthits    = fs->make<TH1F>("h_all_track_nsthits",    ";all track's nsthits", 28,   0, 28);
+    // h_all_track_npxlayers  = fs->make<TH1F>("h_all_track_npxlayers",  ";all track's npxlayers", 10,   0, 10);
+    // h_all_track_nstlayers  = fs->make<TH1F>("h_all_track_nstlayers",  ";all track's nstlayers", 30,   0, 30);
 
-    h_all_eletrack_p = fs->make<TH1F>("h_all_eletrack_p", "", 400, 0, 2000);
-    h_all_eletrack_pt_barrel = fs->make<TH1F>("h_all_eletrack_pt_barrel", "", 400, 0, 2000);
-    h_all_eletrack_pt_endcap = fs->make<TH1F>("h_all_eletrack_pt_endcap", "", 400, 0, 2000);
-    h_all_eletrack_sigmadxybs = fs->make<TH1F>("h_all_eletrack_sigmadxybs", "", 40, 0, 20);
-    h_all_eletrack_sigmadxypv = fs->make<TH1F>("h_all_eletrack_sigmadxypv", "", 40, 0, 20);
-    h_all_eletrack_nhits      = fs->make<TH1F>("h_all_eletrack_nhits",      "", 40,   0, 40);
-    h_all_eletrack_npxhits    = fs->make<TH1F>("h_all_eletrack_npxhits",    "", 12,   0, 12);
-    h_all_eletrack_nsthits    = fs->make<TH1F>("h_all_eletrack_nsthits",    "", 28,   0, 28);
-    h_all_eletrack_npxlayers  = fs->make<TH1F>("h_all_eletrack_npxlayers",  "", 10,   0, 10);
-    h_all_eletrack_nstlayers  = fs->make<TH1F>("h_all_eletrack_nstlayers",  "", 30,   0, 30);
-    h_all_eletrack_minr       = fs->make<TH1F>("h_all_eletrack_minr", "", 6, 0, 6);
+    // h_all_eletrack_p = fs->make<TH1F>("h_all_eletrack_p", "", 100, 0, 200);
+    // h_all_eletrack_pt_barrel = fs->make<TH1F>("h_all_eletrack_pt_barrel", "", 100, 0, 200);
+    // h_all_eletrack_pt_endcap = fs->make<TH1F>("h_all_eletrack_pt_endcap", "", 100, 0, 200);
+    // h_all_eletrack_sigmadxybs = fs->make<TH1F>("h_all_eletrack_sigmadxybs", "", 40, 0, 20);
+    // h_all_eletrack_sigmadxypv = fs->make<TH1F>("h_all_eletrack_sigmadxypv", "", 40, 0, 20);
+    // h_all_eletrack_nhits      = fs->make<TH1F>("h_all_eletrack_nhits",      "", 40,   0, 40);
+    // h_all_eletrack_npxhits    = fs->make<TH1F>("h_all_eletrack_npxhits",    "", 12,   0, 12);
+    // h_all_eletrack_nsthits    = fs->make<TH1F>("h_all_eletrack_nsthits",    "", 28,   0, 28);
+    // h_all_eletrack_npxlayers  = fs->make<TH1F>("h_all_eletrack_npxlayers",  "", 10,   0, 10);
+    // h_all_eletrack_nstlayers  = fs->make<TH1F>("h_all_eletrack_nstlayers",  "", 30,   0, 30);
+    // h_all_eletrack_minr       = fs->make<TH1F>("h_all_eletrack_minr", "", 6, 0, 6);
 
-    h_all_mutrack_p = fs->make<TH1F>("h_all_mutrack_p", "", 400, 0, 2000);
-    h_all_mutrack_pt_barrel = fs->make<TH1F>("h_all_mutrack_pt_barrel", "", 400, 0, 2000);
-    h_all_mutrack_pt_endcap = fs->make<TH1F>("h_all_mutrack_pt_endcap", "", 400, 0, 2000);
-    h_all_mutrack_sigmadxybs = fs->make<TH1F>("h_all_mutrack_sigmadxybs", "", 40, 0, 20);
-    h_all_mutrack_sigmadxypv = fs->make<TH1F>("h_all_mutrack_sigmadxypv", "", 40, 0, 20);
-    h_all_mutrack_nhits      = fs->make<TH1F>("h_all_mutrack_nhits",      "", 40,   0, 40);
-    h_all_mutrack_npxhits    = fs->make<TH1F>("h_all_mutrack_npxhits",    "", 12,   0, 12);
-    h_all_mutrack_nsthits    = fs->make<TH1F>("h_all_mutrack_nsthits",    "", 28,   0, 28);
-    h_all_mutrack_npxlayers  = fs->make<TH1F>("h_all_mutrack_npxlayers",  "", 10,   0, 10);
-    h_all_mutrack_nstlayers  = fs->make<TH1F>("h_all_mutrack_nstlayers",  "", 30,   0, 30);
-    h_all_mutrack_minr       = fs->make<TH1F>("h_all_mutrack_minr", "", 6, 0, 6);
+    // h_all_mutrack_p = fs->make<TH1F>("h_all_mutrack_p", "", 100, 0, 200);
+    // h_all_mutrack_pt_barrel = fs->make<TH1F>("h_all_mutrack_pt_barrel", "", 100, 0, 200);
+    // h_all_mutrack_pt_endcap = fs->make<TH1F>("h_all_mutrack_pt_endcap", "", 100, 0, 200);
+    // h_all_mutrack_sigmadxybs = fs->make<TH1F>("h_all_mutrack_sigmadxybs", "", 40, 0, 20);
+    // h_all_mutrack_sigmadxypv = fs->make<TH1F>("h_all_mutrack_sigmadxypv", "", 40, 0, 20);
+    // h_all_mutrack_nhits      = fs->make<TH1F>("h_all_mutrack_nhits",      "", 40,   0, 40);
+    // h_all_mutrack_npxhits    = fs->make<TH1F>("h_all_mutrack_npxhits",    "", 12,   0, 12);
+    // h_all_mutrack_nsthits    = fs->make<TH1F>("h_all_mutrack_nsthits",    "", 28,   0, 28);
+    // h_all_mutrack_npxlayers  = fs->make<TH1F>("h_all_mutrack_npxlayers",  "", 10,   0, 10);
+    // h_all_mutrack_nstlayers  = fs->make<TH1F>("h_all_mutrack_nstlayers",  "", 30,   0, 30);
+    // h_all_mutrack_minr       = fs->make<TH1F>("h_all_mutrack_minr", "", 6, 0, 6);
 
     for (int i = 0; i < 7; ++i) {
       h_seed_track_pars[i] = fs->make<TH1F>(TString::Format("h_seed_track_%s",    par_names[i]), "", par_nbins[i], par_lo[i], par_hi[i]);
@@ -420,23 +421,23 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
     h_seed_track_pt_endcap = fs->make<TH1F>("h_seed_track_pt_endcap", "", 50, 0, 10);
     h_seed_track_sigmadxybs = fs->make<TH1F>("h_seed_track_sigmadxybs", "", 40, -10, 10);
     h_seed_track_sigmadxypv = fs->make<TH1F>("h_seed_track_sigmadxypv", "", 40, -10, 10);
-    h_seed_track_pt_dxybs = fs->make<TH2F>("h_seed_track_pt_dxybs", "", 500, 0, 100, 500, -0.2, 0.2);
-    h_seed_track_pt_errdxybs = fs->make<TH2F>("h_seed_track_pt_errdxybs", "", 500, 0, 100, 500, 0, 0.2);
+    h_seed_track_pt_dxybs = fs->make<TH2F>("h_seed_track_pt_dxybs", "", 50, 0, 100, 50, -0.2, 0.2);
+    h_seed_track_pt_errdxybs = fs->make<TH2F>("h_seed_track_pt_errdxybs", "", 50, 0, 50, 100, 0, 0.2);
     h_seed_track_nhits      = fs->make<TH1F>("h_seed_track_nhits",      "", 40,   0, 40);
     h_seed_track_npxhits    = fs->make<TH1F>("h_seed_track_npxhits",    "", 12,   0, 12);
     h_seed_track_nsthits    = fs->make<TH1F>("h_seed_track_nsthits",    "", 28,   0, 28);
     h_seed_track_npxlayers  = fs->make<TH1F>("h_seed_track_npxlayers",  "", 10,   0, 10);
     h_seed_track_nstlayers  = fs->make<TH1F>("h_seed_track_nstlayers",  "", 30,   0, 30);
     
-    h_seed_track_dxystarbs = fs->make<TH1F>("h_seed_track_dxystarbs", "", 500, -0.2, 0.2);
-    h_seed_track_dxybsposition = fs->make<TH1F>("h_seed_track_dxybsposition", "", 500, -0.2, 0.2);
-    h_seed_track_diffdxy = fs->make<TH1F>("h_seed_track_diffdxy", "", 50, 0, 0.01);
-    h_seed_track_diffdxy_dz = fs->make<TH1F>("h_seed_track_diffdxy_dz", "", 1000, 0, 10);
-    h_seed_track_diffdxy_dy = fs->make<TH1F>("h_seed_track_diffdxy_dy", "", 100, 0, 0.1);
-    h_seed_track_diffdxy_dx = fs->make<TH1F>("h_seed_track_diffdxy_dx", "", 100, 0, 0.1);
-    h_seed_track_samedxy_dz = fs->make<TH1F>("h_seed_track_samedxy_dz", "", 1000, 0, 10);
-    h_seed_track_samedxy_dy = fs->make<TH1F>("h_seed_track_samedxy_dy", "", 100, 0, 0.1);
-    h_seed_track_samedxy_dx = fs->make<TH1F>("h_seed_track_samedxy_dx", "", 100, 0, 0.1);
+    // h_seed_track_dxystarbs = fs->make<TH1F>("h_seed_track_dxystarbs", "", 100, -0.2, 0.2);
+    // h_seed_track_dxybsposition = fs->make<TH1F>("h_seed_track_dxybsposition", "", 100, -0.2, 0.2);
+    // h_seed_track_diffdxy = fs->make<TH1F>("h_seed_track_diffdxy", "", 50, 0, 0.01);
+    // h_seed_track_diffdxy_dz = fs->make<TH1F>("h_seed_track_diffdxy_dz", "", 100, 0, 10);
+    // h_seed_track_diffdxy_dy = fs->make<TH1F>("h_seed_track_diffdxy_dy", "", 100, 0, 0.1);
+    // h_seed_track_diffdxy_dx = fs->make<TH1F>("h_seed_track_diffdxy_dx", "", 100, 0, 0.1);
+    // h_seed_track_samedxy_dz = fs->make<TH1F>("h_seed_track_samedxy_dz", "", 100, 0, 10);
+    // h_seed_track_samedxy_dy = fs->make<TH1F>("h_seed_track_samedxy_dy", "", 100, 0, 0.1);
+    // h_seed_track_samedxy_dx = fs->make<TH1F>("h_seed_track_samedxy_dx", "", 100, 0, 0.1);
 
     h_seed_nm1_pt = fs->make<TH1F>("h_seed_nm1_pt", "", 50, 0, 10);
     h_seed_nm1_npxlayers = fs->make<TH1F>("h_seed_nm1_npxlayers", "", 10, 0, 10);
@@ -444,9 +445,9 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
     h_seed_nm1_sigmadxybs = fs->make<TH1F>("h_seed_nm1_sigmadxybs", "", 40, 0, 20);
     h_seed_nm1_sigmadxybs_rescaled = fs->make<TH1F>("h_seed_nm1_sigmadxybs_rescaled", "", 40, 0, 20);
 
-    h_seed_eletrack_p = fs->make<TH1F>("h_seed_eletrack_p", "", 400, 0, 2000);
-    h_seed_eletrack_pt_barrel = fs->make<TH1F>("h_seed_eletrack_pt_barrel", "", 400, 0, 2000);
-    h_seed_eletrack_pt_endcap = fs->make<TH1F>("h_seed_eletrack_pt_endcap", "", 400, 0, 2000);
+    h_seed_eletrack_p = fs->make<TH1F>("h_seed_eletrack_p", "", 100, 0, 200);
+    h_seed_eletrack_pt_barrel = fs->make<TH1F>("h_seed_eletrack_pt_barrel", "", 100, 0, 200);
+    h_seed_eletrack_pt_endcap = fs->make<TH1F>("h_seed_eletrack_pt_endcap", "", 100, 0, 200);
     h_seed_eletrack_sigmadxybs = fs->make<TH1F>("h_seed_eletrack_sigmadxybs", "", 40, 0, 20);
     h_seed_eletrack_sigmadxypv = fs->make<TH1F>("h_seed_eletrack_sigmadxypv", "", 40, 0, 20);
     h_seed_eletrack_nhits      = fs->make<TH1F>("h_seed_eletrack_nhits",      "", 40,   0, 40);
@@ -455,48 +456,48 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
     h_seed_eletrack_npxlayers  = fs->make<TH1F>("h_seed_eletrack_npxlayers",  "", 10,   0, 10);
     h_seed_eletrack_nstlayers  = fs->make<TH1F>("h_seed_eletrack_nstlayers",  "", 30,   0, 30);
 
-    h_seed_nm1_elept = fs->make<TH1F>("h_seed_nm1_elept", "", 400, 0, 2000);
+    h_seed_nm1_elept = fs->make<TH1F>("h_seed_nm1_elept", "", 100, 0, 200);
     h_seed_nm1_elenpxlayers = fs->make<TH1F>("h_seed_nm1_elenpxlayers", "", 10, 0, 10);
     h_seed_nm1_elenstlayers = fs->make<TH1F>("h_seed_nm1_elenstlayers", "", 30, 0, 30);
-    h_seed_nm1_eledxybs = fs->make<TH1F>("h_seed_nm1_eledxybs", "", 500, 0, 2);
-    h_seed_nm1_eledxyerr = fs->make<TH1F>("h_seed_nm1_eledxyerr", "", 500, 0, 0.2);
+    h_seed_nm1_eledxybs = fs->make<TH1F>("h_seed_nm1_eledxybs", "", 100, 0, 2);
+    h_seed_nm1_eledxyerr = fs->make<TH1F>("h_seed_nm1_eledxyerr", "", 100, 0, 0.2);
     h_seed_nm1_elesigmadxybs = fs->make<TH1F>("h_seed_nm1_elesigmadxybs", "", 40, 0, 20);
     h_seed_nm1_elesigmadxybs_rescaled = fs->make<TH1F>("h_seed_nm1_elesigmadxybs_rescaled", "", 40, 0, 20);
     h_seed_nm1_eleminr = fs->make<TH1F>("h_seed_nm1_eleminr", "", 6, 0, 6);
 
-    h_all_eletrack_minr_vs_pt = fs->make<TH2F>("h_all_eletrack_minr_vs_pt", "", 100, 0, 2000, 5, 0, 5);
-    h_all_eletrack_dxybs_vs_pt = fs->make<TH2F>("h_all_eletrack_dxybs_vs_pt", "", 100, 0, 2000, 500, 0, 2);
-    h_all_eletrack_dxyerr_vs_pt = fs->make<TH2F>("h_all_eletrack_dxyerr_vs_pt", "", 100, 0, 2000, 500, 0, 0.2);
-    h_all_eletrack_sigmadxybs_vs_pt = fs->make<TH2F>("h_all_eletrack_sigmadxybs_vs_pt", "", 100, 0, 2000, 50, 0, 50);
-    h_all_eletrack_npxlayers_vs_pt = fs->make<TH2F>("h_all_eletrack_npxlayers_vs_pt", "", 100, 0, 2000, 10, 0, 10);
-    h_all_eletrack_nstlayers_vs_pt = fs->make<TH2F>("h_all_eletrack_nstlayers_vs_pt", "", 100, 0, 2000, 30, 0, 30);
+    // h_all_eletrack_minr_vs_pt = fs->make<TH2F>("h_all_eletrack_minr_vs_pt", "", 50, 0, 200, 5, 0, 5);
+    // h_all_eletrack_dxybs_vs_pt = fs->make<TH2F>("h_all_eletrack_dxybs_vs_pt", "", 50, 0, 200, 50, 0, 2);
+    // h_all_eletrack_dxyerr_vs_pt = fs->make<TH2F>("h_all_eletrack_dxyerr_vs_pt", "", 50, 0, 200, 50, 0, 0.2);
+    // h_all_eletrack_sigmadxybs_vs_pt = fs->make<TH2F>("h_all_eletrack_sigmadxybs_vs_pt", "", 50, 0, 200, 50, 0, 50);
+    // h_all_eletrack_npxlayers_vs_pt = fs->make<TH2F>("h_all_eletrack_npxlayers_vs_pt", "", 50, 0, 200, 10, 0, 10);
+    // h_all_eletrack_nstlayers_vs_pt = fs->make<TH2F>("h_all_eletrack_nstlayers_vs_pt", "", 50, 0, 200, 30, 0, 30);
 
-    h_seed_track_dxybs_vs_pt = fs->make<TH2F>("h_seed_track_dxybs_vs_pt", "", 500, 0, 100, 500, 0, 2);
-    h_seed_track_dxyerr_vs_pt = fs->make<TH2F>("h_seed_track_dxyerr_vs_pt", "", 500, 0, 100, 500, 0, 0.2);
-    h_seed_track_sigmadxybs_vs_pt = fs->make<TH2F>("h_seed_track_sigmadxybs_vs_pt", "", 500, 0, 100, 50, 0, 50);
+    h_seed_track_dxybs_vs_pt = fs->make<TH2F>("h_seed_track_dxybs_vs_pt", "", 50, 0, 100, 50, 0, 2);
+    h_seed_track_dxyerr_vs_pt = fs->make<TH2F>("h_seed_track_dxyerr_vs_pt", "", 50, 0, 100, 50, 0, 0.2);
+    h_seed_track_sigmadxybs_vs_pt = fs->make<TH2F>("h_seed_track_sigmadxybs_vs_pt", "", 50, 0, 100, 50, 0, 50);
 
-    h_seed_eletrack_minr_vs_pt = fs->make<TH2F>("h_seed_eletrack_minr_vs_pt", "", 100, 0, 2000, 5, 0, 5);
-    h_seed_eletrack_dxybs_vs_pt = fs->make<TH2F>("h_seed_eletrack_dxybs_vs_pt", "", 100, 0, 2000, 500, 0, 2);
-    h_seed_eletrack_dxyerr_vs_pt = fs->make<TH2F>("h_seed_eletrack_dxyerr_vs_pt", "", 100, 0, 2000, 500, 0, 0.2);
-    h_seed_eletrack_sigmadxybs_vs_pt = fs->make<TH2F>("h_seed_eletrack_sigmadxybs_vs_pt", "", 100, 0, 2000, 50, 0, 50);
-    h_seed_eletrack_npxlayers_vs_pt = fs->make<TH2F>("h_seed_eletrack_npxlayers_vs_pt", "", 100, 0, 2000, 10, 0, 10);
-    h_seed_eletrack_nstlayers_vs_pt = fs->make<TH2F>("h_seed_eletrack_nstlayers_vs_pt", "", 100, 0, 2000, 30, 0, 30);
+    h_seed_eletrack_minr_vs_pt = fs->make<TH2F>("h_seed_eletrack_minr_vs_pt", "", 50, 0, 200, 5, 0, 5);
+    h_seed_eletrack_dxybs_vs_pt = fs->make<TH2F>("h_seed_eletrack_dxybs_vs_pt", "", 50, 0, 200, 50, 0, 2);
+    h_seed_eletrack_dxyerr_vs_pt = fs->make<TH2F>("h_seed_eletrack_dxyerr_vs_pt", "", 50, 0, 200, 50, 0, 0.2);
+    h_seed_eletrack_sigmadxybs_vs_pt = fs->make<TH2F>("h_seed_eletrack_sigmadxybs_vs_pt", "", 50, 0, 200, 50, 0, 50);
+    h_seed_eletrack_npxlayers_vs_pt = fs->make<TH2F>("h_seed_eletrack_npxlayers_vs_pt", "", 50, 0, 200, 10, 0, 10);
+    h_seed_eletrack_nstlayers_vs_pt = fs->make<TH2F>("h_seed_eletrack_nstlayers_vs_pt", "", 50, 0, 200, 30, 0, 30);
 
-    h_all_eletrack_minr_vs_dxy = fs->make<TH2F>("h_all_eletrack_minr_vs_dxy", "", 100, 0, 5, 5, 0, 5);
-    h_all_eletrack_sigmadxybs_vs_dxy = fs->make<TH2F>("h_all_eletrack_sigmadxybs_vs_dxy", "", 100, 0, 5, 50, 0, 50);
-    h_all_eletrack_npxlayers_vs_dxy = fs->make<TH2F>("h_all_eletrack_npxlayers_vs_dxy", "", 100, 0, 5, 10, 0, 10);
-    h_all_eletrack_nstlayers_vs_dxy = fs->make<TH2F>("h_all_eletrack_nstlayers_vs_dxy", "", 100, 0, 5, 30, 0, 30);
-    h_all_eletrack_dxyerr_vs_dxy = fs->make<TH2F>("h_all_eletrack_dxyerr_vs_dxy", "", 100, 0, 5, 500, 0, 0.2);
+    // h_all_eletrack_minr_vs_dxy = fs->make<TH2F>("h_all_eletrack_minr_vs_dxy", "", 50, 0, 5, 5, 0, 5);
+    // h_all_eletrack_sigmadxybs_vs_dxy = fs->make<TH2F>("h_all_eletrack_sigmadxybs_vs_dxy", "", 50, 0, 5, 50, 0, 50);
+    // h_all_eletrack_npxlayers_vs_dxy = fs->make<TH2F>("h_all_eletrack_npxlayers_vs_dxy", "", 50, 0, 5, 10, 0, 10);
+    // h_all_eletrack_nstlayers_vs_dxy = fs->make<TH2F>("h_all_eletrack_nstlayers_vs_dxy", "", 50, 0, 5, 30, 0, 30);
+    // h_all_eletrack_dxyerr_vs_dxy = fs->make<TH2F>("h_all_eletrack_dxyerr_vs_dxy", "", 50, 0, 5, 500, 0, 0.2);
 
-    h_seed_eletrack_minr_vs_dxy = fs->make<TH2F>("h_seed_eletrack_minr_vs_dxy", "", 100, 0, 5, 5, 0, 5);
-    h_seed_eletrack_sigmadxybs_vs_dxy = fs->make<TH2F>("h_seed_eletrack_sigmadxybs_vs_dxy", "", 100, 0, 5, 50, 0, 50);
-    h_seed_eletrack_npxlayers_vs_dxy = fs->make<TH2F>("h_seed_eletrack_npxlayers_vs_dxy", "", 100, 0, 5, 10, 0, 10);
-    h_seed_eletrack_nstlayers_vs_dxy = fs->make<TH2F>("h_seed_eletrack_nstlayers_vs_dxy", "", 100, 0, 5, 30, 0, 30);
-    h_seed_eletrack_dxyerr_vs_dxy = fs->make<TH2F>("h_seed_eletrack_dxyerr_vs_dxy", "", 500, 0, 0.5, 20, 0, 0.02);
+    h_seed_eletrack_minr_vs_dxy = fs->make<TH2F>("h_seed_eletrack_minr_vs_dxy", "", 50, 0, 5, 5, 0, 5);
+    h_seed_eletrack_sigmadxybs_vs_dxy = fs->make<TH2F>("h_seed_eletrack_sigmadxybs_vs_dxy", "", 50, 0, 5, 50, 0, 50);
+    h_seed_eletrack_npxlayers_vs_dxy = fs->make<TH2F>("h_seed_eletrack_npxlayers_vs_dxy", "", 50, 0, 5, 10, 0, 10);
+    h_seed_eletrack_nstlayers_vs_dxy = fs->make<TH2F>("h_seed_eletrack_nstlayers_vs_dxy", "", 50, 0, 5, 30, 0, 30);
+    h_seed_eletrack_dxyerr_vs_dxy = fs->make<TH2F>("h_seed_eletrack_dxyerr_vs_dxy", "", 50, 0, 0.5, 20, 0, 0.02);
 
-    h_seed_mutrack_p = fs->make<TH1F>("h_seed_mutrack_p", "", 400, 0, 2000);
-    h_seed_mutrack_pt_barrel = fs->make<TH1F>("h_seed_mutrack_pt_barrel", "", 400, 0, 2000);
-    h_seed_mutrack_pt_endcap = fs->make<TH1F>("h_seed_mutrack_pt_endcap", "", 400, 0, 2000);
+    h_seed_mutrack_p = fs->make<TH1F>("h_seed_mutrack_p", "", 100, 0, 200);
+    h_seed_mutrack_pt_barrel = fs->make<TH1F>("h_seed_mutrack_pt_barrel", "", 100, 0, 200);
+    h_seed_mutrack_pt_endcap = fs->make<TH1F>("h_seed_mutrack_pt_endcap", "", 100, 0, 200);
     h_seed_mutrack_sigmadxybs = fs->make<TH1F>("h_seed_mutrack_sigmadxybs", "", 40, 0, 20);
     h_seed_mutrack_sigmadxypv = fs->make<TH1F>("h_seed_mutrack_sigmadxypv", "", 40, 0, 20);
     h_seed_mutrack_nhits      = fs->make<TH1F>("h_seed_mutrack_nhits",      "", 40,   0, 40);
@@ -505,40 +506,40 @@ MFVVertexTracks::MFVVertexTracks(const edm::ParameterSet& cfg)
     h_seed_mutrack_npxlayers  = fs->make<TH1F>("h_seed_mutrack_npxlayers",  "", 10,   0, 10);
     h_seed_mutrack_nstlayers  = fs->make<TH1F>("h_seed_mutrack_nstlayers",  "", 30,   0, 30);
 
-    h_seed_nm1_mupt = fs->make<TH1F>("h_seed_nm1_mupt", "", 400, 0, 2000);
+    h_seed_nm1_mupt = fs->make<TH1F>("h_seed_nm1_mupt", "", 100, 0, 200);
     h_seed_nm1_munpxlayers = fs->make<TH1F>("h_seed_nm1_munpxlayers", "", 10, 0, 10);
     h_seed_nm1_munstlayers = fs->make<TH1F>("h_seed_nm1_munstlayers", "", 30, 0, 30);
-    h_seed_nm1_mudxybs = fs->make<TH1F>("h_seed_nm1_mudxybs", "", 500, 0, 2);
-    h_seed_nm1_mudxyerr = fs->make<TH1F>("h_seed_nm1_mudxyerr", "", 500, 0, 0.2);
+    h_seed_nm1_mudxybs = fs->make<TH1F>("h_seed_nm1_mudxybs", "", 50, 0, 2);
+    h_seed_nm1_mudxyerr = fs->make<TH1F>("h_seed_nm1_mudxyerr", "", 50, 0, 0.2);
     h_seed_nm1_musigmadxybs = fs->make<TH1F>("h_seed_nm1_musigmadxybs", "", 40, 0, 20);
     h_seed_nm1_musigmadxybs_rescaled = fs->make<TH1F>("h_seed_nm1_musigmadxybs_rescaled", "", 40, 0, 20);
     h_seed_nm1_muminr = fs->make<TH1F>("h_seed_nm1_minr", "", 6, 0, 6);
 
-    h_all_mutrack_minr_vs_pt = fs->make<TH2F>("h_all_mutrack_minr_vs_pt", "", 100, 0, 2000, 5, 0, 5);
-    h_all_mutrack_dxybs_vs_pt = fs->make<TH2F>("h_all_mutrack_dxybs_vs_pt", "", 100, 0, 2000, 500, 0, 2);
-    h_all_mutrack_dxyerr_vs_pt = fs->make<TH2F>("h_all_mutrack_dxyerr_vs_pt", "", 100, 0, 2000, 500, 0, 0.2);
-    h_all_mutrack_sigmadxybs_vs_pt = fs->make<TH2F>("h_all_mutrack_sigmadxybs_vs_pt", "", 100, 0, 2000, 50, 0, 50);
-    h_all_mutrack_npxlayers_vs_pt = fs->make<TH2F>("h_all_mutrack_npxlayers_vs_pt", "", 100, 0, 2000, 10, 0, 10);
-    h_all_mutrack_nstlayers_vs_pt = fs->make<TH2F>("h_all_mutrack_nstlayers_vs_pt", "", 100, 0, 2000, 30, 0, 30);
+    // h_all_mutrack_minr_vs_pt = fs->make<TH2F>("h_all_mutrack_minr_vs_pt", "", 50, 0, 200, 5, 0, 5);
+    // h_all_mutrack_dxybs_vs_pt = fs->make<TH2F>("h_all_mutrack_dxybs_vs_pt", "", 50, 0, 200, 50, 0, 2);
+    // h_all_mutrack_dxyerr_vs_pt = fs->make<TH2F>("h_all_mutrack_dxyerr_vs_pt", "", 50, 0, 200, 50, 0, 0.2);
+    // h_all_mutrack_sigmadxybs_vs_pt = fs->make<TH2F>("h_all_mutrack_sigmadxybs_vs_pt", "", 50, 0, 200, 50, 0, 50);
+    // h_all_mutrack_npxlayers_vs_pt = fs->make<TH2F>("h_all_mutrack_npxlayers_vs_pt", "", 50, 0, 200, 10, 0, 10);
+    // h_all_mutrack_nstlayers_vs_pt = fs->make<TH2F>("h_all_mutrack_nstlayers_vs_pt", "", 50, 0, 200, 30, 0, 30);
 
-    h_seed_mutrack_minr_vs_pt = fs->make<TH2F>("h_seed_mutrack_minr_vs_pt", "", 100, 0, 2000, 5, 0, 5);
-    h_seed_mutrack_dxybs_vs_pt = fs->make<TH2F>("h_seed_mutrack_dxybs_vs_pt", "", 100, 0, 2000, 500, 0, 2);
-    h_seed_mutrack_dxyerr_vs_pt = fs->make<TH2F>("h_seed_mutrack_dxyerr_vs_pt", "", 100, 0, 2000, 500, 0, 0.2);
-    h_seed_mutrack_sigmadxybs_vs_pt = fs->make<TH2F>("h_seed_mutrack_sigmadxybs_vs_pt", "", 100, 0, 2000, 50, 0, 50);
-    h_seed_mutrack_npxlayers_vs_pt = fs->make<TH2F>("h_seed_mutrack_npxlayers_vs_pt", "", 100, 0, 2000, 10, 0, 10);
-    h_seed_mutrack_nstlayers_vs_pt = fs->make<TH2F>("h_seed_mutrack_nstlayers_vs_pt", "", 100, 0, 2000, 30, 0, 30);
+    h_seed_mutrack_minr_vs_pt = fs->make<TH2F>("h_seed_mutrack_minr_vs_pt", "", 50, 0, 200, 5, 0, 5);
+    h_seed_mutrack_dxybs_vs_pt = fs->make<TH2F>("h_seed_mutrack_dxybs_vs_pt", "", 50, 0, 200, 500, 0, 2);
+    h_seed_mutrack_dxyerr_vs_pt = fs->make<TH2F>("h_seed_mutrack_dxyerr_vs_pt", "", 50, 0, 200, 500, 0, 0.2);
+    h_seed_mutrack_sigmadxybs_vs_pt = fs->make<TH2F>("h_seed_mutrack_sigmadxybs_vs_pt", "", 50, 0, 200, 50, 0, 50);
+    h_seed_mutrack_npxlayers_vs_pt = fs->make<TH2F>("h_seed_mutrack_npxlayers_vs_pt", "", 50, 0, 200, 10, 0, 10);
+    h_seed_mutrack_nstlayers_vs_pt = fs->make<TH2F>("h_seed_mutrack_nstlayers_vs_pt", "", 50, 0, 200, 30, 0, 30);
 
-    h_all_mutrack_minr_vs_dxy = fs->make<TH2F>("h_all_mutrack_minr_vs_dxy", "", 100, 0, 5, 5, 0, 5);
-    h_all_mutrack_sigmadxybs_vs_dxy = fs->make<TH2F>("h_all_mutrack_sigmadxybs_vs_dxy", "", 100, 0, 5, 50, 0, 50);
-    h_all_mutrack_npxlayers_vs_dxy = fs->make<TH2F>("h_all_mutrack_npxlayers_vs_dxy", "", 100, 0, 5, 10, 0, 10);
-    h_all_mutrack_nstlayers_vs_dxy = fs->make<TH2F>("h_all_mutrack_nstlayers_vs_dxy", "", 100, 0, 5, 30, 0, 30);
-    h_all_mutrack_dxyerr_vs_dxy = fs->make<TH2F>("h_all_mutrack_dxyerr_vs_dxy", "", 100, 0, 5, 500, 0, 0.2);
+    // h_all_mutrack_minr_vs_dxy = fs->make<TH2F>("h_all_mutrack_minr_vs_dxy", "", 50, 0, 5, 5, 0, 5);
+    // h_all_mutrack_sigmadxybs_vs_dxy = fs->make<TH2F>("h_all_mutrack_sigmadxybs_vs_dxy", "", 50, 0, 5, 50, 0, 50);
+    // h_all_mutrack_npxlayers_vs_dxy = fs->make<TH2F>("h_all_mutrack_npxlayers_vs_dxy", "", 50, 0, 5, 10, 0, 10);
+    // h_all_mutrack_nstlayers_vs_dxy = fs->make<TH2F>("h_all_mutrack_nstlayers_vs_dxy", "", 50, 0, 5, 30, 0, 30);
+    // h_all_mutrack_dxyerr_vs_dxy = fs->make<TH2F>("h_all_mutrack_dxyerr_vs_dxy", "", 50, 0, 5, 500, 0, 0.2);
 
-    h_seed_mutrack_minr_vs_dxy = fs->make<TH2F>("h_seed_mutrack_minr_vs_dxy", "", 100, 0, 5, 5, 0, 5);
-    h_seed_mutrack_sigmadxybs_vs_dxy = fs->make<TH2F>("h_seed_mutrack_sigmadxybs_vs_dxy", "", 100, 0, 5, 50, 0, 50);
-    h_seed_mutrack_npxlayers_vs_dxy = fs->make<TH2F>("h_seed_mutrack_npxlayers_vs_dxy", "", 100, 0, 5, 10, 0, 10);
-    h_seed_mutrack_nstlayers_vs_dxy = fs->make<TH2F>("h_seed_mutrack_nstlayers_vs_dxy", "", 100, 0, 5, 30, 0, 30);
-    h_seed_mutrack_dxyerr_vs_dxy = fs->make<TH2F>("h_seed_mutrack_dxyerr_vs_dxy", "", 500, 0, 0.5, 20, 0, 0.02);
+    h_seed_mutrack_minr_vs_dxy = fs->make<TH2F>("h_seed_mutrack_minr_vs_dxy", "", 50, 0, 5, 5, 0, 5);
+    h_seed_mutrack_sigmadxybs_vs_dxy = fs->make<TH2F>("h_seed_mutrack_sigmadxybs_vs_dxy", "", 50, 0, 5, 50, 0, 50);
+    h_seed_mutrack_npxlayers_vs_dxy = fs->make<TH2F>("h_seed_mutrack_npxlayers_vs_dxy", "", 50, 0, 5, 10, 0, 10);
+    h_seed_mutrack_nstlayers_vs_dxy = fs->make<TH2F>("h_seed_mutrack_nstlayers_vs_dxy", "", 50, 0, 5, 30, 0, 30);
+    h_seed_mutrack_dxyerr_vs_dxy = fs->make<TH2F>("h_seed_mutrack_dxyerr_vs_dxy", "", 50, 0, 0.5, 20, 0, 0.02);
   }
 }
 
@@ -590,6 +591,7 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
       edm::Handle<reco::TrackCollection> tracks;
       event.getByToken(tracks_token, tracks);
       for (size_t i = 0, ie = tracks->size(); i < ie; ++i)
+      // for (size_t i = 0, ie = 10; i < ie; ++i) //just a test
         all_tracks->push_back(reco::TrackRef(tracks, i));
     }
     if (use_separated_leptons) { 
@@ -855,28 +857,28 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
       const double pars[7] = {pt, tk->eta(), tk->phi(), fabs(dxybs), fabs(dxybs), fabs(dxypv), tk->dz(beamspot->position()) };
       const double errs[7] = { tk->ptError(), tk->etaError(), tk->phiError(), tk->dxyError(), rescaled_dxyerr, tk->dxyError(), tk->dzError() };
 
-      for (int i = 0; i < 7; ++i) {
-        h_all_track_pars[i]->Fill(pars[i]);
-        h_all_track_errs[i]->Fill(errs[i]);
-      }
-      h_all_track_absdxybs->Fill(fabs(dxybs)); //Alec added
+      // for (int i = 0; i < 7; ++i) {
+      //   h_all_track_pars[i]->Fill(pars[i]);
+      //   h_all_track_errs[i]->Fill(errs[i]);
+      // }
+      // h_all_track_absdxybs->Fill(fabs(dxybs)); //Alec added
 
-      h_all_track_p->Fill(p);
-      if (abs(tk->eta())<1.4){
-        h_all_track_pt_barrel->Fill(pt);
-      }
-      else{
-        h_all_track_pt_endcap->Fill(pt);
-      }
-      h_all_track_sigmadxybs->Fill(sigmadxybs);
-      h_all_track_sigmadxypv->Fill(sigmadxypv);
-      h_all_track_pt_dxybs->Fill(pt, dxybs);
-      h_all_track_pt_errdxybs->Fill(pt, tk->dxyError());
-      h_all_track_nhits->Fill(nhits);
-      h_all_track_npxhits->Fill(npxhits);
-      h_all_track_nsthits->Fill(nsthits);
-      h_all_track_npxlayers->Fill(npxlayers);
-      h_all_track_nstlayers->Fill(nstlayers);
+      // h_all_track_p->Fill(p);
+      // if (abs(tk->eta())<1.4){
+      //   h_all_track_pt_barrel->Fill(pt);
+      // }
+      // else{
+      //   h_all_track_pt_endcap->Fill(pt);
+      // }
+      // h_all_track_sigmadxybs->Fill(sigmadxybs);
+      // h_all_track_sigmadxypv->Fill(sigmadxypv);
+      // h_all_track_pt_dxybs->Fill(pt, dxybs);
+      // h_all_track_pt_errdxybs->Fill(pt, tk->dxyError());
+      // h_all_track_nhits->Fill(nhits);
+      // h_all_track_npxhits->Fill(npxhits);
+      // h_all_track_nsthits->Fill(nsthits);
+      // h_all_track_npxlayers->Fill(npxlayers);
+      // h_all_track_nstlayers->Fill(nstlayers);
 
       const bool nm1[4] = {
         pt > min_track_pt,
@@ -923,19 +925,19 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         h_seed_track_npxlayers->Fill(npxlayers);
         h_seed_track_nstlayers->Fill(nstlayers);
 
-        h_seed_track_dxystarbs->Fill(tk->dxy(*beamspot));
-        h_seed_track_dxybsposition->Fill(tk->dxy(beamspot->position()));
-        h_seed_track_diffdxy->Fill(fabs(tk->dxy(*beamspot) - tk->dxy(beamspot->position())));
-        if (fabs(tk->dxy(*beamspot) - tk->dxy(beamspot->position())) > 0.0002) {
-          h_seed_track_diffdxy_dz->Fill(fabs(tk->referencePoint().z() - beamspot->z0()));
-          h_seed_track_diffdxy_dx->Fill(fabs(tk->referencePoint().x() - beamspot->x0()));
-          h_seed_track_diffdxy_dy->Fill(fabs(tk->referencePoint().y() - beamspot->y0()));
-        }
-        else {
-          h_seed_track_samedxy_dz->Fill(fabs(tk->referencePoint().z() - beamspot->z0()));
-          h_seed_track_samedxy_dx->Fill(fabs(tk->referencePoint().x() - beamspot->x0()));
-          h_seed_track_samedxy_dy->Fill(fabs(tk->referencePoint().y() - beamspot->y0()));
-        }
+        // h_seed_track_dxystarbs->Fill(tk->dxy(*beamspot));
+        // h_seed_track_dxybsposition->Fill(tk->dxy(beamspot->position()));
+        // h_seed_track_diffdxy->Fill(fabs(tk->dxy(*beamspot) - tk->dxy(beamspot->position())));
+        // if (fabs(tk->dxy(*beamspot) - tk->dxy(beamspot->position())) > 0.0002) {
+        //   h_seed_track_diffdxy_dz->Fill(fabs(tk->referencePoint().z() - beamspot->z0()));
+        //   h_seed_track_diffdxy_dx->Fill(fabs(tk->referencePoint().x() - beamspot->x0()));
+        //   h_seed_track_diffdxy_dy->Fill(fabs(tk->referencePoint().y() - beamspot->y0()));
+        // }
+        // else {
+        //   h_seed_track_samedxy_dz->Fill(fabs(tk->referencePoint().z() - beamspot->z0()));
+        //   h_seed_track_samedxy_dx->Fill(fabs(tk->referencePoint().x() - beamspot->x0()));
+        //   h_seed_track_samedxy_dy->Fill(fabs(tk->referencePoint().y() - beamspot->y0()));
+        // }
         
       }
     }
@@ -1056,37 +1058,37 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         const double pars[7] = {pt, mtk->eta(), mtk->phi(), fabs(dxybs), fabs(dxybs), fabs(dxypv), mtk->dz(beamspot->position()) };
         const double errs[7] = { mtk->ptError(), mtk->etaError(), mtk->phiError(), mtk->dxyError(), rescaled_dxyerr, mtk->dxyError(), mtk->dzError() };
 
-        for (int i = 0; i < 7; ++i) {
-          h_all_mutrack_pars[i]->Fill(pars[i]);
-          h_all_mutrack_errs[i]->Fill(errs[i]);
-        }
+        // for (int i = 0; i < 7; ++i) {
+        //   h_all_mutrack_pars[i]->Fill(pars[i]);
+        //   h_all_mutrack_errs[i]->Fill(errs[i]);
+        // }
 
-        h_all_mutrack_p->Fill(p);
-        if (abs(mtk->eta())<1.4){
-          h_all_mutrack_pt_barrel->Fill(pt);
-        }
-        else{
-          h_all_mutrack_pt_endcap->Fill(pt);
-        }
-        h_all_mutrack_sigmadxybs->Fill(fabs(sigmadxybs));
-        h_all_mutrack_sigmadxypv->Fill(fabs(sigmadxypv));
-        h_all_mutrack_nhits->Fill(nhits);
-        h_all_mutrack_npxhits->Fill(npxhits);
-        h_all_mutrack_nsthits->Fill(nsthits);
-        h_all_mutrack_npxlayers->Fill(npxlayers);
-        h_all_mutrack_nstlayers->Fill(nstlayers);
-        h_all_mutrack_minr->Fill(min_r);
-        h_all_mutrack_minr_vs_pt->Fill(pt, min_r); 
-        h_all_mutrack_dxybs_vs_pt->Fill(pt, fabs(dxybs));
-        h_all_mutrack_dxyerr_vs_pt->Fill(pt, dxyerr);
-        h_all_mutrack_sigmadxybs_vs_pt->Fill(pt, fabs(sigmadxybs));
-        h_all_mutrack_npxlayers_vs_pt->Fill(pt, npxlayers);
-        h_all_mutrack_nstlayers_vs_pt->Fill(pt, nstlayers);
-        h_all_mutrack_minr_vs_dxy->Fill(fabs(dxybs), min_r); 
-        h_all_mutrack_sigmadxybs_vs_dxy->Fill(fabs(dxybs), fabs(sigmadxybs));
-        h_all_mutrack_npxlayers_vs_dxy->Fill(fabs(dxybs), npxlayers);
-        h_all_mutrack_nstlayers_vs_dxy->Fill(fabs(dxybs), nstlayers);
-        h_all_mutrack_dxyerr_vs_dxy->Fill(fabs(dxybs), dxyerr);
+        // h_all_mutrack_p->Fill(p);
+        // if (abs(mtk->eta())<1.4){
+        //   h_all_mutrack_pt_barrel->Fill(pt);
+        // }
+        // else{
+        //   h_all_mutrack_pt_endcap->Fill(pt);
+        // }
+        // h_all_mutrack_sigmadxybs->Fill(fabs(sigmadxybs));
+        // h_all_mutrack_sigmadxypv->Fill(fabs(sigmadxypv));
+        // h_all_mutrack_nhits->Fill(nhits);
+        // h_all_mutrack_npxhits->Fill(npxhits);
+        // h_all_mutrack_nsthits->Fill(nsthits);
+        // h_all_mutrack_npxlayers->Fill(npxlayers);
+        // h_all_mutrack_nstlayers->Fill(nstlayers);
+        // h_all_mutrack_minr->Fill(min_r);
+        // h_all_mutrack_minr_vs_pt->Fill(pt, min_r); 
+        // h_all_mutrack_dxybs_vs_pt->Fill(pt, fabs(dxybs));
+        // h_all_mutrack_dxyerr_vs_pt->Fill(pt, dxyerr);
+        // h_all_mutrack_sigmadxybs_vs_pt->Fill(pt, fabs(sigmadxybs));
+        // h_all_mutrack_npxlayers_vs_pt->Fill(pt, npxlayers);
+        // h_all_mutrack_nstlayers_vs_pt->Fill(pt, nstlayers);
+        // h_all_mutrack_minr_vs_dxy->Fill(fabs(dxybs), min_r); 
+        // h_all_mutrack_sigmadxybs_vs_dxy->Fill(fabs(dxybs), fabs(sigmadxybs));
+        // h_all_mutrack_npxlayers_vs_dxy->Fill(fabs(dxybs), npxlayers);
+        // h_all_mutrack_nstlayers_vs_dxy->Fill(fabs(dxybs), nstlayers);
+        // h_all_mutrack_dxyerr_vs_dxy->Fill(fabs(dxybs), dxyerr);
 
         const bool nm1[5] = {
           pt > min_track_pt,
@@ -1221,39 +1223,39 @@ bool MFVVertexTracks::filter(edm::Event& event, const edm::EventSetup& setup) {
         const double pars[7] = {pt, etk->eta(), etk->phi(), fabs(dxybs), fabs(dxybs), fabs(dxypv), etk->dz(beamspot->position()) };
         const double errs[7] = { etk->ptError(), etk->etaError(), etk->phiError(), etk->dxyError(), rescaled_dxyerr, etk->dxyError(), etk->dzError() };
 
-        for (int i = 0; i < 7; ++i) {
-          h_all_eletrack_pars[i]->Fill(pars[i]);
-          h_all_eletrack_errs[i]->Fill(errs[i]);
-        }
+        // for (int i = 0; i < 7; ++i) {
+        //   h_all_eletrack_pars[i]->Fill(pars[i]);
+        //   h_all_eletrack_errs[i]->Fill(errs[i]);
+        // }
 
-        h_all_eletrack_p->Fill(p);
-        if (abs(etk->eta())<1.4){
-          h_all_eletrack_pt_barrel->Fill(pt);
-        }
-        else{
-          h_all_eletrack_pt_endcap->Fill(pt);
-        }
-        h_all_eletrack_sigmadxybs->Fill(fabs(sigmadxybs));
-        h_all_eletrack_sigmadxypv->Fill(fabs(sigmadxypv));
-        h_all_eletrack_nhits->Fill(nhits);
-        h_all_eletrack_npxhits->Fill(npxhits);
-        h_all_eletrack_nsthits->Fill(nsthits);
-        h_all_eletrack_npxlayers->Fill(npxlayers);
-        h_all_eletrack_nstlayers->Fill(nstlayers);
-        h_all_eletrack_minr->Fill(min_r);
+        // h_all_eletrack_p->Fill(p);
+        // if (abs(etk->eta())<1.4){
+        //   h_all_eletrack_pt_barrel->Fill(pt);
+        // }
+        // else{
+        //   h_all_eletrack_pt_endcap->Fill(pt);
+        // }
+        // h_all_eletrack_sigmadxybs->Fill(fabs(sigmadxybs));
+        // h_all_eletrack_sigmadxypv->Fill(fabs(sigmadxypv));
+        // h_all_eletrack_nhits->Fill(nhits);
+        // h_all_eletrack_npxhits->Fill(npxhits);
+        // h_all_eletrack_nsthits->Fill(nsthits);
+        // h_all_eletrack_npxlayers->Fill(npxlayers);
+        // h_all_eletrack_nstlayers->Fill(nstlayers);
+        // h_all_eletrack_minr->Fill(min_r);
 
-        h_all_eletrack_minr_vs_pt->Fill(pt, min_r); 
-        h_all_eletrack_dxybs_vs_pt->Fill(pt, fabs(dxybs));
-        h_all_eletrack_dxyerr_vs_pt->Fill(pt, dxyerr);
-        h_all_eletrack_sigmadxybs_vs_pt->Fill(pt, fabs(sigmadxybs));
-        h_all_eletrack_npxlayers_vs_pt->Fill(pt, npxlayers);
-        h_all_eletrack_nstlayers_vs_pt->Fill(pt, nstlayers);
+        // h_all_eletrack_minr_vs_pt->Fill(pt, min_r); 
+        // h_all_eletrack_dxybs_vs_pt->Fill(pt, fabs(dxybs));
+        // h_all_eletrack_dxyerr_vs_pt->Fill(pt, dxyerr);
+        // h_all_eletrack_sigmadxybs_vs_pt->Fill(pt, fabs(sigmadxybs));
+        // h_all_eletrack_npxlayers_vs_pt->Fill(pt, npxlayers);
+        // h_all_eletrack_nstlayers_vs_pt->Fill(pt, nstlayers);
 
-        h_all_eletrack_minr_vs_dxy->Fill(fabs(dxybs), min_r); 
-        h_all_eletrack_sigmadxybs_vs_dxy->Fill(fabs(dxybs), fabs(sigmadxybs));
-        h_all_eletrack_npxlayers_vs_dxy->Fill(fabs(dxybs), npxlayers);
-        h_all_eletrack_nstlayers_vs_dxy->Fill(fabs(dxybs), nstlayers);
-        h_all_eletrack_dxyerr_vs_dxy->Fill(fabs(dxybs), dxyerr);
+        // h_all_eletrack_minr_vs_dxy->Fill(fabs(dxybs), min_r); 
+        // h_all_eletrack_sigmadxybs_vs_dxy->Fill(fabs(dxybs), fabs(sigmadxybs));
+        // h_all_eletrack_npxlayers_vs_dxy->Fill(fabs(dxybs), npxlayers);
+        // h_all_eletrack_nstlayers_vs_dxy->Fill(fabs(dxybs), nstlayers);
+        // h_all_eletrack_dxyerr_vs_dxy->Fill(fabs(dxybs), dxyerr);
 
         const bool nm1[5] = {
           pt > min_track_pt,
