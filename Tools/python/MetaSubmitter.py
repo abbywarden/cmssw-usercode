@@ -319,10 +319,14 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
                 'signal':           (1,      200),
                 'JetHT':            (15, 1350000),
                 'MET':              (15, 1350000),
-                'SingleMuon':       (7, 1350000),
-                'EGamma':           (7, 1350000),
-                'SingleElectron':   (7, 1350000),
+                'SingleMuon':       (5, 1350000), 
+                'EGamma':           (5, 1350000), 
+                'SingleElectron':   (5, 1350000), 
                 'Lepton':           (15, 1350000),
+                'ttbarhad':         (70, 1000000),
+                'ttbarl':           (8, 1000000), #10 good for ttbar lep; but for semilep, need 20, for lep need 10?
+                'wjets':            (8, 1000000), #need to check #10 works for wjets0j
+                'dyjetsM50':        (8, 1000000), #need to check #10 works for dyjetsM10
                 'qcdht0300_2017':   (5, 3130000),
                 'qcdht0500_2017':   (3, 3130000),
                 'qcdht0700_2017':   (5, 3130000),
@@ -360,6 +364,14 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
                 name = 'JetHT'
             elif 'BTagCSV' in name:
                 name = 'BTagCSV'
+            elif 'ttbar_had' in name:
+                name = 'ttbarhad' #ttbar had exclusive files 
+            elif 'ttbar_lep' or 'ttbar_semilep' in name:
+                name = 'ttbarl' #ttbar lep, semilep exclusive files 
+            elif 'wjetstolnu' in name:
+                name = 'wjets'
+            elif 'dyjetstollM50' in name:
+                name = 'dyjetsM50'
             elif 'DisplacedJet' in name:
                 name = 'DisplacedJet'
             elif 'MET' in name:
@@ -380,16 +392,16 @@ def set_splitting(samples, dataset, jobtype='default', data_json=None, default_f
 
             if jobtype == 'trackmover':
                 #want to just do a quick check cause haven't figured out local testing histos 
-                if name.startswith('ww'):
-                    sample.total_files = 1
-                    sample.total_events = 1000
+                # if name.startswith('ww'):
+                #     sample.total_files = 1
+                #     sample.total_events = 1000
                 if name.startswith('ttbarht'):
                     fp = sample.files_per
                     sample.events_per /= fp
                     sample.files_per = 1
                 elif name != 'signal':
-                    sample.files_per = int(round(sample.files_per / 3.))
-                    sample.events_per /= 3
+                    sample.files_per = int(round(sample.files_per / 3.)) 
+                    sample.events_per /= 3 
 
     elif jobtype == 'default':
         for sample in samples:

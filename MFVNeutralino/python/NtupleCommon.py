@@ -1,8 +1,8 @@
 from JMTucker.Tools.CMSSWTools import *
 from JMTucker.Tools.Year import year
 
-ntuple_version_ = 'ULV13'
-#ntuple_version_ = 'ULV14' #just for TrackMover 
+#ntuple_version_ = 'ULV13'
+ntuple_version_ = 'ULV14' #just for TrackMover 
 
 lsp_id = 1000006 # should do that in a smarter way; currently for stop
 use_btag_triggers = False
@@ -125,7 +125,7 @@ class NtupleSettings(CMSSWSettings):
         self.keep_tk = False
         self.event_filter = True
         self.randpars_filter = False
-
+    
     @property
     def version(self):
         if self.is_miniaod:
@@ -330,26 +330,24 @@ def miniaod_ntuple_process(settings):
 
     # #EGamma scales and smearings 
     # #https://twiki.cern.ch/twiki/bin/view/CMS/EgammaUL2016To2018#SFs_for_Electrons_UL_2018 
-    # from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
     
-    # if year == '2017' or year == '2018':
-    #     era = '%s-UL'%year
-    # elif year == '20161':
-    #     era = '2016preVFP-UL'
-    # elif year == '20162':
-    #     era = '2016postVFP-UL'
-    # setupEgammaPostRecoSeq(process,
-    #                        runEnergyCorrections=True,
-    #                        runVID=True, #saves CPU time by not needlessly re-running VID, if you want the Fall17V2 IDs, set this to True or remove (default is True)
-    #                        eleIDModules=['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff'],
-    #                        era='2018-UL'
-    #                        )
-        
-#a sequence egammaPostRecoSeq has now been created and should be added to your path, eg process.p=cms.Path(process.egammaPostRecoSeq)
+    # if year == '2017' or year == '2018':  era = '%s-UL'%year
+    # elif year == '20161': setup_era = '2016preVFP-UL'
+    # elif year == '20162': setup_era = '2016postVFP-UL'
+
+    from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
+    setupEgammaPostRecoSeq(process,
+                           runEnergyCorrections=True,
+                           runVID=True, #turn off to save CPU time by not needlessly re-running VID, if you want the Fall17V2 IDs, set this to True or remove (default is True)
+                           eleIDModules=['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff'],
+                           phoIDModules=['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V2_cff'],
+                           era='2018-UL') #FIXME hardcoded based on era 
+      
     process.p = cms.Path(process.goodOfflinePrimaryVertices *
                          process.updatedJetsSeqMiniAOD *
-                        process.BadPFMuonFilterUpdateDz *
+                         process.BadPFMuonFilterUpdateDz *
                          process.fullPatMetSequence *
+                         process.egammaPostRecoSeq * 
                          process.selectedPatJets *
                          process.selectedPatMuons *
                          process.selectedPatElectrons *

@@ -159,6 +159,7 @@ class CRABSubmitter:
                 extra_output_files = [extra_output_files]
             self.cfg_template.JobType.outputFiles = extra_output_files
 
+        self.cfg_template.JobType.maxMemoryMB = 2500 #added 
         self.dataset = dataset
         self.cfg_template.Data.inputDataset = 'SETLATER'
         self.cfg_template.Data.inputDBS = 'SETLATER'
