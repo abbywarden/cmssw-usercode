@@ -302,6 +302,54 @@ namespace mfv {
 
     };
   
+
+  class TMWeightSubNtuple : public jmt::TMWeightSubNtuple { //to hold the distributions used to reweigh tm bkg (used to test BDT efficiency for DVwLep)
+    public:
+      TMWeightSubNtuple();
+      virtual void clear();
+      virtual void write_to_tree(TTree*);
+      virtual void read_from_tree(TTree*);
+      virtual void copy_vectors();
+  
+      void add(float movedist2d, float movedist3d, float jetsumpt, float jet_pt, float jetsump, float electron_pt, float muon_pt, float jeteledR, float jetmudR) { 
+
+      jmt::TMWeightSubNtuple::add(movedist2d, movedist3d, jetsumpt, jet_pt, jetsump, electron_pt, muon_pt, jeteledR, jetmudR);
+      tmw_movedist2d_.push_back(movedist2d);
+      tmw_movedist3d_.push_back(movedist3d);
+      tmw_jetsumpt_.push_back(jetsumpt);
+      tmw_jet_pt_.push_back(jet_pt);
+      tmw_jetsump_.push_back(jetsump);
+      tmw_electron_pt_.push_back(electron_pt);
+      tmw_muon_pt_.push_back(muon_pt);
+      tmw_jeteledR_.push_back(jeteledR);
+      tmw_jetmudR_.push_back(jetmudR);
+
+      }
+  
+      float tmw_movedist2d     (int i) const { return p_get(i, tmw_movedist2d_, p_tmw_movedist2d_);}
+      float tmw_movedist3d     (int i) const { return p_get(i, tmw_movedist3d_, p_tmw_movedist3d_);}
+      float tmw_jetsumpt       (int i) const { return p_get(i, tmw_jetsumpt_, p_tmw_jetsumpt_);}
+      float tmw_jet_pt         (int i) const { return p_get(i, tmw_jet_pt_, p_tmw_jet_pt_);}
+      float tmw_jetsump        (int i) const { return p_get(i, tmw_jetsump_, p_tmw_jetsump_);}
+      float tmw_electron_pt    (int i) const { return p_get(i, tmw_electron_pt_, p_tmw_electron_pt_);}
+      float tmw_muon_pt        (int i) const { return p_get(i, tmw_muon_pt_, p_tmw_muon_pt_);}
+      float tmw_jeteledR       (int i) const { return p_get(i, tmw_jeteledR_, p_tmw_jeteledR_);}
+      float tmw_jetmudR        (int i) const { return p_get(i, tmw_jetmudR_, p_tmw_jetmudR_);}
+
+
+    private:
+      vfloat tmw_movedist2d_;                  vfloat* p_tmw_movedist2d_;
+      vfloat tmw_movedist3d_;                  vfloat* p_tmw_movedist3d_;
+      vfloat tmw_jetsumpt_;                    vfloat* p_tmw_jetsumpt_;
+      vfloat tmw_jet_pt_;                      vfloat* p_tmw_jet_pt_;
+      vfloat tmw_jetsump_;                     vfloat* p_tmw_jetsump_;
+      vfloat tmw_electron_pt_;                 vfloat* p_tmw_electron_pt_;
+      vfloat tmw_muon_pt_;                     vfloat* p_tmw_muon_pt_;
+      vfloat tmw_jeteledR_;                    vfloat* p_tmw_jeteledR_;
+      vfloat tmw_jetmudR_;                     vfloat* p_tmw_jetmudR_;
+
+    };
+
   /// 
   class MiniNtuple2SubNtuple : public jmt::INtuple {
   public:
@@ -346,7 +394,7 @@ namespace mfv {
     virtual void copy_vectors() {}
 
     void set(ushort nalltracks, uchar nmovedtracks, uchar nmovedeletracks, uchar nmovedmutracks, uchar npreseljets, uchar npreselbjets, uchar npreselele, uchar npreselmu,
-             float move_x, float move_y, float move_z, float move_lep_x, float move_lep_y, float move_lep_z, float move_jet_x, float move_jet_y, float move_jet_z, float jetlepdeltadz) {
+             float move_x, float move_y, float move_z, float movelepdxypv, float movejetdxypv, float jetlepdeltadz) {
       nalltracks_ = nalltracks;
       nmovedtracks_ = nmovedtracks;
       nmovedeletracks_ = nmovedeletracks;
@@ -359,12 +407,8 @@ namespace mfv {
       move_y_ = move_y;
       move_z_ = move_z;
 
-      move_lep_x_ = move_lep_x;
-      move_lep_y_ = move_lep_y;
-      move_lep_z_ = move_lep_z;
-      move_jet_x_ = move_jet_x;
-      move_jet_y_ = move_jet_y;
-      move_jet_z_ = move_jet_z;
+      movelepdxypv_ = movelepdxypv;
+      movejetdxypv_ = movejetdxypv;
       jetlepdeltadz_ = jetlepdeltadz;
     }
 
@@ -381,19 +425,12 @@ namespace mfv {
     float move_y() const { return move_y_; }
     float move_z() const { return move_z_; }
 
-    float move_lep_x() const { return move_lep_x_; }
-    float move_lep_y() const { return move_lep_y_; }
-    float move_lep_z() const { return move_lep_z_; }
-
-    float move_jet_x() const { return move_jet_x_; }
-    float move_jet_y() const { return move_jet_y_; }
-    float move_jet_z() const { return move_jet_z_; }
-
+    float movelepdxypv() const { return movelepdxypv_; }
+    float movejetdxypv() const { return movejetdxypv_; }
     float jetlepdeltadz() const { return jetlepdeltadz_;}
     TVector3 move_pos() const { return TVector3(move_x(), move_y(), move_z()); }
-    TVector3 move_lep_pos() const { return TVector3(move_lep_x(), move_lep_y(), move_lep_z()); }
-    TVector3 move_jet_pos() const { return TVector3(move_jet_x(), move_jet_y(), move_jet_z()); }
 
+    
   private:
     ushort nalltracks_;
     uchar nmovedtracks_;
@@ -409,13 +446,8 @@ namespace mfv {
     float move_y_;
     float move_z_;
 
-    float move_lep_x_;
-    float move_lep_y_;
-    float move_lep_z_;
-
-    float move_jet_x_;
-    float move_jet_y_;
-    float move_jet_z_;
+    float movelepdxypv_;
+    float movejetdxypv_;
     float jetlepdeltadz_;
   };
 
@@ -535,19 +567,21 @@ namespace mfv {
   class MovedTracksNtuple : public jmt::TrackingAndJetsNtuple {
   public:
     MovedTracksNtuple() { clear(); }
-    virtual void clear() { jmt::TrackingAndJetsNtuple::clear(); gentruth().clear(); vertices().clear(); lepinvertices().clear(); tm().clear(); }
-    virtual void write_to_tree(TTree* t) { jmt::TrackingAndJetsNtuple::write_to_tree(t); gentruth().write_to_tree(t); vertices().write_to_tree(t); lepinvertices().write_to_tree(t); tm().write_to_tree(t); }
-    virtual void read_from_tree(TTree* t) { jmt::TrackingAndJetsNtuple::read_from_tree(t); gentruth().read_from_tree(t); vertices().read_from_tree(t); lepinvertices().read_from_tree(t); tm().read_from_tree(t); }
-    virtual void copy_vectors() { jmt::TrackingAndJetsNtuple::copy_vectors(); gentruth().copy_vectors(); vertices().copy_vectors(); lepinvertices().copy_vectors(); tm().copy_vectors(); }
+    virtual void clear() { jmt::TrackingAndJetsNtuple::clear(); gentruth().clear(); vertices().clear(); lepinvertices().clear(); tm().clear(); tmw().clear();}
+    virtual void write_to_tree(TTree* t) { jmt::TrackingAndJetsNtuple::write_to_tree(t); gentruth().write_to_tree(t); vertices().write_to_tree(t); lepinvertices().write_to_tree(t); tm().write_to_tree(t); tmw().write_to_tree(t);}
+    virtual void read_from_tree(TTree* t) { jmt::TrackingAndJetsNtuple::read_from_tree(t); gentruth().read_from_tree(t); vertices().read_from_tree(t); lepinvertices().read_from_tree(t); tm().read_from_tree(t); tmw().read_from_tree(t);}
+    virtual void copy_vectors() { jmt::TrackingAndJetsNtuple::copy_vectors(); gentruth().copy_vectors(); vertices().copy_vectors(); lepinvertices().copy_vectors(); tm().copy_vectors(); tmw().copy_vectors();}
 
     GenTruthSubNtuple& gentruth() { return gentruth_; }
     VerticesSubNtuple& vertices() { return vertices_; }
     LeptonInVerticesSubNtuple& lepinvertices() { return lepinvertices_; }
     MovedTracksSubNtuple& tm() { return tm_; }
+    TMWeightSubNtuple& tmw() { return tmw_; }
     const GenTruthSubNtuple& gentruth() const { return gentruth_; }
     const VerticesSubNtuple& vertices() const { return vertices_; }
     const LeptonInVerticesSubNtuple& lepinvertices() const { return lepinvertices_; }
     const MovedTracksSubNtuple& tm() const { return tm_; }
+    const TMWeightSubNtuple& tmw() const { return tmw_; }
 
     static const unsigned b_jet_moved = 0;
     bool jet_moved    (int i) { return test_bit(jets().misc(i), b_jet_moved); }
@@ -587,6 +621,7 @@ namespace mfv {
     VerticesSubNtuple vertices_;
     LeptonInVerticesSubNtuple lepinvertices_;
     MovedTracksSubNtuple tm_;
+    TMWeightSubNtuple tmw_;
   };
    
   ////

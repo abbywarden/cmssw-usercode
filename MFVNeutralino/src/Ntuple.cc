@@ -317,6 +317,75 @@ namespace mfv {
 
   }
 
+  ///
+  TMWeightSubNtuple::TMWeightSubNtuple() {
+    jmt::TMWeightSubNtuple::clear();
+    clear();
+    p_tmw_movedist2d_ = 0;
+    p_tmw_movedist3d_ = 0;
+    p_tmw_jetsumpt_ = 0;
+    p_tmw_jet_pt_ = 0;
+    p_tmw_jetsump_ = 0;
+    p_tmw_electron_pt_ = 0;
+    p_tmw_muon_pt_ = 0;
+    p_tmw_jeteledR_ = 0;
+    p_tmw_jetmudR_ = 0;
+
+  }
+
+  void TMWeightSubNtuple::clear() {
+    jmt::TMWeightSubNtuple::clear();
+    tmw_movedist2d_.clear();
+    tmw_movedist3d_.clear();
+    tmw_jetsumpt_.clear();
+    tmw_jet_pt_.clear();
+    tmw_jetsump_.clear();
+    tmw_electron_pt_.clear();
+    tmw_muon_pt_.clear();
+    tmw_jeteledR_.clear();
+    tmw_jetmudR_.clear();
+  }
+
+  void TMWeightSubNtuple::write_to_tree(TTree* t) {
+    jmt::TMWeightSubNtuple::write_to_tree(t);
+    t->Branch("tmw_movedist2d", &tmw_movedist2d_);
+    t->Branch("tmw_movedist3d", &tmw_movedist3d_);
+    t->Branch("tmw_jetsumpt", &tmw_jetsumpt_);
+    t->Branch("tmw_jet_pt", &tmw_jet_pt_);
+    t->Branch("tmw_jetsump", &tmw_jetsump_);
+    t->Branch("tmw_electron_pt", &tmw_electron_pt_);
+    t->Branch("tmw_muon_pt", &tmw_muon_pt_);
+    t->Branch("tmw_jeteledR", &tmw_jeteledR_);
+    t->Branch("tmw_jetmudR", &tmw_jetmudR_);
+  }
+
+  void TMWeightSubNtuple::read_from_tree(TTree* t) {
+    jmt::TMWeightSubNtuple::read_from_tree(t);
+    t->SetBranchAddress("tmw_movedist2d", &p_tmw_movedist2d_);
+    t->SetBranchAddress("tmw_movedist3d", &p_tmw_movedist3d_);
+    t->SetBranchAddress("tmw_jetsumpt", &p_tmw_jetsumpt_);
+    t->SetBranchAddress("tmw_jet_pt", &p_tmw_jet_pt_);
+    t->SetBranchAddress("tmw_jetsump", &p_tmw_jetsump_);
+    t->SetBranchAddress("tmw_electron_pt", &p_tmw_electron_pt_);
+    t->SetBranchAddress("tmw_muon_pt", &p_tmw_muon_pt_);
+    t->SetBranchAddress("tmw_jeteledR", &p_tmw_jeteledR_);
+    t->SetBranchAddress("tmw_jetmudR", &p_tmw_jetmudR_);
+
+  }
+
+  void TMWeightSubNtuple::copy_vectors() {
+    jmt::TMWeightSubNtuple::copy_vectors();
+    tmw_movedist2d_ = *p_tmw_movedist2d_;
+    tmw_movedist3d_ = *p_tmw_movedist3d_;
+    tmw_jetsumpt_ = *p_tmw_jetsumpt_;
+    tmw_jet_pt_ = *p_tmw_jet_pt_;
+    tmw_jetsump_ = *p_tmw_jetsump_;
+    tmw_electron_pt_ = *p_tmw_electron_pt_;
+    tmw_muon_pt_ = *p_tmw_muon_pt_;
+    tmw_jeteledR_ = *p_tmw_jeteledR_;
+    tmw_jetmudR_ = *p_tmw_jetmudR_;
+  }
+
   /// 
 
 
@@ -354,12 +423,8 @@ namespace mfv {
     move_x_ = 0;
     move_y_ = 0;
     move_z_ = 0;
-    move_lep_x_ = 0;
-    move_lep_y_ = 0;
-    move_lep_z_ = 0;
-    move_jet_x_ = 0;
-    move_jet_y_ = 0;
-    move_jet_z_ = 0;
+    movelepdxypv_ = 0;
+    movejetdxypv_ = 0;
     jetlepdeltadz_ = 0;
 
   }
@@ -376,12 +441,8 @@ namespace mfv {
     t->Branch("move_x", &move_x_);
     t->Branch("move_y", &move_y_);
     t->Branch("move_z", &move_z_);
-    t->Branch("move_lep_x", &move_lep_x_);
-    t->Branch("move_lep_y", &move_lep_y_);
-    t->Branch("move_lep_z", &move_lep_z_);
-    t->Branch("move_jet_x", &move_jet_x_);
-    t->Branch("move_jet_y", &move_jet_y_);
-    t->Branch("move_jet_z", &move_jet_z_);
+    t->Branch("movelepdxypv", &movelepdxypv_);
+    t->Branch("movejetdxypv", &movejetdxypv_);
     t->Branch("jetlepdeltadz", &jetlepdeltadz_);
   }
 
@@ -397,12 +458,8 @@ namespace mfv {
     t->SetBranchAddress("move_x", &move_x_);
     t->SetBranchAddress("move_y", &move_y_);
     t->SetBranchAddress("move_z", &move_z_);
-    t->SetBranchAddress("move_lep_x", &move_lep_x_);
-    t->SetBranchAddress("move_lep_y", &move_lep_y_);
-    t->SetBranchAddress("move_lep_z", &move_lep_z_);
-    t->SetBranchAddress("move_jet_x", &move_jet_x_);
-    t->SetBranchAddress("move_jet_y", &move_jet_y_);
-    t->SetBranchAddress("move_jet_z", &move_jet_z_);
+    t->SetBranchAddress("movelepdxypv", &movelepdxypv_);
+    t->SetBranchAddress("movejetdxypv", &movejetdxypv_);
     t->SetBranchAddress("jetlepdeltadz", &jetlepdeltadz_);
   }
 }

@@ -147,7 +147,9 @@ namespace jmt {
        NumExtents ex    = te.numExtentInRAndZ(hp, TrackerSpaceExtents::AllowAll);
        NumExtents ex_px = te.numExtentInRAndZ(hp, TrackerSpaceExtents::PixelOnly);
        
-       nt.add(mu.charge(), mu.pt(), mu.eta(), mu.phi(), ID, isLooseMuon, isMedMuon, isTightMuon, iso,
+       nt.add(mu.charge(), mu.pt(), mu.eta(), mu.phi(), ID, 
+        isLooseMuon, isMedMuon, isTightMuon, 
+        iso,
 	      mtk->vx(), mtk->vy(), mtk->vz(),
 	      mtk->covariance(0,0), mtk->covariance(1,1), mtk->covariance(1,4), mtk->covariance(2,2), mtk->covariance(2,3),
 	      mtk->covariance(3,3), mtk->covariance(3,4), mtk->covariance(4,4), mtk->normalizedChi2(),
@@ -175,10 +177,16 @@ namespace jmt {
     
     const bool passveto = el.passConversionVeto();
     
-    bool isVetoEl = el.electronID("cutBasedElectronID-Fall17-94X-V2-veto");
-    bool isLooseEl = el.electronID("cutBasedElectronID-Fall17-94X-V2-loose");
-    bool isMedEl = el.electronID("cutBasedElectronID-Fall17-94X-V2-medium");
-    bool isTightEl = el.electronID("cutBasedElectronID-Fall17-94X-V2-tight");
+    // bool isVetoEl = el.electronID("cutBasedElectronID-Fall17-94X-V2-veto");
+    // bool isLooseEl = el.electronID("cutBasedElectronID-Fall17-94X-V2-loose");
+    // bool isMedEl = el.electronID("cutBasedElectronID-Fall17-94X-V2-medium");
+    // bool isTightEl = el.electronID("cutBasedElectronID-Fall17-94X-V2-tight");
+
+    bool isVetoEl = el.electronID("cutBasedElectronID_Fall17_94X_V2_veto");
+    bool isLooseEl = el.electronID("cutBasedElectronID_Fall17_94X_V2_loose");
+    bool isMedEl = el.electronID("cutBasedElectronID_Fall17_94X_V2_medium");
+    bool isTightEl = el.electronID("cutBasedElectronID_Fall17_94X_V2_tight");
+    
     int ID = 0 + isVetoEl + isLooseEl + isMedEl + isTightEl;
 
     const auto pfIso = el.pfIsolationVariables();
@@ -192,7 +200,8 @@ namespace jmt {
       NumExtents ex    = te.numExtentInRAndZ(hp, TrackerSpaceExtents::AllowAll);
       NumExtents ex_px = te.numExtentInRAndZ(hp, TrackerSpaceExtents::PixelOnly);
 
-      nt.add(el.charge(), el.pt(), el.eta(), el.phi(), ID, isVetoEl, isLooseEl, isMedEl, isTightEl, iso, passveto,
+      nt.add(el.charge(), el.pt(), el.eta(), el.phi(), ID, isVetoEl, isLooseEl, isMedEl, isTightEl, 
+       iso, passveto,
 	     etk->vx(), etk->vy(), etk->vz(),
 	     etk->covariance(0,0), etk->covariance(1,1), etk->covariance(1,4), etk->covariance(2,2), etk->covariance(2,3),
 	     etk->covariance(3,3), etk->covariance(3,4), etk->covariance(4,4), etk->normalizedChi2(),
@@ -265,9 +274,9 @@ namespace jmt {
 
       
       if (triggerfloats_available_) { 
+        // std::cout << "trigger floats available" << std::endl;
         //hltmatching 
         double hltmatchdist2 = 0.1;
-        // double best_hltmatchdR = 5.;
         TLorentzVector hltmatch;
         for (auto hlt : triggerfloats_->hltmuons) {
           const double dist2 = reco::deltaR(ms[i].eta(), ms[i].phi(), hlt.Eta(), hlt.Phi());
@@ -283,17 +292,19 @@ namespace jmt {
         assert(triggerfloats_->HLTdecisions.size() == mfv::n_hlt_paths);
         for (size_t j = 5; j < 8; ++j) { //leptons are in the first 10; with mu in idx 5,6,7
           bool found = triggerfloats_->HLTdecisions[j] != -1;
+          // std::cout << " hlt path number : " << j << "  found? " << found << std::endl;
           if (found) {
             // if (ms[i].pt() > offline_ptthresh[j]) std::cout << "found mu pT > offline pT cut; pT, i, year ? " << ms[i].pt() << " " << j << " " <<  year  << std::endl;
             //make certain it's the correct year
             if (j == 6 && year != 2017) continue; //isoMu27 only for 2017
             if (j == 5 && year == 2017) continue; //isoMu24 for 2016 and 2018
-            if (ms[i].pt() > offline_ptthresh[j]) passtrigpt = true;
+            if (ms[i].pt() > offline_ptthresh[j]) {
+              passtrigpt = true;
+              break; //no need to check other hlt paths
+            }
             // if (ms[i].pt() > offline_ptthresh[j]) std::cout << "pass ? " << passtrigpt << std::endl;
-
           } 
         }
-
       }
 
 
@@ -346,6 +357,7 @@ namespace jmt {
         for (size_t j = 0; j < 10; ++j) { //leptons are in the first 10 so just loop over that
           if (j > 4 && j < 8) continue; //just skip over the muons
           bool found = triggerfloats_->HLTdecisions[j] != -1;
+          // std::cout << " hlt path number : " << j << "  found? " << found << std::endl;
           if (found) {
             // if (es[i].pt() > offline_ptthresh[j]) std::cout << "found el pT > offline pT cut; pT, i, year ? " << es[i].pt() << " " << j << " " << year << std::endl;
             //make certain it's the correct year 
@@ -355,7 +367,6 @@ namespace jmt {
             if (j == 8 && (year != 20161 and year !=20162)) continue; //photon175 only for 2016 
             if (j == 9 && (year !=2017 && year != 2018)) continue; //photon200 not for 2016
             
-            if (es[i].pt() > offline_ptthresh[j]) passtrigpt = true;
             //one trigger has requirement on jet. so make sure that passes as well. 
             if (j == 4) { 
               bool pass_jet = false;
@@ -364,8 +375,10 @@ namespace jmt {
               }
               if (passtrigpt == true and pass_jet == false) passtrigpt = false; //if did not find a jet, set to false
             }
-            // if (es[i].pt() > offline_ptthresh[j]) std::cout << "pass ? " << passtrigpt << std::endl;
-
+            if (es[i].pt() > offline_ptthresh[j]) { 
+              passtrigpt = true;
+              break; //no need to check other hlt paths. 
+            }
           } 
         }
       }
@@ -376,7 +389,8 @@ namespace jmt {
     }
   }
 
-  void NtupleAdd(TracksSubNtuple& nt, const reco::Track& tk, int which_jet, int which_pv, int which_sv, bool ismu, bool isel, bool isgoodmu, bool isgoodel, unsigned misc, unsigned misc_mtk, unsigned misc_etk) {
+  void NtupleAdd(TracksSubNtuple& nt, const reco::Track& tk, int which_jet, int which_pv, int which_sv, //bool ismu, bool isel, bool isgoodmu, bool isgoodel, 
+                 unsigned misc, unsigned misc_mtk, unsigned misc_etk) {
     const reco::HitPattern& hp = tk.hitPattern();
 
     TrackerSpaceExtents te;
@@ -398,7 +412,7 @@ namespace jmt {
            ex.max_z > -2e9 ? ex.max_z : 0,
            ex_px.max_r > -2e9 ? ex_px.max_r : 0,
            ex_px.max_z > -2e9 ? ex_px.max_z : 0,
-           which_jet, which_pv, which_sv, ismu, isel, isgoodmu, isgoodel,
+           which_jet, which_pv, which_sv, //ismu, isel, isgoodmu, isgoodel,
 	         misc, misc_mtk, misc_etk
            );
   }
@@ -444,137 +458,137 @@ namespace jmt {
   }
 
   
-  bool TracksSubNtupleFiller::ismu(const edm::Event& e, MuonsSubNtupleFiller* mf, reco::TrackRef& tk) {
-    bool ismu = false;
+  // bool TracksSubNtupleFiller::ismu(const edm::Event& e, MuonsSubNtupleFiller* mf, reco::TrackRef& tk) {
+  //   bool ismu = false;
     
-    auto ms = mf->muons(e);
-    std::vector<reco::TrackRef> r;
-    for (size_t m = 0, me = ms.size(); m < me; ++m) {
+  //   auto ms = mf->muons(e);
+  //   std::vector<reco::TrackRef> r;
+  //   for (size_t m = 0, me = ms.size(); m < me; ++m) {
      
-      reco::TrackRef mtk = ms[m].track();
+  //     reco::TrackRef mtk = ms[m].track();
       
-      if (!ms[m].track().isNull()) {
+  //     if (!ms[m].track().isNull()) {
 
-	if (mtk->pt() > 1) {
-	  r.push_back(mtk);
-	}
-      }
-    }
+	// if (mtk->pt() > 1) {
+	//   r.push_back(mtk);
+	// }
+  //     }
+  //   }
     
-    for (size_t j = 0, je = r.size(); j < je; ++j) {
-      double dr = reco::deltaR(tk->eta(), tk->phi(), r[j]->eta(), r[j]->phi());
-      if (dr < 0.001 ) {
-	ismu = true;
-      }
-    }
-    return ismu;
-  }
+  //   for (size_t j = 0, je = r.size(); j < je; ++j) {
+  //     double dr = reco::deltaR(tk->eta(), tk->phi(), r[j]->eta(), r[j]->phi());
+  //     if (dr < 0.001 ) {
+	// ismu = true;
+  //     }
+  //   }
+  //   return ismu;
+  // }
 
 
   
-  bool TracksSubNtupleFiller::isel(const edm::Event& e, ElectronsSubNtupleFiller* ef, reco::TrackRef& tk) {
-    bool isel = false;
+  // bool TracksSubNtupleFiller::isel(const edm::Event& e, ElectronsSubNtupleFiller* ef, reco::TrackRef& tk) {
+  //   bool isel = false;
 
-    auto es = ef->electrons(e);
+  //   auto es = ef->electrons(e);
    
-    std::vector<reco::GsfTrackRef> r;
-    for (size_t e = 0, ee = es.size(); e < ee; ++e) {
+  //   std::vector<reco::GsfTrackRef> r;
+  //   for (size_t e = 0, ee = es.size(); e < ee; ++e) {
       
-      reco::GsfTrackRef etk = es[e].gsfTrack(); 
+  //     reco::GsfTrackRef etk = es[e].gsfTrack(); 
       
-      if (!es[e].gsfTrack().isNull()) {
-	if (etk->pt() > 1) {
-	  r.push_back(etk);
-	}
-      }
-    }
+  //     if (!es[e].gsfTrack().isNull()) {
+	// if (etk->pt() > 1) {
+	//   r.push_back(etk);
+	// }
+  //     }
+  //   }
       
-    for (size_t j = 0, je = r.size(); j < je; ++j) {
-      double dr = reco::deltaR(tk->eta(), tk->phi(), r[j]->eta(), r[j]->phi());
-      if (dr < 0.0001 ) {
-	isel = true;
-      }
-    }
+  //   for (size_t j = 0, je = r.size(); j < je; ++j) {
+  //     double dr = reco::deltaR(tk->eta(), tk->phi(), r[j]->eta(), r[j]->phi());
+  //     if (dr < 0.0001 ) {
+	// isel = true;
+  //     }
+  //   }
     
-    return isel;
-  }
+  //   return isel;
+  // }
   
-  //good muon passes all lepton selection criteria EXCEPT for pt (just the standard > 1 GeV)
-  bool TracksSubNtupleFiller::isGoodMu(const edm::Event& e, MuonsSubNtupleFiller* mf, reco::TrackRef& tk) {
-    bool isgoodmu = false; 
-    auto ms = mf->muons(e);
-    std::vector<reco::TrackRef> r;
+  // //good muon passes all lepton selection criteria EXCEPT for pt (just the standard > 1 GeV)
+  // bool TracksSubNtupleFiller::isGoodMu(const edm::Event& e, MuonsSubNtupleFiller* mf, reco::TrackRef& tk) {
+  //   bool isgoodmu = false; 
+  //   auto ms = mf->muons(e);
+  //   std::vector<reco::TrackRef> r;
     
-    for (size_t m = 0, me = ms.size(); m < me; ++m) {
+  //   for (size_t m = 0, me = ms.size(); m < me; ++m) {
       
-      reco::TrackRef mtk = ms[m].track();
+  //     reco::TrackRef mtk = ms[m].track();
 
-      if (!ms[m].track().isNull()) {
-	const float iso = (ms[m].pfIsolationR04().sumChargedHadronPt + std::max(0., ms[m].pfIsolationR04().sumNeutralHadronEt + ms[m].pfIsolationR04().sumPhotonEt -0.5*ms[m].pfIsolationR04().sumPUPt))/ms[m].pt();
+  //     if (!ms[m].track().isNull()) {
+	// const float iso = (ms[m].pfIsolationR04().sumChargedHadronPt + std::max(0., ms[m].pfIsolationR04().sumNeutralHadronEt + ms[m].pfIsolationR04().sumPhotonEt -0.5*ms[m].pfIsolationR04().sumPUPt))/ms[m].pt();
 
-	if (mtk->pt() > 1) {
-	  if (mtk->eta() < 2.4) {
-	    if (ms[m].passed(reco::Muon::CutBasedIdMedium)) {
-	      if (iso < 0.15) {
-		r.push_back(mtk);
-	      }
-	    }
-	  }
-	}
-      }
-    }
+	// if (mtk->pt() > 1) {
+	//   if (mtk->eta() < 2.4) {
+	//     if (ms[m].passed(reco::Muon::CutBasedIdMedium)) {
+	//       if (iso < 0.15) {
+	// 	r.push_back(mtk);
+	//       }
+	//     }
+	//   }
+	// }
+  //     }
+  //   }
     
-    for (size_t j = 0, je = r.size(); j < je; ++j) {
-      double dr = reco::deltaR(tk->eta(), tk->phi(), r[j]->eta(), r[j]->phi());
-      if (dr < 0.001 ) {
-	isgoodmu = true;
-      }
-    }
-    return isgoodmu;
-  }
+  //   for (size_t j = 0, je = r.size(); j < je; ++j) {
+  //     double dr = reco::deltaR(tk->eta(), tk->phi(), r[j]->eta(), r[j]->phi());
+  //     if (dr < 0.001 ) {
+	// isgoodmu = true;
+  //     }
+  //   }
+  //   return isgoodmu;
+  // }
 
 
-  //good electron passes all lepton selection criteria EXCEPT for pt (just the standard > 1 GeV)
-  bool TracksSubNtupleFiller::isGoodEl(const edm::Event& e, ElectronsSubNtupleFiller* ef, reco::TrackRef& tk) {
-    bool isgoodel = false;
-    auto es = ef->electrons(e);
-    // auto rh = *rho(e);
+  // //good electron passes all lepton selection criteria EXCEPT for pt (just the standard > 1 GeV)
+  // bool TracksSubNtupleFiller::isGoodEl(const edm::Event& e, ElectronsSubNtupleFiller* ef, reco::TrackRef& tk) {
+  //   bool isgoodel = false;
+  //   auto es = ef->electrons(e);
+  //   // auto rh = *rho(e);
 
-    std::vector<reco::GsfTrackRef> r;
+  //   std::vector<reco::GsfTrackRef> r;
     
-    for (size_t e = 0, ee = es.size(); e < ee; ++e) {
+  //   for (size_t e = 0, ee = es.size(); e < ee; ++e) {
       
-      reco::GsfTrackRef etk = es[e].gsfTrack();
+  //     reco::GsfTrackRef etk = es[e].gsfTrack();
 
-      if (!es[e].gsfTrack().isNull()) {
+  //     if (!es[e].gsfTrack().isNull()) {
 	
-	      if (etk->pt() > 1) {
-	        if (etk->eta() < 2.4) {
-	          if (es[e].electronID("cutBasedElectronID-Fall17-94X-V2-tight")) {
+	//       if (etk->pt() > 1) {
+	//         if (etk->eta() < 2.4) {
+	//           if (es[e].electronID("cutBasedElectronID-Fall17-94X-V2-tight")) {
 	      
-	            // const float eA = electron_effective_areas.getEffectiveArea(fabs(es[e].superCluster()->eta()));
-	            // const auto pfIso = es[e].pfIsolationVariables();
-	            // const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - rh*eA)) / es[e].pt();
-	            // if (iso < 0.10) {
-		          if (es[e].passConversionVeto()) {
-		            r.push_back(etk);
-		          }
-	            // }
-	          }
-	        }
-        }
-      }
-    }
+	//             // const float eA = electron_effective_areas.getEffectiveArea(fabs(es[e].superCluster()->eta()));
+	//             // const auto pfIso = es[e].pfIsolationVariables();
+	//             // const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - rh*eA)) / es[e].pt();
+	//             // if (iso < 0.10) {
+	// 	          if (es[e].passConversionVeto()) {
+	// 	            r.push_back(etk);
+	// 	          }
+	//             // }
+	//           }
+	//         }
+  //       }
+  //     }
+  //   }
       
-    for (size_t j = 0, je = r.size(); j < je; ++j) {
-      double dr = reco::deltaR(tk->eta(), tk->phi(), r[j]->eta(), r[j]->phi());
-      if (dr < 0.0001 ) {
-	isgoodel = true;
-      }
-    }
+  //   for (size_t j = 0, je = r.size(); j < je; ++j) {
+  //     double dr = reco::deltaR(tk->eta(), tk->phi(), r[j]->eta(), r[j]->phi());
+  //     if (dr < 0.0001 ) {
+	// isgoodel = true;
+  //     }
+  //   }
     
-    return isgoodel;
-  }
+  //   return isgoodel;
+  // }
 
   
 
@@ -585,18 +599,18 @@ namespace jmt {
       reco::TrackRef tk(h, i);
       if (!cut(*tk, e, bf)) {
 	
-	if (ismu(e,mf,tk) && isel(e,ef,tk)) {
-	  //in the case that track matches to both a muon & electron, resort to matching to the muon.
-	  //things now got a bit convoluted in the case of looking at good leptons. ==> just set both ele to false
-	  if (isGoodMu(e,mf,tk) && isGoodEl(e,ef,tk)) {
-	    std::cout << "Uh oh.... found a track that matched to both a GOOD electron and GOOD muon." << std::endl;
-	  }
-	  NtupleAdd(nt_, *tk, which_jet(e,jf,tk), which_pv(e,vf,tk), ismu(e,mf,tk), false, isGoodMu(e,mf,tk), false);
-	}
-	else {
-	  NtupleAdd(nt_, *tk, which_jet(e,jf,tk), which_pv(e,vf,tk), ismu(e,mf,tk), isel(e,ef,tk), isGoodMu(e,mf,tk), isGoodEl(e,ef,tk));
-	  
-	}
+	      // if (ismu(e,mf,tk) && isel(e,ef,tk)) {
+        //   //in the case that track matches to both a muon & electron, resort to matching to the muon.
+        //   //things now got a bit convoluted in the case of looking at good leptons. ==> just set both ele to false
+        //   if (isGoodMu(e,mf,tk) && isGoodEl(e,ef,tk)) {
+        //     std::cout << "Uh oh.... found a track that matched to both a GOOD electron and GOOD muon." << std::endl;
+        //   }
+        //   NtupleAdd(nt_, *tk, which_jet(e,jf,tk), which_pv(e,vf,tk), ismu(e,mf,tk), false, isGoodMu(e,mf,tk), false);
+        // }
+        // else {
+        //   NtupleAdd(nt_, *tk, which_jet(e,jf,tk), which_pv(e,vf,tk), ismu(e,mf,tk), isel(e,ef,tk), isGoodMu(e,mf,tk), isGoodEl(e,ef,tk));
+        // }
+        NtupleAdd(nt_, *tk, which_jet(e,jf,tk), which_pv(e,vf,tk));
       }  
     }
   }

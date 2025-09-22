@@ -109,9 +109,8 @@ MFVTrackMover::MFVTrackMover(const edm::ParameterSet& cfg)
   produces<pat::ElectronCollection>("eleUsed");
   produces<std::vector<double> >("flightAxis");
   produces<std::vector<double> >("moveVertex");
-  produces<std::vector<double> >("moveLepPos");
-  // produces<std::vector<std::vector<double>> >("moveJetPos");
-  produces<std::vector<double> >("moveJetPos");
+  produces<double>("movelepdxypv"); //moved lepton's original dxy w.r.t. PV 
+  produces<double>("movejetdxypv"); //vector of the moved jet track's original dxy w.r.t. PV 
   produces<double>("jetlepdeltadz");
 
 }
@@ -141,13 +140,13 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
 
   //below are filled only if use_separated_leptons is True 
   auto output_electron_tracks = std::make_unique<reco::TrackCollection>();
-  reco::TrackRefProd h_output_eletracks = event.getRefBeforePut<reco::TrackCollection>();
-  auto output_eletracks_map = std::make_unique<jmt::TracksMap>();
+  // reco::TrackRefProd h_output_eletracks = event.getRefBeforePut<reco::TrackCollection>();
+  // auto output_eletracks_map = std::make_unique<jmt::TracksMap>();
   auto moved_electron_tracks = std::make_unique<reco::TrackCollection>();
 
   auto output_muon_tracks = std::make_unique<reco::TrackCollection>();
-  reco::TrackRefProd h_output_mutracks = event.getRefBeforePut<reco::TrackCollection>();
-  auto output_mutracks_map = std::make_unique<jmt::TracksMap>();
+  // reco::TrackRefProd h_output_mutracks = event.getRefBeforePut<reco::TrackCollection>();
+  // auto output_mutracks_map = std::make_unique<jmt::TracksMap>();
   auto moved_muon_tracks = std::make_unique<reco::TrackCollection>();
 
   //
@@ -161,9 +160,8 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
   auto ele_used = std::make_unique<pat::ElectronCollection>();
   auto flight_vect = std::make_unique<std::vector<double>>(3, 0.);
   auto move_vertex = std::make_unique<std::vector<double>>(3, 0.);
-  auto move_lep_pos = std::make_unique<std::vector<double>>(3, 0.);
-  // auto move_jet_pos = std::make_unique<std::vector<std::vector<double>>>(3, 0.);
-  auto move_jet_pos = std::make_unique<std::vector<double>>(3, 0.);
+  auto movelepdxypv = std::make_unique<double>();
+  auto movejetdxypv = std::make_unique<double>();
   auto jetlepdeltadz = std::make_unique<double>();
   edm::Handle<reco::VertexCollection> primary_vertices;
   event.getByToken(primary_vertices_token, primary_vertices);
@@ -199,7 +197,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
     TVector3 move;
 
 
-    // Pick the lepton we'll use. --> want : picking the triggered lepton 
+    // Pick the lepton we'll use. --> want the triggered lepton 
     for (const pat::Muon& muon : *muons) {
 
       //triggered lepton 
@@ -214,14 +212,19 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
           hltmatch = hlt;
         }
       }
-
       bool isHLTMu = hltmatch.Pt() > 0;
       bool isMedMuon = muon.passed(reco::Muon::CutBasedIdMedium);
-      // bool isTightMuon = muon.passed(reco::Muon::CutBasedIdTight); //for the dz, d0 cuts... but could go tighter
-      if (isMedMuon && muon.pt() > 20 && abs(muon.eta()) < 2.4 && isHLTMu) {
-        const float iso = (muon.pfIsolationR04().sumChargedHadronPt + std::max(0., muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt -0.5*muon.pfIsolationR04().sumPUPt))/muon.pt();
-        if (iso < 0.1) {
-          presel_mu.push_back(&muon);
+
+      if (isHLTMu) {
+        if (isMedMuon && muon.pt() > 20 && abs(muon.eta()) < 2.4) {
+          const bool muprompt_dxy = fabs(muon.muonBestTrack()->dxy(primary_vertices->at(0).position())) < 0.05;
+          const bool muprompt_dz = fabs(muon.muonBestTrack()->dz(primary_vertices->at(0).position())) < 0.05;
+
+          const float iso = (muon.pfIsolationR04().sumChargedHadronPt + std::max(0., muon.pfIsolationR04().sumNeutralHadronEt + muon.pfIsolationR04().sumPhotonEt -0.5*muon.pfIsolationR04().sumPUPt))/muon.pt();
+          if (iso < 0.1) {
+            if (muprompt_dxy && muprompt_dz)
+              presel_mu.push_back(&muon);
+          }
         }
       }
     }
@@ -240,33 +243,30 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
       }
 
       bool isHLTEle = hltmatch.Pt() > 0;
-      bool isTightEl = electron.electronID("cutBasedElectronID-Fall17-94X-V1-tight");
+      // bool isTightEl = electron.electronID("cutBasedElectronID-Fall17-94X-V2-tight");
+      bool isTightEl = electron.electronID("cutBasedElectronID_Fall17_94X_V2_tight");
       const bool passveto = electron.passConversionVeto();
 
+      if (isHLTEle) { 
+        if (isTightEl && passveto && electron.pt() > 20 && abs(electron.eta()) < 2.4) {
 
-      if (isTightEl && passveto && electron.pt() > 20 && abs(electron.eta()) < 2.4 && isHLTEle) {
+          const bool eleprompt_dxy = fabs(electron.eta()) < 1.479 ? (fabs(electron.gsfTrack()->dxy(primary_vertices->at(0).position())) < 0.05) : (fabs(electron.gsfTrack()->dxy(primary_vertices->at(0).position())) < 0.10);
+          const bool eleprompt_dz = fabs(electron.eta()) < 1.479 ? (fabs(electron.gsfTrack()->dz(primary_vertices->at(0).position()) < 0.05)) : (fabs(electron.gsfTrack()->dz(primary_vertices->at(0).position())) < 0.10);
 
-        // const bool eleprompt_dxy = fabs(electron.eta()) < 1.479 ? (electron.gsfTrack()->dxy(primary_vertices->at(0).position()) < 0.05) : (electron.gsfTrack()->dxy(primary_vertices->at(0).position()) < 0.10);
-        // const bool eleprompt_dz = fabs(electron.eta()) < 1.479 ? (electron.gsfTrack()->dz(primary_vertices->at(0).position()) < 0.05) : (electron.gsfTrack()->dz(primary_vertices->at(0).position()) < 0.10);
-        // const bool eleprompt = eleprompt_dxy && eleprompt_dz;
-
-        // bool h_Escaled = electron.hadronicOverEm() < (electron.isEB() ? 0.05 + 1.12 + 0.0368 * *rho : 0.0414 + 0.5 + 0.201 * *rho) / electron.superCluster()->energy();
-        // float ooEmooP = fabs(1.0/electron.ecalEnergy() - electron.eSuperClusterOverP()/electron.ecalEnergy() );
-        // int expectedMissingInnerHits = electron.gsfTrack()->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS);
-
-        const auto pfIso = electron.pfIsolationVariables();
-        const float eA = electron_effective_areas.getEffectiveArea(fabs(electron.superCluster()->eta()));
-        const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - *rho*eA)) / electron.pt();
-        if (abs(electron.eta() <= 1.479)) {
-          if (iso < (0.0287 + 0.506/electron.pt())) {
-            // if (eleprompt)
-            presel_ele.push_back(&electron);
+          const auto pfIso = electron.pfIsolationVariables();
+          const float eA = electron_effective_areas.getEffectiveArea(fabs(electron.superCluster()->eta()));
+          const float iso = (pfIso.sumChargedHadronPt + std::max(0., pfIso.sumNeutralHadronEt + pfIso.sumPhotonEt - *rho*eA)) / electron.pt();
+          if (abs(electron.eta() <= 1.479)) {
+            if (iso < (0.0287 + 0.506/electron.pt())) {
+              if (eleprompt_dxy && eleprompt_dz)
+                presel_ele.push_back(&electron);
+            }
           }
-        }
-        else {
-          if (iso < (0.0445 + 0.963/electron.pt())) {
-            // if (eleprompt)
-            presel_ele.push_back(&electron);
+          else {
+            if (iso < (0.0445 + 0.963/electron.pt())) {
+              if (eleprompt_dxy && eleprompt_dz)
+                presel_ele.push_back(&electron);
+            }
           }
         }
       }
@@ -289,7 +289,8 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
       }
       int elejets = 0;
       for (const pat::Electron& electron : *electrons) {
-        bool isTightEl = electron.electronID("cutBasedElectronID-Fall17-94X-V1-tight");
+        // bool isTightEl = electron.electronID("cutBasedElectronID-Fall17-94X-V2-tight");
+        bool isTightEl = electron.electronID("cutBasedElectronID_Fall17_94X_V2_tight");
         double ljet_absdR = reco::deltaR(electron.eta(), electron.phi(), jet.eta(), jet.phi()); 
         if (isTightEl && abs(ljet_absdR) < 0.4) elejets++;
       }
@@ -308,8 +309,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
         double jettk_sumdz = 0;
         for (auto r : jet_tracks)
           jettk_sumdz += r->dz(primary_vertices->at(0).position());
-        // std::cout << "jettk sumdz : " << jettk_sumdz << std::endl;
-        // std::cout << "njettracks : " << n_jet_tracks << std::endl;
+
         presel_jet_avgdz.push_back(jettk_sumdz/n_jet_tracks);
 
       }
@@ -339,73 +339,47 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
 
       // //determine which lep collection to pull from : 
       // also have the lepton's dz on hand 
+      // use the first lepton
       double presel_lepdz = 0;
       if (presel_ele.size() == 0) { 
         // printf("presel muon (pt, eta, phi) : (%f, %f, %f)\n", presel_mu[0]->pt(), presel_mu[0]->eta(), presel_mu[0]->phi());
-
         selected_mu.push_back(presel_mu[0]);
         muons_used->push_back(*presel_mu[0]);
         presel_lepdz = presel_mu[0]->innerTrack()->dz(primary_vertices->at(0).position());
-        // for (int i : knuth_select(nlep, presel_mu.size())) {
-        //   selected_mu.push_back(presel_mu[i]);
-        //   muons_used->push_back(*presel_mu[i]);
-        // }      
       }
       else if (presel_mu.size() == 0) {
         // printf("presel electron (pt, eta, phi) : (%f, %f, %f)\n", presel_ele[0]->pt(), presel_ele[0]->eta(), presel_ele[0]->phi());
-
         selected_ele.push_back(presel_ele[0]);
         ele_used->push_back(*presel_ele[0]);
-        presel_lepdz = presel_ele[0]->gsfTrack()->dz(primary_vertices->at(0).position());
-
-        // for (int i : knuth_select(nlep, presel_ele.size())) {
-        //   selected_ele.push_back(presel_ele[i]);
-        //   ele_used->push_back(*presel_ele[i]);
-        // }            
+        presel_lepdz = presel_ele[0]->gsfTrack()->dz(primary_vertices->at(0).position());          
       }
       else {
         //there are both presel mu and ele -- choose the higher pT ? 
         if (presel_mu[0]->pt() > presel_ele[0]->pt()) {
           // printf("presel muon chosen over electron (pt, eta, phi) : (%f, %f, %f)\n", presel_mu[0]->pt(), presel_mu[0]->eta(), presel_mu[0]->phi());
-
           selected_mu.push_back(presel_mu[0]);
           muons_used->push_back(*presel_mu[0]);
           presel_lepdz = presel_mu[0]->innerTrack()->dz(primary_vertices->at(0).position());
-
-          // for (int i : knuth_select(nlep, presel_mu.size())) {
-          //   selected_mu.push_back(presel_mu[i]);
-          //   muons_used->push_back(*presel_mu[i]);
-          // }      
         }
         else if (presel_ele[0]->pt() > presel_mu[0]->pt()) {
           // printf("presel electron chosen over muon (pt, eta, phi) : (%f, %f, %f)\n", presel_ele[0]->pt(), presel_ele[0]->eta(), presel_ele[0]->phi());
           selected_ele.push_back(presel_ele[0]);
           ele_used->push_back(*presel_ele[0]);
-          presel_lepdz = presel_ele[0]->gsfTrack()->dz(primary_vertices->at(0).position());
-
-          // for (int i : knuth_select(nlep, presel_ele.size())) {
-          //   selected_ele.push_back(presel_ele[i]);
-          //   ele_used->push_back(*presel_ele[i]);
-          // }           
+          presel_lepdz = presel_ele[0]->gsfTrack()->dz(primary_vertices->at(0).position());       
         }
       }
 
-      //instead of randomly choosing a jet from the presel_jets, chose the closest jet to the lepton in terms of dz. 
-      jmt::MinValue m(9.0); //was 0.1
-      // std::cout << "presel_lepdz : " << presel_lepdz << std::endl;
+      //instead of randomly choosing a jet from the presel_jets (above), chose the closest jet to the lepton in terms of dz. 
+      jmt::MinValue m(2.0); //was 0.1
       for (size_t j = 0, jt = presel_jet_avgdz.size(); j < jt; ++j) {
-        // std::cout << " presel jet avgdz : " << presel_jet_avgdz[j] << std::endl;
-        // std::cout << "presel jet idx : " << j << "delta dz : " << fabs(presel_lepdz - presel_jet_avgdz[j]) << std::endl;
         m(j, fabs(presel_lepdz - presel_jet_avgdz[j]));
       }
       *jetlepdeltadz = m.v();
 
       //as long as the lepton and jet are decently close, select the jet to be moved;
       //otherwise, will not have any moved jet and things shouldn't break ... 
-      // std::cout << "m.i(), m.v() " << m.i() << " " << m.v() << std::endl;
       if (m.i() != -1)  { 
         //here it's only choosing 1 jet so no need for loop 
-        // for (int i : knuth_select(njets, presel_jets.size())) {
         selected_jets.push_back(presel_jets[m.i()]);
         jets_used->push_back(*presel_jets[m.i()]);
       }
@@ -456,6 +430,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
     double sum_jettk_x = 0.0;
     double sum_jettk_y = 0.0;
     double sum_jettk_z = 0.0;
+    double sum_jettk_dxypv = 0.0;
     size_t njettks = 0;
     for (size_t i = 0, ie = tracks->size(); i < ie; ++i) {
       reco::TrackRef tk(tracks, i);
@@ -494,14 +469,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
         sum_jettk_x += tk->vx() + move.x();
         sum_jettk_y += tk->vy() + move.y();
         sum_jettk_z += tk->vz() + move.z();
-
-        move_jet_pos->at(0) = tk->vx() + move.x(); //make these vectors
-        move_jet_pos->at(1) = tk->vy() + move.y(); // make these vectors 
-        move_jet_pos->at(2) = tk->vz() + move.z(); //make these vectors
-
-        // std::cout << "og point for jet track :  " <<  tk->vx() << ", " << tk->vy() << ", " << tk->vz() << std::endl;
-        // std::cout << "new point for jet track :  " <<  new_point << std::endl;
-
+        sum_jettk_dxypv += tk->dxy(primary_vertices->at(0).position());
 
         output_tracks->push_back(reco::Track(tk->chi2(), tk->ndof(), new_point, tk->momentum(), tk->charge(), tk->covariance(), tk->algo()));
         reco::Track& new_tk = output_tracks->back();
@@ -516,15 +484,11 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
 
       output_tracks_map->insert(tk, reco::TrackRef(h_output_tracks, output_tracks->size() - 1));
     }
-    // move_jet_pos->at(0) = sum_jettk_x/njettks;
-    // move_jet_pos->at(1) = sum_jettk_y/njettks;
-    // move_jet_pos->at(2) = sum_jettk_z/njettks;
-    // std::cout << " --------------------------------------- " << std::endl;
 
+    *movejetdxypv = sum_jettk_dxypv/njettks;
 
     //put here moving leptons 
     //currently set up with separated track collections for ele and mu 
-
     if (use_separated_leptons) { 
       edm::Handle<reco::TrackCollection> muon_tracks;
       event.getByToken(muon_tracks_token, muon_tracks);
@@ -534,21 +498,11 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
 
         bool mu_to_move = false;
         if (!tk.isNull()) {
-          //wrong 
-          // for (size_t imuon = 0; imuon < selected_mu.size(); ++imuon) {
-            // const pat::Muon& muon = muons->at(imuon); 
-          //
           for (const pat::Muon* muon : selected_mu){
-
             reco::TrackRef mtk = muon->innerTrack();
             if (!mtk.isNull()) {
               // printf("muon candidate selected (pt, eta, phi) : (%f, %f, %f)\n", mtk->pt(), mtk->eta(), mtk->phi());
-
               double dr = reco::deltaR(tk->eta(), tk->phi(), mtk->eta(), mtk->phi());
-              // if (dr > 0.001) {
-              //   std::cout << "questionable selected muon to move : " << mtk->pt() << " " << mtk->eta() << " " << mtk->phi() << std::endl;
-              //   std::cout << "questionable mu tk to compare : " << tk->pt() << " " << tk->eta() << " " << tk->phi() << std::endl;
-              // }
               if (dr < 0.001) {
                 mu_to_move = true;
               }
@@ -557,8 +511,6 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
         }
         
         if (mu_to_move) {
-          // std::cout << " --------------------------------------- " << std::endl;
-
           // printf("the track has been matched to the muon and set to move! ... ");
           //move only quality tracks 
           const double pt = tk->pt();
@@ -580,17 +532,7 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
                                          tk->vy() + move.y(),
                                          tk->vz() + move.z());
 
-          move_lep_pos->at(0) = tk->vx() + move.x();
-          move_lep_pos->at(1) = tk->vy() + move.y();
-          move_lep_pos->at(2) = tk->vz() + move.z();
-
-          // reco::TrackBase::Point new_point(sum_jettk_x/njettks,
-          //                                  sum_jettk_y/njettks,
-          //                                  sum_jettk_z/njettks);
-
-          // move_lep_pos->at(0) = sum_jettk_x/njettks;
-          // move_lep_pos->at(1) = sum_jettk_y/njettks;
-          // move_lep_pos->at(2) = sum_jettk_z/njettks;
+          *movelepdxypv = tk->dxy(primary_vertices->at(0).position());
 
           output_muon_tracks->push_back(reco::Track(tk->chi2(), tk->ndof(), new_point, tk->momentum(), tk->charge(), tk->covariance(), tk->algo()));
           reco::Track& new_mutk = output_muon_tracks->back();
@@ -598,14 +540,11 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
           new_mutk.setNLoops(tk->nLoops());
           reco::HitPattern* hp = const_cast<reco::HitPattern*>(&new_mutk.hitPattern());  *hp = tk->hitPattern(); // lmao
           moved_muon_tracks->push_back(new_mutk);
-          // printf("muon track moved (pt, eta, phi) : (%f, %f, %f)\n", new_mutk.pt(), new_mutk.eta(), new_mutk.phi());
-          // moved_tracks->push_back(new_mutk);
-
         }
         else
           output_muon_tracks->push_back(*tk);
 
-        output_mutracks_map->insert(tk, reco::TrackRef(h_output_mutracks, output_muon_tracks->size() - 1));
+        // output_mutracks_map->insert(tk, reco::TrackRef(h_output_mutracks, output_muon_tracks->size() - 1));
       }
 
       edm::Handle<reco::TrackCollection> electron_tracks;
@@ -613,40 +552,22 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
       for (size_t i = 0, ie = electron_tracks->size(); i < ie; ++i) {
 
         reco::TrackRef tk(electron_tracks, i);
-        // printf("comparing electron track (pt, eta, phi) : (%f, %f, %f)\n", tk->pt(), tk->eta(), tk->phi());
 
         bool ele_to_move = false;
         if (!tk.isNull()) {
-          double mindR = 5.0;
-          // wrong 
-          // for (size_t iele = 0; iele < selected_ele.size(); ++iele) {
-          //   const pat::Electron& electron = electrons->at(iele);
-          // 
+          double mindR = 0.1;
           for (const pat::Electron* electron : selected_ele){
-
             // reco::GsfTrackRef etk = electron.gsfTrack();
             reco::TrackRef ctf_etk = electron->closestCtfTrackRef();
             if (!ctf_etk.isNull()) { 
               // printf("electron candidate selected (pt, eta, phi) : (%f, %f, %f)\n", ctf_etk->pt(), ctf_etk->eta(), ctf_etk->phi());
               double dr = reco::deltaR(tk->eta(), tk->phi(), ctf_etk->eta(), ctf_etk->phi());
-              // if (dr > 0.001) {
-              //   std::cout << "questionable selected electron to move : " << ctf_etk->pt() << " " << ctf_etk->eta() << " " << ctf_etk->phi() << std::endl;
-              //   std::cout << "questionable ele tk to compare : " << tk->pt() << " " << tk->eta() << " " << tk->phi() << std::endl;
-              //   std::cout << dr << std::endl;
-              // }
-              // if (dr < 0.01 ) {
-              //   ele_to_move = true;
-              // }
               if (dr < mindR) mindR = dr;
             }
           }
           if (mindR < 0.01) ele_to_move = true;
         }
-        // if (selected_ele.size() > 0 && !ele_to_move) std::cout << " did not find an electron track" << std::endl;
         if (ele_to_move) {
-          // std::cout << " --------------------------------------- " << std::endl;
-          // printf("the track has been matched to the electron and set to move! ... ");
-
           //move only quality tracks; these electrons need to have pt equal to or greater than 20 GeV (should already have this though?? idk)
           const double pt = tk->pt();
           const int npxlayers = tk->hitPattern().pixelLayersWithMeasurement();
@@ -666,17 +587,8 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
                                          tk->vy() + move.y(),
                                          tk->vz() + move.z());
           
-          move_lep_pos->at(0) = tk->vx() + move.x();
-          move_lep_pos->at(1) = tk->vy() + move.y();
-          move_lep_pos->at(2) = tk->vz() + move.z();
 
-          // reco::TrackBase::Point new_point(sum_jettk_x/njettks,
-          //   sum_jettk_y/njettks,
-          //   sum_jettk_z/njettks);
-
-          // move_lep_pos->at(0) = sum_jettk_x/njettks;
-          // move_lep_pos->at(1) = sum_jettk_y/njettks;
-          // move_lep_pos->at(2) = sum_jettk_z/njettks;
+          *movelepdxypv = tk->dxy(primary_vertices->at(0).position());
 
           output_electron_tracks->push_back(reco::Track(tk->chi2(), tk->ndof(), new_point, tk->momentum(), tk->charge(), tk->covariance(), tk->algo()));
           reco::Track& new_eletk = output_electron_tracks->back();
@@ -691,11 +603,9 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
         else
           output_electron_tracks->push_back(*tk);
 
-        output_eletracks_map->insert(tk, reco::TrackRef(h_output_eletracks, output_electron_tracks->size() - 1));
+        // output_eletracks_map->insert(tk, reco::TrackRef(h_output_eletracks, output_electron_tracks->size() - 1));
       }
     }
-    // std::cout << "done checking mu and ele tracks to move " << std::endl;
-    // std::cout << "--------------------------------------- " << std::endl;
 
   }
   event.put(std::move(output_tracks));
@@ -703,10 +613,10 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
   event.put(std::move(moved_tracks), "moved"); 
   //leptons 
   event.put(std::move(output_electron_tracks), "electrons");
-  event.put(std::move(output_eletracks_map), "elemap");
+  // event.put(std::move(output_eletracks_map), "elemap");
   event.put(std::move(moved_electron_tracks), "movedele");
   event.put(std::move(output_muon_tracks), "muons");
-  event.put(std::move(output_mutracks_map), "mumap");
+  // event.put(std::move(output_mutracks_map), "mumap");
   event.put(std::move(moved_muon_tracks), "movedmu");
   //
   event.put(std::move(npreseljets), "npreseljets");
@@ -719,8 +629,8 @@ void MFVTrackMover::produce(edm::Event& event, const edm::EventSetup&) {
   event.put(std::move(ele_used), "eleUsed");
   event.put(std::move(flight_vect), "flightAxis");
   event.put(std::move(move_vertex), "moveVertex");
-  event.put(std::move(move_lep_pos), "moveLepPos");
-  event.put(std::move(move_jet_pos), "moveJetPos");
+  event.put(std::move(movelepdxypv), "movelepdxypv");
+  event.put(std::move(movejetdxypv), "movejetdxypv");
   event.put(std::move(jetlepdeltadz), "jetlepdeltadz");
 
 }

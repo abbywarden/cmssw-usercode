@@ -23,6 +23,7 @@ max_events(process, 1000)
 # input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_1400_0p1mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/30000/0A2EBAF3-6609-7C44-A775-5912EE87CD3E.root')
 # input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_1400_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/40000/212EEC0E-9FB3-BE42-B1DD-DAC4C6B0F23F.root')
 input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/2560000/1F81898F-A3DA-944C-BC72-6DBEB24677C4.root')
+#input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/DisplacedSUSY_stopToLD_M_200_10mm_TuneCP5_13TeV-madgraph-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/30000/14A613AE-6D6B-4842-8E6D-EA59D5D3C90A.root')
 
 cmssw_from_argv(process)
 
@@ -62,10 +63,6 @@ tree = cms.EDAnalyzer('MFVMovedTracksTreer',
                                              for_mctruth = cms.bool(True),
                                              )
 
-# mfvAnalysisCutsPreSelEvtFilt = mfvAnalysisCuts.clone(min_nvertex = 0, vertex_src = 'mfvSelecedVerticesLoose')
-# setattr(process, 'mfvSelectedVerticesLoose', mfvSelectedVerticesLoose)
-# setattr(process, 'mfvAnalysisCutsPreSelEvtFilt', mfvAnalysisCutsPreSelEvtFilt)
-# process.p *= mfvSelectedVerticesLoose
 mfvAnalysisCutsPreSelEvtFilt = mfvAnalysisCuts.clone(min_nvertex=0, vertex_src = 'mfvSelectedVerticesLoose')
 setattr(process, 'mfvSelectedVerticesLoose', mfvSelectedVerticesLoose)
 setattr(process, 'mfvAnalysisCutsPreSelEvtFilt', mfvAnalysisCutsPreSelEvtFilt)
@@ -78,41 +75,12 @@ ReferencedTagsTaskAdder(process)('p')
 
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
-    #samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=False)
+    samples = pick_samples(dataset, qcd=False, data = False, all_signal = True, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=False)
     #samples = pick_samples(dataset, all_signal='only')
     
     #samples = [getattr(Samples, 'ZHToSSTodddd_tau1mm_M55_20161')] 
     #samples = [getattr(Samples, 'mfv_stopbbarbbar_tau001000um_M0200_20161')] 
-    samples = [getattr(Samples,  'mfv_stoplb_tau010000um_M0200_2018')] 
-    samples += [getattr(Samples, 'mfv_stoplb_tau001000um_M0200_2018')] #to have a different lifetime
-    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M0300_2018')] 
-    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M0400_2018')] 
-    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M0600_2018')] 
-    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M0800_2018')] 
-    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M1000_2018')]
-    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M1200_2018')]
-    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M1400_2018')]
-    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M1600_2018')]
-    samples += [getattr(Samples, 'mfv_stoplb_tau010000um_M1800_2018')]
-
-    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M0200_2018')]
-    samples += [getattr(Samples, 'mfv_stopld_tau001000um_M0200_2018')] #to have a different lifetime
-    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M0300_2018')]
-    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M0400_2018')]
-    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M0600_2018')]
-    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M0800_2018')]
-    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M1000_2018')] 
-    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M1200_2018')] 
-    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M1400_2018')] 
-    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M1600_2018')] 
-    samples += [getattr(Samples,  'mfv_stopld_tau010000um_M1800_2018')] 
-
-    # samples += [getattr(Samples, 'mfv_stopld_tau000300um_M1000_2018')]
-    # samples += [getattr(Samples, 'mfv_stoplb_tau000300um_M1000_2018')]
-    # samples += [getattr(Samples,  'mfv_stopld_tau000300um_M0200_2018')]
-    # samples += [getattr(Samples, 'mfv_stopld_tau000300um_M1000_2018')]
-    
-    #samples = [getattr(Samples, 'ggHToSSTodddd_tau1mm_M55_20161')]
+ 
     set_splitting(samples, dataset, 'ntuple')
     ms = MetaSubmitter('TrackMoverMCTruth' + version, dataset=dataset)
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, per_sample_pileup_weights_modifier())

@@ -11,7 +11,7 @@ settings.is_miniaod = True
 #settings.event_filter = 'bjets OR displaced dijet novtx'
 settings.event_filter = 'leptons only novtx'
 #version = settings.version + 'offtossv8' #v8 : [2,0], v9 : [0,2], v10 : [3,2]
-version = settings.version + '1jet1lep' #then will need to do : '1bjet1lep'
+version = settings.version + '1jet1lep_promptlep' #then will need to do : '1bjet1lep'
 # for stat extension
 #version = settings.version + 'ext1'
 #version = settings.version + 'ext2'
@@ -57,14 +57,17 @@ dataset = 'miniaod' if settings.is_miniaod else 'main'
 #input_files(process, '/store/data/Run2016F/SingleMuon/MINIAOD/UL2016_MiniAODv2-v2/70000/060F0B51-FCEF-F343-890C-3043A4B268C2.root')
 #input_files(process, '/store/mc/RunIISummer20UL16MiniAODAPVv2/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/280000/CADD920F-488D-2B47-9E9C-C78699A5F1A6.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/TTJets_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/120001/A8C3978F-4BE4-A844-BEE8-8DEE129A02B7.root')
-#input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/120000/016D5B69-2F13-A94D-8A61-91551911BFBD.root')
+input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/120000/016D5B69-2F13-A94D-8A61-91551911BFBD.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/100000/43C1F6B5-9BD5-044B-B7B1-4137FEA229F5.root')
+
 #input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/WJetsToLNu_2J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/110000/01F6C246-3AFB-5D49-861A-5620272CAF37.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/110000/01DA55E6-2A8C-AE48-B2C4-A3DC37E2052D.root')
 #input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WJetsToLNu_1J_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v2/110000/10063082-9BA1-D14B-A04D-EDA3288D079A.root')
 #input_files(process, '/store/mc/RunIISummer20UL16MiniAODAPVv2/WW_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mcRun2_asymptotic_preVFP_v11-v1/130000/0252F60D-9705-0140-BCF1-E598A04A8D1F.root')
 #input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/120000/016D5B69-2F13-A94D-8A61-91551911BFBD.root')
-input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/120000/0174A5BA-7A15-604B-8440-7003DAD3A235.root')
+#input_files(process, '/store/mc/RunIISummer20UL18MiniAODv2/TTToSemiLeptonic_TuneCP5_13TeV-powheg-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v2/120000/0174A5BA-7A15-604B-8440-7003DAD3A235.root')
+#input_files(process, '/store/mc/RunIISummer20UL17MiniAODv2/WW_TuneCP5_13TeV-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/280000/005387B4-3184-6E47-95BA-86C508071571.root')
+
 cmssw_from_argv(process)
 
 ####
@@ -76,15 +79,16 @@ from JMTucker.Tools.NtupleFiller_cff import jmtNtupleFiller_pset
 from JMTucker.Tools.TrackRefGetter_cff import jmtTrackRefGetter
 from JMTucker.MFVNeutralino.AnalysisCuts_cfi import *
 from JMTucker.MFVNeutralino.WeightProducer_cfi import *
+from JMTucker.Tools.WeightProducer_cfi import *
 from JMTucker.MFVNeutralino.VertexSelector_cfi import *
 jmtTrackRefGetter.input_is_miniaod = settings.is_miniaod
 
 
 process.mfvEvent.vertex_seed_tracks_src = ''
 process.load('JMTucker.Tools.WeightProducer_cfi')
-process.load('JMTucker.MFVNeutralino.WeightProducer_cfi') # JMTBAD
+#process.load('JMTucker.MFVNeutralino.WeightProducer_cfi') # JMTBAD  
 process.load('JMTucker.MFVNeutralino.AnalysisCuts_cfi')
-process.mfvWeight.throw_if_no_mcstat = False
+#process.mfvWeight.throw_if_no_mcstat = False
 
 process.p = cms.Path(process.mfvEventFilterSequence * process.goodOfflinePrimaryVertices* process.BadPFMuonFilterUpdateDz * process.fullPatMetSequence * process.mfvTriggerFloats)
 random_dict = {'jmtRescaledTracks': 1031}
@@ -153,7 +157,6 @@ for icfg, cfg in enumerate(cfgs):
                             )
 
     modifiedVertexSequence(process, ex, tracks_src = tracks_name, 
-                        #   electron_tracks_src = electron_tracks_name, muon_tracks_src = muon_tracks_name, 
                           electron_tracks_src = cms.InputTag(tracks_name, "electrons"), muon_tracks_src = cms.InputTag(tracks_name, "muons"),
                           min_track_sigmadxy = 0,
                           min_track_rescaled_sigmadxy = cfg.nsigmadxy,
@@ -177,10 +180,16 @@ for icfg, cfg in enumerate(cfgs):
     setattr(process, tracks_name, tracks)
     setattr(process, tree_name, tree)
     
+    # process.SimpleMemoryCheck = cms.Service("SimpleMemoryCheck",
+    #                                         ignoreTotal = cms.untracked.int32(1)
+    # )
+    
+    # process.Timing = cms.Service("Timing")
+    
     mfvAnalysisCutsPreSelEvtFilt = mfvAnalysisCuts.clone(min_nvertex=0, vertex_src = 'mfvSelectedVerticesLoose')
     setattr(process, 'mfvSelectedVerticesLoose', mfvSelectedVerticesLoose)
     setattr(process, 'mfvAnalysisCutsPreSelEvtFilt', mfvAnalysisCutsPreSelEvtFilt)
-    process.p *= mfvSelectedVerticesLoose 
+    process.p *= mfvSelectedVerticesLoose
     process.p *= mfvAnalysisCutsPreSelEvtFilt
     process.p *= tree
 
@@ -188,17 +197,21 @@ for icfg, cfg in enumerate(cfgs):
 ReferencedTagsTaskAdder(process)('p')
 random_service(process, random_dict)
 
-
+#print("WARNING : IN THE NTUPLE, LEPTONS MUST PASS DXY DZ CUTS BEFORE BEING MOVED")
 if __name__ == '__main__' and hasattr(sys, 'argv') and 'submit' in sys.argv:
     from JMTucker.Tools.MetaSubmitter import *
     #samples = pick_samples(dataset, qcd=False, data=False, all_signal=False, qcd_lep=False, leptonic=True, ttbar=False, diboson=True, Lepton_data=False, BTagCSV_data=False, DisplacedJet_data=False)
     #samples = pick_samples(dataset, qcd=False, data=False, all_signal=False, qcd_lep=False, leptonic=False, met=False, diboson=False, Lepton_data=True, BTagCSV_data=False, DisplacedJet_data=False)
     
+    #samples = pick_samples(dataset, qcd=False, data=False, all_signal=False, qcd_lep=False, leptonic=True, ttbar=False, diboson=False, Lepton_data=True, BTagCSV_data=False, DisplacedJet_data=False)
     samples = pick_samples(dataset, qcd=False, data=False, all_signal=False, qcd_lep=True, leptonic=True, ttbar=True, diboson=True, Lepton_data=True, BTagCSV_data=False, DisplacedJet_data=False)
-    #samples = pick_samples(dataset, qcd=True, data=False, all_signal=False, qcd_lep=False, leptonic=False, ttbar=False, diboson=False, Lepton_data=False, BTagCSV_data=False, DisplacedJet_data=False)
-    #samples = [getattr(Samples, 'qcdht2000_2017')]
-    set_splitting(samples, dataset, 'trackmover', data_json=json_path('ana_2016_EgammaMu.json' if year in [20161, 20162] else 'ana_2018_EgammaMu.json'), limit_ttbar=False)
+    #samples = [getattr(Samples, 'ww_2018')]
+    # samples = [getattr(Samples, 'ttbar_semilep_2018')]
+    set_splitting(samples, dataset, 'trackmover', data_json=json_path('ana_2016_EgammaMu.json' if year in [20161, 20162] else 'ana_2017_EgammaMu.json'), limit_ttbar=False)
+    #ms = MetaSubmitter('TrackMover' + version, dataset=dataset)
+    #if need to resubmit after killing 
     ms = MetaSubmitter('TrackMover' + version, dataset=dataset)
+
     ms.common.pset_modifier = chain_modifiers(is_mc_modifier, era_modifier, per_sample_pileup_weights_modifier())
     ms.condor.stageout_files = 'all'
     ms.submit(samples)

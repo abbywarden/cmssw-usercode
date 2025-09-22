@@ -153,7 +153,7 @@ namespace jmt {
     //const pat::METCollection& mets() const { return *mets_; }
   };
 
-  void NtupleAdd(MuonsSubNtuple&, const pat::Muon&);
+  void NtupleAdd(MuonsSubNtuple&, const pat::Muon&, bool hltmatched, bool passtrigpt);
 
   class MuonsSubNtupleFiller {
     MuonsSubNtuple& nt_;
@@ -180,7 +180,7 @@ namespace jmt {
     int i2nti(size_t i) const { return i2nti_[i]; }
   };
   
-  void NtupleAdd(ElectronsSubNtuple&, const pat::Electron&);
+  void NtupleAdd(ElectronsSubNtuple&, const pat::Electron&, auto r, float eA, bool hltmatched, bool passtrigpt);
 
   class ElectronsSubNtupleFiller {
     ElectronsSubNtuple& nt_;
@@ -224,7 +224,8 @@ namespace jmt {
   };
 
   
-  void NtupleAdd(TracksSubNtuple&, const reco::Track&, int which_jet=-1, int which_pv=-1, int which_sv=-1, bool ismu=false, bool isel=false, bool isgoodmu=false, bool isgoodel=false,  unsigned misc=0, unsigned misc_mtk=0, unsigned misc_etk=0);
+  void NtupleAdd(TracksSubNtuple&, const reco::Track&, int which_jet=-1, int which_pv=-1, int which_sv=-1, //bool ismu=false, bool isel=false, bool isgoodmu=false, bool isgoodel=false,  
+                 unsigned misc=0, unsigned misc_mtk=0, unsigned misc_etk=0);
   typedef bool (*tracks_cut_fcn)(const reco::Track&);
 
   class TracksSubNtupleFiller {
@@ -255,11 +256,11 @@ namespace jmt {
     const reco::TrackCollection& tracks(const edm::Event& e) { return *htracks(e); }
     int which_jet(const edm::Event&, JetsSubNtupleFiller*, reco::TrackRef&);
     int which_pv(const edm::Event&, PrimaryVerticesSubNtupleFiller*, reco::TrackRef&);
-    bool ismu(const edm::Event&, MuonsSubNtupleFiller*, reco::TrackRef&);
-    bool isel(const edm::Event&, ElectronsSubNtupleFiller*, reco::TrackRef&);
-    bool isGoodMu(const edm::Event&, MuonsSubNtupleFiller*, reco::TrackRef&);
-    const edm::Handle<double>& rho(const edm::Event& e) {e.getByToken(rho_token_, rho_); return rho_; }
-    bool isGoodEl(const edm::Event&, ElectronsSubNtupleFiller*, reco::TrackRef&);
+    // bool ismu(const edm::Event&, MuonsSubNtupleFiller*, reco::TrackRef&);
+    // bool isel(const edm::Event&, ElectronsSubNtupleFiller*, reco::TrackRef&);
+    // bool isGoodMu(const edm::Event&, MuonsSubNtupleFiller*, reco::TrackRef&);
+    // const edm::Handle<double>& rho(const edm::Event& e) {e.getByToken(rho_token_, rho_); return rho_; }
+    // bool isGoodEl(const edm::Event&, ElectronsSubNtupleFiller*, reco::TrackRef&);
     void operator()(const edm::Event&, JetsSubNtupleFiller* =0, PrimaryVerticesSubNtupleFiller* =0, BeamspotSubNtupleFiller* =0, MuonsSubNtupleFiller* =0, ElectronsSubNtupleFiller* =0);
   };
 

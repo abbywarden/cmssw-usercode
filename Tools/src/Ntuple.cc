@@ -274,6 +274,72 @@ namespace jmt {
   }
   //// 
 
+  TMWeightSubNtuple::TMWeightSubNtuple() {
+    clear();
+    p_tmw_movedist2d_ = 0;
+    p_tmw_movedist3d_ = 0;
+    p_tmw_jetsumpt_ = 0;
+    p_tmw_jet_pt_ = 0;
+    p_tmw_jetsump_ = 0;
+    p_tmw_electron_pt_ = 0;
+    p_tmw_muon_pt_ = 0;
+    p_tmw_jeteledR_ = 0;
+    p_tmw_jetmudR_ = 0;
+  }
+  void TMWeightSubNtuple::clear() {
+    tmw_movedist2d_.clear();
+    tmw_movedist3d_.clear();
+    tmw_jetsumpt_.clear();
+    tmw_jet_pt_.clear();
+    tmw_jetsump_.clear();
+    tmw_electron_pt_.clear();
+    tmw_muon_pt_.clear();
+    tmw_jeteledR_.clear();
+    tmw_jetmudR_.clear();
+  }
+
+  void TMWeightSubNtuple::write_to_tree(TTree* t) {
+    t->Branch("tmw_movedist2d", &tmw_movedist2d_);
+    t->Branch("tmw_movedist3d", &tmw_movedist3d_);
+    t->Branch("tmw_jetsumpt", &tmw_jetsumpt_);
+    t->Branch("tmw_jet_pt", &tmw_jet_pt_);
+    t->Branch("tmw_jetsump", &tmw_movedist2d_);
+    t->Branch("tmw_electron_pt", &tmw_electron_pt_);
+    t->Branch("tmw_muon_pt", &tmw_muon_pt_);
+    t->Branch("tmw_jeteledR", &tmw_jeteledR_);
+    t->Branch("tmw_jetmudR", &tmw_jetmudR_);
+
+  }
+
+  void TMWeightSubNtuple::read_from_tree(TTree* t) {
+    // t->SetBranchAddress(TString::Format("%s_qpt", pfx()), &p_qpt_);
+    t->SetBranchAddress("tmw_movedist2d", &p_tmw_movedist2d_);
+    t->SetBranchAddress("tmw_movedist3d", &p_tmw_movedist3d_);
+    t->SetBranchAddress("tmw_jetsumpt", &p_tmw_jetsumpt_);
+    t->SetBranchAddress("tmw_jet_pt", &p_tmw_jet_pt_);
+    t->SetBranchAddress("tmw_jetsump", &p_tmw_jetsump_);
+    t->SetBranchAddress("tmw_electron_pt", &p_tmw_electron_pt_);
+    t->SetBranchAddress("tmw_muon_pt", &p_tmw_muon_pt_);
+    t->SetBranchAddress("tmw_jeteledR", &p_tmw_jeteledR_);
+    t->SetBranchAddress("tmw_jetmudR", &p_tmw_jetmudR_);
+
+  }
+
+  void TMWeightSubNtuple::copy_vectors() {
+    // qpt_ = *p_qpt_;
+    tmw_movedist2d_  = *p_tmw_movedist2d_;
+    tmw_movedist3d_  = *p_tmw_movedist3d_;
+    tmw_jetsumpt_    = *p_tmw_jetsumpt_;
+    tmw_jet_pt_      = *p_tmw_jet_pt_;
+    tmw_jetsump_     = *p_tmw_jetsump_;
+    tmw_electron_pt_ = *p_tmw_electron_pt_;
+    tmw_muon_pt_     = *p_tmw_muon_pt_;
+    tmw_jeteledR_    = *p_tmw_jeteledR_;
+    tmw_jetmudR_     = *p_tmw_jetmudR_;
+  }
+
+  ////
+
   TracksSubNtuple::TracksSubNtuple() {
     set_pfx("tk");
     clear();
@@ -300,10 +366,10 @@ namespace jmt {
     p_which_jet_ = 0;
     p_which_pv_ = 0;
     p_which_sv_ = 0;
-    p_ismu_  = 0;
-    p_isel_ = 0;
-    p_isgoodmu_  = 0;
-    p_isgoodel_ = 0;
+    // p_ismu_  = 0;
+    // p_isel_ = 0;
+    // p_isgoodmu_  = 0;
+    // p_isgoodel_ = 0;
     p_misc_ = 0;
     p_misc_mtk_ = 0;
     p_misc_etk_ = 0;
@@ -333,10 +399,10 @@ namespace jmt {
     which_jet_.clear();
     which_pv_.clear();
     which_sv_.clear();
-    ismu_.clear();
-    isel_.clear();
-    isgoodmu_.clear();
-    isgoodel_.clear();
+    // ismu_.clear();
+    // isel_.clear();
+    // isgoodmu_.clear();
+    // isgoodel_.clear();
     misc_.clear();
     misc_mtk_.clear();
     misc_etk_.clear();
@@ -366,10 +432,10 @@ namespace jmt {
     t->Branch(TString::Format("%s_which_jet", pfx()), &which_jet_);
     t->Branch(TString::Format("%s_which_pv", pfx()), &which_pv_);
     t->Branch(TString::Format("%s_which_sv", pfx()), &which_sv_);
-    t->Branch(TString::Format("%s_ismu", pfx()), &ismu_);
-    t->Branch(TString::Format("%s_isel", pfx()), &isel_);
-    t->Branch(TString::Format("%s_isgoodmu", pfx()), &isgoodmu_);
-    t->Branch(TString::Format("%s_isgoodel", pfx()), &isgoodel_);
+    // t->Branch(TString::Format("%s_ismu", pfx()), &ismu_);
+    // t->Branch(TString::Format("%s_isel", pfx()), &isel_);
+    // t->Branch(TString::Format("%s_isgoodmu", pfx()), &isgoodmu_);
+    // t->Branch(TString::Format("%s_isgoodel", pfx()), &isgoodel_);
     t->Branch(TString::Format("%s_misc", pfx()), &misc_);
     t->Branch(TString::Format("%s_misc_mtk", pfx()), &misc_mtk_);
     t->Branch(TString::Format("%s_misc_etk", pfx()), &misc_etk_);
@@ -415,10 +481,10 @@ namespace jmt {
     t->SetBranchAddress(TString::Format("%s_which_jet", pfx()), &p_which_jet_);
     t->SetBranchAddress(TString::Format("%s_which_pv", pfx()), &p_which_pv_);
     t->SetBranchAddress(TString::Format("%s_which_sv", pfx()), &p_which_sv_);
-    t->SetBranchAddress(TString::Format("%s_ismu", pfx()), &p_ismu_);
-    t->SetBranchAddress(TString::Format("%s_isel", pfx()), &p_isel_);
-    t->SetBranchAddress(TString::Format("%s_isgoodmu", pfx()), &p_isgoodmu_);
-    t->SetBranchAddress(TString::Format("%s_isgoodel", pfx()), &p_isgoodel_);
+    // t->SetBranchAddress(TString::Format("%s_ismu", pfx()), &p_ismu_);
+    // t->SetBranchAddress(TString::Format("%s_isel", pfx()), &p_isel_);
+    // t->SetBranchAddress(TString::Format("%s_isgoodmu", pfx()), &p_isgoodmu_);
+    // t->SetBranchAddress(TString::Format("%s_isgoodel", pfx()), &p_isgoodel_);
     t->SetBranchAddress(TString::Format("%s_misc", pfx()), &p_misc_);
     t->SetBranchAddress(TString::Format("%s_misc_mtk", pfx()), &p_misc_mtk_);
     t->SetBranchAddress(TString::Format("%s_misc_etk", pfx()), &p_misc_etk_);
@@ -449,10 +515,10 @@ namespace jmt {
     which_jet_ = *p_which_jet_;
     which_pv_ = *p_which_pv_;
     which_sv_ = *p_which_sv_;
-    ismu_ = *p_ismu_;
-    isel_ = *p_isel_;
-    isgoodmu_ = *p_isgoodmu_;
-    isgoodel_ = *p_isgoodel_;
+    // ismu_ = *p_ismu_;
+    // isel_ = *p_isel_;
+    // isgoodmu_ = *p_isgoodmu_;
+    // isgoodel_ = *p_isgoodel_;
     misc_ = *p_misc_;
     misc_mtk_ = *p_misc_mtk_;
     misc_etk_ = *p_misc_etk_;

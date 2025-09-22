@@ -31,9 +31,9 @@ private:
   const edm::EDGetTokenT<pat::MuonCollection> muons_used_token;
   const edm::EDGetTokenT<pat::ElectronCollection> ele_used_token;
   const edm::EDGetTokenT<std::vector<double> > move_vertex_token;
-  const edm::EDGetTokenT<std::vector<double> > move_lep_pos_token;
-  const edm::EDGetTokenT<std::vector<double> > move_jet_pos_token;
-  const edm::EDGetTokenT<double> jet_lep_deltadz_token;
+  const edm::EDGetTokenT<double> move_lep_dxypv_token;
+  const edm::EDGetTokenT<double> move_jet_dxypv_token; //currently the average dxy over all jet tracks 
+  const edm::EDGetTokenT<double> jet_lep_deltadz_token; //using the jet's average dz over all jet tracks 
 
   const double max_dist2move;
   const bool apply_presel;
@@ -68,8 +68,8 @@ MFVMovedTracksTreer::MFVMovedTracksTreer(const edm::ParameterSet& cfg)
     ele_used_token(consumes<pat::ElectronCollection>(edm::InputTag(mover_src, "eleUsed"))),
 
     move_vertex_token(consumes<std::vector<double> >(edm::InputTag(mover_src, "moveVertex"))),
-    move_lep_pos_token(consumes<std::vector<double> >(edm::InputTag(mover_src, "moveLepPos"))),
-    move_jet_pos_token(consumes<std::vector<double> >(edm::InputTag(mover_src, "moveJetPos"))),
+    move_lep_dxypv_token(consumes<double>(edm::InputTag(mover_src, "movelepdxypv"))),
+    move_jet_dxypv_token(consumes<double>(edm::InputTag(mover_src, "movejetdxypv"))),
     jet_lep_deltadz_token(consumes<double>(edm::InputTag(mover_src, "jetlepdeltadz"))),
 
     max_dist2move(cfg.getParameter<double>("max_dist2move")),
@@ -90,11 +90,9 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
   gentruth_filler(event);
   auto tks_push_back = [&](const reco::Track& tk) { NtupleAdd(nt.tracks(), tk); };
 
-  //filled for both mctruth and bkgmc so declared here
-  // std::vector<int> whichs_ele(nmovedele, -1);
-  // std::vector<int> whichs_mu(nmovedmu, -1);
-  std::vector<int> whichs_ele;
+  //declaring here so can use it later 
   std::vector<int> whichs_mu;
+  std::vector<int> whichs_ele;
 
   if (for_mctruth) {
     edm::Handle<std::vector<reco::TrackRef>> sel_tracks;
@@ -125,7 +123,6 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
       auto vf = nt_filler.pvs_filler();
       const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, mutk);
       nt.tracks().set_which_pv(whichtk, whichpv);
-      // std::cout << "muon track point : " << mutk->vx() << " " << mutk->vy() << " " << mutk->vz() << std::endl;
     }
 
     for (reco::TrackRef eletk : *sel_eletracks) {
@@ -136,8 +133,6 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
       auto vf = nt_filler.pvs_filler();
       const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, eletk);
       nt.tracks().set_which_pv(whichtk, whichpv);
-      // std::cout << "electron track point : " << eletk->vx() << " " << eletk->vy() << " " << eletk->vz() << std::endl;
-
     }
 
     // JMTBAD use TracksSubNtupleFiller::which_jet?
@@ -179,7 +174,6 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
           }
           else { 
             nt.set_jet_moved(whichjet);
-            // std::cout << "jet track 'moved' : " << tk->vx() << " " << tk->vy() << " " << tk->vz() << std::endl;
           }
           nt.tracks().set_which_jet(whichtk, whichjet);
         }
@@ -187,7 +181,6 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     }
   }
   else {
-    // edm::Handle<reco::TrackCollection> all_tracks, moved_tracks;
     edm::Handle<reco::TrackCollection> all_tracks, moved_tracks, moved_electron_tracks, moved_muon_tracks;
     edm::Handle<std::vector<reco::TrackRef>> sel_tracks;
     edm::Handle<std::vector<reco::TrackRef>> sel_mutracks;
@@ -197,8 +190,8 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     edm::Handle<pat::ElectronCollection> ele_used;
     edm::Handle<pat::MuonCollection> muons_used;
     edm::Handle<std::vector<double> > move_vertex;
-    edm::Handle<std::vector<double> > move_lep_pos;
-    edm::Handle<std::vector<double> > move_jet_pos;
+    edm::Handle<double> movelepdxypv;
+    edm::Handle<double> movejetdxypv;
     edm::Handle<double> jetlepdeltadz;
     event.getByToken(all_tracks_token,   all_tracks);
     event.getByToken(sel_tracks_token,   sel_tracks);
@@ -216,22 +209,15 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     event.getByToken(muons_used_token,   muons_used);
     event.getByToken(ele_used_token,     ele_used);
     event.getByToken(move_vertex_token,  move_vertex);
-    event.getByToken(move_lep_pos_token, move_lep_pos);
-    event.getByToken(move_jet_pos_token, move_jet_pos);
+    event.getByToken(move_lep_dxypv_token, movelepdxypv);
+    event.getByToken(move_jet_dxypv_token, movejetdxypv);
     event.getByToken(jet_lep_deltadz_token, jetlepdeltadz);
 
     nt.tm().set(all_tracks->size(), moved_tracks->size(), moved_electron_tracks->size(), moved_muon_tracks->size(), *npreseljets, *npreselbjets, *npreselmu, *npreselele,
                 (*move_vertex)[0] - nt_filler.bs().x((*move_vertex)[2]), // JMTBAD get rid of beamspot subtraction everywhere
                 (*move_vertex)[1] - nt_filler.bs().y((*move_vertex)[2]),
-                (*move_vertex)[2],
-                (*move_lep_pos)[0], (*move_lep_pos)[1], (*move_lep_pos)[2], 
-                (*move_jet_pos)[0], (*move_jet_pos)[1], (*move_jet_pos)[2], *jetlepdeltadz
+                (*move_vertex)[2], *movelepdxypv, *movejetdxypv, *jetlepdeltadz
               );
-    // nt.tm().set(all_tracks->size(), moved_tracks->size(), *npreseljets, *npreselbjets, *npreselmu, *npreselele,
-    //             (*move_vertex)[0] - nt_filler.bs().x((*move_vertex)[2]), // JMTBAD get rid of beamspot subtraction everywhere
-    //             (*move_vertex)[1] - nt_filler.bs().y((*move_vertex)[2]),
-    //             (*move_vertex)[2]);
-
 
     for (reco::TrackRef tk : *sel_tracks) {
       const int whichtk = nt.tracks().n();
@@ -240,30 +226,27 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
       const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, tk);
       nt.tracks().set_which_pv(whichtk, whichpv);
     }
+
     for (reco::TrackRef mtk : *sel_mutracks) {
       const int whichtk = nt.tracks().n();
       tks_push_back(*mtk);
       auto vf = nt_filler.pvs_filler();
       const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, mtk);
       nt.tracks().set_which_pv(whichtk, whichpv);
-
     }
+
     for (reco::TrackRef etk : *sel_eletracks) {
       const int whichtk = nt.tracks().n();
       tks_push_back(*etk);
       auto vf = nt_filler.pvs_filler();
       const int whichpv = nt_filler.tracks_filler().which_pv(event, &vf, etk);
       nt.tracks().set_which_pv(whichtk, whichpv);
-
     }
 
-    // std::cout << "checking moved tracks " << std::endl;
     for (const reco::Track& tk : *moved_tracks) {
       double dist2min = 0.1;
       int which = -1;
       for (int i = 0, ie = nt.tracks().n(); i < ie; ++i) {
-        // std::cout << "(from tks_filler) track  pt, eta, phi : " << tk.pt() << " " << tk.eta() << " " << tk.phi() << " "  << std::endl;
-        // std::cout << "(from nt.tracks()) track pt, eta, phi : " << nt.tracks().qpt(i) << " " << nt.tracks().eta(i) << " " << nt.tracks().phi(i) << " " << std::endl;
         const double dist2 = mag2(tk.charge() * tk.pt() - nt.tracks().qpt(i),
                                   tk.eta()              - nt.tracks().eta(i),
                                   tk.phi()              - nt.tracks().phi(i));
@@ -272,60 +255,29 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
           which = i;
         }
       }
-
-      // if (which != -1) {
-      //   nt.set_tk_moved(which);
-      //   // std::cout << "found moved track idx : " << which << std::endl;  
-      // }
-      // else if (which == -1) {
-      //   which = nt.tracks().n();
-      //   tks_push_back(tk);
-      // }
-
-      //original (is this wrong??) 
       if (which == -1) {
         which = nt.tracks().n();
         tks_push_back(tk);
       }
       nt.set_tk_moved(which);
-      // std::cout << "found moved track idx : " << which << std::endl;
-
     }
 
     //electrons 
-    // double moved_eletk_pt = 0.0;
-    // double moved_eletk_phi = -1.0;
-    // double moved_eletk_eta = -1.0;
     for (const reco::Track& etk : *moved_electron_tracks) {
       double dist2min = 0.1;
       int which = -1;
       //only do the matching for moved electron tracks of pT >=  20 
       if (etk.pt() >= 20) { 
-        // std::cout << "(from etks_filler) track  pt, eta, phi : " << etk.pt() << " " << etk.eta() << " " << etk.phi() << " "  << std::endl;
         for (int i = 0, ie = nt.tracks().n(); i < ie; ++i) {
-          // std::cout << "(from nt.tracks()) track pt, eta, phi : " << nt.tracks().qpt(i) << " " << nt.tracks().eta(i) << " " << nt.tracks().phi(i) << " " << std::endl;
           const double dist2 = mag2(etk.charge() * etk.pt() - nt.tracks().qpt(i),
                                     etk.eta()              - nt.tracks().eta(i),
                                     etk.phi()              - nt.tracks().phi(i));
           if (dist2 < dist2min) {
             dist2min = dist2;
             which = i;
-            // moved_eletk_pt = etk.pt();
-            // moved_eletk_phi = etk.phi();
-            // moved_eletk_eta = etk.eta();
           }
         }
       }
-      // // std::cout << " checking moved electron tracks : (which track matched?) " << which << " and dist2min was : " << dist2min << std::endl;
-      // if (which != -1) {
-      //   nt.set_etk_moved(which); 
-      //   // std::cout << "found moved electron track idx : " << which << std::endl;  
-      // }
-
-      // else if (which == -1) {
-      //   which = nt.tracks().n();
-      //   tks_push_back(etk);
-      // }
 
       if (which == -1) {
         which = nt.tracks().n();
@@ -352,16 +304,6 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
           }
         }
       }
-      // std::cout << " checking moved muon tracks : (which track matched?) " << which << " and dist2min was : " << dist2min << std::endl;
-      
-      // if (which != -1) {
-      //   nt.set_mtk_moved(which);
-      //   // std::cout << "found moved muon track idx : " << which << std::endl;  
-      // }
-      // else if (which == -1) {
-      //   which = nt.tracks().n();
-      //   tks_push_back(mtk);
-      // }
       if (which == -1) {
         which = nt.tracks().n();
         tks_push_back(mtk);
@@ -372,9 +314,8 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     }
 
     //now flagging the muon objects that are moved 
-    // const size_t nmovedmu = muons_used->size();
-
-    // std::vector<int> whichs_mu(nmovedmu, -1);
+    const size_t nmovedmu = muons_used->size();
+    whichs_mu.resize(nmovedmu, -1);
     int m = -1;
     for (const pat::MuonCollection* muons : {&*muons_used}) {
       for (const pat::Muon& mu : *muons) {
@@ -392,16 +333,15 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
           }
         }
         assert(which != -1);
-        // whichs_mu[m] = which;
-        whichs_mu.push_back(which);
+        whichs_mu[m] = which;
         nt.set_muon_moved(which);
       }
     }
 
 
     // now flagging the electron objects that are moved 
-    // const size_t nmovedele = ele_used->size();
-    // std::vector<int> whichs_ele(nmovedele, -1);
+    const size_t nmovedele = ele_used->size();
+    whichs_ele.resize(nmovedele, -1);
 
     int e = -1;
     for (const pat::ElectronCollection* electrons : { &*ele_used }) {
@@ -421,25 +361,10 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
           }
         }
         assert(which != -1);
-        // whichs_ele[e] = which;
-        whichs_ele.push_back(which);
+        whichs_ele[e] = which;
         nt.set_electron_moved(which);
       }
     }
-
-    // double moved_lepdR = 5.0;
-    // if (moved_mutk_pt || moved_muon_pt > 0) {
-    //   moved_lepdR = reco::deltaR(moved_mutk_eta, moved_mutk_phi, moved_muon_eta, moved_muon_phi);
-    // }
-    // if (moved_eletk_pt || moved_electron_pt > 0) {
-    //   moved_lepdR = reco::deltaR(moved_eletk_eta, moved_eletk_phi, moved_electron_eta, moved_electron_phi);
-    // }
-    // if (moved_lepdR > 0.1) { 
-    //   std::cout << " finished setting moved leptons and their tracks ... but they don't match ??: " << std::endl;
-    //   printf("muon track (pt, eta, phi) : (%f, %f, %f), and the muon candidate (pt, eta, phi) : (%f, %f, %f)\n", moved_mutk_pt, moved_mutk_eta, moved_mutk_phi, moved_muon_pt, moved_muon_eta, moved_muon_phi);
-    //   printf("electron track (pt, eta, phi) : (%f, %f, %f), and the electron candidate (pt, eta, phi) : (%f, %f, %f)\n", moved_eletk_pt, moved_eletk_eta, moved_eletk_phi, moved_electron_pt, moved_electron_eta, moved_electron_phi);
-    //   std::cout << " --------------------------------------------------------------------------" << std::endl;
-    // }
 
     for (const pat::Jet& jet : nt_filler.jets_filler().jets(event)) {
       double dist2min = 0.1;
@@ -509,11 +434,69 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     for (size_t i = 0; i < nmovedjets; ++i)
       for (size_t j = i+1; j < nmovedjets; ++j)
         assert(whichs[i] != whichs[j]);
+
+    //calculate here what is used for the reweighing : jetsumpt, jet lep dR, movedist2d, movedist3d 
+    const TVector3& move_vector = nt.move_vector();
+    const double movedist2 = move_vector.Perp();
+    const double movedist3 = move_vector.Mag();
+
+    double jetsumpt = -1.0;
+    double jet_pt = -1.0;
+    double jetsump = -1.0;
+    double electron_pt = -1.0;
+    double muon_pt = -1.0;
+    double jeteledR = -1.0;
+    double jetmudR = -1.0;
+
+
+    TLorentzVector ele_p4;
+    TLorentzVector mu_p4;
+    bool lep_ismu = false;
+    bool lep_isele = false;
+    if (whichs_ele.size() + whichs_mu.size() + whichs.size() > 3) std::cout << "SIZE PROBLEM : (ele size, mu size, jet size):  " << whichs_ele.size() << " " << whichs_mu.size() << " " << whichs.size() << std::endl;
+    //only works for 1 moved ele // 1 moved mu  
+    for (auto ele_idx : whichs_ele) {
+      ele_p4 = nt.electrons().p4(ele_idx);
+      lep_isele = true;
+    }
+    for (auto mu_idx : whichs_mu) {
+      mu_p4 = nt.muons().p4(mu_idx);
+      lep_ismu = true;
+    }
+    //only works for 1 moved jet 
+    std::vector<int> jet0_tracks;
+    TLorentzVector jet0_p4; //what is calculated from the jet sum p 
+
+    for (auto jet_idx : whichs) {
+      jet_pt = nt.jets().pt(jet_idx);
+      jet0_tracks = nt.tracks().tks_for_jet(jet_idx);
+    }
+
+    for (int j = 0; j < nt.tracks().n(); ++j) {
+      auto it0 = std::find(jet0_tracks.begin(), jet0_tracks.end(), j);
+      if (it0 != jet0_tracks.end() && nt.tracks().pass_sel(j) && nt.tk_moved(j)){
+        jet0_p4 += nt.tracks().p4(j);
+        jetsump+=nt.tracks().p(j); //sump_0
+        jetsumpt+=nt.tracks().pt(j); //sumpt_0
+      }
+    }
+
+    if (lep_isele) {
+      electron_pt = ele_p4.Pt();
+      jeteledR = jet0_p4.DeltaR(ele_p4); 
+    }
+    if (lep_ismu) {
+      muon_pt = mu_p4.Pt();
+      jetmudR = jet0_p4.DeltaR(mu_p4); 
+    }
+
+    nt.tmw().add(movedist2, movedist3, jetsumpt, jet_pt, jetsump, electron_pt, muon_pt, jeteledR, jetmudR);
+
   }
+
 
   edm::Handle<MFVVertexAuxCollection> vertices;
   event.getByToken(vertices_token, vertices);
-  // std::cout << "going to vertices .. " << std::endl;
   for (const MFVVertexAux& v : *vertices) {
     const double vx = v.x - nt_filler.bs().x(v.z); // JMTBAD get rid of beamspot subtraction everywhere
     const double vy = v.y - nt_filler.bs().y(v.z);
@@ -524,14 +507,14 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     float leading_lepdxyerr_inSV = 99.0;
     float leading_lepnsigmadxy_inSV = -99.0;
     float leading_lepiso_inSV = 99.0;
-    float leading_leptype_inSV = 99.0;
-    float leading_lepID_inSV = 99.0;
-    float leading_lepeta_inSV = 99.0;
-    float leading_lephltmatched_inSV = 99.0;
-    float leading_leppasstrigpt_inSV = 99.0;
-    float leading_lepjet_pairdr = 99.0;
-    float trackpairdravg = 99.0;
-    float avgptnolep = 99.0;
+    float leading_leptype_inSV = -1.0;
+    float leading_lepID_inSV = -1.0;
+    float leading_lepeta_inSV = 10.0;
+    float leading_lephltmatched_inSV = -1.0;
+    float leading_leppasstrigpt_inSV = -1.0;
+    float leading_lepjet_pairdr = 20.0;
+    float trackpairdravg = 20.0;
+    float avgptnolep = -1.0;
 
 
     if (!for_mctruth) {
@@ -558,7 +541,6 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
         assoc_leptype.push_back(0);
         assoc_lepidx.push_back(i);
       }
-      // float leading_leppt = *max_element(assoc_lep.begin(), assoc_lep.end());
       int leading_lepidx = std::max_element(assoc_lep.begin(), assoc_lep.end()) - assoc_lep.begin();
       
       //step 2 : match to the ntuple muons/ electrons 
@@ -577,9 +559,24 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
           }
         }
         assert(which != -1);
-        // whichs_mu[m] = which;
-        whichs_mu.push_back(which);
+        //get the lepton info we want here : 
+        leading_leppt_inSV = fabs(nt.muons().qpt(which)); 
+        leading_lepeta_inSV = nt.muons().eta(which);
+        leading_lepiso_inSV = nt.muons().iso(which);
+        leading_lephltmatched_inSV = nt.muons().hltmatched(which); //broken ? 
+        leading_leppasstrigpt_inSV = nt.muons().passtrigpt(which); //broken ? 
+        leading_lepID_inSV = nt.muons().ID(which);
+
+        //check what the minimum lepton - jet dR is (amongst all jets in the event)
+        float minjetlepdR = 10.0;
+        for (int j = 0, je = nt.jets().n(); j < je; ++j) {
+          if (nt.jets().pt(j) < 20) continue;
+          float jetlepdR = reco::deltaR(nt.jets().eta(j), nt.jets().phi(j), nt.muons().eta(which), nt.muons().phi(which));
+          if (jetlepdR < minjetlepdR) minjetlepdR = jetlepdR;
+        }
+        leading_lepjet_pairdr = minjetlepdR;
       }
+
       else if (assoc_leptype[leading_lepidx] == 1) {
         int elidx = assoc_lepidx[leading_lepidx];
         double dist2min = 0.1;
@@ -595,8 +592,21 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
           }
         }
         assert(which != -1);
-        // whichs_ele[m] = which;
-        whichs_ele.push_back(which);
+        //get the lepton info we want here 
+        leading_leppt_inSV = fabs(nt.electrons().qpt(which)); 
+        leading_lepeta_inSV = nt.electrons().eta(which);
+        leading_lepiso_inSV = nt.electrons().iso(which);
+        leading_lephltmatched_inSV = nt.electrons().hltmatched(which); //broken?
+        leading_leppasstrigpt_inSV = nt.electrons().passtrigpt(which); //broken?
+        leading_lepID_inSV = nt.electrons().ID(which);
+
+        float minjetlepdR = 10.0;
+        for (int j = 0, je = nt.jets().n(); j < je; ++j) {
+          if (nt.jets().pt(j) < 20) continue;
+          float jetlepdR = reco::deltaR(nt.jets().eta(j), nt.jets().phi(j), nt.electrons().eta(which), nt.electrons().phi(which));
+          if (jetlepdR < minjetlepdR) minjetlepdR = jetlepdR;
+        }
+        leading_lepjet_pairdr = minjetlepdR;
       }
     }
 
@@ -610,7 +620,6 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
 
     float sumptnolep = 0.0;
     for (size_t i = 0, ie = v.ntracks(); i < ie; ++i) {
-      // std::cout << "vertex track pt : " << v.track_qpt(i) << std::endl;
       jmt::MinValue m(0.1);
       for (size_t j = 0, je = nt.tracks().n(); j < je; ++j){
         m(j, mag2(v.track_qpt(i) - nt.tracks().qpt(j),
@@ -619,7 +628,6 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
         }
 
       assert(m.i() != -1);
-      // std::cout << " m.i() " << m.i() << std::endl;
       if (nt.tracks().which_sv(m.i()) != 255) {
         const int w = nt.tracks().which_sv(m.i());
         cms::Exception ce("BadAssumption");
@@ -635,7 +643,6 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
       }
       
       const size_t iv = nt.vertices().n() - 1;
-      // std::cout << "vertex number (?) " << iv << std::endl;
       assert(iv < 255);
       nt.tracks().set_which_sv(m.i(), iv); //FIXME ????
 
@@ -647,68 +654,73 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
         leading_lepdxy_inSV = v.track_dxy[i];
         leading_lepdxyerr_inSV = v.track_dxy_err(i);
         leading_lepnsigmadxy_inSV = leading_lepdxy_inSV / leading_lepdxyerr_inSV;
-        // std::cout << "misc_etk pT, eta, phi : " << v.track_pt(i) << " " << v.track_eta[i] << " " << v.track_phi[i] << std::endl;
       }
       if (nt.tracks().misc_mtk(m.i())) {
         leading_leptype_inSV = 0;
         leading_lepdxy_inSV = v.track_dxy[i];
         leading_lepdxyerr_inSV = v.track_dxy_err(i);
         leading_lepnsigmadxy_inSV = leading_lepdxy_inSV / leading_lepdxyerr_inSV;
-        // std::cout << "misc_mtk pT, eta, phi : " << v.track_pt(i) << " " << v.track_eta[i] << " " << v.track_phi[i] << std::endl;
-
       }
 
       if (!nt.tracks().misc_etk(m.i()) && !nt.tracks().misc_mtk(m.i())) sumptnolep += fabs(v.track_qpt(i));
-    }
-    
+
+
+      //now as long as this is not mctruth, we need to grab the lepton that was moved -> and check if it belongs to the SV 
+      if (!for_mctruth) { 
+        //need to match the moved lepton to one of the tracks in the SV 
+        jmt::MinValue me(0.1); //min ele
+        jmt::MinValue mm(0.1); //min mu 
+        for (auto ele_idx : whichs_ele) {
+            me(ele_idx, mag2(v.track_eta[i] - nt.electrons().eta(ele_idx),
+                      v.track_phi[i] - nt.electrons().phi(ele_idx)));
+        }
+        for (auto mu_idx : whichs_mu) {
+          mm(mu_idx, mag2(v.track_eta[i] - nt.muons().eta(mu_idx),
+                      v.track_phi[i] - nt.muons().phi(mu_idx)));
+        }
+        
+        //if there is a match, get the lepton values 
+        if (me.v() + mm.v() < 0.2) { 
+          //found a moved electron matched to a track in the sv
+          if (me.v() < mm.v()) { 
+            leading_leppt_inSV = fabs(nt.electrons().qpt(me.i())); 
+            leading_lepeta_inSV = nt.electrons().eta(me.i());
+            leading_lepiso_inSV = nt.electrons().iso(me.i());
+            leading_lephltmatched_inSV = nt.electrons().hltmatched(me.i()); //check
+            leading_leppasstrigpt_inSV = nt.electrons().passtrigpt(me.i()); //check
+            leading_lepID_inSV = nt.electrons().ID(me.i());
+
+            //check what the minimum lepton - jet dR is (amonst all jets in the event)
+            float minjetlepdR = 10.0;
+            for (int j = 0, je = nt.jets().n(); j < je; ++j) {
+              if (nt.jets().pt(j) < 20) continue;
+              float jetlepdR = reco::deltaR(nt.jets().eta(j), nt.jets().phi(j), nt.electrons().eta(me.i()), nt.electrons().phi(me.i()));
+              if (jetlepdR < minjetlepdR) minjetlepdR = jetlepdR;
+            }
+            leading_lepjet_pairdr = minjetlepdR;
+          }
+          //found a moved muon matched to a track in the SV
+          else if (mm.v() < me.v()) {
+            leading_leppt_inSV = fabs(nt.muons().qpt(mm.i())); 
+            leading_lepeta_inSV = nt.muons().eta(mm.i());
+            leading_lepiso_inSV = nt.muons().iso(mm.i());
+            leading_lephltmatched_inSV = nt.muons().hltmatched(mm.i()); //broken ? 
+            leading_leppasstrigpt_inSV = nt.muons().passtrigpt(mm.i()); //broken ? 
+            leading_lepID_inSV = nt.muons().ID(mm.i());
+
+            //check what the minimum lepton - jet dR is (amonst all jets in the event)
+            float minjetlepdR = 10.0;
+            for (int j = 0, je = nt.jets().n(); j < je; ++j) {
+              if (nt.jets().pt(j) < 20) continue;
+              float jetlepdR = reco::deltaR(nt.jets().eta(j), nt.jets().phi(j), nt.muons().eta(mm.i()), nt.muons().phi(mm.i()));
+              if (jetlepdR < minjetlepdR) minjetlepdR = jetlepdR;
+            }
+            leading_lepjet_pairdr = minjetlepdR;
+          }
+        }
+      }
+    } //end loop over tracks in SV 
     avgptnolep = sumptnolep/(v.ntracks() - 1);
-
-    // if (!for_mctruth) { 
-      //next pulling all info from the lepton that is moved. (or for mctruth, the leading lepton )
-    for (auto ele_idx : whichs_ele) {
-      leading_leppt_inSV = fabs(nt.electrons().qpt(ele_idx)); 
-      leading_lepeta_inSV = nt.electrons().eta(ele_idx);
-      leading_lepiso_inSV = nt.electrons().iso(ele_idx);
-      leading_lephltmatched_inSV = nt.electrons().hltmatched(ele_idx);
-      // std::cout << " electron pT, eta, phi " << nt.electrons().qpt(ele_idx) << " " << nt.electrons().eta(ele_idx)<< " " << nt.electrons().phi(ele_idx) << std::endl;
-      // std::cout << " electron is it hltmatched? passtrigpt? " << nt.electrons().hltmatched(ele_idx) << " " << nt.electrons().passtrigpt(ele_idx) << std::endl;
-
-      leading_leppasstrigpt_inSV = nt.electrons().passtrigpt(ele_idx);
-      leading_lepID_inSV = nt.electrons().ID(ele_idx);
-      // if (leading_leptype_inSV != 1) std::cout << "FOUND MOVED ELE BUT NOT MOVED ELE TRACK";
-
-      //check what the minimum lepton - jet dR is (amonst all jets in the event)
-      float minjetlepdR = 10.0;
-      for (int j = 0, je = nt.jets().n(); j < je; ++j) {
-        if (nt.jets().pt(j) < 20) continue;
-        float jetlepdR = reco::deltaR(nt.jets().eta(j), nt.jets().phi(j), nt.electrons().eta(ele_idx), nt.electrons().phi(ele_idx));
-        if (jetlepdR < minjetlepdR) minjetlepdR = jetlepdR;
-      }
-      leading_lepjet_pairdr = minjetlepdR;
-    }
-
-    for (auto mu_idx : whichs_mu) {
-      leading_leppt_inSV = fabs(nt.muons().qpt(mu_idx)); 
-      leading_lepeta_inSV = nt.muons().eta(mu_idx);
-      leading_lepiso_inSV = nt.muons().iso(mu_idx);
-      leading_lephltmatched_inSV = nt.muons().hltmatched(mu_idx);
-      // std::cout << " muon pT, eta, phi " << nt.muons().qpt(mu_idx) << " " << nt.muons().eta(mu_idx)<< " " << nt.muons().phi(mu_idx) << std::endl;
-      // std::cout << " muon is it hltmatched? passtrigpt? " << nt.muons().hltmatched(mu_idx) << " " << nt.muons().passtrigpt(mu_idx) << std::endl;
-      leading_leppasstrigpt_inSV = nt.muons().passtrigpt(mu_idx);
-      leading_lepID_inSV = nt.muons().ID(mu_idx);
-
-      // if (leading_leptype_inSV != 0) std::cout << "FOUND MOVED MU BUT NOT MOVED MU TRACK";
-
-      //check what the minimum lepton - jet dR is (amonst all jets in the event)
-      float minjetlepdR = 10.0;
-      for (int j = 0, je = nt.jets().n(); j < je; ++j) {
-        if (nt.jets().pt(j) < 20) continue;
-        float jetlepdR = reco::deltaR(nt.jets().eta(j), nt.jets().phi(j), nt.muons().eta(mu_idx), nt.muons().phi(mu_idx));
-        if (jetlepdR < minjetlepdR) minjetlepdR = jetlepdR;
-      }
-      leading_lepjet_pairdr = minjetlepdR;
-    }
-    
 
     nt.lepinvertices().add(leading_leppt_inSV, leading_lepdxy_inSV, leading_lepdxyerr_inSV, leading_lepnsigmadxy_inSV, 
       leading_lepiso_inSV, leading_leptype_inSV, leading_lepID_inSV, leading_lepeta_inSV, leading_lephltmatched_inSV,
@@ -719,7 +731,6 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
 
   if (apply_presel) {
     if ((!for_mctruth && (nt.tm().npreseljets() < njets_req || nt.tm().npreselbjets() < nbjets_req || (nt.tm().npreselele() + nt.tm().npreselmu()) < nlep_req))) // || nt.jets().ht() < 1000)
-    // if ((!for_mctruth && (nt.tm().npreseljets() < njets_req || nt.tm().npreselbjets() < nbjets_req))) // || nt.jets().ht() < 1000)
       return;
   }
   nt_filler.finalize();

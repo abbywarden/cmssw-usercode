@@ -340,7 +340,8 @@ namespace jmt {
              float chi2dof,
              int npxh, int nsth, int npxl, int nstl, bool missinhit,
              int minhit_r, int minhit_z, int maxhit_r, int maxhit_z, int maxpxhit_r, int maxpxhit_z,
-             int which_jet, int which_pv, int which_sv, bool ismu, bool isel, bool isgoodmu, bool isgoodel,
+             int which_jet, int which_pv, int which_sv, 
+            //  bool ismu, bool isel, bool isgoodmu, bool isgoodel,
              unsigned misc, unsigned misc_mtk, unsigned misc_etk) {
 
       qpt_.push_back(q*pt);
@@ -379,10 +380,10 @@ namespace jmt {
       which_jet_.push_back(which_jet < 0 || which_jet > 255 ? 255 : which_jet);
       which_pv_.push_back(which_pv < 0 || which_pv > 255 ? 255 : which_pv);
       which_sv_.push_back(which_sv < 0 || which_sv > 255 ? 255 : which_sv);
-      ismu_.push_back(ismu);
-      isel_.push_back(isel);
-      isgoodmu_.push_back(isgoodmu);
-      isgoodel_.push_back(isgoodel);
+      // ismu_.push_back(ismu);
+      // isel_.push_back(isel);
+      // isgoodmu_.push_back(isgoodmu);
+      // isgoodel_.push_back(isgoodel);
       misc_.push_back(misc);
       misc_mtk_.push_back(misc_mtk);
       misc_etk_.push_back(misc_etk);
@@ -412,10 +413,10 @@ namespace jmt {
     uchar    which_jet(int i) const { return p_get(i, which_jet_, p_which_jet_ ); }
     uchar    which_pv (int i) const { return p_get(i, which_pv_,  p_which_pv_  ); }
     uchar    which_sv (int i) const { return p_get(i, which_sv_,  p_which_sv_  ); }
-    bool     ismu     (int i) const { return p_get(i, ismu_,      p_ismu_      ); }
-    bool     isel     (int i) const { return p_get(i, isel_,      p_isel_      ); }
-    bool     isgoodmu     (int i) const { return p_get(i, isgoodmu_,      p_isgoodmu_      ); }
-    bool     isgoodel     (int i) const { return p_get(i, isgoodel_,      p_isgoodel_      ); }
+    // bool     ismu     (int i) const { return p_get(i, ismu_,      p_ismu_      ); }
+    // bool     isel     (int i) const { return p_get(i, isel_,      p_isel_      ); }
+    // bool     isgoodmu     (int i) const { return p_get(i, isgoodmu_,      p_isgoodmu_      ); }
+    // bool     isgoodel     (int i) const { return p_get(i, isgoodel_,      p_isgoodel_      ); }
     
     unsigned misc     (int i) const { return p_get(i, misc_,      p_misc_          ); }
     unsigned misc_mtk (int i) const { return p_get(i, misc_mtk_,  p_misc_mtk_      ); }
@@ -527,10 +528,10 @@ namespace jmt {
     vuchar which_jet_;   vuchar* p_which_jet_;
     vuchar which_pv_;    vuchar* p_which_pv_;
     vuchar which_sv_;    vuchar* p_which_sv_;
-    vbool  ismu_;        vbool* p_ismu_;
-    vbool  isel_;        vbool* p_isel_;
-    vbool  isgoodmu_;        vbool* p_isgoodmu_;
-    vbool  isgoodel_;        vbool* p_isgoodel_;
+    // vbool  ismu_;        vbool* p_ismu_;
+    // vbool  isel_;        vbool* p_isel_;
+    // vbool  isgoodmu_;        vbool* p_isgoodmu_;
+    // vbool  isgoodel_;        vbool* p_isgoodel_;
     vunsigned misc_;     vunsigned* p_misc_;
     vunsigned misc_mtk_;     vunsigned* p_misc_mtk_;
     vunsigned misc_etk_;     vunsigned* p_misc_etk_;
@@ -538,6 +539,51 @@ namespace jmt {
   };
 
   class RefitTracksSubNtuple : public TracksSubNtuple { public: RefitTracksSubNtuple  () { set_pfx("rftk"); }};
+
+  ////
+
+  class TMWeightSubNtuple : public INtuple {
+  public:
+    TMWeightSubNtuple();
+    virtual void clear();
+    virtual void write_to_tree(TTree*);
+    virtual void read_from_tree(TTree*);
+    virtual void copy_vectors();
+
+    void add(float movedist2d, float movedist3d, float jetsumpt, float jet_pt, float jetsump, float electron_pt, float muon_pt, float jeteledR, float jetmudR) {
+      tmw_movedist2d_.push_back(movedist2d);
+      tmw_movedist3d_.push_back(movedist3d);
+      tmw_jetsumpt_.push_back(jetsumpt);
+      tmw_jet_pt_.push_back(jet_pt);
+      tmw_jetsump_.push_back(jetsump);
+      tmw_electron_pt_.push_back(electron_pt);
+      tmw_muon_pt_.push_back(muon_pt);
+      tmw_jeteledR_.push_back(jeteledR);
+      tmw_jetmudR_.push_back(jetmudR);
+    }
+
+    float tmw_movedist2d  (int i) const { return p_get(i, tmw_movedist2d_,  p_tmw_movedist2d_);  }
+    float tmw_movedist3d  (int i) const { return p_get(i, tmw_movedist3d_,  p_tmw_movedist3d_);  }
+    float tmw_jetsumpt    (int i) const { return p_get(i, tmw_jetsumpt_,    p_tmw_jetsumpt_);    }
+    float tmw_jet_pt      (int i) const { return p_get(i, tmw_jet_pt_,      p_tmw_jet_pt_);      }
+    float tmw_jetsump     (int i) const { return p_get(i, tmw_jetsump_,     p_tmw_jetsump_);     }
+    float tmw_electron_pt (int i) const { return p_get(i, tmw_electron_pt_, p_tmw_electron_pt_); }
+    float tmw_muon_pt     (int i) const { return p_get(i, tmw_muon_pt_,     p_tmw_muon_pt_);     }
+    float tmw_jeteledR    (int i) const { return p_get(i, tmw_jeteledR_,    p_tmw_jeteledR_);    }
+    float tmw_jetmudR     (int i) const { return p_get(i, tmw_jetmudR_,     p_tmw_jetmudR_);     }
+    
+
+  private:
+    vfloat tmw_movedist2d_;  vfloat* p_tmw_movedist2d_;
+    vfloat tmw_movedist3d_;  vfloat* p_tmw_movedist3d_;
+    vfloat tmw_jetsumpt_;    vfloat* p_tmw_jetsumpt_;
+    vfloat tmw_jet_pt_;      vfloat* p_tmw_jet_pt_;
+    vfloat tmw_jetsump_;     vfloat* p_tmw_jetsump_;
+    vfloat tmw_electron_pt_; vfloat* p_tmw_electron_pt_;
+    vfloat tmw_muon_pt_;     vfloat* p_tmw_muon_pt_;
+    vfloat tmw_jeteledR_;    vfloat* p_tmw_jeteledR_;
+    vfloat tmw_jetmudR_;     vfloat* p_tmw_jetmudR_;
+  };
 
   ////
 
@@ -668,11 +714,14 @@ namespace jmt {
     virtual void copy_vectors();
 
  
-    void add(int q, float pt, float eta, float phi, int ID, bool isLoose, bool isMed, bool isTight, float iso,
+    void add(int q, float pt, float eta, float phi, int ID, 
+              bool isLoose, bool isMed, bool isTight, 
+             float iso,
 	           float vx, float vy, float vz,
              float cov_00, float cov_11, float cov_14, float cov_22, float cov_23, float cov_33, float cov_34, float cov_44,
              float chi2dof,
-	           int npxh, int nsth, int npxl, int nstl, int losthit, unsigned misc, bool hltmatched, bool passtrigpt, 
+	           int npxh, int nsth, int npxl, int nstl, int losthit, 
+             unsigned misc, bool hltmatched, bool passtrigpt, 
              int minhit_r, int minhit_z, int maxhit_r, int maxhit_z, int maxpxhit_r, int maxpxhit_z) {
       qpt_.push_back(q*pt);
       eta_.push_back(eta);
@@ -840,11 +889,13 @@ namespace jmt {
     virtual void read_from_tree(TTree*);
     virtual void copy_vectors();
     
-    void add(int q, float pt, float eta, float phi, int ID, bool isVeto, bool isLoose, bool isMed, bool isTight, float iso, bool passveto,
-	     float vx, float vy, float vz,
+    void add(int q, float pt, float eta, float phi, int ID, 
+              bool isVeto, bool isLoose, bool isMed, bool isTight, 
+             float iso, bool passveto,
+	           float vx, float vy, float vz,
              float cov_00, float cov_11, float cov_14, float cov_22, float cov_23, float cov_33, float cov_34, float cov_44,
              float chi2dof,
-	     int npxh, int nsth, int npxl, int nstl, int losthit, unsigned misc, bool hltmatched, bool passtrigpt,
+	           int npxh, int nsth, int npxl, int nstl, int losthit, unsigned misc, bool hltmatched, bool passtrigpt,
              int minhit_r, int minhit_z, int maxhit_r, int maxhit_z, int maxpxhit_r, int maxpxhit_z) {
       qpt_.push_back(q*pt);
       eta_.push_back(eta);
