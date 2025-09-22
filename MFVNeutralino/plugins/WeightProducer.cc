@@ -12,7 +12,6 @@
 #include "RoccoR/RoccoR.h"
 #include "RoccoR/RoccoR.cc"
 #include "TRandom3.h"
-// #include "JMTucker/MFVNeutralino/interface/LeptonSF.h"
 
 class MFVWeightProducer : public edm::EDProducer {
 public:
@@ -48,7 +47,10 @@ private:
   const std::string mujson;
   // const std::string roccor;
   double run(const std::unique_ptr<correction::CorrectionSet>&, const std::string&, const std::map<std::string, correction::Variable::Type>&) const;
-
+  RoccoR rc;
+  std::unique_ptr<correction::CorrectionSet> pu_cset;
+  std::unique_ptr<correction::CorrectionSet> mu_cset;
+  std::unique_ptr<correction::CorrectionSet> ele_cset;
 
   TH1D* h_gensign;
   TH1D* h_npu;
@@ -85,7 +87,7 @@ MFVWeightProducer::MFVWeightProducer(const edm::ParameterSet& cfg)
     pujson(cfg.getParameter<std::string>("pujson")),
     elejson(cfg.getParameter<std::string>("elejson")),
     mujson(cfg.getParameter<std::string>("mujson"))
-    // roccor(cfg.getParameter<std::string>("roccor"))
+
 {
   if (weight_gen + weight_gen_sign_only > 1)
     throw cms::Exception("Configuration", "can only set one of weight_gen, weight_gen_sign_only");
@@ -95,6 +97,23 @@ MFVWeightProducer::MFVWeightProducer(const edm::ParameterSet& cfg)
   //FIXME way to turn off? 
   produces<double>("lepsfup"); //syst up 
   produces<double>("lepsfdown"); //syst down 
+  
+  std::string year = std::to_string(int(MFVNEUTRALINO_YEAR));
+
+  if (year == "20161") rc.init(edm::FileInPath("RoccoR/RoccoR2016aUL.txt").fullPath()); //FIXME year is hardcoded
+  else if (year == "20162") rc.init(edm::FileInPath("RoccoR/RoccoR2016bUL.txt").fullPath()); //FIXME year is hardcoded
+  else if (year == "2017")  { 
+    rc.init(edm::FileInPath("RoccoR/RoccoR2017UL.txt").fullPath()); //FIXME year is hardcoded
+
+  }
+  else if (year == "2018")  {
+    rc.init(edm::FileInPath("RoccoR/RoccoR2018UL.txt").fullPath()); //FIXME year is hardcoded
+  }
+
+
+  pu_cset = correction::CorrectionSet::from_file(pujson); 
+  mu_cset = correction::CorrectionSet::from_file(mujson); 
+  ele_cset = correction::CorrectionSet::from_file(elejson); 
 
   if (histos) {
     edm::Service<TFileService> fs;
@@ -157,12 +176,15 @@ double MFVWeightProducer::npv_weight(int mc_npv) const {
 double MFVWeightProducer::run (const std::unique_ptr<correction::CorrectionSet>& cset, const std::string& key, const std::map<std::string, correction::Variable::Type>& values) const {
   correction::Correction::Ref sf = cset->at(key);
   std::vector<correction::Variable::Type> inputs;
+  // std::cout << "run fcn called ... " << std::endl;
   for (const correction::Variable& input: sf->inputs()) { 
+    // std::cout << "input name : " << input.name() << std::endl;
     inputs.push_back(values.at(input.name()));
   }
   double result = sf->evaluate(inputs);
   return result;
 }
+
 
 void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
   if (event.isRealData() != (event.id().run() != 1))
@@ -217,15 +239,12 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
         *weight_down *= pu_w;
       }
 
-      //pulling from json; TOFIX year dependence 
+      //pulling from json
       if (weight_pileup_2) {
 
         double PUsf = 1.0;
         double PUsf_up = 1.0; 
         double PUsf_down = 1.0;
-        // std::unique_ptr<correction::CorrectionSet> pu_cset = correction::CorrectionSet::from_file("/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_47/src/JMTucker/MFVNeutralino/test/jsons/PU_json/18UL/puWeights.json.gz"); //for 2018UL
-        std::unique_ptr<correction::CorrectionSet> pu_cset = correction::CorrectionSet::from_file(pujson); //for 2018UL
-
         std::map<std::string, correction::Variable::Type> values {
           {"NumTrueInteractions", mevent->npu}, 
           {"weights", "nominal"}, 
@@ -240,20 +259,34 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
           {"NumTrueInteractions", mevent->npu}, 
           {"weights", "down"}, // variation
         };
-        //PU UL SF from Central 
-        PUsf = run(pu_cset, "Collisions18_UltraLegacy_goldenJSON", values);
-        PUsf_up = run(pu_cset, "Collisions18_UltraLegacy_goldenJSON", values_up);
-        PUsf_down = run(pu_cset, "Collisions18_UltraLegacy_goldenJSON", values_down);
+        // //PU UL SF from Central 
+        int year = int(MFVNEUTRALINO_YEAR);
+
+        if (year == 20161 || year == 20162) { 
+          PUsf = run(pu_cset, "Collisions16_UltraLegacy_goldenJSON", values);
+          PUsf_up = run(pu_cset, "Collisions16_UltraLegacy_goldenJSON", values_up);
+          PUsf_down = run(pu_cset, "Collisions16_UltraLegacy_goldenJSON", values_down);
+        }
+        else if (year == 2017) { 
+          PUsf = run(pu_cset, "Collisions17_UltraLegacy_goldenJSON", values);
+          PUsf_up = run(pu_cset, "Collisions17_UltraLegacy_goldenJSON", values_up);
+          PUsf_down = run(pu_cset, "Collisions17_UltraLegacy_goldenJSON", values_down);
+
+        }
+        else if (year == 2018) { 
+          PUsf = run(pu_cset, "Collisions18_UltraLegacy_goldenJSON", values);
+          PUsf_up = run(pu_cset, "Collisions18_UltraLegacy_goldenJSON", values_up);
+          PUsf_down = run(pu_cset, "Collisions18_UltraLegacy_goldenJSON", values_down);
+
+        }
 
         if (histos) {
           h_npu->Fill(mevent->npu);
           h_sums->Fill(sum_pileup_weight, PUsf);
         }
-
         *weight *= PUsf;
         *weight_up *= PUsf_up;
         *weight_down *= PUsf_down;
-
       }
 
       if (weight_npv) {
@@ -280,7 +313,6 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
       }
 
       //Lepton SF workspace 
-
       if (apply_lepsf) {
         double total_lepsf = 1; 
         double total_lepIDsf = 1; //for histos; in case there are > 1 SV with a leading lepton 
@@ -317,6 +349,7 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
         for (int isv = 0; isv < nsv; ++isv) {
           const MFVVertexAux& aux = auxes->at(isv);
 
+          // std::cout << " nsv : " << isv << "leading mu : " << aux.leading_selmu_pt.size() << " leading ele : " << aux.leading_selele_pt.size() << std::endl;
           //could either be size 0 or size 1
           for (size_t imu = 0; imu < aux.leading_selmu_pt.size(); ++imu) {
             lepinSV_pt.push_back(aux.leading_selmu_pt[imu]);
@@ -335,12 +368,6 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
         
 
         //step 2 : depending on the lepton, get the SFs 
-        //currently for 2018UL 
-
-
-        std::unique_ptr<correction::CorrectionSet> mu_cset = correction::CorrectionSet::from_file(mujson); //for mu2018UL
-        std::unique_ptr<correction::CorrectionSet> ele_cset = correction::CorrectionSet::from_file(elejson); //for ele2018UL
-
         //need to loop through all the possible SV that has a leading lepton that passes selections and apply SF to those leptons 
         for (size_t ilep=0; ilep < lepinSV_type.size(); ilep++) { 
           if (lepinSV_type[ilep] == 0) { //lepinSV is mu;
@@ -398,16 +425,18 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
             }
           }
           else { //lepinSV is an electron 
+            // int year = 2017;
+            std::string year = std::to_string(int(MFVNEUTRALINO_YEAR));
 
             std::map<std::string, correction::Variable::Type> values {
-              {"year", "2018"}, //year
+              {"year", year}, //year
               {"ValType", "sf"}, // variation
               {"WorkingPoint",  "Tight"}, //working point
               {"pt", lepinSV_pt[ilep]}, // electron transverse momentum
               {"eta", lepinSV_eta[ilep]}, // electron absolute pseudorapidity
             };
             std::map<std::string, correction::Variable::Type> values_up {
-              {"year", "2018"}, //year
+              {"year", year}, //year
               {"ValType", "sfup"}, // variation
               {"WorkingPoint",  "Tight"}, //working point
               {"pt", lepinSV_pt[ilep]}, // electron transverse momentum
@@ -415,7 +444,7 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
             };
 
             std::map<std::string, correction::Variable::Type> values_down {
-              {"year", "2018"}, //year
+              {"year", year}, //year
               {"ValType", "sfdown"}, // variation
               {"WorkingPoint",  "Tight"}, //working point
               {"pt", lepinSV_pt[ilep]}, // electron transverse momentum
@@ -446,6 +475,7 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
           total_lepISOsf *= lepISOsf;
           total_lepIDsf *= lepIDsf;
           total_lepTRsf *= lepTRsf;
+          // std::cout << " total lepsf : " << total_lepsf << std::endl;
         }
 
         if (histos) {
@@ -459,7 +489,7 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
         *weight *= total_lepsf;
         *weight_up *= total_lepsf_up;
         *weight_down *= total_lepsf_down;
-
+        // std::cout << "total lep sf : " << total_lepsf << std::endl;
       }
       
       // Fill in sumw entries for renormalization / factorization scale uncertainty
@@ -482,24 +512,17 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
 
     //rochester corrections have a correction to apply to data/mc so putting it here 
     if (apply_roccor) {
-      RoccoR rc;
-      // rc.init(edm::FileInPath("/afs/hep.wisc.edu/home/acwarden/work/llp/CMSSW_10_6_47/src/RoccoR/RoccoR2018UL.txt").fullPath()); //FIXME year is hardcoded
-      rc.init(edm::FileInPath("RoccoR/RoccoR2018UL.txt").fullPath()); //FIXME year is hardcoded
-      // rc.init(edm::FileInPath(roccor).fullPath()); //FIXME year is hardcoded
-
       double roccor_sf = 1.0; //total for the event
       //these sf are applied to every muon
       if (event.isRealData()) { 
-        //Q is charge; need to get the muon's Q, pt, eta, phi 
         for (int imu = 0; imu < mevent->nmuons(); ++imu) {
           if (mevent->muon_pt[imu] < 10.) continue;
-          // double dtSF = rc.kScaleDT(Q, pt, eta, phi, s=0, m=0); //data
           double dtSF = rc.kScaleDT(mevent->muon_q[imu], mevent->muon_pt[imu], mevent->muon_eta[imu], mevent->muon_phi[imu], 0, 0); //data
           roccor_sf *= dtSF;
         }
       }
       else if (!event.isRealData()) { 
-        //nl is trackerlayersWithMeasurement 
+        // nl is trackerlayersWithMeasurement 
         // u is random number distributed uniformly between 0 and 1 ( gRandom->Rndm() ); 
         double u = gRandom->Rndm();
 
@@ -535,6 +558,8 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
         }
       }
       *weight *= roccor_sf; 
+      // std::cout << "roccor sf : " << roccor_sf << std::endl;
+
     }
 
   }
@@ -547,6 +572,7 @@ void MFVWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
   if (prints)
     printf("total weight: %g\n", *weight);
  
+
   event.put(std::move(weight));
   event.put(std::move(weight_up), "lepsfup"); //specific for leptoninSV
   event.put(std::move(weight_down), "lepsfdown"); //specific for leptoninSV

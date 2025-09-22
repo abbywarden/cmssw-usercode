@@ -8,7 +8,10 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
+#include "JMTucker/MFVNeutralinoFormats/interface/Event.h"
+#include "JMTucker/MFVNeutralinoFormats/interface/VertexAux.h"
 #include "JMTucker/Tools/interface/Year.h"
+#include "correction.h"
 
 class JMTWeightProducer : public edm::EDProducer {
 public:
@@ -26,14 +29,18 @@ private:
   const bool weight_gen;
   const bool weight_gen_sign_only;
   const bool weight_pileup;
+  const bool weight_pileup_2;
+  const std::string pujson;
   const std::vector<double> pileup_weights;
   double pileup_weight(int mc_npu) const;
   const bool weight_npv;
   const std::vector<double> npv_weights;
   double npv_weight(int mc_npu) const;
-
   const bool weight_misc;
   std::vector<edm::EDGetTokenT<double>> misc_tokens;
+
+  double run(const std::unique_ptr<correction::CorrectionSet>&, const std::string&, const std::map<std::string, correction::Variable::Type>&) const;
+  std::unique_ptr<correction::CorrectionSet> pu_cset;
 
   TH1D* h_gensign;
   TH1D* h_npu;
@@ -41,6 +48,7 @@ private:
 
   enum { sum_gen_weight, sum_pileup_weight, sum_npv_weight, sum_misc_weight, sum_weight, yearcode_x_nfiles, n_sums };
   TH1D* h_sums;
+
 };
 
 JMTWeightProducer::JMTWeightProducer(const edm::ParameterSet& cfg)
@@ -53,6 +61,8 @@ JMTWeightProducer::JMTWeightProducer(const edm::ParameterSet& cfg)
     weight_gen(cfg.getParameter<bool>("weight_gen")),
     weight_gen_sign_only(cfg.getParameter<bool>("weight_gen_sign_only")),
     weight_pileup(cfg.getParameter<bool>("weight_pileup")),
+    weight_pileup_2(cfg.getParameter<bool>("weight_pileup_2")),
+    pujson(cfg.getParameter<std::string>("pujson")),
     pileup_weights(cfg.getParameter<std::vector<double> >("pileup_weights")),
     weight_npv(cfg.getParameter<bool>("weight_npv")),
     npv_weights(cfg.getParameter<std::vector<double> >("npv_weights")),
@@ -65,6 +75,10 @@ JMTWeightProducer::JMTWeightProducer(const edm::ParameterSet& cfg)
     misc_tokens.push_back(consumes<double>(src));
 
   produces<double>();
+
+  // std::cout << "pujson : " << pujson << std::endl;
+
+  pu_cset = correction::CorrectionSet::from_file(pujson); //for 2018UL
 
   if (histos) {
     edm::Service<TFileService> fs;
@@ -79,6 +93,7 @@ JMTWeightProducer::JMTWeightProducer(const edm::ParameterSet& cfg)
     for (const char* x : { "sum_gen_weight", "sum_pileup_weight", "sum_npv_weight", "sum_misc_weight", "sum_weight", "yearcode_x_nfiles", "n_sums" })
       h_sums->GetXaxis()->SetBinLabel(ibin++, x);
     h_sums->Fill(yearcode_x_nfiles, MFVNEUTRALINO_YEARCODE);
+
   }
 }
 
@@ -94,6 +109,16 @@ double JMTWeightProducer::npv_weight(int mc_npv) const {
     return 0;
   else
     return npv_weights[mc_npv];
+}
+
+double JMTWeightProducer::run (const std::unique_ptr<correction::CorrectionSet>& cset, const std::string& key, const std::map<std::string, correction::Variable::Type>& values) const {
+  correction::Correction::Ref sf = cset->at(key);
+  std::vector<correction::Variable::Type> inputs;
+  for (const correction::Variable& input: sf->inputs()) { 
+    inputs.push_back(values.at(input.name()));
+  }
+  double result = sf->evaluate(inputs);
+  return result;
 }
 
 void JMTWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
@@ -149,6 +174,45 @@ void JMTWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
         *weight *= pu_w;
       }
 
+      //pulling from json; TOFIX year dependence 
+      if (weight_pileup_2) {
+        // edm::Handle<std::vector<PileupSummaryInfo> > pileup;
+        // event.getByToken(pileup_summary_token, pileup);
+
+        float npu = -1;
+        if (!event.isRealData()) {
+          edm::Handle<std::vector<PileupSummaryInfo> > pileup;
+          event.getByToken(pileup_summary_token, pileup);
+
+          for (std::vector<PileupSummaryInfo>::const_iterator psi = pileup->begin(), end = pileup->end(); psi != end; ++psi)
+            if (psi->getBunchCrossing() == 0)
+              npu = psi->getTrueNumInteractions();
+        }
+        // for (std::vector<PileupSummaryInfo>::const_iterator psi = pileup->begin(), end = pileup->end(); psi != end; ++psi)
+        //   if (psi->getBunchCrossing() == 0)
+        //     npu = psi->getTrueNumInteractions();
+
+        double PUsf = 1.0;
+        if (npu > 0 ) { 
+          std::map<std::string, correction::Variable::Type> values {
+            {"NumTrueInteractions", npu}, 
+            {"weights", "nominal"}, 
+          };
+
+          // //PU UL SF from Central 
+          PUsf = run(pu_cset, "Collisions18_UltraLegacy_goldenJSON", values);
+
+          if (histos) {
+            h_npu->Fill(npu);
+            h_sums->Fill(sum_pileup_weight, PUsf);
+          }
+        } 
+        *weight *= PUsf;
+        // std::cout << "PUsf being applied from Tools/plugins : " << PUsf << std::endl;
+  
+      }
+
+
       if (weight_npv) {
         edm::Handle<reco::VertexCollection> primary_vertices;
         event.getByToken(primary_vertex_token, primary_vertices);
@@ -164,7 +228,7 @@ void JMTWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
         *weight *= npv_w;
       }
     }
-
+    
     if (weight_misc) {
       double misc_w = 1;
       for (auto t : misc_tokens) {
@@ -182,6 +246,9 @@ void JMTWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
 
   if (prints)
     printf("total weight: %g\n", *weight);
+  
+  // std::cout << "total weight from Tools/plugins : " << *weight << std::endl;
+
 
   event.put(std::move(weight));
 }
