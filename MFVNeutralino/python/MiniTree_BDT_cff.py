@@ -19,7 +19,7 @@ mfvMiniTree = cms.EDAnalyzer('MFVMiniTreerBDT',
                              vertex_src = cms.InputTag('mfvSelectedVerticesTight'),
                              weight_src = cms.InputTag('mfvWeight'),
                              do_genmatching = cms.bool(False), #should only turn on for signal to train. turn off and run signal again for the full evaluation? turned on will only work for signal; may need rework?
-                            #  isData = cms.bool(False)
+                             isData = cms.bool(True)
                              )
 
 
@@ -36,7 +36,8 @@ mfvMiniTree = cms.EDAnalyzer('MFVMiniTreerBDT',
 mfvMiniTree_Standard = mfvMiniTree.clone(vertex_src = 'mfvSelectedVerticesLoose')
 
 #pMiniTree_standard = cms.Path(mfvWeight * mfvSelectedVerticesLooseNtk3 *mfvAnalysisCutsGE1Vtx_Standard  * mfvMiniTree_Standard) #for data
-pMiniTree_standard = cms.Path(mfvWeight * mfvSelectedVerticesLoose *mfvAnalysisCutsGE1Vtx_Standard  * mfvMiniTree_Standard)
+#pMiniTree_standard = cms.Path(mfvWeight * mfvSelectedVerticesLoose *mfvAnalysisCutsGE1Vtx_Standard  * mfvMiniTree_Standard)
+pMiniTree_standard = cms.Path(mfvSelectedVerticesLoose * mfvWeight * mfvAnalysisCutsGE1Vtx_Standard  * mfvMiniTree_Standard) #have to swap mfvWeight now 
 
 # the previous analysis vertex selections 
 #pMiniTree_orig = cms.Path(mfvWeight * mfvSelectedVerticesTight *mfvAnalysisCutsGE1Vtx_Orig  * mfvMiniTree)

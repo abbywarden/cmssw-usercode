@@ -14,7 +14,6 @@
 #include "JMTucker/Tools/interface/Math.h"
 #include "JMTucker/Tools/interface/Year.h"
 
-//reducing for ttbar --> commenting out many things 
 
 class MFVMiniTreerBDT : public edm::EDAnalyzer {
 public:
@@ -27,7 +26,7 @@ public:
   const edm::EDGetTokenT<MFVVertexAuxCollection> vertex_token;
   const edm::EDGetTokenT<double> weight_token;
   const bool do_genmatching;
-  // const bool isData;
+  const bool isData;
 
  
   //splitting up the satisfieslep trigger into muon/ele trigger -> just checking if the electron or muon passes pT requirement given which trigger fired -> this is for the muons and electrons in the SV 
@@ -126,8 +125,8 @@ MFVMiniTreerBDT::MFVMiniTreerBDT(const edm::ParameterSet& cfg)
   : event_token(consumes<MFVEvent>(cfg.getParameter<edm::InputTag>("event_src"))),
     vertex_token(consumes<MFVVertexAuxCollection>(cfg.getParameter<edm::InputTag>("vertex_src"))),
     weight_token(consumes<double>(cfg.getParameter<edm::InputTag>("weight_src"))),
-    do_genmatching(cfg.getParameter<bool>("do_genmatching"))
-    // isData(cfg.getParameter<bool>("isData"))
+    do_genmatching(cfg.getParameter<bool>("do_genmatching")),
+    isData(cfg.getParameter<bool>("isData"))
 {
   edm::Service<TFileService> fs;
 
@@ -158,11 +157,11 @@ void MFVMiniTreerBDT::analyze(const edm::Event& event, const edm::EventSetup& se
   edm::Handle<MFVEvent> mevent;
   event.getByToken(event_token, mevent);
 
-  // int year = int(MFVNEUTRALINO_YEAR);
-  // assert(year == 20161 || year == 20162 || year == 2017 || year == 2018); // in case of race conditions where the compiled macro is invalid...
+  int year = int(MFVNEUTRALINO_YEAR);
+  assert(year == 20161 || year == 20162 || year == 2017 || year == 2018); // in case of race conditions where the compiled macro is invalid...
 
-  // //random generator to determine if HEM check is applied (in MC)
-  // float hem_check = 1 + (std::rand() % 1);
+  //random generator to determine if HEM check is applied (in MC)
+  float hem_check = 1 + (std::rand() % 1);
 
   // nt.gen_flavor_code = mevent->gen_flavor_code;
   // nt.pass_hlt is currently an unsigned int, i.e. 32 bits available
@@ -187,6 +186,8 @@ void MFVMiniTreerBDT::analyze(const edm::Event& event, const edm::EventSetup& se
   event.getByToken(weight_token, weight);
   nt.weight = *weight;
 
+
+  //event level info first 
   nt.njets = int2uchar(mevent->njets(mfv::min_jet_pt));
   nt.jetht = mevent->jet_ht(mfv::min_jet_pt);
   nt.nmuons = mevent->nmuons();
@@ -197,8 +198,6 @@ void MFVMiniTreerBDT::analyze(const edm::Event& event, const edm::EventSetup& se
     throw cms::Exception("CheckYourPremises") << "too many muons in event: " << nt.nmuons;
   if (nt.nelectrons > 50)
     throw cms::Exception("CheckYourPremises") << "too many electrons in event: " << nt.nelectrons;
-
-  std::vector<std::tuple<std::string, int, float, float, float, float, float, float, float>> lep_tuple; // store the lep (as long as pt ≥ 50) {lep, idx, pt, phi, eta, dxy, dxyerr, x, y}  
 
   for (int i = 0; i < mevent->njets(); ++i) {
     if (mevent->jet_pt[i] < mfv::min_jet_pt)
@@ -211,9 +210,12 @@ void MFVMiniTreerBDT::analyze(const edm::Event& event, const edm::EventSetup& se
   nt.jet0_pt = mevent->nth_jet_pt(0);
   nt.jet1_pt = mevent->nth_jet_pt(1);
 
+  //////////////////////////////////////////////////////////////
+  //FIXME : require leptons to pass standard cuts 
+  std::vector<std::tuple<std::string, int, float, float, float, float, float, float, float>> lep_tuple; // store leptons w/ pt >= 50 {lep, idx, pt, phi, eta, dxy, dxyerr, x, y}  
+
   for (int i = 0; i < mevent->nelectrons(); ++i) {
     nlep +=1;
-    //highest lep 
     if (mevent->electron_pt[i] >= 50.0) {
       lep_tuple.push_back(std::make_tuple("electron", i, mevent->electron_pt[i], 
                                           mevent->electron_phi[i], mevent->electron_eta[i], 
@@ -275,8 +277,8 @@ void MFVMiniTreerBDT::analyze(const edm::Event& event, const edm::EventSetup& se
       nt.double_jetlep_pt = mevent->nth_jet_pt(0) + mevent->nth_jet_pt(1) + std::get<2>(leading_lep_tuple[0]); 
     }
   }
-
 //////////////////////////////////////////////////////////////
+
   for (int i = 0; i < 2; ++i) {
     const double z = mevent->gen_lsp_decay[i*3+2];
     nt.gen_x[i] = mevent->gen_lsp_decay[i*3+0] - mevent->bsx_at_z(z);
@@ -357,14 +359,9 @@ void MFVMiniTreerBDT::analyze(const edm::Event& event, const edm::EventSetup& se
         sumeta += v.track_eta[i];
         sumphi += v.track_phi[i];
         // double nsigmadxybs = (v.track_dxy[i] / v.track_dxy_err(i));
-        // if (nsigmadxybs < 3) {
-        //   std::cout << "pt, eta, phi, dxy, dxyerr : " << v.track_pt(i) << " " << v.track_eta[i]<< " "  << v.track_phi[i]<< " "  << v.track_dxy[i]<< " "  << v.track_dxy_err(i) << std::endl;
-        //   std::cout << v.ntracks() << std::endl;
-        //   std::cout << " run " << event.id().run() << " lumi " << event.luminosityBlock() << " event " << event.id().event() << std::endl;
-        // }
-        //   double nsigmadz = (v.track_dz[i] / v.track_dz_err(i) );
+        // double nsigmadz = (v.track_dz[i] / v.track_dz_err(i) );
 
-        //   // track information ??         
+        //   // track information -- not present in ntuples; should check again       
         //   // nt.trackmass.push_back(track_p4(i, mass));
         //   nt.trackpt.push_back(v.track_pt(i));
         //   nt.trackpterr.push_back(v.track_pt_err[i]);
@@ -464,20 +461,20 @@ void MFVMiniTreerBDT::analyze(const edm::Event& event, const edm::EventSetup& se
 
       int nselele = 0;
       for (int i =0; i < v.nelectrons; ++i){
-        // //here need to apply HEM : figure out if electron is in eta/phi + above 30 GeV. 
-        // // in MC : randomly decide if to keep this electron 
-        // if (year == 2018) { 
-        //   if (!isData) {
-        //     if (hem_check > 0.352275515) {
-        //       if (v.electron_pt[i] > 30 && (-3.0 < v.electron_eta[i]) && ( v.electron_eta[i] < -1.3) && (-1.57 < v.electron_phi[i]) && (v.electron_phi[i] < -0.87)) continue;
-        //     }
-        //   }
-        //   else {
-        //     if (v.electron_pt[i] > 30 && (-3.0 < v.electron_eta[i]) && (v.electron_eta[i] < -1.3) && (-1.57 < v.electron_phi[i]) && (v.electron_phi[i] < -0.87)) {
-        //       if (event.id().run() >= 319077) continue; // starting w/ run number 319077 do not use this electron 
-        //     }
-        //   }
-        // }
+        //here need to apply HEM : figure out if electron is in eta/phi + above 30 GeV. 
+        // in MC : randomly decide if to keep this electron 
+        if (year == 2018) { 
+          if (!isData) {
+            if (hem_check > 0.352275515) {
+              if (v.electron_pt[i] > 30 && (-3.0 < v.electron_eta[i]) && ( v.electron_eta[i] < -1.3) && (-1.57 < v.electron_phi[i]) && (v.electron_phi[i] < -0.87)) continue;
+            }
+          }
+          else {
+            if (v.electron_pt[i] > 30 && (-3.0 < v.electron_eta[i]) && (v.electron_eta[i] < -1.3) && (-1.57 < v.electron_phi[i]) && (v.electron_phi[i] < -0.87)) {
+              if (event.id().run() >= 319077) continue; // starting w/ run number 319077 do not use this electron 
+            }
+          }
+        }
 
         nt.all_elept_inSV.push_back(v.electron_pt[i]);
         nt.all_leppt_inSV.push_back(v.electron_pt[i]);
@@ -551,7 +548,6 @@ void MFVMiniTreerBDT::analyze(const edm::Event& event, const edm::EventSetup& se
         if (v.muon_iso[i] < 0.1 && id >1) nselmu +=1;
       } 
 
-      // float pTwoutLep = 0.0;
       float leading_leppt = *max_element(assoc_lep.begin(), assoc_lep.end());
       int leading_lepidx = std::max_element(assoc_lep.begin(), assoc_lep.end()) - assoc_lep.begin();
 
@@ -621,20 +617,34 @@ void MFVMiniTreerBDT::analyze(const edm::Event& event, const edm::EventSetup& se
 
       nt.leading_jetpt_inSV.push_back(leading_jetpt);
       
-      //find the track pT "assoc" to the lepton 
+      //find the track pT "assoc" to the lepton; also determine costheta for : just the lepton, and all tracks except the lepton 
+      // math::XYZTLorentzVector sumtk_p4;
+      // math::XYZTLorentzVector tknolep_p4;
+      // math::XYZTLorentzVector lep_p4;
+
       if (leading_leppt > 0){ 
         std::vector<double> mindR;
         for (int i = 0; i < v.ntracks(); ++i) {
+          // sumtk_p4 +=math::XYZTLorentzVector(v.track_px[i], v.track_py[i], v.track_pz[i], v.track_p(i));
           double dr = reco::deltaR(v.track_eta[i], v.track_phi[i], assoc_lepeta[leading_lepidx], assoc_lepphi[leading_lepidx]);
           mindR.push_back(dr);
         }
         nt.closestdR_track_leadinglep.push_back(*min_element(mindR.begin(), mindR.end()));
         int track_idx = std::min_element(mindR.begin(), mindR.end()) - mindR.begin();
         nt.avgptnolep.push_back((sumpt - v.track_pt(track_idx))/(v.ntracks()-1));
+        
+        // lep_p4 = math::XYZTLorentzVector(v.track_px[track_idx], v.track_py[track_idx], v.track_pz[track_idx], v.track_p(track_idx));
+        // tknolep_p4 = sumtk_p4 - lep_p4; 
+        
+        // nt.costhlepmombs.push_back(jmt::costh2(lep_p4, bs2sv));
+        // nt.costhnolepmombs.push_back(jmt::costh2(tknolep_p4, bs2sv));
+
       }
       else if (leading_leppt < 0) {
         nt.closestdR_track_leadinglep.push_back(20);
         nt.avgptnolep.push_back(sumpt/(v.ntracks()));
+        // nt.costhlepmombs.push_back(-5.0);
+        // nt.costhnolepmombs.push_back(jmt::costh2(sumtk_p4, bs2sv)); 
       }
 
 
@@ -1065,20 +1075,32 @@ void MFVMiniTreerBDT::analyze(const edm::Event& event, const edm::EventSetup& se
         nt.nmleptrackphiavg.push_back(nmleptrackphiavg);
         nt.dr_avgtracks_lep.push_back(sqrt(pow(2, (assoc_lepeta[leading_lepidx]-nmleptracketaavg)) + pow(2, (assoc_lepphi[leading_lepidx]-nmleptrackphiavg))));
 
-      //find the track pT "assoc" to the lepton 
+      //find the track pT "assoc" to the lepton; also determine costheta for : just the lepton, and all tracks except the lepton 
+      // math::XYZTLorentzVector sumtk_p4;
+      // math::XYZTLorentzVector tknolep_p4;
+      // math::XYZTLorentzVector lep_p4;
+
       if (leading_leppt > 0){ 
         std::vector<double> mindR;
         for (int i = 0; i < sv.ntracks(); ++i) {
+          // sumtk_p4 +=math::XYZTLorentzVector(sv.track_px[i], sv.track_py[i], sv.track_pz[i], sv.track_p(i));
           double dr = reco::deltaR(sv.track_eta[i], sv.track_phi[i], assoc_lepeta[leading_lepidx], assoc_lepphi[leading_lepidx]);
           mindR.push_back(dr);
         }
         nt.closestdR_track_leadinglep.push_back(*min_element(mindR.begin(), mindR.end()));
         int track_idx = std::min_element(mindR.begin(), mindR.end()) - mindR.begin();
         nt.avgptnolep.push_back((sumpt - sv.track_pt(track_idx))/(sv.ntracks()-1));
+
+        // lep_p4 = math::XYZTLorentzVector(sv.track_px[track_idx], sv.track_py[track_idx], sv.track_pz[track_idx], sv.track_p(track_idx));
+        // tknolep_p4 = sumtk_p4 - lep_p4;
+        // nt.costhlepmombs.push_back(jmt::costh2(lep_p4, bs2sv));
+        // nt.costhnolepmombs.push_back(jmt::costh2(tknolep_p4, bs2sv));
       }
       else if (leading_leppt < 0) {
         nt.closestdR_track_leadinglep.push_back(20);
         nt.avgptnolep.push_back(sumpt/(sv.ntracks()));
+        // nt.costhlepmombs.push_back(-5.0);
+        // nt.costhnolepmombs.push_back(jmt::costh2(sumtk_p4, bs2sv));
       }
 
         // now leading jet 
