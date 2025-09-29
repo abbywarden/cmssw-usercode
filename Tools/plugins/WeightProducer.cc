@@ -77,9 +77,10 @@ JMTWeightProducer::JMTWeightProducer(const edm::ParameterSet& cfg)
   produces<double>();
 
   // std::cout << "pujson : " << pujson << std::endl;
-
-  pu_cset = correction::CorrectionSet::from_file(pujson); //for 2018UL
-
+  if (weight_pileup_2) { 
+    pu_cset = correction::CorrectionSet::from_file(pujson); //for 2018UL
+  }
+  
   if (histos) {
     edm::Service<TFileService> fs;
     TH1::SetDefaultSumw2();
@@ -176,8 +177,6 @@ void JMTWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
 
       //pulling from json; TOFIX year dependence 
       if (weight_pileup_2) {
-        // edm::Handle<std::vector<PileupSummaryInfo> > pileup;
-        // event.getByToken(pileup_summary_token, pileup);
 
         float npu = -1;
         if (!event.isRealData()) {
@@ -188,9 +187,6 @@ void JMTWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
             if (psi->getBunchCrossing() == 0)
               npu = psi->getTrueNumInteractions();
         }
-        // for (std::vector<PileupSummaryInfo>::const_iterator psi = pileup->begin(), end = pileup->end(); psi != end; ++psi)
-        //   if (psi->getBunchCrossing() == 0)
-        //     npu = psi->getTrueNumInteractions();
 
         double PUsf = 1.0;
         if (npu > 0 ) { 
@@ -198,9 +194,18 @@ void JMTWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
             {"NumTrueInteractions", npu}, 
             {"weights", "nominal"}, 
           };
-
           // //PU UL SF from Central 
-          PUsf = run(pu_cset, "Collisions18_UltraLegacy_goldenJSON", values);
+          int year = int(MFVNEUTRALINO_YEAR);
+
+          if (year == 20161 || year == 20162) { 
+            PUsf = run(pu_cset, "Collisions16_UltraLegacy_goldenJSON", values);
+          }
+          else if (year == 2017) { 
+            PUsf = run(pu_cset, "Collisions17_UltraLegacy_goldenJSON", values);
+          }
+          else if (year == 2018) { 
+            PUsf = run(pu_cset, "Collisions18_UltraLegacy_goldenJSON", values);
+          }
 
           if (histos) {
             h_npu->Fill(npu);
@@ -208,7 +213,6 @@ void JMTWeightProducer::produce(edm::Event& event, const edm::EventSetup&) {
           }
         } 
         *weight *= PUsf;
-        // std::cout << "PUsf being applied from Tools/plugins : " << PUsf << std::endl;
   
       }
 
