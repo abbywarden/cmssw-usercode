@@ -14,8 +14,12 @@ namespace mfv {
     // 'PDF:pSet = LHAPDF6:NNPDF31_lo_as_0130',
     //
     // which https://lhapdf.hepforge.org/pdfsets tells us is 315200
-    int lhapdfnumber = 315200;
+
+    //FIXME if ever a different pythia tune 
+    // int lhapdfnumber = 315200; 
+    int lhapdfnumber = 303600; //for stop lb, ld 
     return LHAPDF::mkPDF(lhapdfnumber);
+
   }
 
   double alphas(double q2) {
