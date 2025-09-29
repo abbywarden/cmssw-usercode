@@ -330,10 +330,9 @@ def miniaod_ntuple_process(settings):
 
     # #EGamma scales and smearings 
     # #https://twiki.cern.ch/twiki/bin/view/CMS/EgammaUL2016To2018#SFs_for_Electrons_UL_2018 
-    
-    # if year == '2017' or year == '2018':  era = '%s-UL'%year
-    # elif year == '20161': setup_era = '2016preVFP-UL'
-    # elif year == '20162': setup_era = '2016postVFP-UL'
+    if settings.year == 2017 or settings.year == 2018:  setup_era = '%i-UL'%settings.year
+    elif settings.year == 20161: setup_era = '2016preVFP-UL'
+    elif settings.year == 20162: setup_era = '2016postVFP-UL'
 
     from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
     setupEgammaPostRecoSeq(process,
@@ -341,7 +340,7 @@ def miniaod_ntuple_process(settings):
                            runVID=True, #turn off to save CPU time by not needlessly re-running VID, if you want the Fall17V2 IDs, set this to True or remove (default is True)
                            eleIDModules=['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff'],
                            phoIDModules=['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V2_cff'],
-                           era='2018-UL') #FIXME hardcoded based on era 
+                           era = setup_era) 
       
     process.p = cms.Path(process.goodOfflinePrimaryVertices *
                          process.updatedJetsSeqMiniAOD *
