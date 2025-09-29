@@ -315,7 +315,7 @@ void MFVFilterHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
 
     edm::Handle<double> weight;
     event.getByToken(weight_token, weight);
-    const double w = *weight;
+    // const double w = *weight;
 
     edm::Handle<MFVVertexAuxCollection> auxes;
     event.getByToken(vertex_token, auxes);
@@ -323,7 +323,7 @@ void MFVFilterHistos::analyze(const edm::Event& event, const edm::EventSetup&) {
     edm::Handle<reco::TrackCollection> tracks;
 
     // Get a shorthand for the current year
-    int ul_year = int(MFVNEUTRALINO_YEAR);
+    // int ul_year = int(MFVNEUTRALINO_YEAR);
     /*
     if (require_two_good_leptons) {
         bool has_nice_muon = false;

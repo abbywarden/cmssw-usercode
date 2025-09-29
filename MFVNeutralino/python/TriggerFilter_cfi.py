@@ -6,12 +6,12 @@ jet_paths = [
     ]
 
 MET_paths = [
-    "HLT_PFMET120_PFMHT120_IDTight_v*",
-    #"HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v*",
+    #"HLT_PFMET120_PFMHT120_IDTight_v*",
+    "HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v*",
     ]
 
 low_HT_paths = [
-    "HLT_HT325_v*",  # for 2016 HLT track studies
+    "HLT_HT325_v*",  # for 2016 HLT track studiesc
     "HLT_HT425_v*",  # for 2017+8 HLT track studies
     ]
 
@@ -100,18 +100,16 @@ mfvTriggerFilterBJetsOnly = mfvTriggerFilter.clone(
         )
 mfvTriggerFilterDisplacedDijetOnly = mfvTriggerFilter.clone(HLTPaths = displaced_dijet_paths)
 # mfvTriggerFilterLeptonsOnly = mfvTriggerFilter.clone(HLTPaths = lepton_paths)
+
 mfvTriggerFilterLeptonsOnly = mfvTriggerFilter.clone(
     HLTPaths = electron_paths + muon_paths,
     andOr = True, # OR
     throw = False,
 )
+
 mfvTriggerFilterMuonsOnly = mfvTriggerFilter.clone(HLTPaths = muon_paths)
 mfvTriggerFilterElectronsOnly = mfvTriggerFilter.clone(HLTPaths = electron_paths)
-mfvTriggerFilterLeptonsOnly = mfvTriggerFilter.clone(
-    HLTPaths = electron_paths + muon_paths,
-    andOr = True, # OR
-    throw = False,
-)
+
 
 mfvTriggerFilterLeptonsNoPhoton = mfvTriggerFilter.clone(
     HLTPaths = electron_paths_nophoton + muon_paths,
