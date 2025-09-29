@@ -136,6 +136,8 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     }
 
     // JMTBAD use TracksSubNtupleFiller::which_jet?
+
+    //FIXME? (time)
     for (const pat::Jet& jet : nt_filler.jets_filler().jets(event)) {
       double dist2min = 0.1;
       int whichjet = -1;
@@ -219,6 +221,12 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
                 (*move_vertex)[2], *movelepdxypv, *movejetdxypv, *jetlepdeltadz
               );
 
+    //try and speed things up ... 
+    if (apply_presel) {
+      if (((nt.tm().npreseljets() < njets_req || nt.tm().npreselbjets() < nbjets_req || (nt.tm().npreselele() + nt.tm().npreselmu()) < nlep_req))) // || nt.jets().ht() < 1000)
+        return;
+    }
+
     for (reco::TrackRef tk : *sel_tracks) {
       const int whichtk = nt.tracks().n();
       tks_push_back(*tk);
@@ -243,6 +251,7 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
       nt.tracks().set_which_pv(whichtk, whichpv);
     }
 
+    //FIXME? (time) 
     for (const reco::Track& tk : *moved_tracks) {
       double dist2min = 0.1;
       int which = -1;
@@ -408,6 +417,7 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     std::vector<int> whichs(nmovedjets, -1);
 
     int i = -1;
+    //FIXME? (time) 
     for (const pat::JetCollection* jets : { &*jets_used, &*bjets_used }) {
       for (const pat::Jet& jet : *jets) {
         ++i;
@@ -435,7 +445,7 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
       for (size_t j = i+1; j < nmovedjets; ++j)
         assert(whichs[i] != whichs[j]);
 
-    //calculate here what is used for the reweighing : jetsumpt, jet lep dR, movedist2d, movedist3d 
+    // //calculate here what is used for the reweighing : jetsumpt, jet lep dR, movedist2d, movedist3d   //FIXME? (time)
     const TVector3& move_vector = nt.move_vector();
     const double movedist2 = move_vector.Perp();
     const double movedist3 = move_vector.Mag();
@@ -490,6 +500,7 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
       jetmudR = jet0_p4.DeltaR(mu_p4); 
     }
 
+  
     nt.tmw().add(movedist2, movedist3, jetsumpt, jet_pt, jetsump, electron_pt, muon_pt, jeteledR, jetmudR);
 
   }
@@ -619,13 +630,14 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     trackpairdravg = v.trackpairdravg(); 
 
     float sumptnolep = 0.0;
+    //FIXME? (time)
     for (size_t i = 0, ie = v.ntracks(); i < ie; ++i) {
       jmt::MinValue m(0.1);
       for (size_t j = 0, je = nt.tracks().n(); j < je; ++j){
         m(j, mag2(v.track_qpt(i) - nt.tracks().qpt(j),
                   v.track_eta[i] - nt.tracks().eta(j),
                   v.track_phi[i] - nt.tracks().phi(j)));
-        }
+      }
 
       assert(m.i() != -1);
       if (nt.tracks().which_sv(m.i()) != 255) {
@@ -644,10 +656,9 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
       
       const size_t iv = nt.vertices().n() - 1;
       assert(iv < 255);
-      nt.tracks().set_which_sv(m.i(), iv); //FIXME ????
+      nt.tracks().set_which_sv(m.i(), iv);
 
       // retrieving the lepton track information 
-
       //do a matching for the lepton track 
       if (nt.tracks().misc_etk(m.i())) {
         leading_leptype_inSV = 1;
@@ -722,6 +733,7 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
     } //end loop over tracks in SV 
     avgptnolep = sumptnolep/(v.ntracks() - 1);
 
+    //FIXME? (time)
     nt.lepinvertices().add(leading_leppt_inSV, leading_lepdxy_inSV, leading_lepdxyerr_inSV, leading_lepnsigmadxy_inSV, 
       leading_lepiso_inSV, leading_leptype_inSV, leading_lepID_inSV, leading_lepeta_inSV, leading_lephltmatched_inSV,
       leading_leppasstrigpt_inSV, leading_lepjet_pairdr, trackpairdravg, avgptnolep);
@@ -729,10 +741,11 @@ void MFVMovedTracksTreer::analyze(const edm::Event& event, const edm::EventSetup
   }
 
 
-  if (apply_presel) {
-    if ((!for_mctruth && (nt.tm().npreseljets() < njets_req || nt.tm().npreselbjets() < nbjets_req || (nt.tm().npreselele() + nt.tm().npreselmu()) < nlep_req))) // || nt.jets().ht() < 1000)
-      return;
-  }
+  //move earlier in hopes to reduce time?? 
+  // if (apply_presel) {
+  //   if ((!for_mctruth && (nt.tm().npreseljets() < njets_req || nt.tm().npreselbjets() < nbjets_req || (nt.tm().npreselele() + nt.tm().npreselmu()) < nlep_req))) // || nt.jets().ht() < 1000)
+  //     return;
+  // }
   nt_filler.finalize();
 }
 
